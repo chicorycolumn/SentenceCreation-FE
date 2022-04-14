@@ -1,83 +1,25 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { fetchTags, fetchWordsByTag } from "./utils/getUtils.js";
+import LanguagesForm from "./Create/LanguagesForm.jsx";
+import FormulaSymbolForm from "./Create/FormulaSymbolForm.jsx";
+import LemmaCardHolder from "./Create/LemmaCardHolder.jsx";
 
-class Create extends Component {
-  state = {
-    tags: null,
-    isLoading: null,
-    language1: null,
-    err: null,
-  };
+const Create = () => {
+  const [lang1, setLang1] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [formulaSymbol, setFormulaSymbol] = useState("");
 
-  render() {
-    return (
-      <div>
-        <h1>Create new sentences</h1>
-        {this.state.isLoading ? <p>Loading...</p> : <p>Welcome</p>}
-        <form
-          onChange={(e) => {
-            this.setState({ language1: e.target.value });
-          }}
-        >
-          <input type="radio" id="english" name="language1" value="ENG" />
-          <label htmlFor="english">English</label>
-          <input type="radio" id="polish" name="language1" value="POL" />
-          <label htmlFor="polish">Polish</label>
-        </form>
+  return (
+    <div>
+      <h1>Create new sentences</h1>
+      {isLoading ? <p>Loading...</p> : <p>{lang1}</p>}
 
-        <button
-          onClick={() => {
-            let language1 = this.state.language1;
-
-            if (language1) {
-              this.setState({ isLoading: true });
-              fetchTags(language1)
-                .then((tags) => {
-                  this.setState({ tags, isLoading: false });
-                })
-                .catch((err) => this.setState({ err }));
-            } else {
-              console.log("Please select a language.");
-            }
-          }}
-        >
-          Poll tags
-        </button>
-
-        <ul>
-          {this.state.tags &&
-            this.state.tags.map((tag) => (
-              <li
-                style={{ color: "purple" }}
-                onClick={() => {
-                  this.setState({ isLoading: true });
-                  fetchWordsByTag(this.state.language1, tag)
-                    .then((words) => {
-                      this.setState({ words, isLoading: false });
-                    })
-                    .catch((err) => this.setState({ err }));
-                }}
-                key={tag}
-              >
-                {tag}
-              </li>
-            ))}
-          {this.state.words &&
-            Object.keys(this.state.words).map((wordSetKey) => (
-              <div key={wordSetKey}>
-                <h2>{wordSetKey}</h2>
-                {this.state.words[wordSetKey].map((wordObj) => (
-                  <div key={wordObj.id}>
-                    <span style={{ color: "darkblue" }}>{wordObj.lemma}</span>
-                    <span style={{ color: "crimson" }}>{wordObj.id}</span>
-                  </div>
-                ))}
-              </div>
-            ))}
-        </ul>
-      </div>
-    );
-  }
-}
+      <LanguagesForm setLang1={setLang1} />
+      <FormulaSymbolForm setFormulaSymbol={setFormulaSymbol} />
+      <LemmaCardHolder formulaSymbol={formulaSymbol} />
+    </div>
+  );
+};
 
 export default Create;
