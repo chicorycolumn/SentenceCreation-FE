@@ -2,6 +2,21 @@ import axios from "axios";
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
+export const fetchLObjsByLemma = (lang1, lemma) => {
+  console.log("Will request", lang1, lemma);
+  return axios
+    .get(
+      `${baseUrl}/educator/info?infoType=lObjs&language1=${lang1}&lemma=${lemma}`
+      // ,{headers: { Authorization: `BEARER ${token}` }}
+    )
+    .then((res) => {
+      return res.data;
+    })
+    .then((data) => {
+      return data["info"];
+    });
+};
+
 export const fetchTags = (lang1) => {
   return axios
     .get(

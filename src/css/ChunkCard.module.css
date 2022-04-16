@@ -1,0 +1,8 @@
+.card {
+  border: black solid 1pt;
+  height: 100px;
+  width: 162px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 36px;
+}

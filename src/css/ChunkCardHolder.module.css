@@ -1,0 +1,6 @@
+.cardHolder {
+  border: yellow solid 2pt;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
