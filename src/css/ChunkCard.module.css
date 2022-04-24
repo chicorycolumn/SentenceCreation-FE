@@ -5,4 +5,79 @@
   text-align: center;
   vertical-align: middle;
   font-size: 36px;
+  display: flex;
+  flex-direction: row;
+}
+
+.lemma {
+  margin-top: 25px;
+  font-size: 32px;
+  font-weight: 200;
+  border: red solid 1px;
+  width: 100%;
+}
+
+.cardButtonsHolder {
+  border: blue solid 1px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 30px;
+}
+
+.cardButton {
+  height: 33%;
+}
+
+.traitsHolder {
+  border: darkseagreen solid 2px;
+  background-color: none;
+  color: black;
+  text-align: center;
+  /* padding: 10px; */
+  position: absolute;
+  /* z-index: 3; */
+  /* visibility: hidden; */
+  visibility: visible;
+  width: 162px;
+  font-size: 13px;
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.traitBox {
+  width: 162px;
+  border: white solid 1px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  background-color: lightgreen;
+  border: red solid 0.5px;
+}
+
+.traitBox:hover {
+  width: 324px;
+  z-index: 1;
+}
+
+.traitBoxEmpty {
+  height: 25px;
+}
+
+.traitTitle {
+  padding: none;
+  margin: none;
+}
+
+.traitValuesInput {
+  text-align: center;
+  width: 100%;
+}
+
+.lexicalTraitTitle {
+  /* font-style: italic; */
 }
