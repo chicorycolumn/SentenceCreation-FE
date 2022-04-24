@@ -12,7 +12,7 @@
 .lemma {
   font-size: 32px;
   font-weight: 200;
-  /* border: red solid 1px; */
+  border: red solid 1px;
   width: 100%;
 }
 

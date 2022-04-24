@@ -23,6 +23,7 @@ const ChunkCard = (props) => {
       isLexical: true,
       compatibleWordtypes: ["nounPerson", "nounCommon", "verb", "pronombre"],
       expectedTypeOnStCh: "array",
+      traitValue: [],
       possibleTraitValues: ["1per", "2per", "3per", "impersonal"],
     },
     gender: {
@@ -42,16 +43,8 @@ const ChunkCard = (props) => {
         "m2",
         "m3",
         "f",
-        "f",
-        "f",
-        "n",
-        "n",
         "n",
         "virile",
-        "virile",
-        "virile",
-        "nonvirile",
-        "nonvirile",
         "nonvirile",
       ],
     },
@@ -89,26 +82,31 @@ const ChunkCard = (props) => {
     },
     educatorBlocksAnnotationsForTheseTraitKeys: {
       expectedTypeOnStCh: "array",
+      traitValue: [],
       ultimatelyMultipleTraitValuesOkay: true,
       needsNoValidation: true,
     },
     formulaImportantTraitKeys: {
       expectedTypeOnStCh: "array",
+      traitValue: [],
       ultimatelyMultipleTraitValuesOkay: true,
       needsNoValidation: true,
     },
     blockedTenseDescriptions: {
       expectedTypeOnStCh: "array",
+      traitValue: [],
       ultimatelyMultipleTraitValuesOkay: true,
       needsNoValidation: true,
     },
     blockedLemmaObjects: {
       expectedTypeOnStCh: "array",
+      traitValue: [],
       ultimatelyMultipleTraitValuesOkay: true,
       needsNoValidation: true,
     },
     hiddenTraits: {
       expectedTypeOnStCh: "array",
+      traitValue: [],
       ultimatelyMultipleTraitValuesOkay: true,
       needsNoValidation: true,
     },
@@ -122,6 +120,7 @@ const ChunkCard = (props) => {
     },
     counterfactuallyImportantTraitKeys: {
       expectedTypeOnStCh: "array",
+      traitValue: [],
       ultimatelyMultipleTraitValuesOkay: true,
     },
     dontSpecifyOnThisChunk: {
@@ -129,10 +128,12 @@ const ChunkCard = (props) => {
     },
     specificLemmas: {
       expectedTypeOnStCh: "array",
+      traitValue: [],
       ultimatelyMultipleTraitValuesOkay: true,
     },
     specificIds: {
       expectedTypeOnStCh: "array",
+      traitValue: [],
       ultimatelyMultipleTraitValuesOkay: true,
     },
     andTags: {
@@ -142,10 +143,12 @@ const ChunkCard = (props) => {
     },
     orTags: {
       expectedTypeOnStCh: "array",
+      traitValue: [],
       ultimatelyMultipleTraitValuesOkay: true,
     },
     form: {
       expectedTypeOnStCh: "array",
+      traitValue: [],
       isLexical: true,
     },
     chunkId: {
@@ -175,19 +178,20 @@ const ChunkCard = (props) => {
   }, [lang1, props.word]);
 
   return (
-    <div
-      onClick={() => {
-        console.log(lObjs);
-      }}
-      className={styles.card}
-      key={props.word}
-    >
+    <div className={styles.card} key={props.word}>
       <div className={styles.cardButtonsHolder}>
         <button className={styles.cardButton}>Edit</button>
         <button className={styles.cardButton}>Query</button>
         <button className={styles.cardButton}>Link</button>
       </div>
-      <h1 className={styles.lemma}>{props.word}</h1>
+      <h1
+        onClick={() => {
+          console.log(selectedLObj.gender.traitValue);
+        }}
+        className={styles.lemma}
+      >
+        {props.word}
+      </h1>
       {selectedLObj ? (
         <div className={styles.traitBoxesHolder}>
           {Object.keys(selectedLObj).map((traitKey) => (

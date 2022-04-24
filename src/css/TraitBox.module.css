@@ -9,9 +9,14 @@
   border: darkgreen solid 1px;
 }
 
-.traitBoxActive {
+.traitBoxHover {
   width: 324px;
   z-index: 1;
+}
+
+.traitBoxSelected {
+  border: black solid 5px;
+  height: fit-content !important;
 }
 
 .traitBoxEmpty {
@@ -36,11 +41,18 @@
   display: inline-block;
   mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
   background-repeat: no-repeat;
-  animation: shimmer 2s infinite;
+  animation: shimmer 1s infinite;
 }
 
 @keyframes shimmer {
   100% {
     mask-position: left;
   }
+}
+
+.traitTitleHolder {
+}
+
+.inputOptionsHolder {
+  border: red dotted 2px;
 }
