@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import styles from "../css/ChunkCard.module.css";
 import { fetchLObjsByLemma } from "../utils/getUtils.js";
 import LanguageContext from "../context/LanguageContext.js";
+import TraitBox from "./TraitBox.jsx";
 
 const ChunkCard = (props) => {
   const [lObjs, setLObjs] = useState([]);
@@ -182,36 +183,20 @@ const ChunkCard = (props) => {
       key={props.word}
     >
       <div className={styles.cardButtonsHolder}>
-        <button className={styles.cardButton}>E</button>
-        <button className={styles.cardButton}>Q</button>
-        <button className={styles.cardButton}>L</button>
+        <button className={styles.cardButton}>Edit</button>
+        <button className={styles.cardButton}>Query</button>
+        <button className={styles.cardButton}>Link</button>
       </div>
       <h1 className={styles.lemma}>{props.word}</h1>
       {selectedLObj ? (
-        <div className={styles.traitsHolder}>
+        <div className={styles.traitBoxesHolder}>
           {Object.keys(selectedLObj).map((traitKey) => (
-            <div
-              key={`${props.word}-${traitKey}`}
-              className={`${styles.traitBox}  ${
-                !selectedLObj[traitKey].traitValue && styles.traitBoxEmpty
-              }`}
-            >
-              <p
-                className={`${styles.traitTitle} ${
-                  selectedLObj[traitKey].isLexical && styles.lexicalTraitTitle
-                }`}
-              >
-                {traitKey}
-              </p>
-              {selectedLObj[traitKey].traitValue && (
-                <div className={styles.traitValuesBox}>
-                  <input
-                    className={styles.traitValuesInput}
-                    value={selectedLObj[traitKey].traitValue}
-                  />
-                </div>
-              )}
-            </div>
+            <TraitBox
+              traitKey={traitKey}
+              traitObject={selectedLObj[traitKey]}
+              word={props.word}
+              setSelectedLObj={setSelectedLObj}
+            />
           ))}
         </div>
       ) : (

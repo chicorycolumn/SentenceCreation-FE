@@ -1,0 +1,46 @@
+.traitBox {
+  width: 162px;
+  border: white solid 1px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  background-color: lightgreen;
+  border: darkgreen solid 1px;
+}
+
+.traitBoxActive {
+  width: 324px;
+  z-index: 1;
+}
+
+.traitBoxEmpty {
+  height: 25px;
+}
+
+.traitTitle {
+  padding: none;
+  margin: none;
+}
+
+.traitValuesInput {
+  text-align: center;
+  width: 100%;
+}
+
+.lexicalTraitTitle {
+  font-style: italic;
+}
+
+.shimmer {
+  display: inline-block;
+  mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
+  background-repeat: no-repeat;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    mask-position: left;
+  }
+}
