@@ -186,7 +186,10 @@ const ChunkCard = (props) => {
       </div>
       <h1
         onClick={() => {
-          console.log(selectedLObj.gender.traitValue);
+          console.log(
+            "swde1",
+            selectedLObj.preventAddingFurtherClarifiers.traitValue
+          );
         }}
         className={styles.lemma}
       >
@@ -196,6 +199,7 @@ const ChunkCard = (props) => {
         <div className={styles.traitBoxesHolder}>
           {Object.keys(selectedLObj).map((traitKey) => (
             <TraitBox
+              key={traitKey}
               traitKey={traitKey}
               traitObject={selectedLObj[traitKey]}
               word={props.word}

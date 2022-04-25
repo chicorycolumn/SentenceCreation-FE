@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import styles from "../css/TraitBox.module.css";
+const uUtils = require("../utils/universalUtils.js");
 
 class TraitBox extends Component {
   state = {
@@ -64,13 +65,11 @@ class TraitBox extends Component {
       >
         <div
           onClick={() => {
-            this.setState((prevState) => {
-              if (prevState.isSelected) {
-                checkAndSetTraitValue();
-              } else {
-                return { isSelected: true };
-              }
-            });
+            if (this.state.isSelected) {
+              checkAndSetTraitValue();
+            } else {
+              this.setState({ isSelected: true });
+            }
           }}
           className={styles.traitTitleHolder}
         >
@@ -82,7 +81,7 @@ class TraitBox extends Component {
             {traitKey}
           </p>
         </div>
-        {((traitObject.traitValue && traitObject.traitValue.length) ||
+        {(!uUtils.isEmpty(traitObject.traitValue) ||
           this.state.forceShowInput) && (
           <div className={styles.traitValuesBox}>
             <input
@@ -106,7 +105,7 @@ class TraitBox extends Component {
                 {traitObject.possibleTraitValues &&
                   traitObject.possibleTraitValues.map(
                     (possibleTraitValue, index) => (
-                      <>
+                      <div key={`${traitKey}-${index}`}>
                         <input
                           type="checkbox"
                           id={`${traitKey}-${index}`}
@@ -144,10 +143,10 @@ class TraitBox extends Component {
                             });
                           }}
                         />
-                        <label for={`${traitKey}-${index}`}>
+                        <label htmlFor={`${traitKey}-${index}`}>
                           {possibleTraitValue}
                         </label>
-                      </>
+                      </div>
                     )
                   )}
               </div>
@@ -184,7 +183,7 @@ class TraitBox extends Component {
                     });
                   }}
                 />
-                <label for={`${traitKey}-0`}>True</label>
+                <label htmlFor={`${traitKey}-0`}>True</label>
               </div>
             )}
             {!["string", "boolean", "array"].includes(
