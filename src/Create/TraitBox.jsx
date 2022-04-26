@@ -2,9 +2,15 @@ import React, { Component } from "react";
 import styles from "../css/TraitBox.module.css";
 const uUtils = require("../utils/universalUtils.js");
 
+const valuesToString = (values) => {
+  if (!uUtils.isEmpty(values, true)) {
+    return String(values);
+  }
+};
+
 class TraitBox extends Component {
   state = {
-    traitValueInput: this.props.traitObject.traitValue,
+    traitValueInput: valuesToString(this.props.traitObject.traitValue),
     hasJustBlurred: false,
     isInputActive: false,
     isHovered: false,
@@ -21,13 +27,42 @@ class TraitBox extends Component {
           ...prevSelectedLObj,
         };
 
+        let newTraitValue = this.state.traitValueInput;
+
+        if (newSelectedLObj[traitKey].expectedTypeOnStCh === "array") {
+          console.log(newTraitValue);
+          if (!uUtils.isEmpty(newTraitValue)) {
+            newTraitValue = newTraitValue
+              .split(",")
+              .map((element) => element.trim())
+              .filter((element) => element);
+          }
+          console.log(newTraitValue);
+        } else if (newSelectedLObj[traitKey].expectedTypeOnStCh === "boolean") {
+          if (![true, false].includes(newTraitValue)) {
+            console.log(
+              `Error fplb: I will not set ${traitKey} to be ${newTraitValue} as is not a boolean.`
+            );
+            return;
+          }
+        }
+
         newSelectedLObj[traitKey] = {
           ...newSelectedLObj[traitKey],
-          traitValue: this.state.traitValueInput,
         };
 
+        if (!uUtils.isEmpty(newTraitValue, true)) {
+          newSelectedLObj[traitKey].traitValue = newTraitValue;
+        } else {
+          if (newSelectedLObj[traitKey].expectedTypeOnStCh === "array") {
+            newSelectedLObj[traitKey].traitValue = newTraitValue = [];
+          } else {
+            delete newSelectedLObj[traitKey].traitValue;
+          }
+        }
         return newSelectedLObj;
       });
+
       this.setState({
         isInputActive: false,
         isHovered: false,
@@ -36,7 +71,10 @@ class TraitBox extends Component {
         hasJustBlurred: true,
       });
       setTimeout(() => {
-        this.setState({ hasJustBlurred: false });
+        this.setState({
+          hasJustBlurred: false,
+          traitValueInput: valuesToString(this.props.traitObject.traitValue),
+        });
       }, 1000);
     };
 
@@ -64,6 +102,13 @@ class TraitBox extends Component {
         `}
       >
         <div
+          onMouseEnter={() => {
+            console.log("traitValueInput", this.state.traitValueInput);
+            console.log(
+              "this.props.traitObject.traitValue",
+              this.props.traitObject.traitValue
+            );
+          }}
           onClick={() => {
             if (this.state.isSelected) {
               checkAndSetTraitValue();
@@ -102,7 +147,7 @@ class TraitBox extends Component {
           <div className={styles.inputOptionsHolder}>
             {traitObject.expectedTypeOnStCh === "array" && (
               <div>
-                {traitObject.possibleTraitValues &&
+                {traitObject.possibleTraitValues ? (
                   traitObject.possibleTraitValues.map(
                     (possibleTraitValue, index) => (
                       <div key={`${traitKey}-${index}`}>
@@ -148,7 +193,16 @@ class TraitBox extends Component {
                         </label>
                       </div>
                     )
-                  )}
+                  )
+                ) : (
+                  <button
+                    onClick={(e) => {
+                      this.setState({ forceShowInput: true });
+                    }}
+                  >
+                    Multiple string values, comma separated
+                  </button>
+                )}
               </div>
             )}
             {traitObject.expectedTypeOnStCh === "string" && (

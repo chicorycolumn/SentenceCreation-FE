@@ -97,11 +97,13 @@ exports.doKeyValuesMatch = (object, keyValues) => {
   });
 };
 
-exports.isEmpty = (obj) => {
+exports.isEmpty = (obj, strict = false) => {
   return (
     !obj ||
     (this.isKeyValueTypeObject(obj) && !Object.keys(obj).length) ||
-    (Array.isArray(obj) && !obj.length)
+    (Array.isArray(obj) &&
+      (!obj.length ||
+        (strict && !obj.some((element) => !this.isEmpty(element, true)))))
   );
 };
 

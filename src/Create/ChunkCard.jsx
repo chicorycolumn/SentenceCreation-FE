@@ -3,6 +3,7 @@ import styles from "../css/ChunkCard.module.css";
 import { fetchLObjsByLemma } from "../utils/getUtils.js";
 import LanguageContext from "../context/LanguageContext.js";
 import TraitBox from "./TraitBox.jsx";
+const uUtils = require("../utils/universalUtils.js");
 
 const ChunkCard = (props) => {
   const [lObjs, setLObjs] = useState([]);
@@ -186,10 +187,12 @@ const ChunkCard = (props) => {
       </div>
       <h1
         onClick={() => {
-          console.log(
-            "swde1",
-            selectedLObj.preventAddingFurtherClarifiers.traitValue
-          );
+          Object.keys(selectedLObj).forEach((traitKey) => {
+            let traitObject = selectedLObj[traitKey];
+            if (!uUtils.isEmpty(traitObject.traitValue)) {
+              console.log(traitKey, traitObject.traitValue);
+            }
+          });
         }}
         className={styles.lemma}
       >
