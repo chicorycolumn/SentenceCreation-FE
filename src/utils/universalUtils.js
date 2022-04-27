@@ -98,6 +98,9 @@ exports.doKeyValuesMatch = (object, keyValues) => {
 };
 
 exports.isEmpty = (obj, strict = false) => {
+  if (strict && this.typeof(obj) === "string") {
+    obj = obj.trim();
+  }
   return (
     !obj ||
     (this.isKeyValueTypeObject(obj) && !Object.keys(obj).length) ||

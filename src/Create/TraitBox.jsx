@@ -30,13 +30,13 @@ class TraitBox extends Component {
   render() {
     let { traitKey, word, traitObject, setSelectedLObj } = this.props;
 
-    const exitTraitBox = () => {
+    const exitTraitBox = (changeToValue = true) => {
       this.setState({
         isInputActive: false,
         isHovered: false,
         isSelected: false,
         forceShowInput: false,
-        hasJustBlurred: true,
+        hasJustBlurred: changeToValue,
       });
 
       setTimeout(() => {
@@ -48,74 +48,107 @@ class TraitBox extends Component {
     };
 
     const checkAndSetTraitValue = () => {
-      console.log("@");
-      setSelectedLObj((prevSelectedLObj) => {
-        let newSelectedLObj = {
-          ...prevSelectedLObj,
-        };
+      console.log("@...");
+      console.log(
+        "this.state.traitValueInputString",
+        this.state.traitValueInputString,
+        typeof this.state.traitValueInputString
+      );
 
-        let newTraitValue = this.state.traitValueInputString;
-        let expectedType = newSelectedLObj[traitKey].expectedTypeOnStCh;
+      if (
+        this.state.traitValueInputString !==
+          asString(this.props.traitObject.traitValue) &&
+        !(
+          uUtils.isEmpty(this.state.traitValueInputString, true) &&
+          uUtils.isEmpty(this.props.traitObject.traitValue, true)
+        )
+      ) {
+        console.log("@You have changed value.");
+        console.log(
+          "@this.state.traitValueInputString",
+          this.state.traitValueInputString,
+          typeof this.state.traitValueInputString
+        );
+        console.log(
+          "@this.props.traitObject.traitValue",
+          this.props.traitObject.traitValue,
+          typeof this.props.traitObject.traitValue
+        );
+        console.log("/@");
+        setSelectedLObj((prevSelectedLObj) => {
+          let newSelectedLObj = {
+            ...prevSelectedLObj,
+          };
 
-        if (expectedType === "array") {
-          console.log("::", newTraitValue);
-          if (!uUtils.isEmpty(newTraitValue)) {
-            newTraitValue = asArray(newTraitValue);
-          }
-          console.log(":::", newTraitValue);
-        } else if (expectedType === "string") {
-          if (newTraitValue.includes(",")) {
-            alert("Just one string value expected but you have input a comma?");
-            this.setState({
-              traitValueInputString: asString(
-                this.props.traitObject.traitValue
-              ),
-            });
-            return newSelectedLObj; //Aborting without changing anything.
-          }
-        } else if (expectedType === "boolean") {
-          newTraitValue = newTraitValue === "true" ? true : false;
-        }
+          let newTraitValue = this.state.traitValueInputString;
+          newTraitValue = uUtils.isEmpty(newTraitValue, true)
+            ? null
+            : newTraitValue;
 
-        newSelectedLObj[traitKey] = {
-          ...newSelectedLObj[traitKey],
-        };
+          let expectedType = newSelectedLObj[traitKey].expectedTypeOnStCh;
 
-        if (!uUtils.isEmpty(newTraitValue, true)) {
-          newSelectedLObj[traitKey].traitValue = newTraitValue;
-        } else {
           if (expectedType === "array") {
-            newSelectedLObj[traitKey].traitValue = [];
-          } else {
-            delete newSelectedLObj[traitKey].traitValue;
+            console.log("::", newTraitValue);
+            if (newTraitValue) {
+              newTraitValue = asArray(newTraitValue);
+            }
+            console.log(":::", newTraitValue);
+          } else if (expectedType === "string") {
+            if (newTraitValue && newTraitValue.includes(",")) {
+              alert(
+                "Just one string value expected but you have input a comma?"
+              );
+              this.setState({
+                traitValueInputString: asString(
+                  this.props.traitObject.traitValue
+                ),
+              });
+              return newSelectedLObj; //Aborting without changing anything.
+            }
+          } else if (expectedType === "boolean") {
+            newTraitValue = newTraitValue === "true" ? true : false;
           }
-        }
-        return newSelectedLObj;
-      });
 
-      exitTraitBox();
+          newSelectedLObj[traitKey] = {
+            ...newSelectedLObj[traitKey],
+          };
+
+          if (newTraitValue) {
+            newSelectedLObj[traitKey].traitValue = newTraitValue;
+          } else {
+            if (expectedType === "array") {
+              newSelectedLObj[traitKey].traitValue = [];
+            } else {
+              delete newSelectedLObj[traitKey].traitValue;
+            }
+          }
+          return newSelectedLObj;
+        });
+        exitTraitBox();
+        return;
+      }
+      console.log("@No change to value.");
+      console.log("/@");
+      exitTraitBox(false);
     };
 
     return (
       <div
-        onMouseEnter={() => {
-          this.setState({ isHovered: true });
-        }}
-        onMouseLeave={() => {
-          if (!this.state.isInputActive) {
-            this.setState({ isHovered: false });
-          }
-        }}
+        // onMouseEnter={() => {
+        //   this.setState({ isHovered: true });
+        // }}
+        // onMouseLeave={() => {
+        //   if (!this.state.isInputActive) {
+        //     this.setState({ isHovered: false });
+        //   }
+        // }}
         key={`${word}-${traitKey}`}
-        className={`${styles.traitBox}  ${
+        className={`${styles.preventSelection} ${styles.traitBox} ${
           !traitObject.traitValue && styles.traitBoxEmpty
-        }
-        ${this.state.hasJustBlurred && styles.shimmer}
-        ${
+        } ${this.state.hasJustBlurred && styles.shimmer} ${
           (this.state.isHovered || this.state.isSelected) &&
           styles.traitBoxHover
-        }
-        ${this.state.isSelected && styles.traitBoxSelected}
+        } ${this.state.isSelected && styles.traitBoxSelected}
         
         `}
       >
@@ -161,6 +194,16 @@ class TraitBox extends Component {
               }}
               onBlur={checkAndSetTraitValue}
             />
+            <button
+              className={styles.clearButton}
+              onClick={() => {
+                console.log("X!");
+                this.setState({ traitValueInputString: null });
+                setTimeout(checkAndSetTraitValue, 500);
+              }}
+            >
+              &times;
+            </button>
           </div>
         )}
 
@@ -173,6 +216,7 @@ class TraitBox extends Component {
                     (possibleTraitValue, index) => (
                       <div key={`${traitKey}-${index}`}>
                         <input
+                          className={styles.checkbox}
                           type="checkbox"
                           id={`${traitKey}-${index}`}
                           name={`${traitKey}-${index}`}
@@ -220,7 +264,10 @@ class TraitBox extends Component {
                             });
                           }}
                         />
-                        <label htmlFor={`${traitKey}-${index}`}>
+                        <label
+                          className={styles.checkboxLabel}
+                          htmlFor={`${traitKey}-${index}`}
+                        >
                           {possibleTraitValue}
                         </label>
                       </div>
@@ -249,6 +296,7 @@ class TraitBox extends Component {
             {traitObject.expectedTypeOnStCh === "boolean" && (
               <div>
                 <input
+                  className={styles.checkbox}
                   type="checkbox"
                   id={`${traitKey}-0`}
                   name={`${traitKey}-0`}
@@ -269,7 +317,12 @@ class TraitBox extends Component {
                     });
                   }}
                 />
-                <label htmlFor={`${traitKey}-0`}>True</label>
+                <label
+                  className={styles.checkboxLabel}
+                  htmlFor={`${traitKey}-0`}
+                >
+                  True
+                </label>
               </div>
             )}
             {!["string", "boolean", "array"].includes(
