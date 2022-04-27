@@ -2,15 +2,24 @@ import React, { Component } from "react";
 import styles from "../css/TraitBox.module.css";
 const uUtils = require("../utils/universalUtils.js");
 
-const valuesToString = (values) => {
+const asString = (values) => {
   if (!uUtils.isEmpty(values, true)) {
     return String(values);
   }
 };
 
+const asArray = (str, strict = false) => {
+  if (!str) {
+    return strict ? null : [];
+  }
+  let split = Array.isArray(str) ? str : str.split(",");
+  let res = split.map((element) => element.trim()).filter((element) => element);
+  return strict && !res.length ? null : res;
+};
+
 class TraitBox extends Component {
   state = {
-    traitValueInput: valuesToString(this.props.traitObject.traitValue),
+    traitValueInputString: asString(this.props.traitObject.traitValue),
     hasJustBlurred: false,
     isInputActive: false,
     isHovered: false,
@@ -21,30 +30,51 @@ class TraitBox extends Component {
   render() {
     let { traitKey, word, traitObject, setSelectedLObj } = this.props;
 
+    const exitTraitBox = () => {
+      this.setState({
+        isInputActive: false,
+        isHovered: false,
+        isSelected: false,
+        forceShowInput: false,
+        hasJustBlurred: true,
+      });
+
+      setTimeout(() => {
+        this.setState({
+          hasJustBlurred: false,
+          traitValueInputString: asString(this.props.traitObject.traitValue),
+        });
+      }, 1000);
+    };
+
     const checkAndSetTraitValue = () => {
+      console.log("@");
       setSelectedLObj((prevSelectedLObj) => {
         let newSelectedLObj = {
           ...prevSelectedLObj,
         };
 
-        let newTraitValue = this.state.traitValueInput;
+        let newTraitValue = this.state.traitValueInputString;
+        let expectedType = newSelectedLObj[traitKey].expectedTypeOnStCh;
 
-        if (newSelectedLObj[traitKey].expectedTypeOnStCh === "array") {
-          console.log(newTraitValue);
+        if (expectedType === "array") {
+          console.log("::", newTraitValue);
           if (!uUtils.isEmpty(newTraitValue)) {
-            newTraitValue = newTraitValue
-              .split(",")
-              .map((element) => element.trim())
-              .filter((element) => element);
+            newTraitValue = asArray(newTraitValue);
           }
-          console.log(newTraitValue);
-        } else if (newSelectedLObj[traitKey].expectedTypeOnStCh === "boolean") {
-          if (![true, false].includes(newTraitValue)) {
-            console.log(
-              `Error fplb: I will not set ${traitKey} to be ${newTraitValue} as is not a boolean.`
-            );
-            return;
+          console.log(":::", newTraitValue);
+        } else if (expectedType === "string") {
+          if (newTraitValue.includes(",")) {
+            alert("Just one string value expected but you have input a comma?");
+            this.setState({
+              traitValueInputString: asString(
+                this.props.traitObject.traitValue
+              ),
+            });
+            return newSelectedLObj; //Aborting without changing anything.
           }
+        } else if (expectedType === "boolean") {
+          newTraitValue = newTraitValue === "true" ? true : false;
         }
 
         newSelectedLObj[traitKey] = {
@@ -54,8 +84,8 @@ class TraitBox extends Component {
         if (!uUtils.isEmpty(newTraitValue, true)) {
           newSelectedLObj[traitKey].traitValue = newTraitValue;
         } else {
-          if (newSelectedLObj[traitKey].expectedTypeOnStCh === "array") {
-            newSelectedLObj[traitKey].traitValue = newTraitValue = [];
+          if (expectedType === "array") {
+            newSelectedLObj[traitKey].traitValue = [];
           } else {
             delete newSelectedLObj[traitKey].traitValue;
           }
@@ -63,19 +93,7 @@ class TraitBox extends Component {
         return newSelectedLObj;
       });
 
-      this.setState({
-        isInputActive: false,
-        isHovered: false,
-        isSelected: false,
-        forceShowInput: false,
-        hasJustBlurred: true,
-      });
-      setTimeout(() => {
-        this.setState({
-          hasJustBlurred: false,
-          traitValueInput: valuesToString(this.props.traitObject.traitValue),
-        });
-      }, 1000);
+      exitTraitBox();
     };
 
     return (
@@ -103,9 +121,12 @@ class TraitBox extends Component {
       >
         <div
           onMouseEnter={() => {
-            console.log("traitValueInput", this.state.traitValueInput);
             console.log(
-              "this.props.traitObject.traitValue",
+              ">traitValueInputString",
+              this.state.traitValueInputString
+            );
+            console.log(
+              ">this.props.traitObject.traitValue",
               this.props.traitObject.traitValue
             );
           }}
@@ -131,9 +152,9 @@ class TraitBox extends Component {
           <div className={styles.traitValuesBox}>
             <input
               className={styles.traitValuesInput}
-              value={this.state.traitValueInput}
+              value={this.state.traitValueInputString}
               onChange={(e) => {
-                this.setState({ traitValueInput: e.target.value });
+                this.setState({ traitValueInputString: e.target.value });
               }}
               onFocus={() => {
                 this.setState({ isHovered: true, isInputActive: true });
@@ -156,34 +177,45 @@ class TraitBox extends Component {
                           id={`${traitKey}-${index}`}
                           name={`${traitKey}-${index}`}
                           value={possibleTraitValue}
-                          checked={this.state.traitValueInput.includes(
-                            possibleTraitValue
-                          )}
+                          checked={
+                            this.state.traitValueInputString &&
+                            asArray(this.state.traitValueInputString).includes(
+                              possibleTraitValue
+                            )
+                          }
                           onChange={(e) => {
                             this.setState((prevState) => {
                               if (
-                                prevState.traitValueInput.includes(
-                                  e.target.value
-                                ) &&
+                                prevState.traitValueInputString &&
+                                asArray(
+                                  prevState.traitValueInputString
+                                ).includes(e.target.value) &&
                                 !e.target.checked
                               ) {
-                                let newTraitValueInput =
-                                  prevState.traitValueInput.filter(
-                                    (el) => el !== e.target.value
-                                  );
-                                return { traitValueInput: newTraitValueInput };
+                                let newtraitValueInputString = asString(
+                                  asArray(
+                                    prevState.traitValueInputString
+                                  ).filter((el) => el !== e.target.value)
+                                );
+                                return {
+                                  traitValueInputString:
+                                    newtraitValueInputString,
+                                };
                               } else if (
-                                prevState.traitValueInput &&
-                                !prevState.traitValueInput.includes(
-                                  e.target.value
-                                ) &&
+                                (!prevState.traitValueInputString ||
+                                  !asArray(
+                                    prevState.traitValueInputString
+                                  ).includes(e.target.value)) &&
                                 e.target.checked
                               ) {
-                                let newTraitValueInput = [
-                                  ...prevState.traitValueInput,
+                                let newtraitValueInputString = asString([
+                                  ...asArray(prevState.traitValueInputString),
                                   e.target.value,
-                                ];
-                                return { traitValueInput: newTraitValueInput };
+                                ]);
+                                return {
+                                  traitValueInputString:
+                                    newtraitValueInputString,
+                                };
                               }
                             });
                           }}
@@ -220,19 +252,19 @@ class TraitBox extends Component {
                   type="checkbox"
                   id={`${traitKey}-0`}
                   name={`${traitKey}-0`}
-                  checked={this.state.traitValueInput === true}
+                  checked={this.state.traitValueInputString === "true"}
                   onChange={(e) => {
                     this.setState((prevState) => {
                       if (
-                        prevState.traitValueInput === true &&
+                        prevState.traitValueInputString === "true" &&
                         !e.target.checked
                       ) {
-                        return { traitValueInput: false };
+                        return { traitValueInputString: "false" };
                       } else if (
-                        prevState.traitValueInput !== true &&
+                        prevState.traitValueInputString !== "true" &&
                         e.target.checked
                       ) {
-                        return { traitValueInput: true };
+                        return { traitValueInputString: "true" };
                       }
                     });
                   }}
