@@ -29,8 +29,18 @@
 }
 
 .traitValuesInput {
+  resize: none;
   text-align: center;
   width: 100%;
+  padding-left: 20px;
+  /* white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; */
+}
+
+.traitValuesInputLarge {
+  height: 50px;
+  padding-left: 27.5px;
 }
 
 .lexicalTraitTitle {

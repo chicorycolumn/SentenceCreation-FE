@@ -4,7 +4,7 @@ const uUtils = require("../utils/universalUtils.js");
 
 const asString = (values) => {
   if (!uUtils.isEmpty(values, true)) {
-    return String(values);
+    return String(values).replace(/,/g, ", ");
   }
 };
 
@@ -183,8 +183,11 @@ class TraitBox extends Component {
         {(!uUtils.isEmpty(traitObject.traitValue) ||
           this.state.forceShowInput) && (
           <div className={styles.traitValuesBox}>
-            <input
-              className={styles.traitValuesInput}
+            <textarea
+              className={`${styles.traitValuesInput} ${
+                ["andTags", "orTags"].includes(traitKey) &&
+                styles.traitValuesInputLarge
+              }`}
               value={this.state.traitValueInputString}
               onChange={(e) => {
                 this.setState({ traitValueInputString: e.target.value });
