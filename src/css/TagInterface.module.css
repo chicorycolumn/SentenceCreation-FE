@@ -1,0 +1,11 @@
+.mainBox {
+  border: fuchsia solid 2px;
+  background-color: lightblue;
+  height: 500px;
+  width: 500px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -250px; /* Negative half of height. */
+  margin-left: -250px; /* Negative half of width. */
+}

@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import styles from "../css/TraitBox.module.css";
+import gstyles from "../css/Global.module.css";
+import TagInterface from "./TagInterface.jsx";
 const uUtils = require("../utils/universalUtils.js");
 
 const asString = (values) => {
@@ -17,6 +19,10 @@ const asArray = (str, strict = false) => {
   return strict && !res.length ? null : res;
 };
 
+const isTagTrait = (traitKey) => {
+  return ["andTags", "orTags"].includes(traitKey);
+};
+
 class TraitBox extends Component {
   state = {
     traitValueInputString: asString(this.props.traitObject.traitValue),
@@ -25,10 +31,15 @@ class TraitBox extends Component {
     isHovered: false,
     isSelected: false,
     forceShowInput: false,
+    showTagInterface: false,
+  };
+
+  setShowTagInterface = (val) => {
+    this.setState({ showTagInterface: val });
   };
 
   render() {
-    let { traitKey, word, traitObject, setSelectedLObj } = this.props;
+    let { traitKey, word, traitObject, setStructureChunk } = this.props;
 
     const exitTraitBox = (changeToValue = true) => {
       this.setState({
@@ -36,6 +47,7 @@ class TraitBox extends Component {
         isHovered: false,
         isSelected: false,
         forceShowInput: false,
+        showTagInterface: false,
         hasJustBlurred: changeToValue,
       });
 
@@ -75,9 +87,9 @@ class TraitBox extends Component {
           typeof this.props.traitObject.traitValue
         );
         console.log("/@");
-        setSelectedLObj((prevSelectedLObj) => {
-          let newSelectedLObj = {
-            ...prevSelectedLObj,
+        setStructureChunk((prevStructureChunk) => {
+          let newStructureChunk = {
+            ...prevStructureChunk,
           };
 
           let newTraitValue = this.state.traitValueInputString;
@@ -85,7 +97,7 @@ class TraitBox extends Component {
             ? null
             : newTraitValue;
 
-          let expectedType = newSelectedLObj[traitKey].expectedTypeOnStCh;
+          let expectedType = newStructureChunk[traitKey].expectedTypeOnStCh;
 
           if (expectedType === "array") {
             console.log("::", newTraitValue);
@@ -103,26 +115,26 @@ class TraitBox extends Component {
                   this.props.traitObject.traitValue
                 ),
               });
-              return newSelectedLObj; //Aborting without changing anything.
+              return newStructureChunk; //Aborting without changing anything.
             }
           } else if (expectedType === "boolean") {
             newTraitValue = newTraitValue === "true" ? true : false;
           }
 
-          newSelectedLObj[traitKey] = {
-            ...newSelectedLObj[traitKey],
+          newStructureChunk[traitKey] = {
+            ...newStructureChunk[traitKey],
           };
 
           if (newTraitValue) {
-            newSelectedLObj[traitKey].traitValue = newTraitValue;
+            newStructureChunk[traitKey].traitValue = newTraitValue;
           } else {
             if (expectedType === "array") {
-              newSelectedLObj[traitKey].traitValue = [];
+              newStructureChunk[traitKey].traitValue = [];
             } else {
-              delete newSelectedLObj[traitKey].traitValue;
+              delete newStructureChunk[traitKey].traitValue;
             }
           }
-          return newSelectedLObj;
+          return newStructureChunk;
         });
         exitTraitBox();
         return;
@@ -152,6 +164,9 @@ class TraitBox extends Component {
         
         `}
       >
+        {this.state.showTagInterface && (
+          <TagInterface setShowTagInterface={this.setShowTagInterface} />
+        )}
         <div
           onMouseEnter={() => {
             console.log(
@@ -167,7 +182,10 @@ class TraitBox extends Component {
             if (this.state.isSelected) {
               checkAndSetTraitValue();
             } else {
-              this.setState({ isSelected: true });
+              this.setState({
+                isSelected: true,
+                showTagInterface: isTagTrait(traitKey),
+              });
             }
           }}
           className={styles.traitTitleHolder}
@@ -185,8 +203,7 @@ class TraitBox extends Component {
           <div className={styles.traitValuesBox}>
             <textarea
               className={`${styles.traitValuesInput} ${
-                ["andTags", "orTags"].includes(traitKey) &&
-                styles.traitValuesInputLarge
+                isTagTrait(traitKey) && styles.traitValuesInputLarge
               }`}
               value={this.state.traitValueInputString}
               onChange={(e) => {
@@ -198,7 +215,7 @@ class TraitBox extends Component {
               onBlur={checkAndSetTraitValue}
             />
             <button
-              className={styles.clearButton}
+              className={`${gstyles.exitButton} ${styles.clearButton}`}
               onClick={() => {
                 console.log("X!");
                 this.setState({ traitValueInputString: null });

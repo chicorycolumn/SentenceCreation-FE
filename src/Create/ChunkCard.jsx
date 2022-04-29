@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import styles from "../css/ChunkCard.module.css";
+import gstyles from "../css/Global.module.css";
 import { fetchLObjsByLemma } from "../utils/getUtils.js";
 import LanguageContext from "../context/LanguageContext.js";
 import TraitBox from "./TraitBox.jsx";
 const uUtils = require("../utils/universalUtils.js");
+const diUtils = require("../utils/displayUtils.js");
 
 const ChunkCard = (props) => {
   const [lObjs, setLObjs] = useState([]);
-  const [selectedLObj, setSelectedLObj] = useState({
+  const [structureChunk, setStructureChunk] = useState({
     postHocAgreeWithPrimary: {
       expectedTypeOnStCh: "string",
       mustBeExistingChunkId: true,
@@ -187,8 +189,8 @@ const ChunkCard = (props) => {
       </div>
       <h1
         onClick={() => {
-          Object.keys(selectedLObj).forEach((traitKey) => {
-            let traitObject = selectedLObj[traitKey];
+          Object.keys(structureChunk).forEach((traitKey) => {
+            let traitObject = structureChunk[traitKey];
             if (!uUtils.isEmpty(traitObject.traitValue)) {
               console.log(traitKey, traitObject.traitValue);
             }
@@ -198,15 +200,15 @@ const ChunkCard = (props) => {
       >
         {props.word}
       </h1>
-      {selectedLObj ? (
+      {structureChunk ? (
         <div className={styles.traitBoxesHolder}>
-          {Object.keys(selectedLObj).map((traitKey) => (
+          {diUtils.orderTraitKeys(structureChunk).map((traitKey) => (
             <TraitBox
               key={traitKey}
               traitKey={traitKey}
-              traitObject={selectedLObj[traitKey]}
+              traitObject={structureChunk[traitKey]}
               word={props.word}
-              setSelectedLObj={setSelectedLObj}
+              setStructureChunk={setStructureChunk}
             />
           ))}
         </div>

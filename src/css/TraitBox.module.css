@@ -29,6 +29,7 @@
 }
 
 .traitValuesInput {
+  font-size: 14px;
   resize: none;
   text-align: center;
   width: 100%;
@@ -73,21 +74,10 @@
 }
 
 .clearButton {
-  color: red;
-  font-size: 18px;
-  background-color: white;
-  box-shadow: none;
-  border: black solid 0.5px;
   border-left: none;
-  padding: 0;
   margin: 0;
-  width: 30px;
-  width: 25px;
-}
-
-.clearButton:active {
-  background-color: red;
-  color: white;
+  font-size: 20px;
+  height: auto;
 }
 
 .checkbox {
