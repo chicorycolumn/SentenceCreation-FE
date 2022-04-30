@@ -1,3 +1,5 @@
+const uUtils = require("./universalUtils.js");
+
 exports.orderTraitKeys = (stCh) => {
   let order = ["andTags", "orTags", "agreeWith", "connectedTo"];
   let lexicalTraitKeys = [];
@@ -27,4 +29,23 @@ exports.orderTraitKeys = (stCh) => {
     }`;
   }
   return order;
+};
+
+exports.asString = (values) => {
+  if (!uUtils.isEmpty(values, true)) {
+    return String(values).replace(/,/g, ", ");
+  }
+};
+
+exports.asArray = (str, strict = false) => {
+  if (!str) {
+    return strict ? null : [];
+  }
+  let split = Array.isArray(str) ? str : str.split(",");
+  let res = split.map((element) => element.trim()).filter((element) => element);
+  return strict && !res.length ? null : res;
+};
+
+exports.isTagTrait = (traitKey) => {
+  return ["andTags", "orTags"].includes(traitKey);
 };

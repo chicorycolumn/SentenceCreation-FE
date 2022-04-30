@@ -1,10 +1,15 @@
 import React, { Component } from "react";
 import styles from "../css/TagInterface.module.css";
+import traitBoxStyles from "../css/TraitBox.module.css";
 import gstyles from "../css/Global.module.css";
+const diUtils = require("../utils/displayUtils.js");
 
 class TagInterface extends Component {
   state = {
     allTags: [
+      "animate",
+      "personTest1",
+      "concrete",
       "AliceBlue",
       "AntiqueWhite",
       "Aqua",
@@ -160,20 +165,51 @@ class TagInterface extends Component {
     return (
       <div className={styles.mainBox}>
         <h1>Select tags</h1>
+
+        <button
+          className={gstyles.tickButton}
+          onClick={this.props.checkAndSetTraitValue}
+        >
+          &#10003;
+        </button>
+
+        <select
+          className={styles.tagSelector}
+          name="tag"
+          onClick={(e) => {
+            e.preventDefault();
+            this.props.pushpopTraitValueInputString(e.target.value);
+          }}
+        >
+          {this.state.allTags.map((tag) => (
+            <option value={tag} key={tag}>
+              {tag}
+            </option>
+          ))}
+        </select>
         <button
           className={gstyles.exitButton}
           onClick={() => {
-            this.props.setShowTagInterface(false);
+            this.props.revertTraitValueInputString();
+            this.props.exitTraitBox(false);
           }}
         >
           &times;
         </button>
 
-        <select name="tag">
-          {this.state.allTags.map((tag) => (
-            <option value={tag}>{tag}</option>
+        <div className={styles.tagPapersHolder}>
+          {diUtils.asArray(this.props.traitValueInputString).map((tag) => (
+            <p
+              onClick={() => {
+                this.props.pushpopTraitValueInputString(tag, false);
+              }}
+              className={styles.tagPaper}
+              key={tag}
+            >
+              {tag}
+            </p>
           ))}
-        </select>
+        </div>
       </div>
     );
   }

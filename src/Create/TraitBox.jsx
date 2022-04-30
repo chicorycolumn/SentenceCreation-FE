@@ -3,39 +3,47 @@ import styles from "../css/TraitBox.module.css";
 import gstyles from "../css/Global.module.css";
 import TagInterface from "./TagInterface.jsx";
 const uUtils = require("../utils/universalUtils.js");
-
-const asString = (values) => {
-  if (!uUtils.isEmpty(values, true)) {
-    return String(values).replace(/,/g, ", ");
-  }
-};
-
-const asArray = (str, strict = false) => {
-  if (!str) {
-    return strict ? null : [];
-  }
-  let split = Array.isArray(str) ? str : str.split(",");
-  let res = split.map((element) => element.trim()).filter((element) => element);
-  return strict && !res.length ? null : res;
-};
-
-const isTagTrait = (traitKey) => {
-  return ["andTags", "orTags"].includes(traitKey);
-};
+const diUtils = require("../utils/displayUtils.js");
 
 class TraitBox extends Component {
   state = {
-    traitValueInputString: asString(this.props.traitObject.traitValue),
+    traitValueInputString: diUtils.asString(this.props.traitObject.traitValue),
+    savedTraitValueInputString: diUtils.asString(
+      this.props.traitObject.traitValue
+    ),
     hasJustBlurred: false,
     isInputActive: false,
     isHovered: false,
     isSelected: false,
     forceShowInput: false,
     showTagInterface: false,
+    thickBorder: false,
   };
 
   setShowTagInterface = (val) => {
     this.setState({ showTagInterface: val });
+  };
+
+  revertTraitValueInputString = () => {
+    this.setState({
+      traitValueInputString: this.state.savedTraitValueInputString,
+    });
+  };
+
+  pushpopTraitValueInputString = (val, add = true) => {
+    let arr = diUtils.asArray(this.state.traitValueInputString);
+
+    if (add) {
+      if (!arr.includes(val)) {
+        arr.push(val);
+      }
+    } else {
+      arr = arr.filter((el) => el !== val);
+    }
+
+    this.setState({
+      traitValueInputString: diUtils.asString(arr),
+    });
   };
 
   render() {
@@ -53,8 +61,11 @@ class TraitBox extends Component {
 
       setTimeout(() => {
         this.setState({
+          thickBorder: false,
           hasJustBlurred: false,
-          traitValueInputString: asString(this.props.traitObject.traitValue),
+          traitValueInputString: diUtils.asString(
+            this.props.traitObject.traitValue
+          ),
         });
       }, 1000);
     };
@@ -69,7 +80,7 @@ class TraitBox extends Component {
 
       if (
         this.state.traitValueInputString !==
-          asString(this.props.traitObject.traitValue) &&
+          diUtils.asString(this.props.traitObject.traitValue) &&
         !(
           uUtils.isEmpty(this.state.traitValueInputString, true) &&
           uUtils.isEmpty(this.props.traitObject.traitValue, true)
@@ -102,7 +113,7 @@ class TraitBox extends Component {
           if (expectedType === "array") {
             console.log("::", newTraitValue);
             if (newTraitValue) {
-              newTraitValue = asArray(newTraitValue);
+              newTraitValue = diUtils.asArray(newTraitValue);
             }
             console.log(":::", newTraitValue);
           } else if (expectedType === "string") {
@@ -111,7 +122,7 @@ class TraitBox extends Component {
                 "Just one string value expected but you have input a comma?"
               );
               this.setState({
-                traitValueInputString: asString(
+                traitValueInputString: diUtils.asString(
                   this.props.traitObject.traitValue
                 ),
               });
@@ -160,12 +171,22 @@ class TraitBox extends Component {
         } ${this.state.hasJustBlurred && styles.shimmer} ${
           (this.state.isHovered || this.state.isSelected) &&
           styles.traitBoxHover
-        } ${this.state.isSelected && styles.traitBoxSelected}
+        } ${this.state.isSelected && styles.traitBoxSelected} ${
+          this.state.thickBorder && styles.thickBorder
+        }
         
         `}
       >
         {this.state.showTagInterface && (
-          <TagInterface setShowTagInterface={this.setShowTagInterface} />
+          <TagInterface
+            traitValueInputString={this.state.traitValueInputString}
+            setTraitInputValueString={this.setTraitInputValueString}
+            setShowTagInterface={this.setShowTagInterface}
+            pushpopTraitValueInputString={this.pushpopTraitValueInputString}
+            revertTraitValueInputString={this.revertTraitValueInputString}
+            checkAndSetTraitValue={checkAndSetTraitValue}
+            exitTraitBox={exitTraitBox}
+          />
         )}
         <div
           onMouseEnter={() => {
@@ -184,7 +205,7 @@ class TraitBox extends Component {
             } else {
               this.setState({
                 isSelected: true,
-                showTagInterface: isTagTrait(traitKey),
+                showTagInterface: diUtils.isTagTrait(traitKey),
               });
             }
           }}
@@ -203,7 +224,7 @@ class TraitBox extends Component {
           <div className={styles.traitValuesBox}>
             <textarea
               className={`${styles.traitValuesInput} ${
-                isTagTrait(traitKey) && styles.traitValuesInputLarge
+                diUtils.isTagTrait(traitKey) && styles.traitValuesInputLarge
               }`}
               value={this.state.traitValueInputString}
               onChange={(e) => {
@@ -218,7 +239,10 @@ class TraitBox extends Component {
               className={`${gstyles.exitButton} ${styles.clearButton}`}
               onClick={() => {
                 console.log("X!");
-                this.setState({ traitValueInputString: null });
+                this.setState({
+                  traitValueInputString: null,
+                  thickBorder: true,
+                });
                 setTimeout(checkAndSetTraitValue, 500);
               }}
             >
@@ -243,23 +267,23 @@ class TraitBox extends Component {
                           value={possibleTraitValue}
                           checked={
                             this.state.traitValueInputString &&
-                            asArray(this.state.traitValueInputString).includes(
-                              possibleTraitValue
-                            )
+                            diUtils
+                              .asArray(this.state.traitValueInputString)
+                              .includes(possibleTraitValue)
                           }
                           onChange={(e) => {
                             this.setState((prevState) => {
                               if (
                                 prevState.traitValueInputString &&
-                                asArray(
-                                  prevState.traitValueInputString
-                                ).includes(e.target.value) &&
+                                diUtils
+                                  .asArray(prevState.traitValueInputString)
+                                  .includes(e.target.value) &&
                                 !e.target.checked
                               ) {
-                                let newtraitValueInputString = asString(
-                                  asArray(
-                                    prevState.traitValueInputString
-                                  ).filter((el) => el !== e.target.value)
+                                let newtraitValueInputString = diUtils.asString(
+                                  diUtils
+                                    .asArray(prevState.traitValueInputString)
+                                    .filter((el) => el !== e.target.value)
                                 );
                                 return {
                                   traitValueInputString:
@@ -267,15 +291,19 @@ class TraitBox extends Component {
                                 };
                               } else if (
                                 (!prevState.traitValueInputString ||
-                                  !asArray(
-                                    prevState.traitValueInputString
-                                  ).includes(e.target.value)) &&
+                                  !diUtils
+                                    .asArray(prevState.traitValueInputString)
+                                    .includes(e.target.value)) &&
                                 e.target.checked
                               ) {
-                                let newtraitValueInputString = asString([
-                                  ...asArray(prevState.traitValueInputString),
-                                  e.target.value,
-                                ]);
+                                let newtraitValueInputString = diUtils.asString(
+                                  [
+                                    ...diUtils.asArray(
+                                      prevState.traitValueInputString
+                                    ),
+                                    e.target.value,
+                                  ]
+                                );
                                 return {
                                   traitValueInputString:
                                     newtraitValueInputString,

@@ -10,9 +10,9 @@ const LanguagesForm = (props) => {
           props.setLang1(e.target.value);
         }}
       >
-        <input type="radio" id="english" name="language1" value="ENG" />
+        <input type="radio" id="english" name="lang" value="ENG" />
         <label htmlFor="english">English</label>
-        <input type="radio" id="polish" name="language1" value="POL" />
+        <input type="radio" id="polish" name="lang" value="POL" />
         <label htmlFor="polish">Polish</label>
       </form>
     </div>

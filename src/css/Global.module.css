@@ -18,3 +18,24 @@
 .exitButton:hover {
   background-color: rgb(255, 232, 232);
 }
+
+.tickButton {
+  color: limegreen;
+  font-size: 18px;
+  background-color: white;
+  box-shadow: none;
+  border: black solid 0.5px;
+  padding: 0px;
+  width: 30px;
+  height: 30px;
+  font-size: 25px;
+}
+
+.tickButton:active {
+  background-color: limegreen !important;
+  color: white;
+}
+
+.tickButton:hover {
+  background-color: rgb(232, 255, 233);
+}

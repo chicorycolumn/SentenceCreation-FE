@@ -6,7 +6,7 @@ export const fetchLObjsByLemma = (lang1, lemma) => {
   console.log("Will request", lang1, lemma);
   return axios
     .get(
-      `${baseUrl}/educator/info?infoType=lObjs&language1=${lang1}&lemma=${lemma}`
+      `${baseUrl}/educator/info?infoType=lObjs&lang=${lang1}&lemma=${lemma}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
@@ -20,7 +20,7 @@ export const fetchLObjsByLemma = (lang1, lemma) => {
 export const fetchTags = (lang1) => {
   return axios
     .get(
-      `${baseUrl}/educator/tags?language1=${lang1}`
+      `${baseUrl}/educator/tags?lang=${lang1}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
@@ -34,7 +34,7 @@ export const fetchTags = (lang1) => {
 export const fetchWordsByTag = (lang1, tag) => {
   return axios
     .get(
-      `${baseUrl}/educator/words?language1=${lang1}&tags=${tag}`
+      `${baseUrl}/educator/words?lang=${lang1}&tags=${tag}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
