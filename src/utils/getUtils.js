@@ -31,10 +31,11 @@ export const fetchTags = (lang1) => {
     });
 };
 
-export const fetchWordsByTag = (lang1, tag) => {
+export const fetchWordsByTag = (lang1, tags) => {
+  console.log(tags.length, tags);
   return axios
     .get(
-      `${baseUrl}/educator/words?lang=${lang1}&tags=${tag}`
+      `${baseUrl}/educator/words?lang=${lang1}&tags=${tags.join("+")}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {

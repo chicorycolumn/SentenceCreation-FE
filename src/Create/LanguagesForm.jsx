@@ -11,7 +11,9 @@ const LanguagesForm = (props) => {
         }}
       >
         <input type="radio" id="english" name="lang" value="ENG" />
-        <label htmlFor="english">English</label>
+        <label selected={true} htmlFor="english">
+          English
+        </label>
         <input type="radio" id="polish" name="lang" value="POL" />
         <label htmlFor="polish">Polish</label>
       </form>

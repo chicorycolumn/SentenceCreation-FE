@@ -8,9 +8,6 @@ const diUtils = require("../utils/displayUtils.js");
 class TraitBox extends Component {
   state = {
     traitValueInputString: diUtils.asString(this.props.traitObject.traitValue),
-    savedTraitValueInputString: diUtils.asString(
-      this.props.traitObject.traitValue
-    ),
     hasJustBlurred: false,
     isInputActive: false,
     isHovered: false,
@@ -26,7 +23,9 @@ class TraitBox extends Component {
 
   revertTraitValueInputString = () => {
     this.setState({
-      traitValueInputString: this.state.savedTraitValueInputString,
+      traitValueInputString: diUtils.asString(
+        this.props.traitObject.traitValue
+      ),
     });
   };
 

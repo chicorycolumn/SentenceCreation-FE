@@ -39,3 +39,133 @@
 .tickButton:hover {
   background-color: rgb(232, 255, 233);
 }
+
+.tooltip {
+  background-color: black;
+  opacity: 0.7;
+  color: white;
+  text-align: center;
+  padding: 7.5px;
+  position: absolute;
+  z-index: 3;
+  visibility: hidden;
+  border-radius: 5px;
+  margin-left: -65px;
+  margin-top: -40px;
+}
+
+.tooltipHolder:hover .tooltip {
+  visibility: visible;
+}
+
+.tooltip:hover {
+  visibility: hidden !important;
+}
+
+.npeLight {
+  background-color: rgb(192, 231, 255) !important;
+}
+
+.npe {
+  background-color: lightskyblue !important;
+}
+
+.npeDark {
+  background-color: rgb(75, 186, 255) !important;
+}
+
+.ncoLight {
+  background-color: rgb(129, 255, 255) !important;
+}
+
+.nco {
+  background-color: cyan !important;
+}
+
+.ncoDark {
+  background-color: rgb(0, 189, 189) !important;
+}
+
+.verLight {
+  background-color: rgb(255, 142, 142) !important;
+}
+
+.ver {
+  background-color: red !important;
+}
+
+.verDark {
+  background-color: rgb(159, 0, 0) !important;
+}
+
+.advLight {
+  background-color: rgb(0, 202, 0) !important;
+}
+
+.adv {
+  background-color: green !important;
+}
+
+.advDark {
+  background-color: rgb(0, 77, 0) !important;
+}
+
+.adjLight {
+  background-color: rgb(142, 255, 142) !important;
+}
+
+.adj {
+  background-color: lime !important;
+}
+
+.adjDark {
+  background-color: rgb(0, 207, 0) !important;
+}
+
+.artLight {
+  background-color: rgb(255, 205, 111) !important;
+}
+
+.art {
+  background-color: orange !important;
+}
+
+.artDark {
+  background-color: rgb(175, 114, 0) !important;
+}
+
+.preLight {
+  background-color: rgb(255, 255, 173) !important;
+}
+
+.pre {
+  background-color: yellow !important;
+}
+
+.preDark {
+  background-color: rgb(193, 193, 0) !important;
+}
+
+.proLight {
+  background-color: rgb(255, 142, 255) !important;
+}
+
+.pro {
+  background-color: fuchsia !important;
+}
+
+.proDark {
+  background-color: rgb(168, 0, 168) !important;
+}
+
+.fixLight {
+  background-color: rgb(248, 248, 248) !important;
+}
+
+.fix {
+  background-color: gainsboro !important;
+}
+
+.fixDark {
+  background-color: rgb(169, 169, 169) !important;
+}
