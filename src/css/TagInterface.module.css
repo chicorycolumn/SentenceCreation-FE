@@ -1,13 +1,16 @@
 .mainBox {
-  border: fuchsia solid 2px;
+  border: black solid 1px;
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
   background-color: lightblue;
   height: 500px;
   width: 500px;
   position: fixed;
   top: 50%;
   left: 50%;
-  margin-top: -250px; /* Negative half of height. */
-  margin-left: -250px; /* Negative half of width. */
+  margin-top: -250px;
+  margin-left: -250px;
+  display: flex;
+  flex-direction: row;
 }
 
 .etiquetteHolder {
@@ -15,14 +18,22 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
+  height: fit-content;
+  overflow-y: auto;
+  padding-top: 20px;
+  /* border: yellow solid 2px; */
 }
 
 .etiquette {
   border: black solid 1px;
-  background-color: lightgoldenrodyellow;
+  background-color: lightyellow;
   width: max-content;
-  padding: 5px;
-  margin: 20px;
+  padding: 7.5px;
+  margin: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 14px;
 }
 
 .etiquetteClickable:hover {
@@ -41,4 +52,44 @@
   margin-right: 15px;
   position: relative;
   top: -3.5px;
+}
+
+.leftDiv {
+  display: flex;
+  flex-direction: column;
+  border-right: rgba(0, 0, 0, 0.2) solid 1px;
+  width: 50%;
+}
+
+.rightDiv {
+  display: flex;
+  flex-direction: column;
+  /* border: white dotted 5px; */
+  width: 50%;
+}
+
+.div1 {
+  height: 100px;
+}
+
+.div3 {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* border: red solid 2px; */
+}
+
+.wordtypeButtonsHolder {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.wordtypeButton {
+  width: 50px;
+}
+
+.tableHolder {
+  overflow: auto;
+  height: 100%;
 }

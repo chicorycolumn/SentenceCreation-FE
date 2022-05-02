@@ -67,7 +67,7 @@
 }
 
 .npe {
-  background-color: lightskyblue !important;
+  background-color: rgb(108, 199, 255) !important;
 }
 
 .npeDark {
@@ -91,24 +91,24 @@
 }
 
 .ver {
-  background-color: rgb(255, 94, 94) !important;
+  background-color: rgb(254, 125, 125) !important;
 }
 
 .verDark {
   background-color: rgb(159, 0, 0) !important;
 }
 
-.advLight {
+/* .advLight {
   background-color: rgb(0, 202, 0) !important;
 }
 
 .adv {
-  background-color: green !important;
+  background-color: rgb(0, 178, 0) !important;
 }
 
 .advDark {
   background-color: rgb(0, 77, 0) !important;
-}
+} */
 
 .adjLight {
   background-color: rgb(142, 255, 142) !important;
@@ -147,11 +147,11 @@
 }
 
 .proLight {
-  background-color: rgb(255, 142, 255) !important;
+  background-color: rgb(255, 167, 255) !important;
 }
 
 .pro {
-  background-color: fuchsia !important;
+  background-color: rgb(255, 75, 255) !important;
 }
 
 .proDark {
@@ -171,7 +171,6 @@
 }
 
 .floatTop {
-  border: blue solid 2px;
   position: fixed;
   top: 0px;
   right: 0px;

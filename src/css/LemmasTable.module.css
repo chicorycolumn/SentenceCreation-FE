@@ -1,0 +1,54 @@
+table {
+  text-align: left;
+  position: relative;
+  border-collapse: collapse;
+  border: rgba(0, 0, 0, 0.2) solid 1px;
+  width: 100%;
+}
+th,
+td {
+  padding: 0.25rem;
+}
+tr.red th {
+  background: red;
+  color: white;
+}
+tr.green th {
+  background: green;
+  color: white;
+}
+tr.purple th {
+  background: purple;
+  color: white;
+}
+th {
+  background: grey;
+  position: sticky;
+  top: 0; /* Don't forget this, required for the stickiness */
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+table tr:nth-child(odd) {
+  background: gainsboro;
+}
+
+table tr:nth-child(even) {
+  background: rgb(244, 244, 244);
+}
+
+tbody {
+  font-size: 13px;
+}
+
+.tooltipCell {
+  margin-left: 70px;
+  margin-top: -10px;
+  opacity: 1;
+  font-size: 14px;
+  /* visibility: visible; */
+  width: 62.5%;
+}
+
+.tooltipCell:hover {
+  visibility: visible;
+}

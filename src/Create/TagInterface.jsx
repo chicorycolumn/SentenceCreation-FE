@@ -4,11 +4,13 @@ import styles from "../css/TagInterface.module.css";
 import traitBoxStyles from "../css/TraitBox.module.css";
 import gstyles from "../css/Global.module.css";
 import LanguageContext from "../context/LanguageContext.js";
+import LemmasTable from "./LemmasTable.jsx";
 const diUtils = require("../utils/displayUtils.js");
 
 const TagInterface = (props) => {
   const [tags, setTags] = useState([]);
   const [fetchedLObjs, setFetchedLObjs] = useState({});
+  const [wordtypeInFocus, setWordtypeInFocus] = useState("npe");
   const lang1 = useContext(LanguageContext);
 
   useEffect(() => {
@@ -33,69 +35,84 @@ const TagInterface = (props) => {
 
   return (
     <div className={styles.mainBox}>
-      <h1>Select tags</h1>
+      <div className={styles.leftDiv}>
+        <div className={styles.div1}>
+          <h1>Select tags</h1>
 
-      <button
-        className={gstyles.tickButton}
-        onClick={props.checkAndSetTraitValue}
-      >
-        &#10003;
-      </button>
-
-      <select
-        className={styles.tagSelector}
-        name="tag"
-        onClick={(e) => {
-          e.preventDefault();
-          props.pushpopTraitValueInputString(e.target.value);
-        }}
-      >
-        {tags.map((tag) => (
-          <option value={tag} key={tag}>
-            {tag}
-          </option>
-        ))}
-      </select>
-      <button
-        className={gstyles.exitButton}
-        onClick={() => {
-          props.revertTraitValueInputString();
-          props.exitTraitBox(false);
-        }}
-      >
-        &times;
-      </button>
-
-      <div className={styles.etiquetteHolder}>
-        {diUtils.asArray(props.traitValueInputString).map((tag) => (
-          <div
-            onClick={() => {
-              props.pushpopTraitValueInputString(tag, false);
-            }}
-            className={`${styles.etiquette} ${styles.etiquetteClickable}`}
-            key={tag}
+          <button
+            className={gstyles.tickButton}
+            onClick={props.checkAndSetTraitValue}
           >
-            {tag}
-          </div>
-        ))}
+            &#10003;
+          </button>
+
+          <select
+            className={styles.tagSelector}
+            name="tag"
+            onClick={(e) => {
+              e.preventDefault();
+              props.pushpopTraitValueInputString(e.target.value);
+            }}
+          >
+            {tags.map((tag) => (
+              <option value={tag} key={tag}>
+                {tag}
+              </option>
+            ))}
+          </select>
+          <button
+            className={gstyles.exitButton}
+            onClick={() => {
+              props.revertTraitValueInputString();
+              props.exitTraitBox(false);
+            }}
+          >
+            &times;
+          </button>
+        </div>
+
+        <div className={styles.etiquetteHolder}>
+          {diUtils.asArray(props.traitValueInputString).map((tag) => (
+            <div
+              onClick={() => {
+                props.pushpopTraitValueInputString(tag, false);
+              }}
+              className={`${styles.etiquette} ${styles.etiquetteClickable}`}
+              key={tag}
+            >
+              {tag}
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className={styles.etiquetteHolder}>
-        {Object.keys(fetchedLObjs).map((wordtype) => {
-          let words = fetchedLObjs[wordtype];
-          return words.map((word) => {
-            const { lemma, id } = word;
-            return (
-              <div
-                className={`${styles.etiquette} ${gstyles.tooltipHolder} ${gstyles[wordtype]}`}
-                key={lemma}
-              >
-                {lemma}
-                <span className={gstyles.tooltip}>{id}</span>
-              </div>
-            );
-          });
-        })}
+      <div className={styles.rightDiv}>
+        <div className={styles.div3}>
+          <div className={styles.wordtypeButtonsHolder}>
+            {Object.keys(fetchedLObjs).map((wordtype) => {
+              let count = fetchedLObjs[wordtype].length;
+              return (
+                <button
+                  disabled={!count}
+                  key={wordtype}
+                  className={`${gstyles[wordtype]} ${styles.wordtypeButton}`}
+                  onClick={() => {
+                    setWordtypeInFocus(wordtype);
+                  }}
+                >
+                  {wordtype}
+                </button>
+              );
+            })}
+          </div>
+          <div className={styles.tableHolder}>
+            <LemmasTable
+              setWordtypeInFocus={setWordtypeInFocus}
+              wordtypeInFocus={wordtypeInFocus}
+              fetchedLObjs={fetchedLObjs}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

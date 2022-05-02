@@ -15,7 +15,7 @@
 }
 
 .traitBoxSelected {
-  border: black solid 5px;
+  border: chartreuse solid 5px;
   height: fit-content !important;
 }
 
