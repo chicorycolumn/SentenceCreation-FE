@@ -19,8 +19,6 @@ const Create = () => {
     <LanguageContextProvider value={lang1}>
       <div>
         <h1>Create new sentences</h1>
-        {isLoading ? <p>Loading...</p> : <p>{lang1}</p>}
-
         <LanguagesForm setLang1={setLang1} />
         <FormulaSymbolForm setFormulaSymbol={setFormulaSymbol} />
         <ChunkCardHolder formulaSymbol={formulaSymbol} />

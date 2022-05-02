@@ -1,9 +1,42 @@
-import React from "react";
+import React, { useContext } from "react";
+import gstyles from "../css/Global.module.css";
+import LanguageContext from "../context/LanguageContext.js";
 
 const LanguagesForm = (props) => {
+  const lang1 = useContext(LanguageContext);
+
   return (
     <div>
       <h3>LanguagesForm</h3>
+      <div className={gstyles.floatTop}>
+        <button
+          onClick={() => {
+            console.log("");
+            console.log(lang1);
+            console.log("");
+          }}
+        >
+          1
+        </button>
+        <button
+          onClick={() => {
+            console.log("");
+            console.log("2");
+            console.log("");
+          }}
+        >
+          2
+        </button>
+        <button
+          onClick={() => {
+            console.log("");
+            console.log("3");
+            console.log("");
+          }}
+        >
+          3
+        </button>
+      </div>
       <form
         onChange={(e) => {
           console.log(e.target.value);

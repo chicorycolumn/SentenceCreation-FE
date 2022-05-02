@@ -1,241 +1,35 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { Component, useEffect, useState, useContext } from "react";
 import { fetchTags, fetchWordsByTag } from "../utils/getUtils.js";
 import styles from "../css/TagInterface.module.css";
 import traitBoxStyles from "../css/TraitBox.module.css";
 import gstyles from "../css/Global.module.css";
+import LanguageContext from "../context/LanguageContext.js";
 const diUtils = require("../utils/displayUtils.js");
 
 const TagInterface = (props) => {
+  const [tags, setTags] = useState([]);
+  const [fetchedLObjs, setFetchedLObjs] = useState({});
+  const lang1 = useContext(LanguageContext);
+
   useEffect(() => {
-    fetchTags("ENG").then((fetchedTags) => {
-      setTags(fetchedTags);
-    });
-    fetchWordsByTag("ENG", diUtils.asArray(props.traitValueInputString)).then(
+    fetchWordsByTag(lang1, diUtils.asArray(props.traitValueInputString)).then(
       (fetchedWords) => {
-        console.log(fetchedWords);
+        console.log("");
+        console.log("Setting fetched WORDS", fetchedWords);
+        console.log("");
         setFetchedLObjs(fetchedWords);
       }
     );
-  });
+  }, [props.traitValueInputString, lang1]);
 
-  const [tags, setTags] = useState([
-    "animate",
-    "personTest1",
-    "concrete",
-    "AliceBlue",
-    "AntiqueWhite",
-    "Aqua",
-    "Aquamarine",
-    "Azure",
-    "Beige",
-    "Bisque",
-    "Black",
-    "BlanchedAlmond",
-    "Blue",
-    "BlueViolet",
-    "Brown",
-    "BurlyWood",
-    "CadetBlue",
-    "Chartreuse",
-    "Chocolate",
-    "Coral",
-    "CornflowerBlue",
-    "Cornsilk",
-    "Crimson",
-    "Cyan",
-    "DarkBlue",
-    "DarkCyan",
-    "DarkGoldenRod",
-    "DarkGray",
-    "DarkGrey",
-    "DarkGreen",
-    "DarkKhaki",
-    "DarkMagenta",
-    "DarkOliveGreen",
-    "DarkOrange",
-    "DarkOrchid",
-    "DarkRed",
-    "DarkSalmon",
-    "DarkSeaGreen",
-    "DarkSlateBlue",
-    "DarkSlateGray",
-    "DarkSlateGrey",
-    "DarkTurquoise",
-    "DarkViolet",
-    "DeepPink",
-    "DeepSkyBlue",
-    "DimGray",
-    "DimGrey",
-    "DodgerBlue",
-    "FireBrick",
-    "FloralWhite",
-    "ForestGreen",
-    "Fuchsia",
-    "Gainsboro",
-    "GhostWhite",
-    "Gold",
-    "GoldenRod",
-    "Gray",
-    "Grey",
-    "Green",
-    "GreenYellow",
-    "HoneyDew",
-    "HotPink",
-    "IndianRed",
-    "Indigo",
-    "Ivory",
-    "Khaki",
-    "Lavender",
-    "LavenderBlush",
-    "LawnGreen",
-    "LemonChiffon",
-    "LightBlue",
-    "LightCoral",
-    "LightCyan",
-    "LightGoldenRodYellow",
-    "LightGray",
-    "LightGrey",
-    "LightGreen",
-    "LightPink",
-    "LightSalmon",
-    "LightSeaGreen",
-    "LightSkyBlue",
-    "LightSlateGray",
-    "LightSlateGrey",
-    "LightSteelBlue",
-    "LightYellow",
-    "Lime",
-    "LimeGreen",
-    "Linen",
-    "Magenta",
-    "Maroon",
-    "MediumAquaMarine",
-    "MediumBlue",
-    "MediumOrchid",
-    "MediumPurple",
-    "MediumSeaGreen",
-    "MediumSlateBlue",
-    "MediumSpringGreen",
-    "MediumTurquoise",
-    "MediumVioletRed",
-    "MidnightBlue",
-    "MintCream",
-    "MistyRose",
-    "Moccasin",
-    "NavajoWhite",
-    "Navy",
-    "OldLace",
-    "Olive",
-    "OliveDrab",
-    "Orange",
-    "OrangeRed",
-    "Orchid",
-    "PaleGoldenRod",
-    "PaleGreen",
-    "PaleTurquoise",
-    "PaleVioletRed",
-    "PapayaWhip",
-    "PeachPuff",
-    "Peru",
-    "Pink",
-    "Plum",
-    "PowderBlue",
-    "Purple",
-    "RebeccaPurple",
-    "Red",
-    "RosyBrown",
-    "RoyalBlue",
-    "SaddleBrown",
-    "Salmon",
-    "SandyBrown",
-    "SeaGreen",
-    "SeaShell",
-    "Sienna",
-    "Silver",
-    "SkyBlue",
-    "SlateBlue",
-    "SlateGray",
-    "SlateGrey",
-    "Snow",
-    "SpringGreen",
-    "SteelBlue",
-    "Tan",
-    "Teal",
-    "Thistle",
-    "Tomato",
-    "Turquoise",
-    "Violet",
-    "Wheat",
-    "White",
-    "WhiteSmoke",
-    "Yellow",
-    "YellowGreen",
-  ]);
-  const [fetchedLObjs, setFetchedLObjs] = useState({
-    words: {
-      npe: [
-        {
-          lemma: "woman",
-          id: "eng-npe-001",
-        },
-        {
-          lemma: "father",
-          id: "eng-npe-013",
-        },
-        {
-          lemma: "mother",
-          id: "eng-npe-014",
-        },
-        {
-          lemma: "boy",
-          id: "eng-npe-002",
-        },
-        {
-          lemma: "doctor",
-          id: "eng-npe-012",
-        },
-      ],
-      nco: [
-        {
-          lemma: "onion",
-          id: "eng-nco-003",
-        },
-        {
-          lemma: "apple",
-          id: "eng-nco-004",
-        },
-        {
-          lemma: "tomato",
-          id: "eng-nco-015",
-        },
-        {
-          lemma: "mirror",
-          id: "eng-nco-005",
-        },
-        {
-          lemma: "book",
-          id: "eng-nco-006",
-        },
-        {
-          lemma: "door",
-          id: "eng-nco-007",
-        },
-        {
-          lemma: "sheep",
-          id: "eng-nco-008",
-        },
-        {
-          lemma: "rat",
-          id: "eng-nco-016",
-        },
-      ],
-      adj: [],
-      ver: [],
-      pro: [],
-      pre: [],
-      art: [],
-    },
-  });
+  useEffect(() => {
+    fetchTags(lang1).then((fetchedTags) => {
+      console.log("");
+      console.log("Setting fetched TAGS");
+      console.log("");
+      setTags(fetchedTags);
+    });
+  }, [lang1]);
 
   return (
     <div className={styles.mainBox}>
@@ -287,8 +81,8 @@ const TagInterface = (props) => {
       </div>
 
       <div className={styles.etiquetteHolder}>
-        {Object.keys(fetchedLObjs.words).map((wordtype) => {
-          let words = fetchedLObjs.words[wordtype];
+        {Object.keys(fetchedLObjs).map((wordtype) => {
+          let words = fetchedLObjs[wordtype];
           return words.map((word) => {
             const { lemma, id } = word;
             return (
