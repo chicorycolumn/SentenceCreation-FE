@@ -1,5 +1,5 @@
 import { createContext } from "react";
 
-const LanguageContext = createContext("ENG");
+const LanguageContext = createContext();
 export const LanguageContextProvider = LanguageContext.Provider;
 export default LanguageContext;

@@ -169,6 +169,7 @@ const ChunkCard = (props) => {
       mustBeExistingChunkId: true,
     },
   });
+  const [showMoreTraitKeys, setShowMoreTraitKeys] = useState();
   const lang1 = useContext(LanguageContext);
 
   useEffect(() => {
@@ -179,6 +180,16 @@ const ChunkCard = (props) => {
       });
     }
   }, [lang1, props.word]);
+
+  let traitKeysGroup1 = [];
+  let traitKeysGroup2 = [];
+
+  if (structureChunk) {
+    let { orderedTraitKeysGroup1, orderedTraitKeysGroup2 } =
+      diUtils.orderTraitKeys(structureChunk);
+    traitKeysGroup1 = orderedTraitKeysGroup1;
+    traitKeysGroup2 = orderedTraitKeysGroup2;
+  }
 
   return (
     <div className={styles.card} key={props.word}>
@@ -202,7 +213,7 @@ const ChunkCard = (props) => {
       </h1>
       {structureChunk ? (
         <div className={styles.traitBoxesHolder}>
-          {diUtils.orderTraitKeys(structureChunk).map((traitKey) => (
+          {traitKeysGroup1.map((traitKey) => (
             <TraitBox
               key={traitKey}
               traitKey={traitKey}
@@ -211,6 +222,28 @@ const ChunkCard = (props) => {
               setStructureChunk={setStructureChunk}
             />
           ))}
+          <button
+            onClick={() => {
+              setShowMoreTraitKeys((prevState) => !prevState);
+            }}
+          >
+            Show more
+          </button>
+          {(showMoreTraitKeys ||
+            traitKeysGroup2.some(
+              (traitKey) =>
+                structureChunk[traitKey] &&
+                !uUtils.isEmpty(structureChunk[traitKey].traitValue)
+            )) &&
+            traitKeysGroup2.map((traitKey) => (
+              <TraitBox
+                key={traitKey}
+                traitKey={traitKey}
+                traitObject={structureChunk[traitKey]}
+                word={props.word}
+                setStructureChunk={setStructureChunk}
+              />
+            ))}
         </div>
       ) : (
         {}

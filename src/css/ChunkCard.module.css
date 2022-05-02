@@ -37,6 +37,11 @@
   color: darkblue;
 }
 
+.cardButton:active {
+  background-color: darkblue;
+  color: lightcyan;
+}
+
 .traitBoxesHolder {
   /* border: darkseagreen solid 2px; */
   background-color: none;

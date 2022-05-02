@@ -1,9 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import gstyles from "../css/Global.module.css";
 import LanguageContext from "../context/LanguageContext.js";
 
 const LanguagesForm = (props) => {
   const lang1 = useContext(LanguageContext);
+
+  useEffect(() => {
+    document.getElementById("lang_english").checked = true;
+  }, []);
 
   return (
     <div>
@@ -43,12 +47,10 @@ const LanguagesForm = (props) => {
           props.setLang1(e.target.value);
         }}
       >
-        <input type="radio" id="english" name="lang" value="ENG" />
-        <label selected={true} htmlFor="english">
-          English
-        </label>
-        <input type="radio" id="polish" name="lang" value="POL" />
-        <label htmlFor="polish">Polish</label>
+        <input type="radio" id="lang_english" name="lang" value="ENG" />
+        <label htmlFor="lang_english">English</label>
+        <input type="radio" id="lang_polish" name="lang" value="POL" />
+        <label htmlFor="lang_polish">Polish</label>
       </form>
     </div>
   );

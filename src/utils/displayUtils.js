@@ -1,16 +1,16 @@
 const uUtils = require("./universalUtils.js");
 
 exports.orderTraitKeys = (stCh) => {
-  let order = ["andTags", "orTags", "agreeWith", "connectedTo"];
+  let orderedTraitKeys = ["andTags", "orTags", "agreeWith", "connectedTo"];
   let lexicalTraitKeys = [];
   let booleanTraitKeys = [];
   Object.keys(stCh).forEach((traitKey) => {
     const traitValue = stCh[traitKey];
-    if (traitValue.isLexical && !order.includes(traitKey)) {
+    if (traitValue.isLexical && !orderedTraitKeys.includes(traitKey)) {
       lexicalTraitKeys.push(traitKey);
     } else if (
       traitValue.expectedTypeOnStCh === "boolean" &&
-      !order.includes(traitKey)
+      !orderedTraitKeys.includes(traitKey)
     ) {
       booleanTraitKeys.push(traitKey);
     }
@@ -18,17 +18,27 @@ exports.orderTraitKeys = (stCh) => {
   lexicalTraitKeys = lexicalTraitKeys.sort((x, y) => y.localeCompare(x));
   booleanTraitKeys = booleanTraitKeys.sort((x, y) => x.localeCompare(y));
 
-  order = [...order, ...lexicalTraitKeys, ...booleanTraitKeys];
-  order = [
-    ...order,
-    ...Object.keys(stCh).filter((traitKey) => !order.includes(traitKey)),
+  orderedTraitKeys = [...orderedTraitKeys, ...lexicalTraitKeys];
+
+  const length = orderedTraitKeys.length;
+
+  orderedTraitKeys = [...orderedTraitKeys, ...booleanTraitKeys];
+
+  orderedTraitKeys = [
+    ...orderedTraitKeys,
+    ...Object.keys(stCh)
+      .filter((traitKey) => !orderedTraitKeys.includes(traitKey))
+      .sort((x, y) => x.localeCompare(y)),
   ];
-  if (order.length !== Object.keys(stCh).length) {
-    throw `gluj: order.length ${order.length} !== Object.keys(stCh).length ${
-      Object.keys(stCh).length
-    }`;
+  if (orderedTraitKeys.length !== Object.keys(stCh).length) {
+    throw `gluj: orderedTraitKeys.length ${
+      orderedTraitKeys.length
+    } !== Object.keys(stCh).length ${Object.keys(stCh).length}`;
   }
-  return order;
+  return {
+    orderedTraitKeysGroup1: orderedTraitKeys.slice(0, length),
+    orderedTraitKeysGroup2: orderedTraitKeys.slice(length),
+  };
 };
 
 exports.asString = (values) => {

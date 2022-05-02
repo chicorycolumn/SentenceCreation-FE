@@ -6,7 +6,7 @@ import ChunkCardHolder from "./Create/ChunkCardHolder.jsx";
 import { LanguageContextProvider } from "./context/LanguageContext.js";
 
 const Create = () => {
-  const [lang1, setLang1] = useState(null);
+  const [lang1, setLang1] = useState("ENG");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [formulaSymbol, setFormulaSymbol] = useState(

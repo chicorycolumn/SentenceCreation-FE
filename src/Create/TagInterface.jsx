@@ -27,7 +27,7 @@ const TagInterface = (props) => {
       console.log("");
       console.log("Setting fetched TAGS");
       console.log("");
-      setTags(fetchedTags);
+      setTags(fetchedTags.sort((x, y) => x.localeCompare(y)));
     });
   }, [lang1]);
 
