@@ -1,7 +1,6 @@
-import React, { Component, useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { fetchTags, fetchWordsByTag } from "../utils/getUtils.js";
 import styles from "../css/TagInterface.module.css";
-import traitBoxStyles from "../css/TraitBox.module.css";
 import gstyles from "../css/Global.module.css";
 import LanguageContext from "../context/LanguageContext.js";
 import LemmasTable from "./LemmasTable.jsx";

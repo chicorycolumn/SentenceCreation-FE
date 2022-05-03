@@ -46,7 +46,7 @@ class TraitBox extends Component {
   };
 
   render() {
-    let { traitKey, word, traitObject, setStructureChunk } = this.props;
+    let { traitKey, traitObject, word, setStructureChunk } = this.props;
 
     const exitTraitBox = (changeToValue = true) => {
       this.setState({
