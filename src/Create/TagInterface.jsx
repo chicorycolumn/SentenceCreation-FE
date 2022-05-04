@@ -37,12 +37,12 @@ const TagInterface = (props) => {
       <div className={styles.leftDiv}>
         {[props.traitValueInputString, props.traitValueInputString2].map(
           (traitValueInputString, index) => {
-            const headings = ["Select And-Tags", "Select Or-Tags"];
+            const heading = ["Select And-Tags", "Select Or-Tags"][index];
             const isSecondary = index === 1;
             return (
-              <>
+              <div key={heading}>
                 <div className={styles.div1}>
-                  <h1>{headings[index]}</h1>
+                  <h1>{heading}</h1>
 
                   <button
                     className={gstyles.tickButton}
@@ -98,7 +98,7 @@ const TagInterface = (props) => {
                     </div>
                   ))}
                 </div>
-              </>
+              </div>
             );
           }
         )}

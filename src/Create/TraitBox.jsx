@@ -17,7 +17,6 @@ class TraitBox extends Component {
     isSelected: false,
     forceShowInput: false,
     showTagInterface: false,
-    thickBorder: false,
   };
 
   setShowTagInterface = (val) => {
@@ -94,8 +93,12 @@ class TraitBox extends Component {
       });
 
       setTimeout(() => {
+        console.log("-------------");
+        console.log(
+          "exitTraitBox is trying to update input textboxes. They should be updated now?"
+        );
+        console.log("-------------");
         this.setState({
-          thickBorder: false,
           hasJustBlurred: false,
           traitValueInputString: diUtils.asString(
             this.props.traitObject.traitValue
@@ -230,9 +233,7 @@ class TraitBox extends Component {
         } ${this.state.hasJustBlurred && styles.shimmer} ${
           (this.state.isHovered || this.state.isSelected) &&
           styles.traitBoxHover
-        } ${this.state.isSelected && styles.traitBoxSelected} ${
-          this.state.thickBorder && styles.thickBorder
-        }
+        } ${this.state.isSelected && styles.traitBoxSelected}
         
         `}
       >
@@ -285,8 +286,15 @@ class TraitBox extends Component {
           </p>
         </div>
         {(!uUtils.isEmpty(traitObject.traitValue) ||
-          this.state.forceShowInput) && (
-          <>
+          this.state.forceShowInput ||
+          diUtils.isTagTrait(traitKey)) && (
+          <div
+            key={`${this.state.traitValueInputString}-${
+              this.state.traitValueInputString2
+                ? this.state.traitValueInputString2
+                : ""
+            }`}
+          >
             {[traitKey, traitKey2]
               .filter((el) => el)
               .map((traitKey, index) => {
@@ -321,7 +329,7 @@ class TraitBox extends Component {
                       onClick={() => {
                         console.log("X!");
                         this.setState(() => {
-                          let newState = { thickBorder: true };
+                          let newState = {};
                           newState[traitValueInputStringKey] = null;
                           return newState;
                         });
@@ -335,7 +343,7 @@ class TraitBox extends Component {
                   </div>
                 );
               })}
-          </>
+          </div>
         )}
 
         {this.state.isSelected && (
