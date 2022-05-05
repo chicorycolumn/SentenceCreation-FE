@@ -93,11 +93,6 @@ class TraitBox extends Component {
       });
 
       setTimeout(() => {
-        console.log("-------------");
-        console.log(
-          "exitTraitBox is trying to update input textboxes. They should be updated now?"
-        );
-        console.log("-------------");
         this.setState({
           hasJustBlurred: false,
           traitValueInputString: diUtils.asString(
@@ -110,7 +105,7 @@ class TraitBox extends Component {
       }, 1000);
     };
 
-    const checkAndSetTraitValue = (isSecondary = false) => {
+    const checkAndSetTraitValue = (secondaryAsWellAsPrimary = false) => {
       console.log(11, this.props);
 
       const innerFunction = (
@@ -204,16 +199,16 @@ class TraitBox extends Component {
         exitTraitBox(false);
       };
 
-      if (isSecondary) {
+      console.log("###");
+      console.log("checkAndSetTraitValue PRIMARY");
+      console.log("###");
+      innerFunction();
+
+      if (secondaryAsWellAsPrimary) {
         console.log("###");
         console.log("checkAndSetTraitValue SECONDARY");
         console.log("###");
         innerFunction("traitKey2", "traitValueInputString2", "traitObject2");
-      } else {
-        console.log("###");
-        console.log("checkAndSetTraitValue PRIMARY");
-        console.log("###");
-        innerFunction();
       }
     };
 

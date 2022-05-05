@@ -35,6 +35,27 @@ const TagInterface = (props) => {
   return (
     <div className={styles.mainBox}>
       <div className={styles.leftDiv}>
+        <div className={styles.buttonHolder}>
+          <button
+            className={gstyles.tickButton}
+            onClick={() => {
+              props.checkAndSetTraitValue(true);
+            }}
+          >
+            &#10003;
+          </button>
+
+          <button
+            className={gstyles.exitButton}
+            onClick={() => {
+              props.revertTraitValueInputString(true);
+              props.exitTraitBox(false);
+            }}
+          >
+            &times;
+          </button>
+        </div>
+
         {[props.traitValueInputString, props.traitValueInputString2].map(
           (traitValueInputString, index) => {
             const heading = ["Select And-Tags", "Select Or-Tags"][index];
@@ -43,15 +64,6 @@ const TagInterface = (props) => {
               <div key={heading}>
                 <div className={styles.div1}>
                   <h1>{heading}</h1>
-
-                  <button
-                    className={gstyles.tickButton}
-                    onClick={() => {
-                      props.checkAndSetTraitValue(isSecondary);
-                    }}
-                  >
-                    &#10003;
-                  </button>
 
                   <select
                     className={styles.tagSelector}
@@ -71,15 +83,6 @@ const TagInterface = (props) => {
                       </option>
                     ))}
                   </select>
-                  <button
-                    className={gstyles.exitButton}
-                    onClick={() => {
-                      props.revertTraitValueInputString(isSecondary);
-                      props.exitTraitBox(false);
-                    }}
-                  >
-                    &times;
-                  </button>
                 </div>
                 <div className={styles.etiquetteHolder}>
                   {diUtils.asArray(traitValueInputString).map((tag) => (

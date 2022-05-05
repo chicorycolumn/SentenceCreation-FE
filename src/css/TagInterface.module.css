@@ -93,3 +93,12 @@
   overflow: auto;
   height: 100%;
 }
+
+.buttonHolder {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding-top: 25px;
+  padding-left: 50px;
+  padding-right: 50px;
+}
