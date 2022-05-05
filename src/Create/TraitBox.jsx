@@ -73,14 +73,8 @@ class TraitBox extends Component {
   };
 
   render() {
-    let {
-      traitKey,
-      traitObject,
-      traitKey2,
-      traitObject2,
-      word,
-      setStructureChunk,
-    } = this.props;
+    let { traitKey, traitObject, traitKey2, word, setStructureChunk } =
+      this.props;
 
     const exitTraitBox = (changeToValue = true) => {
       this.setState({
@@ -214,14 +208,6 @@ class TraitBox extends Component {
 
     return (
       <div
-        // onMouseEnter={() => {
-        //   this.setState({ isHovered: true });
-        // }}
-        // onMouseLeave={() => {
-        //   if (!this.state.isInputActive) {
-        //     this.setState({ isHovered: false });
-        //   }
-        // }}
         key={`${word}-${traitKey}`}
         className={`${styles.preventSelection} ${styles.traitBox} ${
           !traitObject.traitValue && styles.traitBoxEmpty
@@ -245,20 +231,19 @@ class TraitBox extends Component {
         )}
         <div
           onMouseEnter={() => {
-            console.log(
-              ">traitValueInputStrings:",
-              "\n",
-              this.state.traitValueInputString,
-              "\n",
-              this.state.traitValueInputString2
-            );
-            console.log(
-              ">this.props.traitObject.traitValues:",
-              "\n",
-              this.props.traitObject.traitValue,
-              "\n",
-              this.props.traitObject2.traitValue
-            );
+            console.log("");
+            console.log("state.traitValueInputString HAS VALUE:");
+            console.log("> > >", this.state.traitValueInputString);
+            console.log("props.traitObject.traitValue HAS VALUE:");
+            console.log("> > >", this.props.traitObject.traitValue);
+
+            if (this.state.traitValueInputString2) {
+              console.log("");
+              console.log("state.traitValueInputString2 HAS VALUE:");
+              console.log("> > >", this.state.traitValueInputString2);
+              console.log("props.traitObject.traitValue2 HAS VALUE:");
+              console.log("> > >", this.props.traitObject2.traitValue);
+            }
           }}
           onClick={() => {
             if (this.state.isSelected) {

@@ -13,15 +13,17 @@ const TagInterface = (props) => {
   const lang1 = useContext(LanguageContext);
 
   useEffect(() => {
-    fetchWordsByTag(lang1, diUtils.asArray(props.traitValueInputString)).then(
-      (fetchedWords) => {
-        console.log("");
-        console.log("Setting fetched WORDS", fetchedWords);
-        console.log("");
-        setFetchedLObjs(fetchedWords);
-      }
-    );
-  }, [props.traitValueInputString, lang1]);
+    fetchWordsByTag(
+      lang1,
+      diUtils.asArray(props.traitValueInputString),
+      diUtils.asArray(props.traitValueInputString2)
+    ).then((fetchedWords) => {
+      console.log("");
+      console.log("Setting fetched WORDS", fetchedWords);
+      console.log("");
+      setFetchedLObjs(fetchedWords);
+    });
+  }, [props.traitValueInputString, props.traitValueInputString2, lang1]);
 
   useEffect(() => {
     fetchTags(lang1).then((fetchedTags) => {
