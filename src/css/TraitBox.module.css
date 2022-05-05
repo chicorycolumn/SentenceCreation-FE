@@ -99,3 +99,13 @@
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
 }
+
+.floatingButton {
+  position: absolute;
+  top: 85px;
+  left: 0px;
+  background-color: none;
+  background: none;
+  font-size: 18px;
+  border: none;
+}

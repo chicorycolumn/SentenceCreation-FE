@@ -218,6 +218,16 @@ class TraitBox extends Component {
         
         `}
       >
+        {diUtils.isTagTrait(traitKey) && !this.state.isHovered && (
+          <button
+            className={styles.floatingButton}
+            onMouseOver={() => {
+              this.setState({ isHovered: true, isInputActive: true });
+            }}
+          >
+            &#128269;
+          </button>
+        )}
         {this.state.showTagInterface && (
           <TagInterface
             traitValueInputString={this.state.traitValueInputString}
@@ -275,6 +285,12 @@ class TraitBox extends Component {
                 ? this.state.traitValueInputString2
                 : ""
             }`}
+            onMouseOut={() => {
+              this.setState({
+                isHovered: false,
+                isInputActive: false,
+              });
+            }}
           >
             {[traitKey, traitKey2]
               .filter((el) => el)
@@ -286,23 +302,22 @@ class TraitBox extends Component {
                 return (
                   <div key={traitKey} className={styles.traitValuesBox}>
                     <textarea
+                      disabled={diUtils.isTagTrait(traitKey)}
                       className={`${styles.traitValuesInput} ${
                         diUtils.isTagTrait(traitKey) &&
                         styles.traitValuesInputLarge
                       }`}
                       value={this.state[traitValueInputStringKey]}
                       onChange={(e) => {
+                        if (diUtils.isTagTrait(traitKey)) {
+                          e.preventDefault();
+                          return;
+                        }
                         this.setState(() => {
                           let newState = {};
                           newState[traitValueInputStringKey] = e.target.value;
                           return newState;
                         });
-                      }}
-                      onFocus={() => {
-                        this.setState({ isHovered: true, isInputActive: true });
-                      }}
-                      onBlur={() => {
-                        checkAndSetTraitValue(isSecondary);
                       }}
                     />
                     <button

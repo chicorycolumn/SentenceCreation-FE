@@ -241,7 +241,7 @@ const ChunkCard = (props) => {
               setShowMoreTraitKeys((prevState) => !prevState);
             }}
           >
-            Show more
+            {showMoreTraitKeys ? "Hide" : "Show more"}
           </button>
           {(showMoreTraitKeys ||
             traitKeysGroup2.some(
