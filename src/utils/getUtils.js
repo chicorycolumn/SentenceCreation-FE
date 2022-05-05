@@ -1,4 +1,5 @@
 import axios from "axios";
+const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
@@ -32,13 +33,20 @@ export const fetchTags = (lang1) => {
 };
 
 export const fetchWordsByTag = (lang1, andTags, orTags) => {
-  let langString = `lang=${lang1}`;
-  let andTagsString = andTags ? `&andTags=${andTags.join("+")}` : "";
-  let orTagsString = orTags ? `&orTags=${orTags.join("+")}` : "";
+  const langString = `lang=${lang1}`;
+  const andTagsString = !uUtils.isEmpty(andTags)
+    ? `&andTags=${andTags.join("+")}`
+    : "";
+  const orTagsString = !uUtils.isEmpty(orTags)
+    ? `&orTags=${orTags.join("+")}`
+    : "";
+  const requestString = `${baseUrl}/educator/words?${langString}${andTagsString}${orTagsString}`;
+
+  console.log("FETCHING FROM", requestString.slice(41));
 
   return axios
     .get(
-      `${baseUrl}/educator/words?${langString}${andTagsString}${orTagsString}`
+      requestString
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {

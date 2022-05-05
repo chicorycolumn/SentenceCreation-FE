@@ -13,15 +13,17 @@ const TagInterface = (props) => {
   const lang1 = useContext(LanguageContext);
 
   useEffect(() => {
-    fetchWordsByTag(lang1, diUtils.asArray(props.traitValueInputString)).then(
-      (fetchedWords) => {
-        console.log("");
-        console.log("Setting fetched WORDS", fetchedWords);
-        console.log("");
-        setFetchedLObjs(fetchedWords);
-      }
-    );
-  }, [props.traitValueInputString, lang1]);
+    fetchWordsByTag(
+      lang1,
+      diUtils.asArray(props.traitValueInputString),
+      diUtils.asArray(props.traitValueInputString2)
+    ).then((fetchedWords) => {
+      console.log("");
+      console.log("Setting fetched WORDS", fetchedWords);
+      console.log("");
+      setFetchedLObjs(fetchedWords);
+    });
+  }, [props.traitValueInputString, props.traitValueInputString2, lang1]);
 
   useEffect(() => {
     fetchTags(lang1).then((fetchedTags) => {
@@ -35,34 +37,20 @@ const TagInterface = (props) => {
   return (
     <div className={styles.mainBox}>
       <div className={styles.leftDiv}>
-        <div className={styles.div1}>
-          <h1>Select tags</h1>
-
+        <div className={styles.buttonHolder}>
           <button
             className={gstyles.tickButton}
-            onClick={props.checkAndSetTraitValue}
+            onClick={() => {
+              props.checkAndSetTraitValue(true);
+            }}
           >
             &#10003;
           </button>
 
-          <select
-            className={styles.tagSelector}
-            name="tag"
-            onClick={(e) => {
-              e.preventDefault();
-              props.pushpopTraitValueInputString(e.target.value);
-            }}
-          >
-            {tags.map((tag) => (
-              <option value={tag} key={tag}>
-                {tag}
-              </option>
-            ))}
-          </select>
           <button
             className={gstyles.exitButton}
             onClick={() => {
-              props.revertTraitValueInputString();
+              props.revertTraitValueInputString(true);
               props.exitTraitBox(false);
             }}
           >
@@ -70,19 +58,55 @@ const TagInterface = (props) => {
           </button>
         </div>
 
-        <div className={styles.etiquetteHolder}>
-          {diUtils.asArray(props.traitValueInputString).map((tag) => (
-            <div
-              onClick={() => {
-                props.pushpopTraitValueInputString(tag, false);
-              }}
-              className={`${styles.etiquette} ${styles.etiquetteClickable}`}
-              key={tag}
-            >
-              {tag}
-            </div>
-          ))}
-        </div>
+        {[props.traitValueInputString, props.traitValueInputString2].map(
+          (traitValueInputString, index) => {
+            const heading = ["Select And-Tags", "Select Or-Tags"][index];
+            const isSecondary = index === 1;
+            return (
+              <div key={heading} className={styles.heading}>
+                <div className={styles.div1}>
+                  <h1>{heading}</h1>
+
+                  <select
+                    className={styles.tagSelector}
+                    name="tag"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      props.pushpopTraitValueInputString(
+                        e.target.value,
+                        true,
+                        isSecondary
+                      );
+                    }}
+                  >
+                    {tags.map((tag) => (
+                      <option value={tag} key={tag}>
+                        {tag}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className={styles.etiquetteHolder}>
+                  {diUtils.asArray(traitValueInputString).map((tag) => (
+                    <div
+                      onClick={() => {
+                        props.pushpopTraitValueInputString(
+                          tag,
+                          false,
+                          isSecondary
+                        );
+                      }}
+                      className={`${styles.etiquette} ${styles.etiquetteClickable}`}
+                      key={tag}
+                    >
+                      {tag}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+        )}
       </div>
 
       <div className={styles.rightDiv}>

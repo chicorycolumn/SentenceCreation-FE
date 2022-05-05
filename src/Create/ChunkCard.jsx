@@ -146,7 +146,7 @@ const ChunkCard = (props) => {
     },
     orTags: {
       expectedTypeOnStCh: "array",
-      traitValue: [],
+      traitValue: ["pet"],
       ultimatelyMultipleTraitValuesOkay: true,
     },
     form: {
@@ -175,7 +175,6 @@ const ChunkCard = (props) => {
   useEffect(() => {
     if (lang1) {
       fetchLObjsByLemma(lang1, props.word).then((fetchedLObjs) => {
-        console.log(fetchedLObjs);
         setLObjs(fetchedLObjs);
       });
     }
@@ -213,15 +212,30 @@ const ChunkCard = (props) => {
       </h1>
       {structureChunk ? (
         <div className={styles.traitBoxesHolder}>
-          {traitKeysGroup1.map((traitKey) => (
-            <TraitBox
-              key={traitKey}
-              traitKey={traitKey}
-              traitObject={structureChunk[traitKey]}
-              word={props.word}
-              setStructureChunk={setStructureChunk}
-            />
-          ))}
+          {traitKeysGroup1.map((traitKey) => {
+            let traitObject = structureChunk[traitKey];
+            let traitKey2 = null;
+
+            if (traitKey === "andTags") {
+              traitKey2 = "orTags";
+            }
+
+            let traitObject2 = traitKey2 ? structureChunk[traitKey2] : null;
+
+            return (
+              traitKey !== "orTags" && (
+                <TraitBox
+                  key={traitKey}
+                  traitKey={traitKey}
+                  traitKey2={traitKey2}
+                  traitObject={traitObject}
+                  traitObject2={traitObject2}
+                  word={props.word}
+                  setStructureChunk={setStructureChunk}
+                />
+              )
+            );
+          })}
           <button
             onClick={() => {
               setShowMoreTraitKeys((prevState) => !prevState);

@@ -8,45 +8,73 @@ const diUtils = require("../utils/displayUtils.js");
 class TraitBox extends Component {
   state = {
     traitValueInputString: diUtils.asString(this.props.traitObject.traitValue),
+    traitValueInputString2:
+      this.props.traitObject2 &&
+      diUtils.asString(this.props.traitObject2.traitValue),
     hasJustBlurred: false,
     isInputActive: false,
     isHovered: false,
     isSelected: false,
     forceShowInput: false,
     showTagInterface: false,
-    thickBorder: false,
   };
 
   setShowTagInterface = (val) => {
     this.setState({ showTagInterface: val });
   };
 
-  revertTraitValueInputString = () => {
-    this.setState({
-      traitValueInputString: diUtils.asString(
-        this.props.traitObject.traitValue
-      ),
-    });
+  revertTraitValueInputString = (isSecondary = false) => {
+    const innerFunction = (
+      traitValueInputStringKey = "traitValueInputString",
+      traitObjectKey = "traitObject"
+    ) => {
+      this.setState(() => {
+        let newState = {};
+        newState[traitValueInputStringKey] = diUtils.asString(
+          this.props[traitObjectKey].traitValue
+        );
+        return newState;
+      });
+    };
+
+    if (isSecondary) {
+      innerFunction("traitValueInputString2", "traitObject2");
+    } else {
+      innerFunction();
+    }
   };
 
-  pushpopTraitValueInputString = (val, add = true) => {
-    let arr = diUtils.asArray(this.state.traitValueInputString);
+  pushpopTraitValueInputString = (val, add = true, secondary = false) => {
+    const innerFunction = (
+      traitValueInputStringKey = "traitValueInputString"
+    ) => {
+      let arr = diUtils.asArray(this.state[traitValueInputStringKey]);
 
-    if (add) {
-      if (!arr.includes(val)) {
-        arr.push(val);
+      if (add) {
+        if (!arr.includes(val)) {
+          arr.push(val);
+        }
+      } else {
+        arr = arr.filter((el) => el !== val);
       }
-    } else {
-      arr = arr.filter((el) => el !== val);
-    }
 
-    this.setState({
-      traitValueInputString: diUtils.asString(arr),
-    });
+      this.setState(() => {
+        let newState = {};
+        newState[traitValueInputStringKey] = diUtils.asString(arr);
+        return newState;
+      });
+    };
+
+    if (secondary) {
+      innerFunction("traitValueInputString2");
+    } else {
+      innerFunction();
+    }
   };
 
   render() {
-    let { traitKey, traitObject, word, setStructureChunk } = this.props;
+    let { traitKey, traitObject, traitKey2, word, setStructureChunk } =
+      this.props;
 
     const exitTraitBox = (changeToValue = true) => {
       this.setState({
@@ -60,126 +88,140 @@ class TraitBox extends Component {
 
       setTimeout(() => {
         this.setState({
-          thickBorder: false,
           hasJustBlurred: false,
           traitValueInputString: diUtils.asString(
             this.props.traitObject.traitValue
           ),
+          traitValueInputString2:
+            this.props.traitObject2 &&
+            diUtils.asString(this.props.traitObject2.traitValue),
         });
       }, 1000);
     };
 
-    const checkAndSetTraitValue = () => {
-      console.log("@...");
-      console.log(
-        "this.state.traitValueInputString",
-        this.state.traitValueInputString,
-        typeof this.state.traitValueInputString
-      );
+    const checkAndSetTraitValue = (secondaryAsWellAsPrimary = false) => {
+      console.log(11, this.props);
 
-      if (
-        this.state.traitValueInputString !==
-          diUtils.asString(this.props.traitObject.traitValue) &&
-        !(
-          uUtils.isEmpty(this.state.traitValueInputString, true) &&
-          uUtils.isEmpty(this.props.traitObject.traitValue, true)
-        )
-      ) {
-        console.log("@You have changed value.");
+      const innerFunction = (
+        traitKeyKey = "traitKey",
+        traitValueInputStringKey = "traitValueInputString",
+        traitObjectKey = "traitObject"
+      ) => {
+        console.log(22, this.props);
+        const traitKey = this.props[traitKeyKey];
+        console.log("@...");
         console.log(
-          "@this.state.traitValueInputString",
-          this.state.traitValueInputString,
-          typeof this.state.traitValueInputString
+          `this.state[traitValueInputStringKey]`,
+          this.state[traitValueInputStringKey],
+          typeof this.state[traitValueInputStringKey]
         );
-        console.log(
-          "@this.props.traitObject.traitValue",
-          this.props.traitObject.traitValue,
-          typeof this.props.traitObject.traitValue
-        );
-        console.log("/@");
-        setStructureChunk((prevStructureChunk) => {
-          let newStructureChunk = {
-            ...prevStructureChunk,
-          };
 
-          let newTraitValue = this.state.traitValueInputString;
-          newTraitValue = uUtils.isEmpty(newTraitValue, true)
-            ? null
-            : newTraitValue;
+        if (
+          this.state[traitValueInputStringKey] !==
+            diUtils.asString(this.props[traitObjectKey].traitValue) &&
+          !(
+            uUtils.isEmpty(this.state[traitValueInputStringKey], true) &&
+            uUtils.isEmpty(this.props[traitObjectKey].traitValue, true)
+          )
+        ) {
+          console.log("@You have changed value.");
+          console.log(
+            `@this.state[traitValueInputStringKey]`,
+            this.state[traitValueInputStringKey],
+            typeof this.state[traitValueInputStringKey]
+          );
+          console.log(
+            `@this.props[traitObjectKey].traitValue`,
+            this.props[traitObjectKey].traitValue,
+            typeof this.props[traitObjectKey].traitValue
+          );
+          console.log("/@");
+          setStructureChunk((prevStructureChunk) => {
+            let newStructureChunk = {
+              ...prevStructureChunk,
+            };
 
-          let expectedType = newStructureChunk[traitKey].expectedTypeOnStCh;
+            let newTraitValue = this.state[traitValueInputStringKey];
+            newTraitValue = uUtils.isEmpty(newTraitValue, true)
+              ? null
+              : newTraitValue;
 
-          if (expectedType === "array") {
-            console.log("::", newTraitValue);
-            if (newTraitValue) {
-              newTraitValue = diUtils.asArray(newTraitValue);
-            }
-            console.log(":::", newTraitValue);
-          } else if (expectedType === "string") {
-            if (newTraitValue && newTraitValue.includes(",")) {
-              alert(
-                "Just one string value expected but you have input a comma?"
-              );
-              this.setState({
-                traitValueInputString: diUtils.asString(
-                  this.props.traitObject.traitValue
-                ),
-              });
-              return newStructureChunk; //Aborting without changing anything.
-            }
-          } else if (expectedType === "boolean") {
-            newTraitValue = newTraitValue === "true" ? true : false;
-          }
+            let expectedType = newStructureChunk[traitKey].expectedTypeOnStCh;
 
-          newStructureChunk[traitKey] = {
-            ...newStructureChunk[traitKey],
-          };
-
-          if (newTraitValue) {
-            newStructureChunk[traitKey].traitValue = newTraitValue;
-          } else {
             if (expectedType === "array") {
-              newStructureChunk[traitKey].traitValue = [];
-            } else {
-              delete newStructureChunk[traitKey].traitValue;
+              console.log("::", newTraitValue);
+              if (newTraitValue) {
+                newTraitValue = diUtils.asArray(newTraitValue);
+              }
+              console.log(":::", newTraitValue);
+            } else if (expectedType === "string") {
+              if (newTraitValue && newTraitValue.includes(",")) {
+                alert(
+                  "Just one string value expected but you have input a comma?"
+                );
+                this.setState({
+                  traitValueInputString: diUtils.asString(
+                    this.props[traitObjectKey].traitValue
+                  ),
+                });
+                return newStructureChunk; //Aborting without changing anything.
+              }
+            } else if (expectedType === "boolean") {
+              newTraitValue = newTraitValue === "true" ? true : false;
             }
-          }
-          return newStructureChunk;
-        });
-        exitTraitBox();
-        return;
+
+            newStructureChunk[traitKey] = {
+              ...newStructureChunk[traitKey],
+            };
+
+            if (newTraitValue) {
+              newStructureChunk[traitKey].traitValue = newTraitValue;
+            } else {
+              if (expectedType === "array") {
+                newStructureChunk[traitKey].traitValue = [];
+              } else {
+                delete newStructureChunk[traitKey].traitValue;
+              }
+            }
+            return newStructureChunk;
+          });
+          exitTraitBox();
+          return;
+        }
+        console.log("@No change to value.");
+        console.log("/@");
+        exitTraitBox(false);
+      };
+
+      console.log("###");
+      console.log("checkAndSetTraitValue PRIMARY");
+      console.log("###");
+      innerFunction();
+
+      if (secondaryAsWellAsPrimary) {
+        console.log("###");
+        console.log("checkAndSetTraitValue SECONDARY");
+        console.log("###");
+        innerFunction("traitKey2", "traitValueInputString2", "traitObject2");
       }
-      console.log("@No change to value.");
-      console.log("/@");
-      exitTraitBox(false);
     };
 
     return (
       <div
-        // onMouseEnter={() => {
-        //   this.setState({ isHovered: true });
-        // }}
-        // onMouseLeave={() => {
-        //   if (!this.state.isInputActive) {
-        //     this.setState({ isHovered: false });
-        //   }
-        // }}
         key={`${word}-${traitKey}`}
         className={`${styles.preventSelection} ${styles.traitBox} ${
           !traitObject.traitValue && styles.traitBoxEmpty
         } ${this.state.hasJustBlurred && styles.shimmer} ${
           (this.state.isHovered || this.state.isSelected) &&
           styles.traitBoxHover
-        } ${this.state.isSelected && styles.traitBoxSelected} ${
-          this.state.thickBorder && styles.thickBorder
-        }
+        } ${this.state.isSelected && styles.traitBoxSelected}
         
         `}
       >
         {this.state.showTagInterface && (
           <TagInterface
             traitValueInputString={this.state.traitValueInputString}
-            setTraitInputValueString={this.setTraitInputValueString}
+            traitValueInputString2={this.state.traitValueInputString2}
             setShowTagInterface={this.setShowTagInterface}
             pushpopTraitValueInputString={this.pushpopTraitValueInputString}
             revertTraitValueInputString={this.revertTraitValueInputString}
@@ -189,14 +231,19 @@ class TraitBox extends Component {
         )}
         <div
           onMouseEnter={() => {
-            console.log(
-              ">traitValueInputString",
-              this.state.traitValueInputString
-            );
-            console.log(
-              ">this.props.traitObject.traitValue",
-              this.props.traitObject.traitValue
-            );
+            console.log("");
+            console.log("state.traitValueInputString HAS VALUE:");
+            console.log("> > >", this.state.traitValueInputString);
+            console.log("props.traitObject.traitValue HAS VALUE:");
+            console.log("> > >", this.props.traitObject.traitValue);
+
+            if (this.state.traitValueInputString2) {
+              console.log("");
+              console.log("state.traitValueInputString2 HAS VALUE:");
+              console.log("> > >", this.state.traitValueInputString2);
+              console.log("props.traitObject.traitValue2 HAS VALUE:");
+              console.log("> > >", this.props.traitObject2.traitValue);
+            }
           }}
           onClick={() => {
             if (this.state.isSelected) {
@@ -216,37 +263,67 @@ class TraitBox extends Component {
             }`}
           >
             {traitKey}
+            {traitKey2 && ` / ${traitKey2}`}
           </p>
         </div>
         {(!uUtils.isEmpty(traitObject.traitValue) ||
-          this.state.forceShowInput) && (
-          <div className={styles.traitValuesBox}>
-            <textarea
-              className={`${styles.traitValuesInput} ${
-                diUtils.isTagTrait(traitKey) && styles.traitValuesInputLarge
-              }`}
-              value={this.state.traitValueInputString}
-              onChange={(e) => {
-                this.setState({ traitValueInputString: e.target.value });
-              }}
-              onFocus={() => {
-                this.setState({ isHovered: true, isInputActive: true });
-              }}
-              onBlur={checkAndSetTraitValue}
-            />
-            <button
-              className={`${gstyles.exitButton} ${styles.clearButton}`}
-              onClick={() => {
-                console.log("X!");
-                this.setState({
-                  traitValueInputString: null,
-                  thickBorder: true,
-                });
-                setTimeout(checkAndSetTraitValue, 500);
-              }}
-            >
-              &times;
-            </button>
+          this.state.forceShowInput ||
+          diUtils.isTagTrait(traitKey)) && (
+          <div
+            key={`${this.state.traitValueInputString}-${
+              this.state.traitValueInputString2
+                ? this.state.traitValueInputString2
+                : ""
+            }`}
+          >
+            {[traitKey, traitKey2]
+              .filter((el) => el)
+              .map((traitKey, index) => {
+                const isSecondary = index === 1;
+                const traitValueInputStringKey = isSecondary
+                  ? "traitValueInputString2"
+                  : "traitValueInputString";
+                return (
+                  <div key={traitKey} className={styles.traitValuesBox}>
+                    <textarea
+                      className={`${styles.traitValuesInput} ${
+                        diUtils.isTagTrait(traitKey) &&
+                        styles.traitValuesInputLarge
+                      }`}
+                      value={this.state[traitValueInputStringKey]}
+                      onChange={(e) => {
+                        this.setState(() => {
+                          let newState = {};
+                          newState[traitValueInputStringKey] = e.target.value;
+                          return newState;
+                        });
+                      }}
+                      onFocus={() => {
+                        this.setState({ isHovered: true, isInputActive: true });
+                      }}
+                      onBlur={() => {
+                        checkAndSetTraitValue(isSecondary);
+                      }}
+                    />
+                    <button
+                      className={`${gstyles.exitButton} ${styles.clearButton}`}
+                      onClick={() => {
+                        console.log("X!");
+                        this.setState(() => {
+                          let newState = {};
+                          newState[traitValueInputStringKey] = null;
+                          return newState;
+                        });
+                        setTimeout(() => {
+                          checkAndSetTraitValue(isSecondary);
+                        }, 500);
+                      }}
+                    >
+                      &times;
+                    </button>
+                  </div>
+                );
+              })}
           </div>
         )}
 
