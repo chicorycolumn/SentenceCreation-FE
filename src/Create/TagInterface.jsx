@@ -63,7 +63,7 @@ const TagInterface = (props) => {
             const heading = ["Select And-Tags", "Select Or-Tags"][index];
             const isSecondary = index === 1;
             return (
-              <div key={heading}>
+              <div key={heading} className={styles.heading}>
                 <div className={styles.div1}>
                   <h1>{heading}</h1>
 

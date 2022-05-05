@@ -263,6 +263,7 @@ class TraitBox extends Component {
             }`}
           >
             {traitKey}
+            {traitKey2 && ` / ${traitKey2}`}
           </p>
         </div>
         {(!uUtils.isEmpty(traitObject.traitValue) ||
