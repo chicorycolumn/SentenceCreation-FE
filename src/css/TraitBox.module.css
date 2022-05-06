@@ -1,5 +1,7 @@
 .traitBox {
+  margin-top: 2.5px;
   width: 162px;
+  min-height: 35px;
   border: white solid 1px;
   display: flex;
   flex-direction: column;
@@ -7,6 +9,7 @@
   overflow: hidden;
   background-color: lightgreen;
   border: darkgreen solid 1px;
+  box-shadow: rgba(0, 0, 0, 0.25) 2.5px 2.5px 2.5px;
 }
 
 .traitBoxHover {
@@ -24,8 +27,9 @@
 }
 
 .traitTitle {
-  padding: none;
-  margin: none;
+  padding: 0px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .traitValuesInput {

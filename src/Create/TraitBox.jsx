@@ -24,6 +24,7 @@ class TraitBox extends Component {
   };
 
   revertTraitValueInputString = (isSecondary = false) => {
+    console.log("£revertTraitValueInputString");
     const innerFunction = (
       traitValueInputStringKey = "traitValueInputString",
       traitObjectKey = "traitObject"
@@ -45,6 +46,7 @@ class TraitBox extends Component {
   };
 
   pushpopTraitValueInputString = (val, add = true, secondary = false) => {
+    console.log("£pushpopTraitValueInputString");
     const innerFunction = (
       traitValueInputStringKey = "traitValueInputString"
     ) => {
@@ -77,6 +79,7 @@ class TraitBox extends Component {
       this.props;
 
     const exitTraitBox = (changeToValue = true) => {
+      console.log("£exitTraitBox");
       this.setState({
         isInputActive: false,
         isHovered: false,
@@ -100,14 +103,13 @@ class TraitBox extends Component {
     };
 
     const checkAndSetTraitValue = (secondaryAsWellAsPrimary = false) => {
-      console.log(11, this.props);
+      console.log("£checkAndSetTraitValue");
 
       const innerFunction = (
         traitKeyKey = "traitKey",
         traitValueInputStringKey = "traitValueInputString",
         traitObjectKey = "traitObject"
       ) => {
-        console.log(22, this.props);
         const traitKey = this.props[traitKeyKey];
         console.log("@...");
         console.log(
@@ -256,6 +258,7 @@ class TraitBox extends Component {
             }
           }}
           onClick={() => {
+            console.log("£traitTitleHolder-onClick");
             if (this.state.isSelected) {
               checkAndSetTraitValue();
             } else {
@@ -299,16 +302,26 @@ class TraitBox extends Component {
                 const traitValueInputStringKey = isSecondary
                   ? "traitValueInputString2"
                   : "traitValueInputString";
+
                 return (
-                  <div key={traitKey} className={styles.traitValuesBox}>
+                  <div
+                    key={`div-for-textarea-${traitKey}`}
+                    className={styles.traitValuesBox}
+                  >
                     <textarea
-                      disabled={diUtils.isTagTrait(traitKey)}
+                      key={`textarea-${traitKey}`}
+                      disabled={
+                        diUtils.isTagTrait(traitKey) ||
+                        traitObject.possibleTraitValues ||
+                        traitObject.expectedTypeOnStCh === "boolean"
+                      }
                       className={`${styles.traitValuesInput} ${
                         diUtils.isTagTrait(traitKey) &&
                         styles.traitValuesInputLarge
                       }`}
                       value={this.state[traitValueInputStringKey]}
-                      onChange={(e) => {
+                      onBlur={(e) => {
+                        console.log("£traitValuesInput-onBlur");
                         if (diUtils.isTagTrait(traitKey)) {
                           e.preventDefault();
                           return;
@@ -318,6 +331,13 @@ class TraitBox extends Component {
                           newState[traitValueInputStringKey] = e.target.value;
                           return newState;
                         });
+                      }}
+                      onChange={(e) => {
+                        console.log("£traitValuesInput-onChange");
+                        if (diUtils.isTagTrait(traitKey)) {
+                          e.preventDefault();
+                          return;
+                        }
                       }}
                     />
                     <button
@@ -363,6 +383,7 @@ class TraitBox extends Component {
                               .includes(possibleTraitValue)
                           }
                           onChange={(e) => {
+                            console.log("£checkbox-onChange");
                             this.setState((prevState) => {
                               if (
                                 prevState.traitValueInputString &&
@@ -441,6 +462,7 @@ class TraitBox extends Component {
                   name={`${traitKey}-0`}
                   checked={this.state.traitValueInputString === "true"}
                   onChange={(e) => {
+                    console.log("£checkbox2-onChange");
                     this.setState((prevState) => {
                       if (
                         prevState.traitValueInputString === "true" &&

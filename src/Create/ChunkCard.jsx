@@ -237,6 +237,7 @@ const ChunkCard = (props) => {
             );
           })}
           <button
+            className={styles.showMoreToggle}
             onClick={() => {
               setShowMoreTraitKeys((prevState) => !prevState);
             }}
