@@ -9,7 +9,6 @@
   overflow: hidden;
   background-color: lightgreen;
   border: darkgreen solid 1px;
-  box-shadow: rgba(0, 0, 0, 0.25) 2.5px 2.5px 2.5px;
 }
 
 .traitBoxHover {
@@ -63,9 +62,6 @@
   }
 }
 
-.traitTitleHolder {
-}
-
 .inputOptionsHolder {
   border: red dotted 2px;
 }
@@ -99,15 +95,13 @@
 }
 
 .preventSelection {
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
+  -webkit-user-select: none !important; /* Safari */
+  -ms-user-select: none !important; /* IE 10 and IE 11 */
+  user-select: none !important; /* Standard syntax */
 }
 
 .floatingButton {
   position: absolute;
-  top: 85px;
-  left: 0px;
   background-color: none;
   background: none;
   font-size: 18px;

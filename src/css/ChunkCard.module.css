@@ -43,25 +43,37 @@
 }
 
 .traitBoxesHolder {
-  /* border: darkseagreen solid 2px; */
+  /* border: blue solid 0.5px; */
   background-color: none;
   color: black;
   text-align: center;
-  /* padding: 10px; */
-  position: absolute;
-  /* z-index: 3; */
-  /* visibility: hidden; */
-  visibility: visible;
   width: 162px;
   font-size: 13px;
-  margin-top: 100px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  margin-top: 2px;
 }
 
-.showMoreToggle {
+.toggleShowButton {
   height: 30px;
-  width: 90px;
+  width: 70px;
+  margin: 0px;
+  margin-top: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 16px;
+  color: darkgreen;
+  background-color: rgb(202, 255, 202);
+  border: darkgreen solid 1px;
+}
+
+.toggleShowButton:hover {
+  background-color: rgb(229, 252, 229);
+}
+
+.toggleShowButton:active {
+  background-color: lightgreen;
+  color: rgb(202, 255, 202);
 }

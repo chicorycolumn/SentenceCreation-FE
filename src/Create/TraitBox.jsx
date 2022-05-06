@@ -318,7 +318,7 @@ class TraitBox extends Component {
                       className={`${styles.traitValuesInput} ${
                         diUtils.isTagTrait(traitKey) &&
                         styles.traitValuesInputLarge
-                      }`}
+                      } ${styles.preventSelection}`}
                       value={this.state[traitValueInputStringKey]}
                       onBlur={(e) => {
                         console.log("£traitValuesInput-onBlur");
