@@ -213,7 +213,8 @@ class TraitBox extends Component {
         key={`${word}-${traitKey}`}
         className={`${styles.preventSelection} ${styles.traitBox} ${
           !traitObject.traitValue && styles.traitBoxEmpty
-        } ${this.state.hasJustBlurred && styles.shimmer} ${
+        } ${this.state.hasJustBlurred && styles.shimmer} 
+        ${
           (this.state.isHovered || this.state.isSelected) &&
           styles.traitBoxHover
         } ${this.state.isSelected && styles.traitBoxSelected}
@@ -310,6 +311,7 @@ class TraitBox extends Component {
                   >
                     <textarea
                       key={`textarea-${traitKey}`}
+                      id={`textarea-${traitKey}`}
                       disabled={
                         diUtils.isTagTrait(traitKey) ||
                         traitObject.possibleTraitValues ||
@@ -319,7 +321,17 @@ class TraitBox extends Component {
                         diUtils.isTagTrait(traitKey) &&
                         styles.traitValuesInputLarge
                       } ${styles.preventSelection}`}
-                      value={this.state[traitValueInputStringKey]}
+                      value={
+                        `textarea-${traitKey}` === this.state.activeTextarea
+                          ? null
+                          : this.state[traitValueInputStringKey]
+                      }
+                      onMouseEnter={() => {
+                        console.log(
+                          "textarea.value:",
+                          document.getElementById(`textarea-${traitKey}`).value
+                        );
+                      }}
                       onBlur={(e) => {
                         console.log("£traitValuesInput-onBlur");
                         if (diUtils.isTagTrait(traitKey)) {
@@ -329,15 +341,27 @@ class TraitBox extends Component {
                         this.setState(() => {
                           let newState = {};
                           newState[traitValueInputStringKey] = e.target.value;
+                          newState.activeTextarea = null;
                           return newState;
                         });
+                        setTimeout(() => {
+                          checkAndSetTraitValue(isSecondary);
+                        }, 500);
                       }}
                       onChange={(e) => {
                         console.log("£traitValuesInput-onChange");
+                        console.log(
+                          "textarea.value:",
+                          document.getElementById(`textarea-${traitKey}`).value
+                        );
                         if (diUtils.isTagTrait(traitKey)) {
+                          console.log("prevent default");
                           e.preventDefault();
                           return;
                         }
+                        this.setState({
+                          activeTextarea: `textarea-${traitKey}`,
+                        });
                       }}
                     />
                     <button
