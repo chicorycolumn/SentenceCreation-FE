@@ -9,7 +9,7 @@ const diUtils = require("../utils/displayUtils.js");
 const TagInterface = (props) => {
   const [tags, setTags] = useState([]);
   const [fetchedLObjs, setFetchedLObjs] = useState({});
-  const [wordtypeInFocus, setWordtypeInFocus] = useState("npe");
+  const [wordtypeInFocus, setWordtypeInFocus] = useState(props.wordtype);
   const lang1 = useContext(LanguageContext);
 
   useEffect(() => {
@@ -118,7 +118,10 @@ const TagInterface = (props) => {
                 <button
                   disabled={!count}
                   key={wordtype}
-                  className={`${gstyles[wordtype]} ${styles.wordtypeButton}`}
+                  className={`${gstyles[wordtype]} ${styles.wordtypeButton} ${
+                    wordtypeInFocus === wordtype &&
+                    styles.wordtypeButtonSelected
+                  }`}
                   onClick={() => {
                     setWordtypeInFocus(wordtype);
                   }}

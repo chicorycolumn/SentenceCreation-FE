@@ -35,9 +35,15 @@ exports.orderTraitKeys = (stCh) => {
       orderedTraitKeys.length
     } !== Object.keys(stCh).length ${Object.keys(stCh).length}`;
   }
+
+  orderedTraitKeys = orderedTraitKeys.filter(
+    (traitKey) => !["wordtype"].includes(traitKey)
+  );
+
   return {
     orderedTraitKeysGroup1: orderedTraitKeys.slice(0, length),
     orderedTraitKeysGroup2: orderedTraitKeys.slice(length),
+    wordtypeFromStCh: stCh.wordtype,
   };
 };
 

@@ -53,7 +53,7 @@
   display: inline-block;
   mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
   background-repeat: no-repeat;
-  animation: shimmer 0.75s;
+  animation: shimmer 0.5s;
 }
 
 @keyframes shimmer {

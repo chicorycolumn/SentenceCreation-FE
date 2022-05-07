@@ -9,7 +9,11 @@ const ToggleShowButton = (props) => {
         props.setShowTraitKeysGroupTwo((prevState) => !prevState);
       }}
     >
-      {props.showTraitKeysGroupTwo ? "Hide" : "Show"}
+      {props.showTraitKeysGroupTwo ? (
+        <span className={styles.toggleShowButtonSpan}>&#9661;</span>
+      ) : (
+        <span className={styles.toggleShowButtonSpan}>&#9651;</span>
+      )}
     </button>
   );
 };

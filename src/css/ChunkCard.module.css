@@ -61,8 +61,7 @@
   width: 70px;
   margin: 0px;
   margin-top: 2px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-bottom: 5px;
   font-size: 16px;
   color: darkgreen;
   background-color: rgb(202, 255, 202);
@@ -76,4 +75,8 @@
 .toggleShowButton:active {
   background-color: lightgreen;
   color: rgb(202, 255, 202);
+}
+
+.toggleShowButtonSpan {
+  font-size: 20px;
 }

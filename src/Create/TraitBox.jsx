@@ -75,8 +75,14 @@ class TraitBox extends Component {
   };
 
   render() {
-    let { traitKey, traitObject, traitKey2, word, setStructureChunk } =
-      this.props;
+    let {
+      traitKey,
+      traitObject,
+      traitKey2,
+      word,
+      setStructureChunk,
+      wordtype,
+    } = this.props;
 
     const exitTraitBox = (changeToValue = true) => {
       console.log("£exitTraitBox");
@@ -99,7 +105,7 @@ class TraitBox extends Component {
             this.props.traitObject2 &&
             diUtils.asString(this.props.traitObject2.traitValue),
         });
-      }, 1000);
+      }, 500);
     };
 
     const checkAndSetTraitValue = (secondaryAsWellAsPrimary = false) => {
@@ -213,24 +219,25 @@ class TraitBox extends Component {
         key={`${word}-${traitKey}`}
         className={`${styles.preventSelection} ${styles.traitBox} ${
           !traitObject.traitValue && styles.traitBoxEmpty
-        } ${this.state.hasJustBlurred && styles.shimmer} 
-        ${
+        } ${this.state.hasJustBlurred && styles.shimmer} ${
           (this.state.isHovered || this.state.isSelected) &&
           styles.traitBoxHover
         } ${this.state.isSelected && styles.traitBoxSelected}
         
         `}
       >
-        {diUtils.isTagTrait(traitKey) && !this.state.isHovered && (
-          <button
-            className={styles.floatingButton}
-            onMouseOver={() => {
-              this.setState({ isHovered: true, isInputActive: true });
-            }}
-          >
-            &#128269;
-          </button>
-        )}
+        {diUtils.isTagTrait(traitKey) &&
+          !this.state.isHovered &&
+          !this.state.hasJustBlurred && (
+            <button
+              className={styles.floatingButton}
+              onMouseOver={() => {
+                this.setState({ isHovered: true, isInputActive: true });
+              }}
+            >
+              &#128269;
+            </button>
+          )}
         {this.state.showTagInterface && (
           <TagInterface
             traitValueInputString={this.state.traitValueInputString}
@@ -240,6 +247,7 @@ class TraitBox extends Component {
             revertTraitValueInputString={this.revertTraitValueInputString}
             checkAndSetTraitValue={checkAndSetTraitValue}
             exitTraitBox={exitTraitBox}
+            wordtype={wordtype}
           />
         )}
         <div
