@@ -18,19 +18,59 @@ const ChunkCard = (props) => {
   const lang1 = useContext(LanguageContext);
 
   useEffect(() => {
+    if (lObjs) {
+      let fetchedLObjs = lObjs;
+      console.log("");
+      console.log("word:", props.word);
+      console.log("index:", props.index);
+      console.log("fetchedLObjs.length:", fetchedLObjs.length);
+
+      if (structureChunk) {
+        console.log("Already done this one actually.");
+        return;
+      }
+
+      if (fetchedLObjs.length) {
+        let stCh = fetchedLObjs[0];
+        if (fetchedLObjs.length > 1) {
+          let id = prompt(
+            `\n"${props.formulaSymbol
+              .split(" ")
+              .map((el, i) =>
+                i === props.index
+                  ? el.toUpperCase()
+                  : i === 0
+                  ? uUtils.capitaliseFirst(el)
+                  : el
+              )
+              .join(" ")}."\n\nWhich ${props.word.toUpperCase()} of these ${
+              fetchedLObjs.length
+            } matches are you after?\n\n(Hint: Look at the wordtype)`,
+            fetchedLObjs.map((lObj) => lObj.id).join("|")
+          );
+          let matchingStChs = fetchedLObjs.filter((lObj) => lObj.id === id);
+          if (matchingStChs.length === 1) {
+            stCh = matchingStChs[0];
+          } else {
+            return;
+          }
+        }
+        let idSplit = stCh.id.split("-");
+        stCh.chunkId.traitValue = `${idSplit[1]}-${props.index}${idSplit[2]
+          .split("")
+          .reverse()
+          .join("")}-${stCh.lemma}`;
+
+        setStructureChunk(stCh);
+      }
+    }
+  }, [lObjs, props.index, props.word, structureChunk, props.formulaSymbol]);
+
+  useEffect(() => {
     if (lang1 && props.word) {
       fetchLObjsByLemma(lang1, props.word).then(
         (fetchedLObjs) => {
           setLObjs(fetchedLObjs);
-          if (fetchedLObjs.length === 1) {
-            let stCh = fetchedLObjs[0];
-            let idSplit = stCh.id.split("-");
-            stCh.chunkId.traitValue = `${idSplit[1]}-${idSplit[2]
-              .split("")
-              .reverse()
-              .join("")}-${stCh.lemma}`;
-            setStructureChunk(stCh);
-          }
         },
         (error) => {
           console.log("ERROR 0307:", error);
@@ -100,6 +140,9 @@ const ChunkCard = (props) => {
 
               let traitObject2 = traitKey2 ? structureChunk[traitKey2] : null;
 
+              console.log("");
+              console.log(traitsWithoutTraitBoxes.includes(traitKey));
+              console.log(traitKey);
               return (
                 !traitsWithoutTraitBoxes.includes(traitKey) && (
                   <TraitBox
@@ -125,15 +168,18 @@ const ChunkCard = (props) => {
             )}
           />
           {showTraitKeysGroupTwo &&
-            traitKeysGroup2.map((traitKey) => (
-              <TraitBox
-                key={traitKey}
-                traitKey={traitKey}
-                traitObject={structureChunk[traitKey]}
-                word={props.word}
-                setStructureChunk={setStructureChunk}
-              />
-            ))}
+            traitKeysGroup2.map(
+              (traitKey) =>
+                !traitsWithoutTraitBoxes.includes(traitKey) && (
+                  <TraitBox
+                    key={traitKey}
+                    traitKey={traitKey}
+                    traitObject={structureChunk[traitKey]}
+                    word={props.word}
+                    setStructureChunk={setStructureChunk}
+                  />
+                )
+            )}
         </div>
       )}
     </div>
