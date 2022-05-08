@@ -1,7 +1,13 @@
 const uUtils = require("./universalUtils.js");
 
 exports.orderTraitKeys = (stCh) => {
-  let orderedTraitKeys = ["andTags", "orTags", "agreeWith", "connectedTo"];
+  let orderedTraitKeys = [
+    "chunkId",
+    "andTags",
+    "orTags",
+    "agreeWith",
+    "connectedTo",
+  ];
   let lexicalTraitKeys = [];
   let booleanTraitKeys = [];
   Object.keys(stCh).forEach((traitKey) => {

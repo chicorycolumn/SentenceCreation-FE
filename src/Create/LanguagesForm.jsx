@@ -16,7 +16,7 @@ const LanguagesForm = (props) => {
         <button
           onClick={() => {
             console.log("");
-            console.log(lang1);
+            console.log({ lang1 });
             console.log("");
           }}
         >

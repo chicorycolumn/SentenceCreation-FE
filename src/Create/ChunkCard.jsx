@@ -8,19 +8,34 @@ import ToggleShowButton from "./ToggleShowButton.jsx";
 import { testStChs } from "../utils/testData.js";
 const uUtils = require("../utils/universalUtils.js");
 const diUtils = require("../utils/displayUtils.js");
+const traitsWithoutTraitBoxes = ["orTags", "id", "lemma"];
 
 const ChunkCard = (props) => {
   const [lObjs, setLObjs] = useState([]);
-  const [structureChunk, setStructureChunk] = useState(testStChs.adjStCh);
+  const [structureChunk, setStructureChunk] = useState();
   const [showTraitKeysGroupOne, setShowTraitKeysGroupOne] = useState(true);
   const [showTraitKeysGroupTwo, setShowTraitKeysGroupTwo] = useState();
   const lang1 = useContext(LanguageContext);
 
   useEffect(() => {
-    if (lang1) {
-      fetchLObjsByLemma(lang1, props.word).then((fetchedLObjs) => {
-        setLObjs(fetchedLObjs);
-      });
+    if (lang1 && props.word) {
+      fetchLObjsByLemma(lang1, props.word).then(
+        (fetchedLObjs) => {
+          setLObjs(fetchedLObjs);
+          if (fetchedLObjs.length === 1) {
+            let stCh = fetchedLObjs[0];
+            let idSplit = stCh.id.split("-");
+            stCh.chunkId.traitValue = `${idSplit[1]}-${idSplit[2]
+              .split("")
+              .reverse()
+              .join("")}-${stCh.lemma}`;
+            setStructureChunk(stCh);
+          }
+        },
+        (error) => {
+          console.log("ERROR 0307:", error);
+        }
+      );
     }
   }, [lang1, props.word]);
 
@@ -37,7 +52,10 @@ const ChunkCard = (props) => {
   }
 
   return (
-    <div className={styles.card} key={props.word}>
+    <div
+      className={`${styles.card} ${wordtype && gstyles[wordtype]}`}
+      key={props.word}
+    >
       <div className={styles.cardButtonsHolder}>
         <button className={styles.cardButton}>Edit</button>
         <button className={styles.cardButton}>Query</button>
@@ -45,22 +63,31 @@ const ChunkCard = (props) => {
       </div>
       <h1
         onClick={() => {
-          Object.keys(structureChunk).forEach((traitKey) => {
-            let traitObject = structureChunk[traitKey];
-            if (!uUtils.isEmpty(traitObject.traitValue)) {
-              console.log(traitKey, traitObject.traitValue);
-            }
-          });
+          console.log("structureChunk keys:");
+          if (structureChunk) {
+            Object.keys(structureChunk).forEach((traitKey) => {
+              let traitObject = structureChunk[traitKey];
+              if (!uUtils.isEmpty(traitObject.traitValue)) {
+                console.log(traitKey, traitObject.traitValue);
+              }
+            });
+          }
         }}
         className={styles.lemma}
       >
         {props.word}
       </h1>
-      {structureChunk ? (
+      <p className={styles.wordtype}>{structureChunk && structureChunk.id}</p>
+      {structureChunk && (
         <div className={styles.traitBoxesHolder}>
           <ToggleShowButton
-            setShowTraitKeysGroupTwo={setShowTraitKeysGroupOne}
-            showTraitKeysGroupTwo={showTraitKeysGroupOne}
+            setShowTraitKeysGroup={setShowTraitKeysGroupOne}
+            showTraitKeysGroup={showTraitKeysGroupOne}
+            traitKeysHoldSomeValues={traitKeysGroup1.some(
+              (traitKey) =>
+                structureChunk[traitKey] &&
+                !uUtils.isEmpty(structureChunk[traitKey].traitValue)
+            )}
           />
           {showTraitKeysGroupOne &&
             traitKeysGroup1.map((traitKey) => {
@@ -74,7 +101,7 @@ const ChunkCard = (props) => {
               let traitObject2 = traitKey2 ? structureChunk[traitKey2] : null;
 
               return (
-                traitKey !== "orTags" && (
+                !traitsWithoutTraitBoxes.includes(traitKey) && (
                   <TraitBox
                     key={traitKey}
                     traitKey={traitKey}
@@ -89,15 +116,15 @@ const ChunkCard = (props) => {
               );
             })}
           <ToggleShowButton
-            setShowTraitKeysGroupTwo={setShowTraitKeysGroupTwo}
-            showTraitKeysGroupTwo={showTraitKeysGroupTwo}
-          />
-          {(showTraitKeysGroupTwo ||
-            traitKeysGroup2.some(
+            setShowTraitKeysGroup={setShowTraitKeysGroupTwo}
+            showTraitKeysGroup={showTraitKeysGroupTwo}
+            traitKeysHoldSomeValues={traitKeysGroup2.some(
               (traitKey) =>
                 structureChunk[traitKey] &&
                 !uUtils.isEmpty(structureChunk[traitKey].traitValue)
-            )) &&
+            )}
+          />
+          {showTraitKeysGroupTwo &&
             traitKeysGroup2.map((traitKey) => (
               <TraitBox
                 key={traitKey}
@@ -108,8 +135,6 @@ const ChunkCard = (props) => {
               />
             ))}
         </div>
-      ) : (
-        {}
       )}
     </div>
   );

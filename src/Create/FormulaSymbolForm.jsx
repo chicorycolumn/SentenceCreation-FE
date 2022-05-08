@@ -14,6 +14,7 @@ const FormulaSymbolForm = (props) => {
           placeholder="Enter example sentence"
         ></input>
         <button
+          type="submit"
           onClick={(e) => {
             e.preventDefault();
             if (formulaSymbolInput) {

@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import { fetchTags, fetchWordsByTag } from "./utils/getUtils.js";
 import LanguagesForm from "./Create/LanguagesForm.jsx";
 import FormulaSymbolForm from "./Create/FormulaSymbolForm.jsx";
 import ChunkCardHolder from "./Create/ChunkCardHolder.jsx";
@@ -7,7 +6,7 @@ import { LanguageContextProvider } from "./context/LanguageContext.js";
 
 const Create = () => {
   const [lang1, setLang1] = useState("ENG");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState();
   const [error, setError] = useState(null);
   const [formulaSymbol, setFormulaSymbol] = useState(
     // "My doctor's doctor is a woman"

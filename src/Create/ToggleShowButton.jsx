@@ -6,13 +6,19 @@ const ToggleShowButton = (props) => {
     <button
       className={styles.toggleShowButton}
       onClick={() => {
-        props.setShowTraitKeysGroupTwo((prevState) => !prevState);
+        props.setShowTraitKeysGroup((prevState) => !prevState);
       }}
     >
-      {props.showTraitKeysGroupTwo ? (
-        <span className={styles.toggleShowButtonSpan}>&#9661;</span>
+      {props.showTraitKeysGroup ? (
+        props.traitKeysHoldSomeValues ? (
+          <span className={styles.toggleShowButtonSpan}>&#9660;</span> //down black
+        ) : (
+          <span className={styles.toggleShowButtonSpan}>&#9663;</span> //down white
+        )
+      ) : props.traitKeysHoldSomeValues ? (
+        <span className={styles.toggleShowButtonSpan}>&#9650;</span> //up black
       ) : (
-        <span className={styles.toggleShowButtonSpan}>&#9651;</span>
+        <span className={styles.toggleShowButtonSpan}>&#9653;</span> //up white
       )}
     </button>
   );
