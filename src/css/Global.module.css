@@ -175,3 +175,7 @@
   top: 0px;
   right: 0px;
 }
+
+.highlighted1 {
+  border: black solid 5px !important;
+}

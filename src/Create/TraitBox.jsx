@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import styles from "../css/TraitBox.module.css";
 import gstyles from "../css/Global.module.css";
 import TagInterface from "./TagInterface.jsx";
+import $ from "jquery";
 const uUtils = require("../utils/universalUtils.js");
 const diUtils = require("../utils/displayUtils.js");
 
@@ -214,6 +215,40 @@ class TraitBox extends Component {
       }
     };
 
+    const pushpopClassIfMatchingValue = (
+      remove = false,
+      value = this.state.traitValueInputString,
+      textOfElementToTest = "agreeWith",
+      classesToPushpop = [gstyles.highlighted1]
+    ) => {
+      let mainddivsAW = $(`.${styles.traitBox}`).filter(function () {
+        let el = $(this);
+        return el.find(`.${styles.traitTitle}`).filter(function () {
+          let tt = $(this);
+          return tt.text() === textOfElementToTest;
+        }).length;
+      });
+
+      mainddivsAW.each(function () {
+        let el = $(this);
+        let textareas = el.find("textarea");
+        if (
+          textareas.filter(function () {
+            let ta = $(this);
+            return ta.text() === value;
+          }).length
+        ) {
+          classesToPushpop.forEach((cl) => {
+            if (remove) {
+              el.removeClass(cl);
+            } else {
+              el.addClass(cl);
+            }
+          });
+        }
+      });
+    };
+
     return (
       <div
         key={`${word}-${traitKey}`}
@@ -223,8 +258,17 @@ class TraitBox extends Component {
           (this.state.isHovered || this.state.isSelected) &&
           styles.traitBoxHover
         } ${this.state.isSelected && styles.traitBoxSelected}
-        
         `}
+        onMouseEnter={() => {
+          if (traitKey === "chunkId") {
+            pushpopClassIfMatchingValue();
+          }
+        }}
+        onMouseLeave={() => {
+          if (traitKey === "chunkId") {
+            pushpopClassIfMatchingValue(true);
+          }
+        }}
       >
         {diUtils.isTagTrait(traitKey) &&
           !this.state.isHovered &&
