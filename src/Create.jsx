@@ -11,7 +11,8 @@ const Create = () => {
   const [formulaSymbol, setFormulaSymbol] = useState(
     // "My doctor's doctor is a woman"
     // "Woman women bear doctor's doctor"
-    "kobieta"
+    // "kobieta"
+    "The woman is red"
   );
 
   return (

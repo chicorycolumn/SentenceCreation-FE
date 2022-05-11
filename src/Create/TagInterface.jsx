@@ -48,7 +48,8 @@ const TagInterface = (props) => {
           </button>
 
           <button
-            className={gstyles.exitButton}
+            alt="Cross icon"
+            className={`${gstyles.sideButton} ${gstyles.redButton}`}
             onClick={() => {
               props.revertTraitValueInputString(true);
               props.exitTraitBox(false);

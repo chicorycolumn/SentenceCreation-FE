@@ -18,6 +18,7 @@ class TraitBox extends Component {
     isSelected: false,
     forceShowInput: false,
     showTagInterface: false,
+    justCopied: false,
   };
 
   setShowTagInterface = (val) => {
@@ -218,14 +219,14 @@ class TraitBox extends Component {
     const pushpopClassIfMatchingValue = (
       remove = false,
       value = this.state.traitValueInputString,
-      textOfElementToTest = "agreeWith",
+      textOfElementsToTest = ["agreeWith", "connectedTo"],
       classesToPushpop = [gstyles.highlighted1]
     ) => {
       let mainddivsAW = $(`.${styles.traitBox}`).filter(function () {
         let el = $(this);
         return el.find(`.${styles.traitTitle}`).filter(function () {
           let tt = $(this);
-          return tt.text() === textOfElementToTest;
+          return textOfElementsToTest.includes(tt.text());
         }).length;
       });
 
@@ -270,10 +271,14 @@ class TraitBox extends Component {
           }
         }}
       >
+        {this.state.justCopied && (
+          <div className={styles.floatingAlert}>Copied</div>
+        )}
         {diUtils.isTagTrait(traitKey) &&
           !this.state.isHovered &&
           !this.state.hasJustBlurred && (
             <button
+              alt="Magnifying glass icon"
               className={styles.floatingButton}
               onMouseOver={() => {
                 this.setState({ isHovered: true, isInputActive: true });
@@ -378,6 +383,15 @@ class TraitBox extends Component {
                           ? null
                           : this.state[traitValueInputStringKey]
                       }
+                      onClick={(e) => {
+                        if (
+                          ["chunkId", "connectedTo", "agreeWith"].includes(
+                            traitKey
+                          )
+                        ) {
+                          e.target.select();
+                        }
+                      }}
                       onMouseEnter={() => {
                         console.log(
                           "textarea.value:",
@@ -416,22 +430,43 @@ class TraitBox extends Component {
                         });
                       }}
                     />
-                    <button
-                      className={`${gstyles.exitButton} ${styles.clearButton}`}
-                      onClick={() => {
-                        console.log("X!");
-                        this.setState(() => {
-                          let newState = {};
-                          newState[traitValueInputStringKey] = null;
-                          return newState;
-                        });
-                        setTimeout(() => {
-                          checkAndSetTraitValue(isSecondary);
-                        }, 500);
-                      }}
-                    >
-                      &times;
-                    </button>
+                    {traitKey === "chunkId" ? (
+                      <button
+                        alt="Clipboard icon"
+                        className={`${gstyles.blueButton} ${gstyles.sideButton} ${styles.copyButton}`}
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            this.state.traitValueInputString
+                          );
+                          this.setState({ justCopied: true });
+                          setTimeout(() => {
+                            this.setState({ justCopied: false });
+                          }, 500);
+                        }}
+                      >
+                        &#x1f4cb;
+                      </button>
+                    ) : (
+                      !this.state.isHovered && (
+                        <button
+                          alt="Cross icon"
+                          className={`${gstyles.sideButton} ${gstyles.redButton} ${styles.clearButton}`}
+                          onClick={() => {
+                            console.log("X!");
+                            this.setState(() => {
+                              let newState = {};
+                              newState[traitValueInputStringKey] = null;
+                              return newState;
+                            });
+                            setTimeout(() => {
+                              checkAndSetTraitValue(isSecondary);
+                            }, 500);
+                          }}
+                        >
+                          &times;
+                        </button>
+                      )
+                    )}
                   </div>
                 );
               })}

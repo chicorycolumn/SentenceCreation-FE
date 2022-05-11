@@ -1,22 +1,39 @@
-.exitButton {
-  color: red;
+.sideButton {
   font-size: 18px;
-  background-color: white;
   box-shadow: none;
   border: black solid 0.5px;
   padding: 0px;
-  width: 30px;
+  width: 30px !important;
   height: 30px;
   font-size: 25px;
 }
 
-.exitButton:active {
+.redButton {
+  color: red;
+  background-color: white;
+}
+
+.redButton:active {
   background-color: red !important;
   color: white;
 }
 
-.exitButton:hover {
+.redButton:hover {
   background-color: rgb(255, 232, 232);
+}
+
+.blueButton {
+  color: blue;
+  background-color: white;
+}
+
+.blueButton:active {
+  background-color: blue !important;
+  color: white;
+}
+
+.blueButton:hover {
+  background-color: rgb(215, 212, 251);
 }
 
 .tickButton {
