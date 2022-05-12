@@ -14,7 +14,7 @@
 
 .traitBoxHover {
   width: 243px;
-  z-index: 1;
+  z-index: 2;
   box-shadow: black 1px 1px 15px;
   margin-top: 2.5px;
   margin-bottom: 8px;
@@ -130,7 +130,7 @@
   background-color: rgba(0, 0, 255, 0.5);
   color: white;
   font-size: 22px;
-  z-index: 5;
+  z-index: 3;
   position: absolute;
   top: 0px;
   left: 0px;

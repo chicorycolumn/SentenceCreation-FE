@@ -167,7 +167,7 @@ class TraitBox extends Component {
             } else if (expectedType === "string") {
               if (newTraitValue && newTraitValue.includes(",")) {
                 alert(
-                  "Just one string value expected but you have input a comma?"
+                  "Just one string value expected but you have input a comma."
                 );
                 this.setState({
                   traitValueInputString: diUtils.asString(
@@ -250,9 +250,16 @@ class TraitBox extends Component {
       });
     };
 
+    const forceShowInputThenFocus = (id) => {
+      this.setState({ forceShowInput: true });
+      setTimeout(() => {
+        $(`#${id}`).focus();
+      }, 50);
+    };
+
     return (
       <div
-        key={`${word}-${traitKey}`}
+        key={`${this.props.chunkCardKey}-${traitKey}_maindiv`}
         className={`${styles.preventSelection} ${styles.traitBox} ${
           !traitObject.traitValue && styles.traitBoxEmpty
         } ${this.state.hasJustBlurred && styles.shimmer} ${
@@ -324,6 +331,12 @@ class TraitBox extends Component {
                 isSelected: true,
                 showTagInterface: diUtils.isTagTrait(traitKey),
               });
+
+              if (traitObject.expectedTypeOnStCh === "string") {
+                forceShowInputThenFocus(
+                  `${this.props.chunkCardKey}-${traitKey}_textarea`
+                );
+              }
             }
           }}
           className={styles.traitTitleHolder}
@@ -363,12 +376,12 @@ class TraitBox extends Component {
 
                 return (
                   <div
-                    key={`div-for-textarea-${traitKey}`}
+                    key={`${this.props.chunkCardKey}-${traitKey}_div-for-textarea`}
                     className={styles.traitValuesBox}
                   >
                     <textarea
-                      key={`textarea-${traitKey}`}
-                      id={`textarea-${traitKey}`}
+                      key={`${this.props.chunkCardKey}-${traitKey}_textarea`}
+                      id={`${this.props.chunkCardKey}-${traitKey}_textarea`}
                       disabled={
                         diUtils.isTagTrait(traitKey) ||
                         traitObject.possibleTraitValues ||
@@ -547,7 +560,9 @@ class TraitBox extends Component {
                 ) : (
                   <button
                     onClick={(e) => {
-                      this.setState({ forceShowInput: true });
+                      forceShowInputThenFocus(
+                        `${this.props.chunkCardKey}-${traitKey}_textarea`
+                      );
                     }}
                   >
                     Multiple string values, comma separated

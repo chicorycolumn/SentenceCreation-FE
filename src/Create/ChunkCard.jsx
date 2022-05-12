@@ -20,10 +20,10 @@ const ChunkCard = (props) => {
   useEffect(() => {
     if (lObjs) {
       let fetchedLObjs = lObjs;
-      console.log("");
-      console.log("word:", props.word);
-      console.log("index:", props.index);
-      console.log("fetchedLObjs.length:", fetchedLObjs.length);
+      // console.log("");
+      // console.log("word:", props.word);
+      // console.log("index:", props.chunkCardIndex);
+      // console.log("fetchedLObjs.length:", fetchedLObjs.length);
 
       if (structureChunk) {
         console.log("Already done this one actually.");
@@ -37,7 +37,7 @@ const ChunkCard = (props) => {
             `\n"${props.formulaSymbol
               .split(" ")
               .map((el, i) =>
-                i === props.index
+                i === props.chunkCardIndex
                   ? el.toUpperCase()
                   : i === 0
                   ? uUtils.capitaliseFirst(el)
@@ -56,15 +56,20 @@ const ChunkCard = (props) => {
           }
         }
         let idSplit = stCh.id.split("-");
-        stCh.chunkId.traitValue = `${idSplit[1]}-${props.index}${idSplit[2]
-          .split("")
-          .reverse()
-          .join("")}-${stCh.lemma}`;
+        stCh.chunkId.traitValue = `${idSplit[1]}-${
+          props.chunkCardIndex
+        }${idSplit[2].split("").reverse().join("")}-${stCh.lemma}`;
 
         setStructureChunk(stCh);
       }
     }
-  }, [lObjs, props.index, props.word, structureChunk, props.formulaSymbol]);
+  }, [
+    lObjs,
+    props.chunkCardIndex,
+    props.word,
+    structureChunk,
+    props.formulaSymbol,
+  ]);
 
   useEffect(() => {
     if (lang1 && props.word) {
@@ -140,13 +145,11 @@ const ChunkCard = (props) => {
 
               let traitObject2 = traitKey2 ? structureChunk[traitKey2] : null;
 
-              console.log("");
-              console.log(traitsWithoutTraitBoxes.includes(traitKey));
-              console.log(traitKey);
               return (
                 !traitsWithoutTraitBoxes.includes(traitKey) && (
                   <TraitBox
-                    key={traitKey}
+                    chunkCardKey={props.chunkCardKey}
+                    key={`${props.chunkCardKey}-${traitKey}`}
                     traitKey={traitKey}
                     traitKey2={traitKey2}
                     traitObject={traitObject}

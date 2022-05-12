@@ -8,8 +8,9 @@ const ChunkCardHolder = (props) => {
       {props.formulaSymbol.split(" ").map((word, index) => (
         <ChunkCard
           key={`${index}-${word}`}
+          chunkCardKey={`${index}-${word}`}
           word={word}
-          index={index}
+          chunkCardIndex={index}
           formulaSymbol={props.formulaSymbol}
         />
       ))}
