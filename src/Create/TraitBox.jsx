@@ -408,7 +408,9 @@ class TraitBox extends Component {
                       onMouseEnter={() => {
                         console.log(
                           "textarea.value:",
-                          document.getElementById(`textarea-${traitKey}`).value
+                          document.getElementById(
+                            `${this.props.chunkCardKey}-${traitKey}_textarea`
+                          ).value
                         );
                       }}
                       onBlur={(e) => {
@@ -431,7 +433,9 @@ class TraitBox extends Component {
                         console.log("£traitValuesInput-onChange");
                         console.log(
                           "textarea.value:",
-                          document.getElementById(`textarea-${traitKey}`).value
+                          document.getElementById(
+                            `${this.props.chunkCardKey}-${traitKey}_textarea`
+                          ).value
                         );
                         if (diUtils.isTagTrait(traitKey)) {
                           console.log("prevent default");
@@ -579,39 +583,40 @@ class TraitBox extends Component {
                 One string value
               </button>
             )}
-            {traitObject.expectedTypeOnStCh === "boolean" && (
-              <div>
-                <input
-                  className={styles.checkbox}
-                  type="checkbox"
-                  id={`${traitKey}-0`}
-                  name={`${traitKey}-0`}
-                  checked={this.state.traitValueInputString === "true"}
-                  onChange={(e) => {
-                    console.log("£checkbox2-onChange");
-                    this.setState((prevState) => {
-                      if (
-                        prevState.traitValueInputString === "true" &&
-                        !e.target.checked
-                      ) {
-                        return { traitValueInputString: "false" };
-                      } else if (
-                        prevState.traitValueInputString !== "true" &&
-                        e.target.checked
-                      ) {
-                        return { traitValueInputString: "true" };
-                      }
-                    });
-                  }}
-                />
-                <label
-                  className={styles.checkboxLabel}
-                  htmlFor={`${traitKey}-0`}
-                >
-                  True
-                </label>
-              </div>
-            )}
+            {traitObject.expectedTypeOnStCh === "boolean" &&
+              !traitObject.traitValue && (
+                <div>
+                  <input
+                    className={styles.checkbox}
+                    type="checkbox"
+                    id={`${traitKey}-0`}
+                    name={`${traitKey}-0`}
+                    checked={this.state.traitValueInputString === "true"}
+                    onChange={(e) => {
+                      console.log("£checkbox2-onChange");
+                      this.setState((prevState) => {
+                        if (
+                          prevState.traitValueInputString === "true" &&
+                          !e.target.checked
+                        ) {
+                          return { traitValueInputString: "false" };
+                        } else if (
+                          prevState.traitValueInputString !== "true" &&
+                          e.target.checked
+                        ) {
+                          return { traitValueInputString: "true" };
+                        }
+                      });
+                    }}
+                  />
+                  <label
+                    className={styles.checkboxLabel}
+                    htmlFor={`${traitKey}-0`}
+                  >
+                    True
+                  </label>
+                </div>
+              )}
             {!["string", "boolean", "array"].includes(
               traitObject.expectedTypeOnStCh
             ) && <p>expectedTypeOnStCh: {traitObject.expectedTypeOnStCh}</p>}
