@@ -26,6 +26,7 @@
 
 .traitBoxSelected {
   height: fit-content !important;
+  margin-bottom: 4px;
 }
 
 .traitBoxEmpty {
