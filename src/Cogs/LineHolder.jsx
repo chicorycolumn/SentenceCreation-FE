@@ -6,7 +6,7 @@ const LineHolder = (props) => {
   return (
     <div id="lineHolder">
       {diUtils
-        .multiplyOutMotherChildren(props.elementsToDrawLineBetween)
+        .multiplyOutStemAndFlowers(props.elementsToDrawLineBetween)
         .map((elementIDs) => {
           let el1ID = elementIDs[0];
           let el2ID = elementIDs[1];
@@ -14,7 +14,7 @@ const LineHolder = (props) => {
 
           setTimeout(() => {
             diUtils.drawLineBetweenElements(el1ID, el2ID, lineID);
-          }, 50);
+          }, 1);
 
           return <div id={lineID} key={lineID} className={styles.line}></div>;
         })}

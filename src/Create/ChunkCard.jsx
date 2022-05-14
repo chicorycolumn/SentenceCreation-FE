@@ -157,6 +157,9 @@ const ChunkCard = (props) => {
                     word={props.word}
                     setStructureChunk={setStructureChunk}
                     wordtype={wordtype}
+                    setElementsToDrawLinesBetween={
+                      props.setElementsToDrawLinesBetween
+                    }
                   />
                 )
               );

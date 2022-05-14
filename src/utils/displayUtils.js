@@ -1,10 +1,10 @@
 const uUtils = require("./universalUtils.js");
 
-exports.multiplyOutMotherChildren = (arr) => {
+exports.multiplyOutStemAndFlowers = (arr) => {
   let res = [];
   arr.forEach((obj) => {
-    obj.children.forEach((child) => {
-      res.push([obj.mother, child]);
+    obj.flowers.forEach((flower) => {
+      res.push([obj.flowerstem, flower]);
     });
   });
   return res;
@@ -14,9 +14,23 @@ exports.drawLineBetweenElements = (elementOneId, elementTwoId, lineId) => {
   let line = document.getElementById(lineId);
   let from = document.getElementById(elementOneId);
   let to = document.getElementById(elementTwoId);
+  let cease;
+  [
+    [elementOneId, from],
+    [elementTwoId, to],
+    [lineId, line],
+  ].forEach((pair) => {
+    if (!pair[1]) {
+      console.log(`ERROR 5461: Could not find element with ID "${lineId}".`);
+      cease = true;
+    }
+  });
+  if (cease) {
+    return;
+  }
 
-  let fT = from.offsetTop + from.offsetHeight / 2;
-  let tT = to.offsetTop + to.offsetHeight / 2;
+  let fT = from.offsetTop + from.offsetHeight / 1.5;
+  let tT = to.offsetTop + to.offsetHeight / 100;
   let fL = from.offsetLeft + from.offsetWidth / 2;
   let tL = to.offsetLeft + to.offsetWidth / 2;
 

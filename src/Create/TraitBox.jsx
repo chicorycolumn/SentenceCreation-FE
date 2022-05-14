@@ -216,38 +216,61 @@ class TraitBox extends Component {
       }
     };
 
-    const pushpopClassIfMatchingValue = (
+    const connectChunkIdWithItsFlowers = (
+      flowerstemID,
       remove = false,
       value = this.state.traitValueInputString,
-      textOfElementsToTest = ["agreeWith", "connectedTo"],
-      classesToPushpop = [gstyles.highlighted1]
+      flowerTraitTitles = ["agreeWith", "connectedTo"],
+      flowerClasses = [gstyles.highlighted1],
+      flowerstemClasses = [gstyles.highlighted1, gstyles.zindex5]
     ) => {
-      let mainddivsAW = $(`.${styles.traitBox}`).filter(function () {
+      let potentialFlowers = $(`.${styles.traitBox}`).filter(function () {
+        return $(this)
+          .find(`.${styles.traitTitle}`)
+          .filter(function () {
+            let traitTitle = $(this);
+            return flowerTraitTitles.includes(traitTitle.text());
+          }).length;
+      });
+
+      let flowers = potentialFlowers.filter(function () {
         let el = $(this);
-        return el.find(`.${styles.traitTitle}`).filter(function () {
-          let tt = $(this);
-          return textOfElementsToTest.includes(tt.text());
+        let textareas = el.find("textarea");
+        return textareas.filter(function () {
+          let textarea = $(this);
+          return textarea.text() === value;
         }).length;
       });
 
-      mainddivsAW.each(function () {
+      let flowerIDs = [];
+
+      flowers.each(function () {
         let el = $(this);
-        let textareas = el.find("textarea");
-        if (
-          textareas.filter(function () {
-            let ta = $(this);
-            return ta.text() === value;
-          }).length
-        ) {
-          classesToPushpop.forEach((cl) => {
-            if (remove) {
-              el.removeClass(cl);
-            } else {
-              el.addClass(cl);
-            }
-          });
+        if (remove) {
+          el.removeClass(flowerClasses.join(" "));
+        } else {
+          el.addClass(flowerClasses.join(" "));
+          flowerIDs.push(el.attr("id"));
         }
       });
+
+      if (flowers.length) {
+        if (remove) {
+          $(`#${flowerstemID}`).removeClass(flowerstemClasses.join(" "));
+        } else {
+          $(`#${flowerstemID}`).addClass(flowerstemClasses.join(" "));
+        }
+      }
+
+      if (flowerIDs.length) {
+        this.props.setElementsToDrawLinesBetween((prev) => {
+          let arr = prev ? prev.slice(0) : [];
+          arr.push({ flowerstem: flowerstemID, flowers: flowerIDs });
+          return arr;
+        });
+      } else {
+        this.props.setElementsToDrawLinesBetween([]);
+      }
     };
 
     const forceShowInputThenFocus = (id) => {
@@ -257,9 +280,12 @@ class TraitBox extends Component {
       }, 50);
     };
 
+    const traitBoxID = `${this.props.chunkCardKey}-${traitKey}_maindiv`;
+
     return (
       <div
-        key={`${this.props.chunkCardKey}-${traitKey}_maindiv`}
+        id={traitBoxID}
+        key={traitBoxID}
         className={`${styles.preventSelection} ${styles.traitBox} ${
           !traitObject.traitValue && styles.traitBoxEmpty
         } ${this.state.hasJustBlurred && styles.shimmer} ${
@@ -269,12 +295,12 @@ class TraitBox extends Component {
         `}
         onMouseEnter={() => {
           if (traitKey === "chunkId") {
-            pushpopClassIfMatchingValue();
+            connectChunkIdWithItsFlowers(traitBoxID);
           }
         }}
         onMouseLeave={() => {
           if (traitKey === "chunkId") {
-            pushpopClassIfMatchingValue(true);
+            connectChunkIdWithItsFlowers(traitBoxID, true);
           }
         }}
       >

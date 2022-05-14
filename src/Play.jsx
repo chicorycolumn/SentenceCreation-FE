@@ -13,8 +13,8 @@ const Play = () => {
       <h1
         onClick={() => {
           setElementsToDrawLineBetween([
-            { mother: "A", children: ["B", "C"] },
-            { mother: "E", children: ["D", "F"] },
+            { flowerstem: "A", flowers: ["B", "C"] },
+            { flowerstem: "E", flowers: ["D", "F"] },
           ]);
         }}
       >
