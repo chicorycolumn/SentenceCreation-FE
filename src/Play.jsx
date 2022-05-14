@@ -1,33 +1,52 @@
 import React, { useState } from "react";
 import styles from "./css/Play.module.css";
-const diUtils = require("./utils/displayUtils");
+import LineHolder from "./Cogs/LineHolder";
 
 const Play = () => {
-  const [lineArray, setLineArray] = useState([]);
+  const [elementsToDrawLineBetween, setElementsToDrawLineBetween] = useState(
+    []
+  );
   return (
     <div>
       <h1>Welcome, Player!</h1>
       <h2>Begin game?</h2>
       <h1
         onClick={() => {
-          diUtils.drawLineBetweenElements("apple", "banana", setLineArray);
+          setElementsToDrawLineBetween([
+            { mother: "A", children: ["B", "C"] },
+            { mother: "E", children: ["D", "F"] },
+          ]);
         }}
       >
         Add lines
       </h1>
       <h1
         onClick={() => {
-          setLineArray([]);
+          setElementsToDrawLineBetween([]);
         }}
       >
         Destroy lines
       </h1>
       <div id="holder" className={styles.holder}>
-        <div id="apple" className={`${styles.mydiv} ${styles.div1}`}></div>
-        <div id="banana" className={`${styles.mydiv} ${styles.div2}`}></div>
-        {lineArray.map((lineID) => (
-          <div id={lineID} key={lineID} className={styles.line}></div>
-        ))}
+        <div id="A" className={`${styles.mydiv} ${styles.divA}`}>
+          A
+        </div>
+        <div id="B" className={`${styles.mydiv} ${styles.divB}`}>
+          B
+        </div>
+        <div id="C" className={`${styles.mydiv} ${styles.divC}`}>
+          C
+        </div>
+        <div id="D" className={`${styles.mydiv} ${styles.divD}`}>
+          D
+        </div>
+        <div id="E" className={`${styles.mydiv} ${styles.divE}`}>
+          E
+        </div>
+        <div id="F" className={`${styles.mydiv} ${styles.divF}`}>
+          F
+        </div>
+        <LineHolder elementsToDrawLineBetween={elementsToDrawLineBetween} />
       </div>
     </div>
   );
