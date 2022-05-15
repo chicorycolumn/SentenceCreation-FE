@@ -37,6 +37,7 @@
   padding: 0px;
   margin-top: 10px;
   margin-bottom: 10px;
+  min-width: 120px;
 }
 
 .traitValuesInput {
@@ -81,14 +82,12 @@
 }
 
 .clearButton {
-  border-left: none;
   margin: 0;
   font-size: 20px;
   height: auto;
 }
 
 .copyButton {
-  border-left: none;
   margin: 0;
   font-size: 16px;
   height: auto;
@@ -138,4 +137,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.traitTitleHolder {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.traitTitleHolderMultiple {
+  justify-content: space-between;
 }

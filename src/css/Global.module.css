@@ -8,6 +8,14 @@
   font-size: 25px;
 }
 
+.leftButton {
+  border-right: none;
+}
+
+.rightButton {
+  border-left: none;
+}
+
 .redButton {
   color: red;
   background-color: white;
@@ -197,6 +205,26 @@
   background-color: fuchsia !important;
 }
 
+.highlighted2 {
+  background-color: purple !important;
+}
+
 .zindex5 {
   z-index: 5;
+}
+
+.hiddenElement1 {
+  position: absolute;
+  left: 0px;
+  top: -15px;
+  color: blue;
+  width: fit-content;
+}
+
+.hiddenElement2 {
+  position: absolute;
+  left: 0px;
+  top: 5px;
+  color: blue;
+  width: fit-content;
 }

@@ -86,7 +86,8 @@ const ChunkCard = (props) => {
 
   let traitKeysGroup1 = [];
   let traitKeysGroup2 = [];
-  let wordtype = null;
+  let wordtype;
+  let chunkId;
 
   if (structureChunk) {
     let { orderedTraitKeysGroup1, orderedTraitKeysGroup2, wordtypeFromStCh } =
@@ -94,6 +95,7 @@ const ChunkCard = (props) => {
     traitKeysGroup1 = orderedTraitKeysGroup1;
     traitKeysGroup2 = orderedTraitKeysGroup2;
     wordtype = wordtypeFromStCh;
+    chunkId = structureChunk.chunkId.traitValue;
   }
 
   return (
@@ -148,6 +150,7 @@ const ChunkCard = (props) => {
               return (
                 !traitsWithoutTraitBoxes.includes(traitKey) && (
                   <TraitBox
+                    chunkId={chunkId}
                     chunkCardKey={props.chunkCardKey}
                     key={`${props.chunkCardKey}-${traitKey}`}
                     traitKey={traitKey}
@@ -160,6 +163,10 @@ const ChunkCard = (props) => {
                     setElementsToDrawLinesBetween={
                       props.setElementsToDrawLinesBetween
                     }
+                    flowerSearchingForStemBrace={
+                      props.flowerSearchingForStemBrace
+                    }
+                    stemFoundForFlowerBrace={props.stemFoundForFlowerBrace}
                   />
                 )
               );

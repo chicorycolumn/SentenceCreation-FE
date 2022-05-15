@@ -16,9 +16,13 @@ class TraitBox extends Component {
     isInputActive: false,
     isHovered: false,
     isSelected: false,
+    isHighlighted: false,
+    isExtraHighlighted: false,
+    isFlowerSearchingForStem: false,
     forceShowInput: false,
     showTagInterface: false,
     justCopied: false,
+    activeTextarea: null,
   };
 
   setShowTagInterface = (val) => {
@@ -282,6 +286,24 @@ class TraitBox extends Component {
 
     const traitBoxID = `${this.props.chunkCardKey}-${traitKey}_maindiv`;
 
+    if (
+      this.state.isFlowerSearchingForStem &&
+      this.props.flowerSearchingForStemBrace[0] === this.props.chunkId &&
+      this.props.stemFoundForFlowerBrace[0]
+    ) {
+      let stemFound = this.props.stemFoundForFlowerBrace[0];
+      console.log("FOUND STEM", stemFound);
+      this.props.flowerSearchingForStemBrace[1](null);
+      this.props.stemFoundForFlowerBrace[1](null);
+      this.setState({
+        traitValueInputString: stemFound,
+        isFlowerSearchingForStem: false,
+      });
+      setTimeout(() => {
+        checkAndSetTraitValue();
+      }, 50);
+    }
+
     return (
       <div
         id={traitBoxID}
@@ -291,17 +313,42 @@ class TraitBox extends Component {
         } ${this.state.hasJustBlurred && styles.shimmer} ${
           (this.state.isHovered || this.state.isSelected) &&
           styles.traitBoxHover
-        } ${this.state.isSelected && styles.traitBoxSelected}
+        } ${this.state.isSelected && styles.traitBoxSelected} ${
+          (this.state.isHighlighted ||
+            (traitKey === "chunkId" &&
+              this.props.flowerSearchingForStemBrace[0])) &&
+          gstyles.highlighted1
+        } ${
+          (this.state.isExtraHighlighted ||
+            this.state.isFlowerSearchingForStem) &&
+          gstyles.highlighted2
+        }
         `}
+        onClick={() => {
+          if (traitKey === "chunkId") {
+            if (this.props.flowerSearchingForStemBrace[0]) {
+              this.props.stemFoundForFlowerBrace[1](this.props.chunkId);
+              this.setState({ isExtraHighlighted: false });
+            }
+          }
+        }}
         onMouseEnter={() => {
           if (traitKey === "chunkId") {
-            connectChunkIdWithItsFlowers(traitBoxID);
+            if (this.props.flowerSearchingForStemBrace[0]) {
+              this.setState({ isExtraHighlighted: true });
+            } else {
+              connectChunkIdWithItsFlowers(traitBoxID);
+            }
+          } else if (["agreeWith", "connectedTo"].includes(traitKey)) {
+            this.setState({ isHighlighted: true });
           }
         }}
         onMouseLeave={() => {
           if (traitKey === "chunkId") {
+            this.setState({ isExtraHighlighted: false });
             connectChunkIdWithItsFlowers(traitBoxID, true);
           }
+          this.setState({ isHighlighted: false });
         }}
       >
         {this.state.justCopied && (
@@ -333,6 +380,7 @@ class TraitBox extends Component {
           />
         )}
         <div
+          className={styles.traitTitleHolder}
           onMouseEnter={() => {
             console.log("");
             console.log("state.traitValueInputString HAS VALUE:");
@@ -349,7 +397,23 @@ class TraitBox extends Component {
             }
           }}
           onClick={() => {
-            console.log("£traitTitleHolder-onClick");
+            console.log("%traitTitleHolder");
+            if (traitKey === "chunkId") {
+              return;
+            }
+            if (["agreeWith", "connectedTo"].includes(traitKey)) {
+              if (this.state.isFlowerSearchingForStem) {
+                this.props.flowerSearchingForStemBrace[1]();
+                this.setState({ isFlowerSearchingForStem: false });
+              } else {
+                this.props.flowerSearchingForStemBrace[1](this.props.chunkId);
+                this.setState({
+                  isHighlighted: false,
+                  isFlowerSearchingForStem: true,
+                });
+              }
+              return;
+            }
             if (this.state.isSelected) {
               checkAndSetTraitValue();
             } else {
@@ -365,7 +429,6 @@ class TraitBox extends Component {
               }
             }
           }}
-          className={styles.traitTitleHolder}
         >
           <p
             className={`${styles.traitTitle} ${
@@ -423,6 +486,8 @@ class TraitBox extends Component {
                           : this.state[traitValueInputStringKey]
                       }
                       onClick={(e) => {
+                        console.log("%textarea");
+                        e.stopPropagation();
                         if (
                           ["chunkId", "connectedTo", "agreeWith"].includes(
                             traitKey
@@ -440,7 +505,8 @@ class TraitBox extends Component {
                         );
                       }}
                       onBlur={(e) => {
-                        console.log("£traitValuesInput-onBlur");
+                        e.stopPropagation();
+                        console.log("%traitValuesInput-onBlur");
                         if (diUtils.isTagTrait(traitKey)) {
                           e.preventDefault();
                           return;
@@ -456,7 +522,8 @@ class TraitBox extends Component {
                         }, 500);
                       }}
                       onChange={(e) => {
-                        console.log("£traitValuesInput-onChange");
+                        e.stopPropagation();
+                        console.log("%traitValuesInput-onChange");
                         console.log(
                           "textarea.value:",
                           document.getElementById(
@@ -477,7 +544,9 @@ class TraitBox extends Component {
                       <button
                         alt="Clipboard icon"
                         className={`${gstyles.blueButton} ${gstyles.sideButton} ${styles.copyButton}`}
-                        onClick={() => {
+                        onClick={(e) => {
+                          console.log("%clipboard");
+                          e.stopPropagation();
                           navigator.clipboard.writeText(
                             this.state.traitValueInputString
                           );
@@ -494,7 +563,9 @@ class TraitBox extends Component {
                         <button
                           alt="Cross icon"
                           className={`${gstyles.sideButton} ${gstyles.redButton} ${styles.clearButton}`}
-                          onClick={() => {
+                          onClick={(e) => {
+                            console.log("%cross1");
+                            e.stopPropagation();
                             console.log("X!");
                             this.setState(() => {
                               let newState = {};
@@ -537,7 +608,8 @@ class TraitBox extends Component {
                               .includes(possibleTraitValue)
                           }
                           onChange={(e) => {
-                            console.log("£checkbox-onChange");
+                            e.stopPropagation();
+                            console.log("%checkbox-onChange");
                             this.setState((prevState) => {
                               if (
                                 prevState.traitValueInputString &&
@@ -590,6 +662,8 @@ class TraitBox extends Component {
                 ) : (
                   <button
                     onClick={(e) => {
+                      console.log("%msv");
+                      e.stopPropagation();
                       forceShowInputThenFocus(
                         `${this.props.chunkCardKey}-${traitKey}_textarea`
                       );
@@ -603,6 +677,8 @@ class TraitBox extends Component {
             {traitObject.expectedTypeOnStCh === "string" && (
               <button
                 onClick={(e) => {
+                  console.log("%osv");
+                  e.stopPropagation();
                   this.setState({ forceShowInput: true });
                 }}
               >
@@ -619,7 +695,8 @@ class TraitBox extends Component {
                     name={`${traitKey}-0`}
                     checked={this.state.traitValueInputString === "true"}
                     onChange={(e) => {
-                      console.log("£checkbox2-onChange");
+                      e.stopPropagation();
+                      console.log("%checkbox2-onChange");
                       this.setState((prevState) => {
                         if (
                           prevState.traitValueInputString === "true" &&
