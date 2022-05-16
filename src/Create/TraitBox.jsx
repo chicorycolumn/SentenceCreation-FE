@@ -304,6 +304,15 @@ class TraitBox extends Component {
       }, 50);
     }
 
+    const isClickableFlowerstem = (propsObject) => {
+      return (
+        propsObject.traitKey === "chunkId" &&
+        propsObject.flowerSearchingForStemBrace[0] &&
+        propsObject.flowerSearchingForStemBrace[0] !==
+          propsObject.traitObject.traitValue
+      );
+    };
+
     return (
       <div
         id={traitBoxID}
@@ -314,9 +323,7 @@ class TraitBox extends Component {
           (this.state.isHovered || this.state.isSelected) &&
           styles.traitBoxHover
         } ${this.state.isSelected && styles.traitBoxSelected} ${
-          (this.state.isHighlighted ||
-            (traitKey === "chunkId" &&
-              this.props.flowerSearchingForStemBrace[0])) &&
+          (this.state.isHighlighted || isClickableFlowerstem(this.props)) &&
           gstyles.highlighted1
         } ${
           (this.state.isExtraHighlighted ||
@@ -325,20 +332,16 @@ class TraitBox extends Component {
         }
         `}
         onClick={() => {
-          if (traitKey === "chunkId") {
-            if (this.props.flowerSearchingForStemBrace[0]) {
-              this.props.stemFoundForFlowerBrace[1](this.props.chunkId);
-              this.setState({ isExtraHighlighted: false });
-            }
+          if (isClickableFlowerstem(this.props)) {
+            this.props.stemFoundForFlowerBrace[1](this.props.chunkId);
+            this.setState({ isExtraHighlighted: false });
           }
         }}
         onMouseEnter={() => {
-          if (traitKey === "chunkId") {
-            if (this.props.flowerSearchingForStemBrace[0]) {
-              this.setState({ isExtraHighlighted: true });
-            } else {
-              connectChunkIdWithItsFlowers(traitBoxID);
-            }
+          if (isClickableFlowerstem(this.props)) {
+            this.setState({ isExtraHighlighted: true });
+          } else if (traitKey === "chunkId") {
+            connectChunkIdWithItsFlowers(traitBoxID);
           } else if (["agreeWith", "connectedTo"].includes(traitKey)) {
             this.setState({ isHighlighted: true });
           }
