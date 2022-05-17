@@ -29,8 +29,14 @@ exports.drawLineBetweenElements = (elementOneId, elementTwoId, lineId) => {
     return;
   }
 
-  let fT = from.offsetTop + from.offsetHeight / 1.5;
-  let tT = to.offsetTop + to.offsetHeight / 100;
+  let drawingFromHigherBoxToLowerBox = from.offsetTop < to.offsetTop;
+
+  let fT =
+    from.offsetTop +
+    from.offsetHeight / (drawingFromHigherBoxToLowerBox ? 1.5 : 100);
+  let tT =
+    to.offsetTop +
+    to.offsetHeight / (drawingFromHigherBoxToLowerBox ? 100 : 1.5);
   let fL = from.offsetLeft + from.offsetWidth / 2;
   let tL = to.offsetLeft + to.offsetWidth / 2;
 

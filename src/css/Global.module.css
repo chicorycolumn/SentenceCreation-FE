@@ -201,6 +201,10 @@
   right: 0px;
 }
 
+.highlighted0 {
+  background-color: rgb(240, 173, 240) !important;
+}
+
 .highlighted1 {
   background-color: fuchsia !important;
 }

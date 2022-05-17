@@ -16,6 +16,7 @@ class TraitBox extends Component {
     isInputActive: false,
     isHovered: false,
     isSelected: false,
+    isSoftHighlighted: false,
     isHighlighted: false,
     isExtraHighlighted: false,
     isFlowerSearchingForStem: false,
@@ -223,9 +224,9 @@ class TraitBox extends Component {
     const connectChunkIdWithItsFlowers = (
       flowerstemID,
       remove = false,
-      value = this.state.traitValueInputString,
       flowerTraitTitles = ["agreeWith", "connectedTo"],
-      flowerClasses = [gstyles.highlighted1],
+      value = this.state.traitValueInputString,
+      flowerClasses = [gstyles.highlighted1, gstyles.zindex5],
       flowerstemClasses = [gstyles.highlighted1, gstyles.zindex5]
     ) => {
       let potentialFlowers = $(`.${styles.traitBox}`).filter(function () {
@@ -263,6 +264,12 @@ class TraitBox extends Component {
           $(`#${flowerstemID}`).removeClass(flowerstemClasses.join(" "));
         } else {
           $(`#${flowerstemID}`).addClass(flowerstemClasses.join(" "));
+        }
+      } else {
+        if (remove) {
+          $(`#${flowerstemID}`).removeClass(gstyles.highlighted0);
+        } else {
+          $(`#${flowerstemID}`).addClass(gstyles.highlighted0);
         }
       }
 
@@ -322,7 +329,9 @@ class TraitBox extends Component {
         } ${this.state.hasJustBlurred && styles.shimmer} ${
           (this.state.isHovered || this.state.isSelected) &&
           styles.traitBoxHover
-        } ${this.state.isSelected && styles.traitBoxSelected} ${
+        } ${this.state.isSoftHighlighted && gstyles.highlighted0} ${
+          this.state.isSelected && styles.traitBoxSelected
+        } ${
           (this.state.isHighlighted || isClickableFlowerstem(this.props)) &&
           gstyles.highlighted1
         } ${
@@ -343,15 +352,17 @@ class TraitBox extends Component {
           } else if (traitKey === "chunkId") {
             connectChunkIdWithItsFlowers(traitBoxID);
           } else if (["agreeWith", "connectedTo"].includes(traitKey)) {
-            this.setState({ isHighlighted: true });
+            connectChunkIdWithItsFlowers(traitBoxID, false, ["chunkId"]);
           }
         }}
         onMouseLeave={() => {
           if (traitKey === "chunkId") {
             this.setState({ isExtraHighlighted: false });
             connectChunkIdWithItsFlowers(traitBoxID, true);
+          } else if (["agreeWith", "connectedTo"].includes(traitKey)) {
+            connectChunkIdWithItsFlowers(traitBoxID, true, ["chunkId"]);
           }
-          this.setState({ isHighlighted: false });
+          this.setState({ isHighlighted: false, isSoftHighlighted: false });
         }}
       >
         {this.state.justCopied && (
