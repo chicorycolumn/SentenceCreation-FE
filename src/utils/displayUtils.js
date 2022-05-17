@@ -146,7 +146,3 @@ exports.asArray = (str, strict = false) => {
   let res = split.map((element) => element.trim()).filter((element) => element);
   return strict && !res.length ? null : res;
 };
-
-exports.isTagTrait = (traitKey) => {
-  return ["andTags", "orTags"].includes(traitKey);
-};

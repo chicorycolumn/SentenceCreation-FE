@@ -49,6 +49,11 @@
   overflow-x: hidden;
 }
 
+.traitValuesInput:disabled {
+  background-color: rgb(249, 239, 248);
+  color: black;
+}
+
 .traitValuesInputLarge {
   height: 50px;
   padding-left: 27.5px;

@@ -5,6 +5,7 @@ import TagInterface from "./TagInterface.jsx";
 import $ from "jquery";
 const uUtils = require("../utils/universalUtils.js");
 const diUtils = require("../utils/displayUtils.js");
+const idUtils = require("../utils/identityUtils.js");
 
 class TraitBox extends Component {
   state = {
@@ -351,7 +352,7 @@ class TraitBox extends Component {
             this.setState({ isExtraHighlighted: true });
           } else if (traitKey === "chunkId") {
             connectChunkIdWithItsFlowers(traitBoxID);
-          } else if (["agreeWith", "connectedTo"].includes(traitKey)) {
+          } else if (idUtils.isAgreeOrConnected(traitKey)) {
             connectChunkIdWithItsFlowers(traitBoxID, false, ["chunkId"]);
           }
         }}
@@ -359,7 +360,7 @@ class TraitBox extends Component {
           if (traitKey === "chunkId") {
             this.setState({ isExtraHighlighted: false });
             connectChunkIdWithItsFlowers(traitBoxID, true);
-          } else if (["agreeWith", "connectedTo"].includes(traitKey)) {
+          } else if (idUtils.isAgreeOrConnected(traitKey)) {
             connectChunkIdWithItsFlowers(traitBoxID, true, ["chunkId"]);
           }
           this.setState({ isHighlighted: false, isSoftHighlighted: false });
@@ -368,7 +369,7 @@ class TraitBox extends Component {
         {this.state.justCopied && (
           <div className={styles.floatingAlert}>Copied</div>
         )}
-        {diUtils.isTagTrait(traitKey) &&
+        {idUtils.isTagTrait(traitKey) &&
           !this.state.isHovered &&
           !this.state.hasJustBlurred && (
             <button
@@ -410,12 +411,12 @@ class TraitBox extends Component {
               console.log("> > >", this.props.traitObject2.traitValue);
             }
           }}
-          onClick={() => {
+          onClick={(e) => {
             console.log("%traitTitleHolder");
             if (traitKey === "chunkId") {
               return;
             }
-            if (["agreeWith", "connectedTo"].includes(traitKey)) {
+            if (idUtils.isAgreeOrConnected(traitKey)) {
               if (this.state.isFlowerSearchingForStem) {
                 this.props.flowerSearchingForStemBrace[1]();
                 this.setState({ isFlowerSearchingForStem: false });
@@ -425,6 +426,7 @@ class TraitBox extends Component {
                   isHighlighted: false,
                   isFlowerSearchingForStem: true,
                 });
+                e.target.focus();
               }
               return;
             }
@@ -433,7 +435,7 @@ class TraitBox extends Component {
             } else {
               this.setState({
                 isSelected: true,
-                showTagInterface: diUtils.isTagTrait(traitKey),
+                showTagInterface: idUtils.isTagTrait(traitKey),
               });
 
               if (traitObject.expectedTypeOnStCh === "string") {
@@ -455,7 +457,7 @@ class TraitBox extends Component {
         </div>
         {(!uUtils.isEmpty(traitObject.traitValue) ||
           this.state.forceShowInput ||
-          diUtils.isTagTrait(traitKey)) && (
+          idUtils.isTagTrait(traitKey)) && (
           <div
             key={`${this.state.traitValueInputString}-${
               this.state.traitValueInputString2
@@ -486,12 +488,14 @@ class TraitBox extends Component {
                       key={`${this.props.chunkCardKey}-${traitKey}_textarea`}
                       id={`${this.props.chunkCardKey}-${traitKey}_textarea`}
                       disabled={
-                        diUtils.isTagTrait(traitKey) ||
+                        idUtils.isTagTrait(traitKey) ||
+                        idUtils.isChunkId(traitKey) ||
+                        idUtils.isAgreeOrConnected(traitKey) ||
                         traitObject.possibleTraitValues ||
                         traitObject.expectedTypeOnStCh === "boolean"
                       }
                       className={`${styles.traitValuesInput} ${
-                        diUtils.isTagTrait(traitKey) &&
+                        idUtils.isTagTrait(traitKey) &&
                         styles.traitValuesInputLarge
                       } ${styles.preventSelection}`}
                       value={
@@ -503,9 +507,8 @@ class TraitBox extends Component {
                         console.log("%textarea");
                         e.stopPropagation();
                         if (
-                          ["chunkId", "connectedTo", "agreeWith"].includes(
-                            traitKey
-                          )
+                          idUtils.isAgreeOrConnected(traitKey) ||
+                          idUtils.isChunkId(traitKey)
                         ) {
                           e.target.select();
                         }
@@ -521,7 +524,7 @@ class TraitBox extends Component {
                       onBlur={(e) => {
                         e.stopPropagation();
                         console.log("%traitValuesInput-onBlur");
-                        if (diUtils.isTagTrait(traitKey)) {
+                        if (idUtils.isTagTrait(traitKey)) {
                           e.preventDefault();
                           return;
                         }
@@ -544,7 +547,7 @@ class TraitBox extends Component {
                             `${this.props.chunkCardKey}-${traitKey}_textarea`
                           ).value
                         );
-                        if (diUtils.isTagTrait(traitKey)) {
+                        if (idUtils.isTagTrait(traitKey)) {
                           console.log("prevent default");
                           e.preventDefault();
                           return;
@@ -580,7 +583,9 @@ class TraitBox extends Component {
                           onClick={(e) => {
                             console.log("%cross1");
                             e.stopPropagation();
-                            console.log("X!");
+                            connectChunkIdWithItsFlowers(traitBoxID, true, [
+                              "chunkId",
+                            ]);
                             this.setState(() => {
                               let newState = {};
                               newState[traitValueInputStringKey] = null;
