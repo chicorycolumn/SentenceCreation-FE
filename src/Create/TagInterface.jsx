@@ -4,7 +4,7 @@ import styles from "../css/TagInterface.module.css";
 import gstyles from "../css/Global.module.css";
 import LanguageContext from "../context/LanguageContext.js";
 import LemmasTable from "./LemmasTable.jsx";
-const diUtils = require("../utils/displayUtils.js");
+import diUtils from "../utils/displayUtils.js";
 
 const TagInterface = (props) => {
   const [tags, setTags] = useState([]);

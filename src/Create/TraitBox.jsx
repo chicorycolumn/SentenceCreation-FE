@@ -3,8 +3,9 @@ import styles from "../css/TraitBox.module.css";
 import gstyles from "../css/Global.module.css";
 import TagInterface from "./TagInterface.jsx";
 import $ from "jquery";
+import diUtils from "../utils/displayUtils.js";
 const uUtils = require("../utils/universalUtils.js");
-const diUtils = require("../utils/displayUtils.js");
+
 const idUtils = require("../utils/identityUtils.js");
 
 class TraitBox extends Component {
@@ -222,69 +223,6 @@ class TraitBox extends Component {
       }
     };
 
-    const connectChunkIdWithItsFlowers = (
-      flowerstemID,
-      remove = false,
-      flowerTraitTitles = ["agreeWith", "connectedTo"],
-      value = this.state.traitValueInputString,
-      flowerClasses = [gstyles.highlighted1, gstyles.zindex5],
-      flowerstemClasses = [gstyles.highlighted1, gstyles.zindex5]
-    ) => {
-      let potentialFlowers = $(`.${styles.traitBox}`).filter(function () {
-        return $(this)
-          .find(`.${styles.traitTitle}`)
-          .filter(function () {
-            let traitTitle = $(this);
-            return flowerTraitTitles.includes(traitTitle.text());
-          }).length;
-      });
-
-      let flowers = potentialFlowers.filter(function () {
-        let el = $(this);
-        let textareas = el.find("textarea");
-        return textareas.filter(function () {
-          let textarea = $(this);
-          return textarea.text() === value;
-        }).length;
-      });
-
-      let flowerIDs = [];
-
-      flowers.each(function () {
-        let el = $(this);
-        if (remove) {
-          el.removeClass(flowerClasses.join(" "));
-        } else {
-          el.addClass(flowerClasses.join(" "));
-          flowerIDs.push(el.attr("id"));
-        }
-      });
-
-      if (flowers.length) {
-        if (remove) {
-          $(`#${flowerstemID}`).removeClass(flowerstemClasses.join(" "));
-        } else {
-          $(`#${flowerstemID}`).addClass(flowerstemClasses.join(" "));
-        }
-      } else {
-        if (remove) {
-          $(`#${flowerstemID}`).removeClass(gstyles.highlighted0);
-        } else {
-          $(`#${flowerstemID}`).addClass(gstyles.highlighted0);
-        }
-      }
-
-      if (flowerIDs.length) {
-        this.props.setElementsToDrawLinesBetween((prev) => {
-          let arr = prev ? prev.slice(0) : [];
-          arr.push({ flowerstem: flowerstemID, flowers: flowerIDs });
-          return arr;
-        });
-      } else {
-        this.props.setElementsToDrawLinesBetween([]);
-      }
-    };
-
     const forceShowInputThenFocus = (id) => {
       this.setState({ forceShowInput: true });
       setTimeout(() => {
@@ -351,17 +289,38 @@ class TraitBox extends Component {
           if (isClickableFlowerstem(this.props)) {
             this.setState({ isExtraHighlighted: true });
           } else if (traitKey === "chunkId") {
-            connectChunkIdWithItsFlowers(traitBoxID);
+            diUtils.connectChunkIdWithItsFlowers(
+              traitBoxID,
+              this.state.traitValueInputString,
+              this.props.setElementsToDrawLinesBetween
+            );
           } else if (idUtils.isAgreeOrConnected(traitKey)) {
-            connectChunkIdWithItsFlowers(traitBoxID, false, ["chunkId"]);
+            diUtils.connectChunkIdWithItsFlowers(
+              traitBoxID,
+              this.state.traitValueInputString,
+              this.props.setElementsToDrawLinesBetween,
+              false,
+              ["chunkId"]
+            );
           }
         }}
         onMouseLeave={() => {
           if (traitKey === "chunkId") {
             this.setState({ isExtraHighlighted: false });
-            connectChunkIdWithItsFlowers(traitBoxID, true);
+            diUtils.connectChunkIdWithItsFlowers(
+              traitBoxID,
+              this.state.traitValueInputString,
+              this.props.setElementsToDrawLinesBetween,
+              true
+            );
           } else if (idUtils.isAgreeOrConnected(traitKey)) {
-            connectChunkIdWithItsFlowers(traitBoxID, true, ["chunkId"]);
+            diUtils.connectChunkIdWithItsFlowers(
+              traitBoxID,
+              this.state.traitValueInputString,
+              this.props.setElementsToDrawLinesBetween,
+              true,
+              ["chunkId"]
+            );
           }
           this.setState({ isHighlighted: false, isSoftHighlighted: false });
         }}
@@ -583,9 +542,13 @@ class TraitBox extends Component {
                           onClick={(e) => {
                             console.log("%cross1");
                             e.stopPropagation();
-                            connectChunkIdWithItsFlowers(traitBoxID, true, [
-                              "chunkId",
-                            ]);
+                            diUtils.connectChunkIdWithItsFlowers(
+                              traitBoxID,
+                              this.state.traitValueInputString,
+                              this.props.setElementsToDrawLinesBetween,
+                              true,
+                              ["chunkId"]
+                            );
                             this.setState(() => {
                               let newState = {};
                               newState[traitValueInputStringKey] = null;

@@ -6,8 +6,8 @@ import LanguageContext from "../context/LanguageContext.js";
 import TraitBox from "./TraitBox.jsx";
 import ToggleShowButton from "./ToggleShowButton.jsx";
 import { testStChs } from "../utils/testData.js";
+import diUtils from "../utils/displayUtils.js";
 const uUtils = require("../utils/universalUtils.js");
-const diUtils = require("../utils/displayUtils.js");
 const traitsWithoutTraitBoxes = ["orTags", "id", "lemma"];
 
 const ChunkCard = (props) => {
@@ -167,6 +167,7 @@ const ChunkCard = (props) => {
                       props.flowerSearchingForStemBrace
                     }
                     stemFoundForFlowerBrace={props.stemFoundForFlowerBrace}
+                    searcherIsFlowerBrace={props.searcherIsFlowerBrace}
                   />
                 )
               );

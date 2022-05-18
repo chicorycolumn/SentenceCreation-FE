@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "../css/LineHolder.module.css";
-const diUtils = require("../utils/displayUtils");
+import diUtils from "../utils/displayUtils";
 
 const LineHolder = (props) => {
   return (

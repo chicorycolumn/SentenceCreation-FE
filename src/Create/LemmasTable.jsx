@@ -2,7 +2,7 @@ import React from "react";
 import styles from "../css/LemmasTable.module.css";
 import gstyles from "../css/Global.module.css";
 import { asString } from "../utils/displayUtils";
-const diUtils = require("../utils/displayUtils.js");
+import diUtils from "../utils/displayUtils.js";
 
 const LemmasTable = (props) => {
   return (
