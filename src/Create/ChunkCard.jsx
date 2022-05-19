@@ -12,6 +12,7 @@ const traitsWithoutTraitBoxes = ["orTags", "id", "lemma"];
 
 const ChunkCard = (props) => {
   const [lObjs, setLObjs] = useState([]);
+  const [backedUpStructureChunk, setBackedUpStructureChunk] = useState();
   const [structureChunk, setStructureChunk] = useState();
   const [showTraitKeysGroupOne, setShowTraitKeysGroupOne] = useState(true);
   const [showTraitKeysGroupTwo, setShowTraitKeysGroupTwo] = useState();
@@ -61,6 +62,7 @@ const ChunkCard = (props) => {
         }${idSplit[2].split("").reverse().join("")}-${stCh.lemma}`;
 
         setStructureChunk(stCh);
+        setBackedUpStructureChunk(uUtils.copyWithoutReference(stCh));
       }
     }
   }, [
@@ -157,6 +159,7 @@ const ChunkCard = (props) => {
                     traitKey2={traitKey2}
                     traitObject={traitObject}
                     traitObject2={traitObject2}
+                    lObjId={structureChunk.id}
                     word={props.word}
                     setStructureChunk={setStructureChunk}
                     wordtype={wordtype}
@@ -167,7 +170,7 @@ const ChunkCard = (props) => {
                       props.flowerSearchingForStemBrace
                     }
                     stemFoundForFlowerBrace={props.stemFoundForFlowerBrace}
-                    searcherIsFlowerBrace={props.searcherIsFlowerBrace}
+                    backedUpStructureChunk={backedUpStructureChunk}
                   />
                 )
               );

@@ -7,6 +7,8 @@ import LemmasTable from "./LemmasTable.jsx";
 import diUtils from "../utils/displayUtils.js";
 
 const TagInterface = (props) => {
+  const [clickCounter, setClickCounter] = useState(0);
+  const [tickDisabled, setTickDisabled] = useState();
   const [tags, setTags] = useState([]);
   const [fetchedLObjs, setFetchedLObjs] = useState({});
   const [wordtypeInFocus, setWordtypeInFocus] = useState(props.wordtype);
@@ -22,8 +24,19 @@ const TagInterface = (props) => {
       console.log("Setting fetched WORDS", fetchedWords);
       console.log("");
       setFetchedLObjs(fetchedWords);
+
+      setTickDisabled(
+        !fetchedWords[props.wordtype] ||
+          !fetchedWords[props.wordtype].some((lObj) => lObj.id === props.lObjId)
+      );
     });
-  }, [props.traitValueInputString, props.traitValueInputString2, lang1]);
+  }, [
+    props.traitValueInputString,
+    props.traitValueInputString2,
+    lang1,
+    props.lObjId,
+    props.wordtype,
+  ]);
 
   useEffect(() => {
     fetchTags(lang1).then((fetchedTags) => {
@@ -34,14 +47,28 @@ const TagInterface = (props) => {
     });
   }, [lang1]);
 
+  useEffect(() => {
+    if (clickCounter > 5) {
+      setTickDisabled(false);
+    }
+  }, [clickCounter]);
+
   return (
     <div className={styles.mainBox}>
       <div className={styles.leftDiv}>
         <div className={styles.buttonHolder}>
           <button
-            className={gstyles.tickButton}
-            onClick={() => {
-              props.checkAndSetTraitValue(true);
+            alt="Tick/check icon"
+            className={`${gstyles.tickButton} ${
+              tickDisabled && gstyles.disabled
+            }`}
+            onClick={(e) => {
+              e.preventDefault();
+              if (tickDisabled) {
+                setClickCounter((prev) => prev + 1);
+              } else {
+                props.checkAndSetTraitValue(true);
+              }
             }}
           >
             &#10003;
@@ -56,6 +83,33 @@ const TagInterface = (props) => {
             }}
           >
             &times;
+          </button>
+
+          <button
+            alt="Undo icon"
+            className={`${gstyles.sideButton} ${gstyles.blueButton}`}
+            onClick={() => {
+              props.revertTraitValueInputString();
+              props.revertTraitValueInputString(true);
+            }}
+          >
+            &#8592;
+          </button>
+
+          <button
+            alt="Reset icon"
+            className={`${gstyles.sideButton} ${gstyles.blueButton}`}
+            onClick={() => {
+              props.pushpopTraitValueInputString(
+                props.backedUpTags,
+                true,
+                false,
+                true
+              );
+              props.pushpopTraitValueInputString(null, true, true, true);
+            }}
+          >
+            &#8647;
           </button>
         </div>
 
@@ -80,11 +134,16 @@ const TagInterface = (props) => {
                       );
                     }}
                   >
-                    {tags.map((tag) => (
-                      <option value={tag} key={tag}>
-                        {tag}
-                      </option>
-                    ))}
+                    {tags
+                      .filter(
+                        (tag) =>
+                          !diUtils.asArray(traitValueInputString).includes(tag)
+                      )
+                      .map((tag) => (
+                        <option value={tag} key={tag}>
+                          {tag}
+                        </option>
+                      ))}
                   </select>
                 </div>
                 <div className={styles.etiquetteHolder}>

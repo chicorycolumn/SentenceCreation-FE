@@ -5,7 +5,6 @@ import TagInterface from "./TagInterface.jsx";
 import $ from "jquery";
 import diUtils from "../utils/displayUtils.js";
 const uUtils = require("../utils/universalUtils.js");
-
 const idUtils = require("../utils/identityUtils.js");
 
 class TraitBox extends Component {
@@ -54,19 +53,34 @@ class TraitBox extends Component {
     }
   };
 
-  pushpopTraitValueInputString = (val, add = true, secondary = false) => {
+  pushpopTraitValueInputString = (
+    val,
+    add = true,
+    secondary = false,
+    overWrite = false
+  ) => {
     console.log("£pushpopTraitValueInputString");
     const innerFunction = (
       traitValueInputStringKey = "traitValueInputString"
     ) => {
       let arr = diUtils.asArray(this.state[traitValueInputStringKey]);
 
-      if (add) {
-        if (!arr.includes(val)) {
-          arr.push(val);
+      if (overWrite) {
+        arr = [];
+      }
+
+      if (val && val.length) {
+        let values = Array.isArray(val) ? val : [val];
+
+        if (add) {
+          values.forEach((v) => {
+            if (!arr.includes(v)) {
+              arr.push(v);
+            }
+          });
+        } else {
+          arr = arr.filter((el) => !values.includes(el));
         }
-      } else {
-        arr = arr.filter((el) => el !== val);
       }
 
       this.setState(() => {
@@ -91,6 +105,7 @@ class TraitBox extends Component {
       word,
       setStructureChunk,
       wordtype,
+      lObjId,
     } = this.props;
 
     const exitTraitBox = (changeToValue = true) => {
@@ -351,6 +366,9 @@ class TraitBox extends Component {
             checkAndSetTraitValue={checkAndSetTraitValue}
             exitTraitBox={exitTraitBox}
             wordtype={wordtype}
+            word={word}
+            lObjId={lObjId}
+            backedUpTags={this.props.backedUpStructureChunk.andTags.traitValue}
           />
         )}
         <div

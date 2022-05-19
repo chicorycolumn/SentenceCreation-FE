@@ -232,3 +232,24 @@
   color: blue;
   width: fit-content;
 }
+
+.disabled {
+  background-color: lightgrey !important;
+  color: grey !important;
+  border: grey solid 1px !important;
+  opacity: 0.75;
+}
+
+.disabled:hover {
+  background-color: lightgrey !important;
+  color: grey !important;
+  border: grey solid 1px !important;
+  opacity: 0.75;
+}
+
+.disabled:active {
+  background-color: lightgrey !important;
+  color: grey !important;
+  border: grey solid 1px !important;
+  opacity: 0.75;
+}
