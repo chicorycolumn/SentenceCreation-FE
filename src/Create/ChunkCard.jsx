@@ -8,11 +8,12 @@ import ToggleShowButton from "./ToggleShowButton.jsx";
 import { testStChs } from "../utils/testData.js";
 import diUtils from "../utils/displayUtils.js";
 const uUtils = require("../utils/universalUtils.js");
-const traitsWithoutTraitBoxes = ["orTags", "id", "lemma"];
+const traitsToNotDisplayInOwnBox = ["orTags", "id", "lemma"];
 
 const ChunkCard = (props) => {
   const [lObjs, setLObjs] = useState([]);
   const [backedUpStructureChunk, setBackedUpStructureChunk] = useState();
+  const [chosenId, setChosenId] = useState();
   const [structureChunk, setStructureChunk] = useState();
   const [showTraitKeysGroupOne, setShowTraitKeysGroupOne] = useState(true);
   const [showTraitKeysGroupTwo, setShowTraitKeysGroupTwo] = useState();
@@ -34,22 +35,27 @@ const ChunkCard = (props) => {
       if (fetchedLObjs.length) {
         let stCh = fetchedLObjs[0];
         if (fetchedLObjs.length > 1) {
-          let id = prompt(
-            `\n"${props.formulaSymbol
-              .split(" ")
-              .map((el, i) =>
-                i === props.chunkCardIndex
-                  ? el.toUpperCase()
-                  : i === 0
-                  ? uUtils.capitaliseFirst(el)
-                  : el
-              )
-              .join(" ")}."\n\nWhich ${props.word.toUpperCase()} of these ${
-              fetchedLObjs.length
-            } matches are you after?\n\n(Hint: Look at the wordtype)`,
-            fetchedLObjs.map((lObj) => lObj.id).join("|")
+          if (!chosenId) {
+            let idFromPrompt = prompt(
+              `\n"${props.formulaSymbol
+                .split(" ")
+                .map((el, i) =>
+                  i === props.chunkCardIndex
+                    ? el.toUpperCase()
+                    : i === 0
+                    ? uUtils.capitaliseFirst(el)
+                    : el
+                )
+                .join(" ")}."\n\nWhich ${props.word.toUpperCase()} of these ${
+                fetchedLObjs.length
+              } matches are you after?\n\n(Hint: Look at the wordtype)`,
+              fetchedLObjs.map((lObj) => lObj.id).join("|")
+            );
+            setChosenId(idFromPrompt);
+          }
+          let matchingStChs = fetchedLObjs.filter(
+            (lObj) => lObj.id === chosenId
           );
-          let matchingStChs = fetchedLObjs.filter((lObj) => lObj.id === id);
           if (matchingStChs.length === 1) {
             stCh = matchingStChs[0];
           } else {
@@ -71,6 +77,7 @@ const ChunkCard = (props) => {
     props.word,
     structureChunk,
     props.formulaSymbol,
+    chosenId,
   ]);
 
   useEffect(() => {
@@ -106,7 +113,17 @@ const ChunkCard = (props) => {
       key={props.word}
     >
       <div className={styles.cardButtonsHolder}>
-        <button className={styles.cardButton}>Edit</button>
+        <button
+          alt="Reset icon"
+          className={styles.cardButton}
+          onClick={() => {
+            if (window.confirm(`Reset this whole chunk (${chunkId})?`)) {
+              setStructureChunk(null);
+            }
+          }}
+        >
+          &#8647;
+        </button>
         <button className={styles.cardButton}>Query</button>
         <button className={styles.cardButton}>Link</button>
       </div>
@@ -150,7 +167,7 @@ const ChunkCard = (props) => {
               let traitObject2 = traitKey2 ? structureChunk[traitKey2] : null;
 
               return (
-                !traitsWithoutTraitBoxes.includes(traitKey) && (
+                !traitsToNotDisplayInOwnBox.includes(traitKey) && (
                   <TraitBox
                     chunkId={chunkId}
                     chunkCardKey={props.chunkCardKey}
@@ -187,7 +204,7 @@ const ChunkCard = (props) => {
           {showTraitKeysGroupTwo &&
             traitKeysGroup2.map(
               (traitKey) =>
-                !traitsWithoutTraitBoxes.includes(traitKey) && (
+                !traitsToNotDisplayInOwnBox.includes(traitKey) && (
                   <TraitBox
                     key={traitKey}
                     traitKey={traitKey}
