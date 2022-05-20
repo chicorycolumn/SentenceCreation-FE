@@ -13,7 +13,6 @@ const diUtils = {
     flowerClasses = [gstyles.highlighted1, gstyles.zindex5],
     flowerstemClasses = [gstyles.highlighted1, gstyles.zindex5]
   ) => {
-    console.log("flowerTraitTitles", flowerTraitTitles);
     let potentialFlowers = $(`.${styles.traitBox}`).filter(function () {
       return $(this)
         .find(`.${styles.traitTitle}`)

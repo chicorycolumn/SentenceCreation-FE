@@ -15,6 +15,7 @@ const LanguagesForm = (props) => {
       <div className={gstyles.floatTop}>
         <button
           onClick={() => {
+            //devlogging
             console.log("");
             console.log({ lang1 });
             console.log("");
@@ -24,6 +25,7 @@ const LanguagesForm = (props) => {
         </button>
         <button
           onClick={() => {
+            //devlogging
             console.log("");
             console.log("2");
             console.log("");
@@ -33,6 +35,7 @@ const LanguagesForm = (props) => {
         </button>
         <button
           onClick={() => {
+            //devlogging
             console.log("");
             console.log("3");
             console.log("");
@@ -43,7 +46,6 @@ const LanguagesForm = (props) => {
       </div>
       <form
         onChange={(e) => {
-          console.log(e.target.value);
           props.setLang1(e.target.value);
         }}
       >

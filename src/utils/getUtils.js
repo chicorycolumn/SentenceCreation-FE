@@ -42,8 +42,6 @@ export const fetchWordsByTag = (lang1, andTags, orTags) => {
     : "";
   const requestString = `${baseUrl}/educator/words?${langString}${andTagsString}${orTagsString}`;
 
-  console.log("FETCHING FROM", requestString.slice(41));
-
   return axios
     .get(
       requestString

@@ -168,6 +168,7 @@ class TraitBox extends Component {
             typeof this.props[traitObjectKey].traitValue
           );
           console.log("/@");
+
           setStructureChunk((prevStructureChunk) => {
             let newStructureChunk = {
               ...prevStructureChunk,
@@ -253,7 +254,6 @@ class TraitBox extends Component {
       this.props.stemFoundForFlowerBrace[0]
     ) {
       let stemFound = this.props.stemFoundForFlowerBrace[0];
-      console.log("FOUND STEM", stemFound);
       this.props.flowerSearchingForStemBrace[1](null);
       this.props.stemFoundForFlowerBrace[1](null);
       this.setState({
@@ -374,12 +374,12 @@ class TraitBox extends Component {
         <div
           className={styles.traitTitleHolder}
           onMouseEnter={() => {
+            //devlogging
             console.log("");
             console.log("state.traitValueInputString HAS VALUE:");
             console.log("> > >", this.state.traitValueInputString);
             console.log("props.traitObject.traitValue HAS VALUE:");
             console.log("> > >", this.props.traitObject.traitValue);
-
             if (this.state.traitValueInputString2) {
               console.log("");
               console.log("state.traitValueInputString2 HAS VALUE:");
@@ -491,6 +491,7 @@ class TraitBox extends Component {
                         }
                       }}
                       onMouseEnter={() => {
+                        //devlogging
                         console.log(
                           "textarea.value:",
                           document.getElementById(
@@ -525,7 +526,6 @@ class TraitBox extends Component {
                           ).value
                         );
                         if (idUtils.isTagTrait(traitKey)) {
-                          console.log("prevent default");
                           e.preventDefault();
                           return;
                         }

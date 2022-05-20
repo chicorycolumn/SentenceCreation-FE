@@ -20,9 +20,6 @@ const TagInterface = (props) => {
       diUtils.asArray(props.traitValueInputString),
       diUtils.asArray(props.traitValueInputString2)
     ).then((fetchedWords) => {
-      console.log("");
-      console.log("Setting fetched WORDS", fetchedWords);
-      console.log("");
       setFetchedLObjs(fetchedWords);
 
       setTickDisabled(
@@ -40,9 +37,6 @@ const TagInterface = (props) => {
 
   useEffect(() => {
     fetchTags(lang1).then((fetchedTags) => {
-      console.log("");
-      console.log("Setting fetched TAGS");
-      console.log("");
       setTags(fetchedTags.sort((x, y) => x.localeCompare(y)));
     });
   }, [lang1]);

@@ -22,10 +22,6 @@ const ChunkCard = (props) => {
   useEffect(() => {
     if (lObjs) {
       let fetchedLObjs = lObjs;
-      // console.log("");
-      // console.log("word:", props.word);
-      // console.log("index:", props.chunkCardIndex);
-      // console.log("fetchedLObjs.length:", fetchedLObjs.length);
 
       if (structureChunk) {
         console.log("Already done this one actually.");
@@ -129,6 +125,7 @@ const ChunkCard = (props) => {
       </div>
       <h1
         onClick={() => {
+          //devlogging
           console.log("structureChunk keys:");
           if (structureChunk) {
             Object.keys(structureChunk).forEach((traitKey) => {
