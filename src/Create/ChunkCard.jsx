@@ -2,11 +2,13 @@ import React, { useState, useEffect, useContext } from "react";
 import styles from "../css/ChunkCard.module.css";
 import gstyles from "../css/Global.module.css";
 import { fetchLObjsByLemma } from "../utils/getUtils.js";
+import { fetchWordByExplicitChunk } from "../utils/putUtils.js";
 import LanguageContext from "../context/LanguageContext.js";
 import TraitBox from "./TraitBox.jsx";
 import ToggleShowButton from "./ToggleShowButton.jsx";
 import { testStChs } from "../utils/testData.js";
 import diUtils from "../utils/displayUtils.js";
+import idUtils from "../utils/identityUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 const traitsToNotDisplayInOwnBox = ["orTags", "id", "lemma"];
 
@@ -120,7 +122,43 @@ const ChunkCard = (props) => {
         >
           &#8647;
         </button>
-        <button className={styles.cardButton}>Query</button>
+        <button
+          alt="Query icon"
+          className={styles.cardButton}
+          onClick={() => {
+            let realStCh = {};
+
+            Object.keys(structureChunk).forEach((traitKey) => {
+              if (!idUtils.isAgreeOrConnected(traitKey)) {
+                let { traitValue } = structureChunk[traitKey];
+                if (traitValue && traitValue.length) {
+                  realStCh[traitKey] = traitValue;
+                }
+              }
+            });
+
+            fetchWordByExplicitChunk(lang1, realStCh).then(
+              (fetchedData) => {
+                console.log(fetchedData);
+                alert(
+                  `Fetched ${fetchedData.length} lemma${
+                    fetchedData.length > 1 ? "s" : ""
+                  } for chunk "${chunkId}" with the traits you've specified:\n\n` +
+                    fetchedData
+                      .map(
+                        (obj) => `${obj.lObjID}            ${obj.selectedWord}`
+                      )
+                      .join("\n")
+                );
+              },
+              (error) => {
+                console.log("ERROR 0302:", error);
+              }
+            );
+          }}
+        >
+          &#9708;
+        </button>
         <button className={styles.cardButton}>Link</button>
       </div>
       <h1
