@@ -253,3 +253,23 @@
   border: grey solid 1px !important;
   opacity: 0.75;
 }
+
+.cardButton1 {
+  flex-grow: 1;
+  color: rgb(53, 184, 228);
+  background-color: lightcyan;
+  border: none;
+  border: lightgray solid 0.5px;
+  border-top: none;
+  padding: 0px;
+  font-size: 18px;
+}
+
+.cardButton1:hover {
+  color: darkblue;
+}
+
+.cardButton1:active {
+  background-color: darkblue;
+  color: lightcyan;
+}

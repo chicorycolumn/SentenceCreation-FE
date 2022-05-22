@@ -112,19 +112,8 @@ const ChunkCard = (props) => {
     >
       <div className={styles.cardButtonsHolder}>
         <button
-          alt="Reset icon"
-          className={styles.cardButton}
-          onClick={() => {
-            if (window.confirm(`Reset this whole chunk (${chunkId})?`)) {
-              setStructureChunk(null);
-            }
-          }}
-        >
-          &#8647;
-        </button>
-        <button
           alt="Star icon to query"
-          className={styles.cardButton}
+          className={gstyles.cardButton1}
           onClick={() => {
             let realStCh = {};
 
@@ -161,7 +150,7 @@ const ChunkCard = (props) => {
         </button>
         <button
           alt="Edit icon"
-          className={styles.cardButton}
+          className={gstyles.cardButton1}
           onClick={() => {
             let newLemma = prompt("Enter new lemma.");
             if (newLemma) {
@@ -171,9 +160,23 @@ const ChunkCard = (props) => {
         >
           &#9998;
         </button>
+        <button alt="Join icon" className={gstyles.cardButton1}>
+          &#10697;
+        </button>
+        <button
+          alt="Reset icon"
+          className={gstyles.cardButton1}
+          onClick={() => {
+            if (window.confirm(`Reset this whole chunk (${chunkId})?`)) {
+              setStructureChunk(null);
+            }
+          }}
+        >
+          &#8647;
+        </button>
         <button
           alt="Cross icon"
-          className={styles.cardButton}
+          className={gstyles.cardButton1}
           onClick={() => {
             if (window.confirm("Delete this chunk?")) {
               props.editLemma(null);
@@ -181,9 +184,6 @@ const ChunkCard = (props) => {
           }}
         >
           &times;
-        </button>
-        <button alt="Join icon" className={styles.cardButton}>
-          &#10697;
         </button>
       </div>
       <h1

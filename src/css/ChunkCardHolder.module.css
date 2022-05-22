@@ -1,7 +1,21 @@
 .cardHolder {
-  border: yellow solid 2pt;
+  border: turquoise dotted 5pt;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
+  padding: 0px;
+}
+
+.cardHolderContainer {
   margin-top: 100px;
+}
+
+.buttonHolder {
+  border: black solid 2px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 50px;
+  margin-left: auto;
+  margin-right: auto;
 }

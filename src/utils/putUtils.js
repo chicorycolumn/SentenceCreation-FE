@@ -8,7 +8,10 @@ export const fetchWordByExplicitChunk = (lang1, chunk) => {
   return axios
     .put(
       `${baseUrl}/educator/sandbox?lang=${lang1}`,
-      { questionLanguage: lang1, chunk }
+      {
+        questionLanguage: lang1,
+        sentenceFormula: { sentenceStructure: [chunk] },
+      }
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {

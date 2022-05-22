@@ -28,26 +28,6 @@
   height: 30px;
 }
 
-.cardButton {
-  flex-grow: 1;
-  color: rgb(53, 184, 228);
-  background-color: lightcyan;
-  border: none;
-  border: lightgray solid 0.5px;
-  border-top: none;
-  padding: 0px;
-  font-size: 18px;
-}
-
-.cardButton:hover {
-  color: darkblue;
-}
-
-.cardButton:active {
-  background-color: darkblue;
-  color: lightcyan;
-}
-
 .traitBoxesHolder {
   background-color: none;
   color: black;
