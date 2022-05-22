@@ -123,7 +123,7 @@ const ChunkCard = (props) => {
           &#8647;
         </button>
         <button
-          alt="Query icon"
+          alt="Star icon to query"
           className={styles.cardButton}
           onClick={() => {
             let realStCh = {};
@@ -157,9 +157,34 @@ const ChunkCard = (props) => {
             );
           }}
         >
-          &#9708;
+          &#9733;
         </button>
-        <button className={styles.cardButton}>Link</button>
+        <button
+          alt="Edit icon"
+          className={styles.cardButton}
+          onClick={() => {
+            let newLemma = prompt("Enter new lemma.");
+            if (newLemma) {
+              props.editLemma(newLemma);
+            }
+          }}
+        >
+          &#9998;
+        </button>
+        <button
+          alt="Cross icon"
+          className={styles.cardButton}
+          onClick={() => {
+            if (window.confirm("Delete this chunk?")) {
+              props.editLemma(null);
+            }
+          }}
+        >
+          &times;
+        </button>
+        <button alt="Join icon" className={styles.cardButton}>
+          &#10697;
+        </button>
       </div>
       <h1
         onClick={() => {

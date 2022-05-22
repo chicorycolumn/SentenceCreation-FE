@@ -87,7 +87,7 @@ const TagInterface = (props) => {
               props.revertTraitValueInputString(true);
             }}
           >
-            &#8592;
+            &#8634;
           </button>
 
           <button

@@ -16,25 +16,27 @@
   font-weight: 200;
   width: 100%;
   position: relative;
-  top: -5px;
+  top: -10px;
 }
 
 .cardButtonsHolder {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  width: 101%;
+  width: 100.5%;
   margin: 0px;
   height: 30px;
 }
 
 .cardButton {
-  width: 33%;
-  color: lightblue;
+  flex-grow: 1;
+  color: rgb(53, 184, 228);
   background-color: lightcyan;
   border: none;
   border: lightgray solid 0.5px;
   border-top: none;
+  padding: 0px;
+  font-size: 18px;
 }
 
 .cardButton:hover {
@@ -47,7 +49,6 @@
 }
 
 .traitBoxesHolder {
-  /* border: blue solid 0.5px; */
   background-color: none;
   color: black;
   text-align: center;

@@ -21,7 +21,10 @@ const Create = () => {
         <h1>Create new sentences</h1>
         <LanguagesForm setLang1={setLang1} />
         <FormulaSymbolForm setFormulaSymbol={setFormulaSymbol} />
-        <ChunkCardHolder formulaSymbol={formulaSymbol} />
+        <ChunkCardHolder
+          formulaSymbol={formulaSymbol}
+          setFormulaSymbol={setFormulaSymbol}
+        />
       </div>
     </LanguageContextProvider>
   );
