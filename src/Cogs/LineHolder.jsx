@@ -4,7 +4,7 @@ import diUtils from "../utils/displayUtils";
 
 const LineHolder = (props) => {
   return (
-    <div id="lineHolder">
+    <div id="lineHolder" className={styles.lineHolder}>
       {diUtils
         .multiplyOutStemAndFlowers(props.elementsToDrawLineBetween)
         .map((elementIDs) => {
