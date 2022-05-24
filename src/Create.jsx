@@ -12,7 +12,12 @@ const Create = () => {
     // "My doctor's doctor is a woman"
     // "Woman women bear doctor's doctor"
     // "kobieta"
-    "The woman is red"
+    [
+      { word: "the", structureChunk: null },
+      { word: "woman", structureChunk: null },
+      { word: "is", structureChunk: null },
+      { word: "red", structureChunk: null },
+    ]
   );
 
   return (

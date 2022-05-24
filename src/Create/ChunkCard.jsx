@@ -16,10 +16,21 @@ const ChunkCard = (props) => {
   const [lObjs, setLObjs] = useState([]);
   const [backedUpStructureChunk, setBackedUpStructureChunk] = useState();
   const [chosenId, setChosenId] = useState();
-  const [structureChunk, setStructureChunk] = useState();
+  const [structureChunk, setStructureChunk] = useState(props.structureChunk);
   const [showTraitKeysGroupOne, setShowTraitKeysGroupOne] = useState(true);
   const [showTraitKeysGroupTwo, setShowTraitKeysGroupTwo] = useState();
   const lang1 = useContext(LanguageContext);
+  const setStructureChunkAndFormula = (newStCh) => {
+    setStructureChunk(newStCh);
+    props.setFormulaSymbol((prevFormulaSymbol) => {
+      return prevFormulaSymbol.map((structureChunkObject, index) => {
+        if (index === props.index) {
+          structureChunkObject.structureChunk = newStCh;
+        }
+        return structureChunkObject;
+      });
+    });
+  };
 
   useEffect(() => {
     if (lObjs) {
@@ -36,13 +47,12 @@ const ChunkCard = (props) => {
           if (!chosenId) {
             let idFromPrompt = prompt(
               `\n"${props.formulaSymbol
-                .split(" ")
-                .map((el, i) =>
+                .map((structureChunkObject, i) =>
                   i === props.chunkCardIndex
-                    ? el.toUpperCase()
+                    ? structureChunkObject.word.toUpperCase()
                     : i === 0
-                    ? uUtils.capitaliseFirst(el)
-                    : el
+                    ? uUtils.capitaliseFirst(structureChunkObject.word)
+                    : structureChunkObject.word
                 )
                 .join(" ")}."\n\nWhich ${props.word.toUpperCase()} of these ${
                 fetchedLObjs.length
@@ -65,7 +75,7 @@ const ChunkCard = (props) => {
           props.chunkCardIndex
         }${idSplit[2].split("").reverse().join("")}-${stCh.lemma}`;
 
-        setStructureChunk(stCh);
+        setStructureChunkAndFormula(stCh);
         setBackedUpStructureChunk(uUtils.copyWithoutReference(stCh));
       }
     }
@@ -79,7 +89,9 @@ const ChunkCard = (props) => {
   ]);
 
   useEffect(() => {
+    console.log("~");
     if (lang1 && props.word) {
+      console.log("~~");
       fetchLObjsByLemma(lang1, props.word).then(
         (fetchedLObjs) => {
           setLObjs(fetchedLObjs);
@@ -168,7 +180,7 @@ const ChunkCard = (props) => {
           className={gstyles.cardButton1}
           onClick={() => {
             if (window.confirm(`Reset this whole chunk (${chunkId})?`)) {
-              setStructureChunk(null);
+              setStructureChunkAndFormula(null);
             }
           }}
         >
@@ -238,7 +250,8 @@ const ChunkCard = (props) => {
                     traitObject2={traitObject2}
                     lObjId={structureChunk.id}
                     word={props.word}
-                    setStructureChunk={setStructureChunk}
+                    setStructureChunkAndFormula={setStructureChunkAndFormula}
+                    structureChunk={structureChunk}
                     wordtype={wordtype}
                     setElementsToDrawLinesBetween={
                       props.setElementsToDrawLinesBetween
@@ -270,7 +283,8 @@ const ChunkCard = (props) => {
                     traitKey={traitKey}
                     traitObject={structureChunk[traitKey]}
                     word={props.word}
-                    setStructureChunk={setStructureChunk}
+                    setStructureChunkAndFormula={setStructureChunkAndFormula}
+                    structureChunk={structureChunk}
                   />
                 )
             )}

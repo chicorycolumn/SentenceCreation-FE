@@ -18,7 +18,11 @@ const FormulaSymbolForm = (props) => {
           onClick={(e) => {
             e.preventDefault();
             if (formulaSymbolInput) {
-              props.setFormulaSymbol(formulaSymbolInput);
+              props.setFormulaSymbol(
+                formulaSymbolInput.split(" ").map((word) => {
+                  return { word, structureChunk: null };
+                })
+              );
             }
           }}
         >

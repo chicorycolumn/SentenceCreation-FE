@@ -103,7 +103,7 @@ class TraitBox extends Component {
       traitObject,
       traitKey2,
       word,
-      setStructureChunk,
+      setStructureChunkAndFormula,
       wordtype,
       lObjId,
     } = this.props;
@@ -169,60 +169,63 @@ class TraitBox extends Component {
           );
           console.log("/@");
 
-          setStructureChunk((prevStructureChunk) => {
-            let newStructureChunk = {
-              ...prevStructureChunk,
-            };
+          let newStructureChunk = {
+            ...this.props.structureChunk,
+          };
 
-            let newTraitValue = this.state[traitValueInputStringKey];
-            newTraitValue = uUtils.isEmpty(newTraitValue, true)
-              ? null
-              : newTraitValue;
+          let newTraitValue = this.state[traitValueInputStringKey];
+          newTraitValue = uUtils.isEmpty(newTraitValue, true)
+            ? null
+            : newTraitValue;
 
-            let expectedType = newStructureChunk[traitKey].expectedTypeOnStCh;
+          let expectedType = newStructureChunk[traitKey].expectedTypeOnStCh;
 
-            if (expectedType === "array") {
-              console.log("::", newTraitValue);
-              if (newTraitValue) {
-                newTraitValue = diUtils.asArray(newTraitValue);
-              }
-              console.log(":::", newTraitValue);
-            } else if (expectedType === "string") {
-              if (newTraitValue && newTraitValue.includes(",")) {
-                alert(
-                  "Just one string value expected but you have input a comma."
-                );
-                this.setState({
-                  traitValueInputString: diUtils.asString(
-                    this.props[traitObjectKey].traitValue
-                  ),
-                });
-                return newStructureChunk; //Aborting without changing anything.
-              }
-            } else if (expectedType === "boolean") {
-              newTraitValue = newTraitValue === "true" ? true : false;
-            }
-
-            newStructureChunk[traitKey] = {
-              ...newStructureChunk[traitKey],
-            };
-
+          if (expectedType === "array") {
+            console.log("::", newTraitValue);
             if (newTraitValue) {
-              newStructureChunk[traitKey].traitValue = newTraitValue;
-            } else {
-              if (expectedType === "array") {
-                newStructureChunk[traitKey].traitValue = [];
-              } else {
-                delete newStructureChunk[traitKey].traitValue;
-              }
+              newTraitValue = diUtils.asArray(newTraitValue);
             }
-            return newStructureChunk;
-          });
+            console.log(":::", newTraitValue);
+          } else if (expectedType === "string") {
+            if (newTraitValue && newTraitValue.includes(",")) {
+              alert(
+                "Just one string value expected but you have input a comma."
+              );
+              this.setState({
+                traitValueInputString: diUtils.asString(
+                  this.props[traitObjectKey].traitValue
+                ),
+              });
+              //Aborting without changing anything.
+              console.log("@1 No change to value.");
+              exitTraitBox();
+              exitTraitBox(false);
+            }
+          } else if (expectedType === "boolean") {
+            newTraitValue = newTraitValue === "true" ? true : false;
+          }
+
+          newStructureChunk[traitKey] = {
+            ...newStructureChunk[traitKey],
+          };
+
+          if (newTraitValue) {
+            newStructureChunk[traitKey].traitValue = newTraitValue;
+          } else {
+            if (expectedType === "array") {
+              newStructureChunk[traitKey].traitValue = [];
+            } else {
+              delete newStructureChunk[traitKey].traitValue;
+            }
+          }
+
+          this.props.setStructureChunkAndFormula(newStructureChunk);
+          console.log("@2 Changing value.");
           exitTraitBox();
-          return;
+          exitTraitBox(false);
         }
-        console.log("@No change to value.");
-        console.log("/@");
+        console.log("@3 No change to value.");
+        exitTraitBox();
         exitTraitBox(false);
       };
 

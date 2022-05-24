@@ -10,15 +10,16 @@ const ChunkCardHolder = (props) => {
   );
   const [flowerSearchingForStem, setFlowerSearchingForStem] = useState();
   const [stemFoundForFlower, setStemFoundForFlower] = useState();
+  const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const editLemmaAtIndex = (index, newLemma) => {
     props.setFormulaSymbol((prevFormulaSymbol) => {
-      let formulaSymbolAsArr = prevFormulaSymbol.split(" ");
       if (!newLemma) {
-        return formulaSymbolAsArr.filter((el, i) => i !== index).join(" ");
+        return prevFormulaSymbol.filter((el, i) => i !== index);
       }
-      formulaSymbolAsArr[index] = newLemma;
-      return formulaSymbolAsArr.join(" ");
+      prevFormulaSymbol[index] = { word: newLemma, structureChunk: null };
+      return prevFormulaSymbol;
     });
+    setMeaninglessCounter((prev) => prev + 1);
   };
   return (
     <div className={styles.cardHolderContainer}>
@@ -33,28 +34,36 @@ const ChunkCardHolder = (props) => {
           &#9733;
         </button>
       </div>
-      <div className={styles.cardHolder}>
-        {props.formulaSymbol.split(" ").map((word, index) => (
-          <ChunkCard
-            key={`${index}-${word}`}
-            chunkCardKey={`${index}-${word}`}
-            word={word}
-            chunkCardIndex={index}
-            formulaSymbol={props.formulaSymbol}
-            setElementsToDrawLinesBetween={setElementsToDrawLinesBetween}
-            flowerSearchingForStemBrace={[
-              flowerSearchingForStem,
-              setFlowerSearchingForStem,
-            ]}
-            stemFoundForFlowerBrace={[
-              stemFoundForFlower,
-              setStemFoundForFlower,
-            ]}
-            editLemma={(newLemma) => {
-              editLemmaAtIndex(index, newLemma);
-            }}
-          />
-        ))}
+      <div className={styles.cardHolder} key={meaninglessCounter}>
+        <LineHolder elementsToDrawLineBetween={elementsToDrawLinesBetween} />
+        {/* Unused LineHolder for flexbox spacing. */}
+        {props.formulaSymbol.map((structureChunkObject, index) => {
+          let { word, structureChunk } = structureChunkObject;
+          return (
+            <ChunkCard
+              key={`${index}-${word}`}
+              chunkCardKey={`${index}-${word}`}
+              word={word}
+              index={index}
+              structureChunk={structureChunk}
+              chunkCardIndex={index}
+              formulaSymbol={props.formulaSymbol}
+              setFormulaSymbol={props.setFormulaSymbol}
+              setElementsToDrawLinesBetween={setElementsToDrawLinesBetween}
+              flowerSearchingForStemBrace={[
+                flowerSearchingForStem,
+                setFlowerSearchingForStem,
+              ]}
+              stemFoundForFlowerBrace={[
+                stemFoundForFlower,
+                setStemFoundForFlower,
+              ]}
+              editLemma={(newLemma) => {
+                editLemmaAtIndex(index, newLemma);
+              }}
+            />
+          );
+        })}
         <LineHolder elementsToDrawLineBetween={elementsToDrawLinesBetween} />
       </div>
     </div>
