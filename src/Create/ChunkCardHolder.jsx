@@ -3,6 +3,7 @@ import ChunkCard from "./ChunkCard";
 import styles from "../css/ChunkCardHolder.module.css";
 import gstyles from "../css/Global.module.css";
 import LineHolder from "../Cogs/LineHolder";
+import { isAgreeOrConnected } from "../utils/identityUtils";
 
 const ChunkCardHolder = (props) => {
   const [elementsToDrawLinesBetween, setElementsToDrawLinesBetween] = useState(
@@ -11,12 +12,30 @@ const ChunkCardHolder = (props) => {
   const [flowerSearchingForStem, setFlowerSearchingForStem] = useState();
   const [stemFoundForFlower, setStemFoundForFlower] = useState();
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
-  const editLemmaAtIndex = (index, newLemma) => {
+  const editLemmaAtIndex = (index, newLemma, chunkId) => {
+    function updateFlowers(newFormula, chunkId, newChunkId) {
+      newFormula.forEach((stChObj) => {
+        if (stChObj.structureChunk) {
+          Object.keys(stChObj.structureChunk).forEach((traitKey) => {
+            if (
+              isAgreeOrConnected(traitKey) &&
+              stChObj.structureChunk[traitKey].traitValue === chunkId
+            ) {
+              stChObj.structureChunk[traitKey].traitValue = newChunkId;
+            }
+          });
+        }
+      });
+    }
+
     props.setFormula((prevFormula) => {
       if (!newLemma) {
-        return prevFormula.filter((el, i) => i !== index);
+        let newFormula = prevFormula.filter((el, i) => i !== index);
+        updateFlowers(newFormula, chunkId, null);
+        return newFormula;
       }
       prevFormula[index] = { word: newLemma, structureChunk: null };
+      updateFlowers(prevFormula, chunkId, null);
       return prevFormula;
     });
     setMeaninglessCounter((prev) => prev + 1);
@@ -58,8 +77,8 @@ const ChunkCardHolder = (props) => {
                 stemFoundForFlower,
                 setStemFoundForFlower,
               ]}
-              editLemma={(newLemma) => {
-                editLemmaAtIndex(index, newLemma);
+              editLemma={(newLemma, chunkId) => {
+                editLemmaAtIndex(index, newLemma, chunkId);
               }}
             />
           );

@@ -282,8 +282,10 @@ class TraitBox extends Component {
         id={traitBoxID}
         key={traitBoxID}
         className={`${styles.preventSelection} ${styles.traitBox} ${
-          !traitObject.traitValue && styles.traitBoxEmpty
-        } ${this.state.hasJustBlurred && styles.shimmer} ${
+          idUtils.isAgreeOrConnected(traitKey) && styles.traitBoxCircle
+        } ${!traitObject.traitValue && styles.traitBoxEmpty} ${
+          this.state.hasJustBlurred && styles.shimmer
+        } ${
           (this.state.isHovered || this.state.isSelected) &&
           styles.traitBoxHover
         } ${this.state.isSoftHighlighted && gstyles.highlighted0} ${

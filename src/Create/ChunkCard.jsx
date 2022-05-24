@@ -166,7 +166,7 @@ const ChunkCard = (props) => {
           onClick={() => {
             let newLemma = prompt("Enter new lemma.");
             if (newLemma) {
-              props.editLemma(newLemma);
+              props.editLemma(newLemma, chunkId);
             }
           }}
         >
@@ -191,7 +191,7 @@ const ChunkCard = (props) => {
           className={gstyles.cardButton1}
           onClick={() => {
             if (window.confirm("Delete this chunk?")) {
-              props.editLemma(null);
+              props.editLemma(null, chunkId);
             }
           }}
         >

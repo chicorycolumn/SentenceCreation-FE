@@ -12,6 +12,15 @@
   border: purple solid 1px;
 }
 
+.traitBoxCircle {
+  border-radius: 10px;
+  width: 120px;
+}
+
+.traitBoxCircle textarea {
+  font-size: 12px;
+}
+
 .traitBoxHover {
   width: 243px;
   z-index: 2;
