@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 
-const FormulaSymbolForm = (props) => {
-  const [formulaSymbolInput, setFormulaSymbolInput] = useState("");
+const FormulaForm = (props) => {
+  const [formulaInput, setFormulaInput] = useState("");
 
   return (
     <div>
-      <h3>FormulaSymbolForm</h3>
+      <h3>FormulaForm</h3>
       <form>
         <input
           onChange={(e) => {
-            setFormulaSymbolInput(e.target.value);
+            setFormulaInput(e.target.value);
           }}
           placeholder="Enter example sentence"
         ></input>
@@ -17,9 +17,9 @@ const FormulaSymbolForm = (props) => {
           type="submit"
           onClick={(e) => {
             e.preventDefault();
-            if (formulaSymbolInput) {
-              props.setFormulaSymbol(
-                formulaSymbolInput.split(" ").map((word) => {
+            if (formulaInput) {
+              props.setFormula(
+                formulaInput.split(" ").map((word) => {
                   return { word, structureChunk: null };
                 })
               );
@@ -34,4 +34,4 @@ const FormulaSymbolForm = (props) => {
   );
 };
 
-export default FormulaSymbolForm;
+export default FormulaForm;

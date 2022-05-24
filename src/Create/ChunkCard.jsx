@@ -22,8 +22,8 @@ const ChunkCard = (props) => {
   const lang1 = useContext(LanguageContext);
   const setStructureChunkAndFormula = (newStCh) => {
     setStructureChunk(newStCh);
-    props.setFormulaSymbol((prevFormulaSymbol) => {
-      return prevFormulaSymbol.map((structureChunkObject, index) => {
+    props.setFormula((prevFormula) => {
+      return prevFormula.map((structureChunkObject, index) => {
         if (index === props.index) {
           structureChunkObject.structureChunk = newStCh;
         }
@@ -46,7 +46,7 @@ const ChunkCard = (props) => {
         if (fetchedLObjs.length > 1) {
           if (!chosenId) {
             let idFromPrompt = prompt(
-              `\n"${props.formulaSymbol
+              `\n"${props.formula
                 .map((structureChunkObject, i) =>
                   i === props.chunkCardIndex
                     ? structureChunkObject.word.toUpperCase()
@@ -84,7 +84,7 @@ const ChunkCard = (props) => {
     props.chunkCardIndex,
     props.word,
     structureChunk,
-    props.formulaSymbol,
+    props.formula,
     chosenId,
   ]);
 

@@ -12,12 +12,12 @@ const ChunkCardHolder = (props) => {
   const [stemFoundForFlower, setStemFoundForFlower] = useState();
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const editLemmaAtIndex = (index, newLemma) => {
-    props.setFormulaSymbol((prevFormulaSymbol) => {
+    props.setFormula((prevFormula) => {
       if (!newLemma) {
-        return prevFormulaSymbol.filter((el, i) => i !== index);
+        return prevFormula.filter((el, i) => i !== index);
       }
-      prevFormulaSymbol[index] = { word: newLemma, structureChunk: null };
-      return prevFormulaSymbol;
+      prevFormula[index] = { word: newLemma, structureChunk: null };
+      return prevFormula;
     });
     setMeaninglessCounter((prev) => prev + 1);
   };
@@ -37,7 +37,7 @@ const ChunkCardHolder = (props) => {
       <div className={styles.cardHolder} key={meaninglessCounter}>
         <LineHolder elementsToDrawLineBetween={elementsToDrawLinesBetween} />
         {/* Unused LineHolder for flexbox spacing. */}
-        {props.formulaSymbol.map((structureChunkObject, index) => {
+        {props.formula.map((structureChunkObject, index) => {
           let { word, structureChunk } = structureChunkObject;
           return (
             <ChunkCard
@@ -47,8 +47,8 @@ const ChunkCardHolder = (props) => {
               index={index}
               structureChunk={structureChunk}
               chunkCardIndex={index}
-              formulaSymbol={props.formulaSymbol}
-              setFormulaSymbol={props.setFormulaSymbol}
+              formula={props.formula}
+              setFormula={props.setFormula}
               setElementsToDrawLinesBetween={setElementsToDrawLinesBetween}
               flowerSearchingForStemBrace={[
                 flowerSearchingForStem,
