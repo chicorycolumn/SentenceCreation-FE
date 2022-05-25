@@ -273,3 +273,7 @@
   background-color: darkblue;
   color: lightcyan;
 }
+
+.hidden {
+  display: none !important;
+}

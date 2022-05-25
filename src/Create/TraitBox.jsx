@@ -282,10 +282,10 @@ class TraitBox extends Component {
         id={traitBoxID}
         key={traitBoxID}
         className={`${styles.preventSelection} ${styles.traitBox} ${
-          idUtils.isAgreeOrConnected(traitKey) && styles.traitBoxCircle
-        } ${!traitObject.traitValue && styles.traitBoxEmpty} ${
-          this.state.hasJustBlurred && styles.shimmer
-        } ${
+          idUtils.isAgreeOrConnected(traitKey) && styles.traitBoxCircle1
+        } ${idUtils.isChunkId(traitKey) && styles.traitBoxCircle2} ${
+          !traitObject.traitValue && styles.traitBoxEmpty
+        } ${this.state.hasJustBlurred && styles.shimmer} ${
           (this.state.isHovered || this.state.isSelected) &&
           styles.traitBoxHover
         } ${this.state.isSoftHighlighted && gstyles.highlighted0} ${
@@ -377,7 +377,10 @@ class TraitBox extends Component {
           />
         )}
         <div
-          className={styles.traitTitleHolder}
+          className={`${styles.traitTitleHolder} ${
+            idUtils.isChunkId(traitKey) && gstyles.hidden
+          }`}
+          id={`traitTitleHolder-${traitKey}`}
           onMouseEnter={() => {
             //devlogging
             console.log("");

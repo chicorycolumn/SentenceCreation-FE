@@ -12,13 +12,31 @@
   border: purple solid 1px;
 }
 
-.traitBoxCircle {
+.traitBoxCircle1 {
   border-radius: 10px;
   width: 120px;
+  min-height: 35px;
 }
 
-.traitBoxCircle textarea {
+.traitBoxCircle1 textarea {
   font-size: 12px;
+}
+
+.traitBoxCircle2 {
+  border-radius: 10px;
+  width: 120px;
+  height: 40px;
+  background-color: rgb(227, 223, 250);
+}
+
+.traitBoxCircle2 textarea {
+  font-size: 12px;
+  line-height: 12px;
+  padding: 0px;
+  margin: 0px;
+  background-color: rgba(0, 0, 0, 0) !important;
+  height: 36px !important;
+  /* border: blue solid 1px; */
 }
 
 .traitBoxHover {
