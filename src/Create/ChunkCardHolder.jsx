@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChunkCard from "./ChunkCard";
 import styles from "../css/ChunkCardHolder.module.css";
 import gstyles from "../css/Global.module.css";
 import LineHolder from "../Cogs/LineHolder";
 import { isAgreeOrConnected } from "../utils/identityUtils";
+import diUtils from "../utils/displayUtils.js";
+import $ from "jquery";
 
 const ChunkCardHolder = (props) => {
   const [elementsToDrawLinesBetween, setElementsToDrawLinesBetween] = useState(
     []
   );
+  const [drawnLinesAsBold, setDrawnLinesAsBold] = useState(false);
   const [flowerSearchingForStem, setFlowerSearchingForStem] = useState();
   const [stemFoundForFlower, setStemFoundForFlower] = useState();
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
@@ -40,6 +43,13 @@ const ChunkCardHolder = (props) => {
     });
     setMeaninglessCounter((prev) => prev + 1);
   };
+
+  useEffect(() => {
+    if (!elementsToDrawLinesBetween.length) {
+      setDrawnLinesAsBold(false);
+    }
+  }, [elementsToDrawLinesBetween]);
+
   return (
     <div className={styles.cardHolderContainer}>
       <div className={styles.buttonHolder}>
@@ -52,9 +62,37 @@ const ChunkCardHolder = (props) => {
         >
           &#9733;
         </button>
+        <button
+          alt="Connection icon"
+          className={`${gstyles.cardButton1}`}
+          onMouseEnter={() => {
+            $("*[id*=traitTitleHolder-chunkId]").each(function () {
+              let id = $(this).parent()[0].id;
+              let value = $(this).parent().find("textarea")[0].value;
+              diUtils.connectChunkIdWithItsFlowers(id, value, [
+                setElementsToDrawLinesBetween,
+                setDrawnLinesAsBold,
+              ]);
+            });
+          }}
+          onMouseLeave={() => {
+            $("*[id*=traitTitleHolder-chunkId]").each(function () {
+              let id = $(this).parent()[0].id;
+              let value = $(this).parent().find("textarea")[0].value;
+              diUtils.connectChunkIdWithItsFlowers(
+                id,
+                value,
+                [setElementsToDrawLinesBetween],
+                true
+              );
+            });
+          }}
+        >
+          &#42476;
+        </button>
       </div>
       <div className={styles.cardHolder} key={meaninglessCounter}>
-        <LineHolder elementsToDrawLineBetween={elementsToDrawLinesBetween} />
+        <LineHolder elementsToDrawLineBetween={[]} />
         {/* Unused LineHolder for flexbox spacing. */}
         {props.formula.map((structureChunkObject, index) => {
           let { word, structureChunk } = structureChunkObject;
@@ -83,7 +121,10 @@ const ChunkCardHolder = (props) => {
             />
           );
         })}
-        <LineHolder elementsToDrawLineBetween={elementsToDrawLinesBetween} />
+        <LineHolder
+          elementsToDrawLineBetween={elementsToDrawLinesBetween}
+          drawnLinesAsBold={drawnLinesAsBold}
+        />
       </div>
     </div>
   );

@@ -217,6 +217,10 @@
   z-index: 5;
 }
 
+.zindex7 {
+  z-index: 7;
+}
+
 .hiddenElement1 {
   position: absolute;
   left: 0px;

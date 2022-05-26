@@ -16,7 +16,15 @@ const LineHolder = (props) => {
             diUtils.drawLineBetweenElements(el1ID, el2ID, lineID);
           }, 1);
 
-          return <div id={lineID} key={lineID} className={styles.line}></div>;
+          return (
+            <div
+              id={lineID}
+              key={lineID}
+              className={`${styles.line} ${
+                props.drawnLinesAsBold && styles.boldLine
+              }`}
+            ></div>
+          );
         })}
     </div>
   );

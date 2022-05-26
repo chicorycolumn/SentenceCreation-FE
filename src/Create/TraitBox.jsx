@@ -312,13 +312,13 @@ class TraitBox extends Component {
             diUtils.connectChunkIdWithItsFlowers(
               traitBoxID,
               this.state.traitValueInputString,
-              this.props.setElementsToDrawLinesBetween
+              [this.props.setElementsToDrawLinesBetween]
             );
           } else if (idUtils.isAgreeOrConnected(traitKey)) {
             diUtils.connectChunkIdWithItsFlowers(
               traitBoxID,
               this.state.traitValueInputString,
-              this.props.setElementsToDrawLinesBetween,
+              [this.props.setElementsToDrawLinesBetween],
               false,
               ["chunkId"]
             );
@@ -330,14 +330,14 @@ class TraitBox extends Component {
             diUtils.connectChunkIdWithItsFlowers(
               traitBoxID,
               this.state.traitValueInputString,
-              this.props.setElementsToDrawLinesBetween,
+              [this.props.setElementsToDrawLinesBetween],
               true
             );
           } else if (idUtils.isAgreeOrConnected(traitKey)) {
             diUtils.connectChunkIdWithItsFlowers(
               traitBoxID,
               this.state.traitValueInputString,
-              this.props.setElementsToDrawLinesBetween,
+              [this.props.setElementsToDrawLinesBetween],
               true,
               ["chunkId"]
             );
@@ -571,7 +571,7 @@ class TraitBox extends Component {
                             diUtils.connectChunkIdWithItsFlowers(
                               traitBoxID,
                               this.state.traitValueInputString,
-                              this.props.setElementsToDrawLinesBetween,
+                              [this.props.setElementsToDrawLinesBetween],
                               true,
                               ["chunkId"]
                             );

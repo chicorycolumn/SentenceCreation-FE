@@ -6,13 +6,16 @@ const uUtils = require("./universalUtils.js");
 const diUtils = {
   connectChunkIdWithItsFlowers: (
     flowerstemID,
-    value,
-    setElementsToDrawLinesBetween,
+    flowerstemValue,
+    setters,
     remove = false,
     flowerTraitTitles = ["agreeWith", "connectedTo"],
     flowerClasses = [gstyles.highlighted1, gstyles.zindex5],
-    flowerstemClasses = [gstyles.highlighted1, gstyles.zindex5]
+    flowerstemClasses = [gstyles.highlighted1, gstyles.zindex7]
   ) => {
+    let setElementsToDrawLinesBetween = setters[0];
+    let setDrawnLinesAsBold = setters[1];
+
     let potentialFlowers = $(`.${styles.traitBox}`).filter(function () {
       return $(this)
         .find(`.${styles.traitTitle}`)
@@ -27,9 +30,14 @@ const diUtils = {
       let textareas = el.find("textarea");
       return textareas.filter(function () {
         let textarea = $(this);
-        return textarea.text() === value;
+        return textarea.text() === flowerstemValue;
       }).length;
     });
+
+    if (!flowers.length) {
+      console.log(`No flowers for "${flowerstemValue}"`);
+      return;
+    }
 
     let flowerIDs = [];
 
@@ -63,6 +71,9 @@ const diUtils = {
         arr.push({ flowerstem: flowerstemID, flowers: flowerIDs });
         return arr;
       });
+      if (setDrawnLinesAsBold) {
+        setDrawnLinesAsBold(true);
+      }
     } else {
       setElementsToDrawLinesBetween([]);
     }
