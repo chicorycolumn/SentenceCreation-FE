@@ -6,6 +6,7 @@ import LineHolder from "../Cogs/LineHolder";
 import { isAgreeOrConnected } from "../utils/identityUtils";
 import diUtils from "../utils/displayUtils.js";
 import $ from "jquery";
+import { fetchWordByExplicitChunk } from "../utils/putUtils";
 
 const ChunkCardHolder = (props) => {
   const [elementsToDrawLinesBetween, setElementsToDrawLinesBetween] = useState(
@@ -57,7 +58,23 @@ const ChunkCardHolder = (props) => {
           alt="Star icon to query"
           className={`${gstyles.cardButton1}`}
           onClick={() => {
-            alert("Let's query the whole Question sentence.");
+            fetchWordByExplicitChunk(
+              "ENG", //swde
+              props.formula.map((el) => el.structureChunk)
+            ).then(
+              (fetchedData) => {
+                console.log(fetchedData);
+                alert(
+                  `Fetched ${fetchedData.length} sentence${
+                    fetchedData.length > 1 ? "s" : ""
+                  } with the traits you've specified:\n\n` +
+                    fetchedData.join("\n")
+                );
+              },
+              (error) => {
+                console.log("ERROR 0302:", error);
+              }
+            );
           }}
         >
           &#9733;

@@ -127,18 +127,7 @@ const ChunkCard = (props) => {
           alt="Star icon to query"
           className={gstyles.cardButton1}
           onClick={() => {
-            let realStCh = {};
-
-            Object.keys(structureChunk).forEach((traitKey) => {
-              if (!idUtils.isAgreeOrConnected(traitKey)) {
-                let { traitValue } = structureChunk[traitKey];
-                if (traitValue && traitValue.length) {
-                  realStCh[traitKey] = traitValue;
-                }
-              }
-            });
-
-            fetchWordByExplicitChunk(lang1, realStCh).then(
+            fetchWordByExplicitChunk(lang1, [structureChunk]).then(
               (fetchedData) => {
                 console.log(fetchedData);
                 alert(

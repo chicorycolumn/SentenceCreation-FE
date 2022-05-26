@@ -320,3 +320,18 @@ exports.isThisValueInThisKeyValueObject = (obj, soughtValue) => {
 exports.isThisObjectInThisArrayOfObjects = (obj, arr) => {
   return arr.some((objFromArr) => this.areTwoObjectsEqual(objFromArr, obj));
 };
+
+exports.flatten = (arr) => {
+  console.log("--------------", arr);
+  let res = [];
+  arr.forEach((el) => {
+    if (Array.isArray(el)) {
+      el.forEach((subEl) => {
+        res.push(subEl);
+      });
+    } else {
+      res.push(el);
+    }
+  });
+  return res;
+};
