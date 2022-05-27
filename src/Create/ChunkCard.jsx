@@ -129,17 +129,14 @@ const ChunkCard = (props) => {
           onClick={() => {
             fetchWordByExplicitChunk(lang1, [structureChunk]).then(
               (fetchedData) => {
-                console.log(fetchedData);
-                alert(
-                  `Fetched ${fetchedData.length} lemma${
+                props.setPopup({
+                  title: `${fetchedData.length} lemma${
                     fetchedData.length > 1 ? "s" : ""
-                  } for chunk "${chunkId}" with the traits you've specified:\n\n` +
-                    fetchedData
-                      .map(
-                        (obj) => `${obj.lObjID}            ${obj.selectedWord}`
-                      )
-                      .join("\n")
-                );
+                  } for "${chunkId}" with traits you specified`,
+                  list: fetchedData.map(
+                    (obj) => `${obj.lObjID}            ${obj.selectedWord}`
+                  ),
+                });
               },
               (error) => {
                 console.log("ERROR 0302:", error);

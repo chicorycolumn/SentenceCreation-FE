@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import ChunkCard from "./ChunkCard";
 import styles from "../css/ChunkCardHolder.module.css";
 import gstyles from "../css/Global.module.css";
@@ -7,8 +7,11 @@ import { isAgreeOrConnected } from "../utils/identityUtils";
 import diUtils from "../utils/displayUtils.js";
 import $ from "jquery";
 import { fetchWordByExplicitChunk } from "../utils/putUtils";
+import LanguageContext from "../context/LanguageContext.js";
+import ListPopup from "../Cogs/ListPopup.jsx";
 
 const ChunkCardHolder = (props) => {
+  const lang1 = useContext(LanguageContext);
   const [elementsToDrawLinesBetween, setElementsToDrawLinesBetween] = useState(
     []
   );
@@ -16,6 +19,8 @@ const ChunkCardHolder = (props) => {
   const [flowerSearchingForStem, setFlowerSearchingForStem] = useState();
   const [stemFoundForFlower, setStemFoundForFlower] = useState();
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
+  const [showListPopup, setShowListPopup] = useState();
+  const [listPopupData, setListPopupData] = useState();
   const editLemmaAtIndex = (index, newLemma, chunkId) => {
     function updateFlowers(newFormula, chunkId, newChunkId) {
       newFormula.forEach((stChObj) => {
@@ -44,6 +49,10 @@ const ChunkCardHolder = (props) => {
     });
     setMeaninglessCounter((prev) => prev + 1);
   };
+  const setPopup = (data) => {
+    setListPopupData(data);
+    setShowListPopup(true);
+  };
 
   useEffect(() => {
     if (!elementsToDrawLinesBetween.length) {
@@ -53,23 +62,30 @@ const ChunkCardHolder = (props) => {
 
   return (
     <div className={styles.cardHolderContainer}>
+      {showListPopup && (
+        <ListPopup
+          exit={() => {
+            setShowListPopup(false);
+          }}
+          data={listPopupData}
+        />
+      )}
       <div className={styles.buttonHolder}>
         <button
           alt="Star icon to query"
           className={`${gstyles.cardButton1}`}
           onClick={() => {
             fetchWordByExplicitChunk(
-              "ENG", //swde
+              lang1,
               props.formula.map((el) => el.structureChunk)
             ).then(
               (fetchedData) => {
-                console.log(fetchedData);
-                alert(
-                  `Fetched ${fetchedData.length} sentence${
+                setPopup({
+                  title: `${fetchedData.length} sentence${
                     fetchedData.length > 1 ? "s" : ""
-                  } with the traits you've specified:\n\n` +
-                    fetchedData.join("\n")
-                );
+                  } from traits you specified`,
+                  list: fetchedData,
+                });
               },
               (error) => {
                 console.log("ERROR 0302:", error);
@@ -135,6 +151,7 @@ const ChunkCardHolder = (props) => {
               editLemma={(newLemma, chunkId) => {
                 editLemmaAtIndex(index, newLemma, chunkId);
               }}
+              setPopup={setPopup}
             />
           );
         })}

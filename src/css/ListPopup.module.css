@@ -1,0 +1,48 @@
+.mainbox {
+  padding: 10px;
+  border: lightseagreen solid 2px;
+  box-shadow: 3px 3px 6px lightseagreen;
+  background-color: rgb(207, 248, 246);
+  color: black;
+  height: 400px;
+  width: 647px;
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  z-index: 8;
+}
+
+.topHolder {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.bottomHolder {
+  overflow-y: scroll;
+  height: 350px;
+}
+
+.title {
+  font-size: 20px;
+  margin-top: 0px;
+  text-align: center;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.numbering {
+  display: inline-block;
+  opacity: 0.2;
+  width: 30px !important;
+  padding: 0px;
+  margin: 0px;
+  margin-right: 40px;
+}
+
+.listItem {
+  list-style: none;
+  margin-top: 5px;
+  font-size: 17px;
+}
