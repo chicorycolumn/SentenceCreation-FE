@@ -158,6 +158,11 @@ const diUtils = {
     line.style.height = H + "px";
   },
 
+  getLemmaFromChunkId: (chunkId) => {
+    let split = chunkId.split("-");
+    return split[split.length - 1];
+  },
+
   orderTraitKeys: (stCh) => {
     let orderedTraitKeys = [
       "chunkId",

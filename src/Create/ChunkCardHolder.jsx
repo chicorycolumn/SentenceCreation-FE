@@ -9,6 +9,7 @@ import $ from "jquery";
 import { fetchWordByExplicitChunk } from "../utils/putUtils";
 import LanguageContext from "../context/LanguageContext.js";
 import ListPopup from "../Cogs/ListPopup.jsx";
+import ChunkOrdersPopup from "./ChunkOrdersPopup.jsx";
 
 const ChunkCardHolder = (props) => {
   const lang1 = useContext(LanguageContext);
@@ -21,6 +22,8 @@ const ChunkCardHolder = (props) => {
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const [showListPopup, setShowListPopup] = useState();
   const [listPopupData, setListPopupData] = useState();
+  const [chunkOrders, setChunkOrders] = useState([]);
+  const [showChunkOrdersPopup, setShowChunkOrdersPopup] = useState();
   const editLemmaAtIndex = (index, newLemma, chunkId) => {
     function updateFlowers(newFormula, chunkId, newChunkId) {
       newFormula.forEach((stChObj) => {
@@ -70,7 +73,26 @@ const ChunkCardHolder = (props) => {
           data={listPopupData}
         />
       )}
+      {showChunkOrdersPopup && (
+        <ChunkOrdersPopup
+          exit={() => {
+            setShowChunkOrdersPopup(false);
+          }}
+          chunkOrders={chunkOrders}
+          setChunkOrders={setChunkOrders}
+          formula={props.formula}
+        />
+      )}
       <div className={styles.buttonHolder}>
+        <button
+          alt="Order icon"
+          className={`${gstyles.cardButton1}`}
+          onClick={() => {
+            setShowChunkOrdersPopup(true);
+          }}
+        >
+          &#11819;
+        </button>
         <button
           alt="Star icon to query"
           className={`${gstyles.cardButton1}`}

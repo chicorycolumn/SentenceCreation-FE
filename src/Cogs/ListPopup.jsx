@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../css/ListPopup.module.css";
+import styles from "../css/Popup.module.css";
 import gstyles from "../css/Global.module.css";
 
 const ListPopup = (props) => {
