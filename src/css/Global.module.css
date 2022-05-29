@@ -49,6 +49,13 @@
   background-color: rgb(215, 212, 251);
 }
 
+.rectangleButton {
+  padding: 0px;
+  width: 30px;
+  height: 30px;
+  font-size: 25px;
+}
+
 .tickButton {
   color: limegreen;
   font-size: 18px;

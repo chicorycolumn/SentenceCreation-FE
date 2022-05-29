@@ -449,7 +449,7 @@ class TraitBox extends Component {
                 ? this.state.traitValueInputString2
                 : ""
             }`}
-            onMouseOut={() => {
+            onMouseLeave={() => {
               this.setState({
                 isHovered: false,
                 isInputActive: false,

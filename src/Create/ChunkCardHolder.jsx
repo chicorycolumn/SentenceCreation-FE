@@ -22,7 +22,11 @@ const ChunkCardHolder = (props) => {
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const [showListPopup, setShowListPopup] = useState();
   const [listPopupData, setListPopupData] = useState();
-  const [chunkOrders, setChunkOrders] = useState([]);
+  const [chunkOrders, setChunkOrders] = useState([
+    ["npe-1100-woman", "ver-2000-be"],
+    ["ver-2000-be", "ver-2000-be", "npe-1100-woman"],
+  ]);
+
   const [showChunkOrdersPopup, setShowChunkOrdersPopup] = useState();
   const [highlightedCard, setHighlightedCard] = useState();
   const editLemmaAtIndex = (index, newLemma, chunkId) => {
@@ -87,7 +91,7 @@ const ChunkCardHolder = (props) => {
       )}
       <div className={styles.buttonHolder}>
         <button
-          alt="Order icon"
+          alt="Dots icon"
           className={`${gstyles.cardButton1}`}
           onClick={() => {
             setShowChunkOrdersPopup(true);
@@ -96,7 +100,7 @@ const ChunkCardHolder = (props) => {
           &#11819;
         </button>
         <button
-          alt="Star icon to query"
+          alt="Star icon"
           className={`${gstyles.cardButton1}`}
           onClick={() => {
             fetchWordByExplicitChunk(

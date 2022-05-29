@@ -52,7 +52,7 @@ const TagInterface = (props) => {
       <div className={styles.leftDiv}>
         <div className={styles.buttonHolder}>
           <button
-            alt="Tick/check icon"
+            alt="Tick icon / Check icon"
             className={`${gstyles.tickButton} ${
               tickDisabled && gstyles.disabled
             }`}

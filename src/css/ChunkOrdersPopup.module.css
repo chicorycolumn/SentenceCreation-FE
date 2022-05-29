@@ -5,17 +5,35 @@
 .buttonHolder {
   width: 100%;
   display: flex;
+  display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
+  width: 100%;
+}
+
+.orderBuilder {
+  height: 80px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
 }
 
 .chunkButton {
   background-color: antiquewhite;
+  height: 75px;
   min-width: 100px;
   padding: 0px;
 }
 
 .chunkButton:active {
+  background-color: rgb(193, 121, 28);
+}
+
+.highlightedButton {
   background-color: rgb(193, 121, 28);
 }
 
@@ -26,4 +44,38 @@
 
 .buttonBottomHalf {
   font-size: 10px;
+}
+
+.chunkButtonMini {
+  background-color: white;
+  height: 40px;
+  min-width: 67px;
+  padding: 0px;
+}
+
+.chunkButtonMini:hover {
+  background-color: rgb(252, 200, 200);
+  color: darkred;
+}
+
+.chunkButtonMini .buttonTopHalf {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.listitem {
+  list-style-type: none;
+  margin-top: 5px;
+}
+
+.wordspan {
+  margin-left: 10px;
+}
+
+.orderBuilderHolder {
+  width: 100%;
+  border: black dotted 2px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
