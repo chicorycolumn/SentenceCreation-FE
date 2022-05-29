@@ -24,6 +24,7 @@ const ChunkCardHolder = (props) => {
   const [listPopupData, setListPopupData] = useState();
   const [chunkOrders, setChunkOrders] = useState([]);
   const [showChunkOrdersPopup, setShowChunkOrdersPopup] = useState();
+  const [highlightedCard, setHighlightedCard] = useState();
   const editLemmaAtIndex = (index, newLemma, chunkId) => {
     function updateFlowers(newFormula, chunkId, newChunkId) {
       newFormula.forEach((stChObj) => {
@@ -69,6 +70,7 @@ const ChunkCardHolder = (props) => {
         <ListPopup
           exit={() => {
             setShowListPopup(false);
+            setHighlightedCard();
           }}
           data={listPopupData}
         />
@@ -174,6 +176,8 @@ const ChunkCardHolder = (props) => {
                 editLemmaAtIndex(index, newLemma, chunkId);
               }}
               setPopup={setPopup}
+              highlightedCard={highlightedCard}
+              setHighlightedCard={setHighlightedCard}
             />
           );
         })}

@@ -119,7 +119,11 @@ const ChunkCard = (props) => {
 
   return (
     <div
-      className={`${styles.card} ${wordtype && gstyles[wordtype]}`}
+      className={`${styles.card} ${wordtype && gstyles[wordtype]} ${
+        props.highlightedCard &&
+        props.highlightedCard !== chunkId &&
+        gstyles.translucent
+      }`}
       key={props.word}
     >
       <div className={styles.cardButtonsHolder}>
@@ -127,6 +131,7 @@ const ChunkCard = (props) => {
           alt="Star icon to query"
           className={gstyles.cardButton1}
           onClick={() => {
+            props.setHighlightedCard(chunkId);
             fetchWordByExplicitChunk(lang1, [structureChunk]).then(
               (fetchedData) => {
                 props.setPopup({
@@ -147,27 +152,49 @@ const ChunkCard = (props) => {
           &#9733;
         </button>
         <button
-          alt="Edit icon"
+          alt="Pencil icon"
           className={gstyles.cardButton1}
           onClick={() => {
-            let newLemma = prompt("Enter new lemma.");
-            if (newLemma) {
-              props.editLemma(newLemma, chunkId);
-            }
+            props.setHighlightedCard(chunkId);
+            setTimeout(() => {
+              let newLemma = prompt("Enter new lemma.");
+              if (newLemma) {
+                props.editLemma(newLemma, chunkId);
+              }
+              props.setHighlightedCard();
+            }, 0);
           }}
         >
           &#9998;
         </button>
-        <button alt="Join icon" className={gstyles.cardButton1}>
+        <button
+          alt="Squares icon"
+          className={gstyles.cardButton1}
+          onClick={() => {
+            props.setHighlightedCard(chunkId);
+            setTimeout(() => {
+              alert(
+                "Let's connect chunk cards from Question sentence to their counterparts in Answer sentence."
+              );
+              props.setHighlightedCard();
+            }, 0);
+          }}
+        >
           &#10697;
         </button>
         <button
           alt="Reset icon"
           className={gstyles.cardButton1}
           onClick={() => {
-            if (window.confirm(`Reset this whole chunk (${chunkId})?`)) {
-              setStructureChunkAndFormula(null);
-            }
+            props.setHighlightedCard(chunkId);
+            setTimeout(() => {
+              if (
+                window.confirm(`Reset all traits on this chunk (${chunkId})?`)
+              ) {
+                setStructureChunkAndFormula(null);
+              }
+              props.setHighlightedCard();
+            }, 0);
           }}
         >
           &#8647;
@@ -176,9 +203,13 @@ const ChunkCard = (props) => {
           alt="Cross icon"
           className={gstyles.cardButton1}
           onClick={() => {
-            if (window.confirm("Delete this chunk?")) {
-              props.editLemma(null, chunkId);
-            }
+            props.setHighlightedCard(chunkId);
+            setTimeout(() => {
+              if (window.confirm(`Delete this chunk (${chunkId})?`)) {
+                props.editLemma(null, chunkId);
+              }
+              props.setHighlightedCard();
+            }, 0);
           }}
         >
           &times;

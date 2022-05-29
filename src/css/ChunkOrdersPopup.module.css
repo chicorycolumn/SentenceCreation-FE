@@ -1,3 +1,7 @@
+.mainboxWide {
+  width: 647px;
+}
+
 .buttonHolder {
   width: 100%;
   display: flex;
@@ -12,7 +16,7 @@
 }
 
 .chunkButton:active {
-  background-color: burlywood;
+  background-color: rgb(193, 121, 28);
 }
 
 .buttonTopHalf {

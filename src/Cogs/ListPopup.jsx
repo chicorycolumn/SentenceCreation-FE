@@ -4,13 +4,13 @@ import gstyles from "../css/Global.module.css";
 
 const ListPopup = (props) => {
   return (
-    <div className={styles.mainbox}>
+    <div className={`${styles.mainbox}`}>
       <div className={styles.topHolder}>
         <div className={`${gstyles.sideButton} ${gstyles.invisible}`}></div>
         <h1 className={styles.title}>{props.data.title}</h1>
         <button
           alt="Cross icon"
-          className={`${gstyles.sideButton} ${gstyles.redButton}`}
+          className={`${gstyles.sideButton} ${gstyles.redButton} ${gstyles.squareButton}`}
           onClick={props.exit}
         >
           &times;

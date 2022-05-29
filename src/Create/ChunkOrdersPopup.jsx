@@ -6,7 +6,7 @@ import diUtils from "../utils/displayUtils.js";
 
 const ChunkOrdersPopup = (props) => {
   return (
-    <div className={pstyles.mainbox}>
+    <div className={`${pstyles.mainbox} ${styles.mainboxWide}`}>
       <div className={pstyles.topHolder}>
         <div className={`${gstyles.sideButton} ${gstyles.invisible}`}></div>
         <h1 className={pstyles.title}>Select orders for sentence.</h1>
@@ -22,10 +22,10 @@ const ChunkOrdersPopup = (props) => {
       <div className={styles.buttonHolder}>
         {props.formula.map((obj) => {
           let chunkId = obj.structureChunk.chunkId.traitValue;
-          let lemma = diUtils.getLemmaFromChunkId(chunkId);
+          let lemma = obj.word;
 
           return (
-            <button className={styles.chunkButton}>
+            <button key={chunkId} className={styles.chunkButton}>
               <p className={styles.buttonTopHalf}>{lemma}</p>
               <p className={styles.buttonBottomHalf}>{chunkId}</p>
             </button>
