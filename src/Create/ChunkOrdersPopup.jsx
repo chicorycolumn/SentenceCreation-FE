@@ -117,13 +117,13 @@ const ChunkOrdersPopup = (props) => {
           &#10003;
         </button>
         <button
-          alt="Cross icon"
+          alt="Undo icon"
           className={`${gstyles.redButton} ${gstyles.rectangleButton}`}
           onClick={() => {
             setOrderBuilt([]);
           }}
         >
-          &times;
+          &#8634;
         </button>
       </div>
 
