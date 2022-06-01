@@ -7,6 +7,7 @@ import uUtils from "../utils/universalUtils.js";
 
 const ChunkOrdersPopup = (props) => {
   const [orderBuilt, setOrderBuilt] = useState([]);
+  const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const [highlightedButton, setHighlightedButton] = useState();
 
   const getLemmaFromFormula = (chunkId) => {
@@ -85,42 +86,47 @@ const ChunkOrdersPopup = (props) => {
           alt="Tick icon / Check icon"
           className={gstyles.tickButton}
           onClick={() => {
-            props.setChunkOrders((prev) => {
-              let stringifiedOrderBuilt = stringifyChunkOrder(orderBuilt);
-              let indexOfExistingOrder;
+            if (orderBuilt.length) {
+              props.setChunkOrders((prev) => {
+                let stringifiedOrderBuilt = stringifyChunkOrder(orderBuilt);
+                let indexOfExistingOrder;
 
-              if (
-                props.chunkOrders.filter((chunkOrder, index) => {
-                  console.log(index);
-                  if (
-                    stringifyChunkOrder(chunkOrder) === stringifiedOrderBuilt
-                  ) {
-                    indexOfExistingOrder = index;
-                    return true;
-                  }
+                if (
+                  props.chunkOrders.filter((obj, index) => {
+                    console.log(index);
+                    let chunkOrder = obj.order;
+                    if (
+                      stringifyChunkOrder(chunkOrder) === stringifiedOrderBuilt
+                    ) {
+                      indexOfExistingOrder = index;
+                      return true;
+                    }
 
-                  return false;
-                }).length
-              ) {
-                alert(
-                  `That chunk order is already present at ${
-                    indexOfExistingOrder + 1
-                  }.`
-                );
-                return prev;
-              }
-              setOrderBuilt([]);
-              return [...prev, [...orderBuilt]];
-            });
+                    return false;
+                  }).length
+                ) {
+                  alert(
+                    `That chunk order is already present at ${
+                      indexOfExistingOrder + 1
+                    }.`
+                  );
+                  return prev;
+                }
+                setOrderBuilt([]);
+                return [...prev, { isPrimary: true, order: [...orderBuilt] }];
+              });
+            }
           }}
         >
           &#10003;
         </button>
         <button
           alt="Undo icon"
-          className={`${gstyles.redButton} ${gstyles.rectangleButton}`}
+          className={`${gstyles.blueButton} ${gstyles.rectangleButton}`}
           onClick={() => {
-            setOrderBuilt([]);
+            if (orderBuilt.length) {
+              setOrderBuilt([]);
+            }
           }}
         >
           &#8634;
@@ -129,31 +135,63 @@ const ChunkOrdersPopup = (props) => {
 
       <div className={pstyles.bottomHolder}>
         <ul>
-          {props.chunkOrders.map((chunkOrder, index) => (
-            <li className={styles.listitem} key={`chunkOrder-${index}`}>
-              <button
-                className={`${gstyles.redButton}`}
-                onClick={() => {
-                  props.setChunkOrders(
-                    uUtils.returnArrayWithItemAtIndexRemoved(
-                      props.chunkOrders,
-                      index
-                    )
-                  );
-                }}
-              >
-                &times;
-              </button>
-              {chunkOrder.map((chunkId, index) => (
-                <span
-                  key={`chunkOrder-${index}-${chunkId}-${index}`}
-                  className={styles.wordspan}
+          {props.chunkOrders.map((obj, index) => {
+            let { isPrimary, order } = obj;
+            return (
+              <li className={styles.listitem} key={`chunkOrder-${index}`}>
+                <button
+                  alt="Black circle / White circle icon"
+                  className={`${gstyles.blueButton}`}
+                  onClick={() => {
+                    setMeaninglessCounter((prev) => prev + 1);
+                    setTimeout(() => {
+                      props.setChunkOrders((prev) => {
+                        let newArr = prev.map((obj, i) => {
+                          if (i === index) {
+                            obj.isPrimary = !prev[index].isPrimary;
+                          }
+                          return obj;
+                        });
+                        return newArr;
+                      });
+                    }, 0);
+                  }}
                 >
-                  {getLemmaFromFormula(chunkId)}
-                </span>
-              ))}
-            </li>
-          ))}
+                  {isPrimary ? "●" : "○"}
+                </button>
+                <button
+                  alt="Cross icon"
+                  className={`${gstyles.redButton}`}
+                  onClick={() => {
+                    if (props.chunkOrders.length === 1) {
+                      alert(
+                        "There must be at least one order. Add another before you remove this one."
+                      );
+                      return;
+                    }
+                    props.setChunkOrders(
+                      uUtils.returnArrayWithItemAtIndexRemoved(
+                        props.chunkOrders,
+                        index
+                      )
+                    );
+                  }}
+                >
+                  &times;
+                </button>
+                {order.map((chunkId, index) => (
+                  <span
+                    key={`chunkOrder-${index}-${chunkId}-${index}`}
+                    className={`${styles.wordspan} ${
+                      !isPrimary && gstyles.translucent2
+                    }`}
+                  >
+                    {getLemmaFromFormula(chunkId)}
+                  </span>
+                ))}
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>

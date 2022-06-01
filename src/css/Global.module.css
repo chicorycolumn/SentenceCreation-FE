@@ -301,3 +301,11 @@
 .translucent {
   opacity: 0.33 !important;
 }
+
+.translucent2 {
+  opacity: 0.5 !important;
+}
+
+.translucent3 {
+  opacity: 0.66 !important;
+}

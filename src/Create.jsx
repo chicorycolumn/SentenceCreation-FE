@@ -5,18 +5,23 @@ import ChunkCardHolder from "./Create/ChunkCardHolder.jsx";
 import { LanguageContextProvider } from "./context/LanguageContext.js";
 
 const Create = () => {
-  const [lang1, setLang1] = useState("ENG");
+  const [lang1, setLang1] = useState("POL");
   const [isLoading, setIsLoading] = useState();
   const [error, setError] = useState(null);
   const [formula, setFormula] = useState(
     // "My doctor's doctor is a woman"
     // "Woman women bear doctor's doctor"
     // "kobieta"
+    // [
+    //   { word: "the", structureChunk: null },
+    //   { word: "woman", structureChunk: null },
+    //   { word: "is", structureChunk: null },
+    //   { word: "red", structureChunk: null },
+    // ]
     [
-      { word: "the", structureChunk: null },
-      { word: "woman", structureChunk: null },
-      { word: "is", structureChunk: null },
-      { word: "red", structureChunk: null },
+      { word: "kobieta", structureChunk: null },
+      { word: "jest", structureChunk: null },
+      { word: "czerwony", structureChunk: null },
     ]
   );
 

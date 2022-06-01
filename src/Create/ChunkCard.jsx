@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import styles from "../css/ChunkCard.module.css";
 import gstyles from "../css/Global.module.css";
 import { fetchLObjsByLemma } from "../utils/getUtils.js";
-import { fetchWordByExplicitChunk } from "../utils/putUtils.js";
+import { fetchSentence } from "../utils/putUtils.js";
 import LanguageContext from "../context/LanguageContext.js";
 import TraitBox from "./TraitBox.jsx";
 import ToggleShowButton from "./ToggleShowButton.jsx";
@@ -128,11 +128,11 @@ const ChunkCard = (props) => {
     >
       <div className={styles.cardButtonsHolder}>
         <button
-          alt="Star icon to query"
+          alt="Star icon"
           className={gstyles.cardButton1}
           onClick={() => {
             props.setHighlightedCard(chunkId);
-            fetchWordByExplicitChunk(lang1, [structureChunk]).then(
+            fetchSentence(lang1, [structureChunk]).then(
               (fetchedData) => {
                 props.setPopup({
                   title: `${fetchedData.length} lemma${

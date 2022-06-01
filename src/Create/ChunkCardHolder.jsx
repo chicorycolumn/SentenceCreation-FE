@@ -6,7 +6,7 @@ import LineHolder from "../Cogs/LineHolder";
 import { isAgreeOrConnected } from "../utils/identityUtils";
 import diUtils from "../utils/displayUtils.js";
 import $ from "jquery";
-import { fetchWordByExplicitChunk } from "../utils/putUtils";
+import { fetchSentence } from "../utils/putUtils";
 import LanguageContext from "../context/LanguageContext.js";
 import ListPopup from "../Cogs/ListPopup.jsx";
 import ChunkOrdersPopup from "./ChunkOrdersPopup.jsx";
@@ -22,10 +22,7 @@ const ChunkCardHolder = (props) => {
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const [showListPopup, setShowListPopup] = useState();
   const [listPopupData, setListPopupData] = useState();
-  const [chunkOrders, setChunkOrders] = useState([
-    ["npe-1100-woman", "ver-2000-be"],
-    ["ver-2000-be", "ver-2000-be", "npe-1100-woman"],
-  ]);
+  const [chunkOrders, setChunkOrders] = useState([]);
 
   const [showChunkOrdersPopup, setShowChunkOrdersPopup] = useState();
   const [highlightedCard, setHighlightedCard] = useState();
@@ -61,6 +58,21 @@ const ChunkCardHolder = (props) => {
     setListPopupData(data);
     setShowListPopup(true);
   };
+
+  useEffect(() => {
+    if (!chunkOrders.length) {
+      if (props.formula.every((obj) => obj.structureChunk)) {
+        setChunkOrders([
+          {
+            isPrimary: true,
+            order: props.formula.map(
+              (obj) => obj.structureChunk.chunkId.traitValue
+            ),
+          },
+        ]);
+      }
+    }
+  }, [props.formula, chunkOrders]);
 
   useEffect(() => {
     if (!elementsToDrawLinesBetween.length) {
@@ -103,9 +115,10 @@ const ChunkCardHolder = (props) => {
           alt="Star icon"
           className={`${gstyles.cardButton1}`}
           onClick={() => {
-            fetchWordByExplicitChunk(
+            fetchSentence(
               lang1,
-              props.formula.map((el) => el.structureChunk)
+              props.formula.map((el) => el.structureChunk),
+              chunkOrders
             ).then(
               (fetchedData) => {
                 setPopup({

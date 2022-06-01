@@ -4,19 +4,25 @@ const idUtils = require("../utils/identityUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
-export const fetchWordByExplicitChunk = (lang1, rawChunks) => {
+export const fetchSentence = (lang1, rawChunks, orders) => {
   let processedChunks = rawChunks.map((structureChunk) => {
     let processedStCh = {};
     Object.keys(structureChunk).forEach((traitKey) => {
-      if (!idUtils.isAgreeOrConnected(traitKey)) {
-        let { traitValue } = structureChunk[traitKey];
-        if (traitValue && traitValue.length) {
-          processedStCh[traitKey] = traitValue;
-        }
+      let { traitValue } = structureChunk[traitKey];
+      if (traitValue && traitValue.length) {
+        processedStCh[traitKey] = traitValue;
       }
     });
     return processedStCh;
   });
+
+  let primaryOrders = orders
+    .filter((obj) => obj.isPrimary)
+    .map((obj) => obj.order);
+
+  let additionalOrders = orders
+    .filter((obj) => !obj.isPrimary)
+    .map((obj) => obj.order);
 
   if (!processedChunks.length) {
     return;
@@ -28,7 +34,11 @@ export const fetchWordByExplicitChunk = (lang1, rawChunks) => {
       `${baseUrl}/educator/sandbox?lang=${lang1}`,
       {
         questionLanguage: lang1,
-        sentenceFormula: { sentenceStructure: processedChunks },
+        sentenceFormula: {
+          sentenceStructure: processedChunks,
+          primaryOrders,
+          additionalOrders,
+        },
       }
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
