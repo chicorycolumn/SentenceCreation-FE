@@ -26,11 +26,11 @@ const ChunkOrdersPopup = (props) => {
         <div className={`${gstyles.sideButton} ${gstyles.invisible}`}></div>
         <h1 className={pstyles.title}>Select orders for sentence.</h1>
         <button
-          alt="Cross icon"
-          className={`${gstyles.sideButton} ${gstyles.redButton}`}
+          alt="Exit icon"
+          className={`${gstyles.sideButton} ${gstyles.greyButton}`}
           onClick={props.exit}
         >
-          &times;
+          &#8679;
         </button>
       </div>
 

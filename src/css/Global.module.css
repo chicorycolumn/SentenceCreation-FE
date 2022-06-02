@@ -35,6 +35,20 @@
   background-color: rgb(255, 232, 232);
 }
 
+.greyButton {
+  color: grey;
+  background-color: white;
+}
+
+.greyButton:active {
+  background-color: grey !important;
+  color: white;
+}
+
+.greyButton:hover {
+  background-color: lightgrey;
+}
+
 .blueButton {
   color: blue;
   background-color: white;
