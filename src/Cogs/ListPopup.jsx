@@ -9,11 +9,11 @@ const ListPopup = (props) => {
         <div className={`${gstyles.sideButton} ${gstyles.invisible}`}></div>
         <h1 className={styles.title}>{props.data.title}</h1>
         <button
-          alt="Cross icon"
-          className={`${gstyles.sideButton} ${gstyles.redButton} ${gstyles.squareButton}`}
+          alt="Exit icon"
+          className={`${gstyles.sideButton} ${gstyles.greyButton} ${gstyles.squareButton}`}
           onClick={props.exit}
         >
-          &times;
+          &#8679;
         </button>
       </div>
 
