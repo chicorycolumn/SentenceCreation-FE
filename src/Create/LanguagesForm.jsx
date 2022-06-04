@@ -6,8 +6,8 @@ const LanguagesForm = (props) => {
   const lang1 = useContext(LanguageContext);
 
   useEffect(() => {
-    document.getElementById("lang_english").checked = true;
-  }, []);
+    document.getElementById(`lang_${lang1}`).checked = true;
+  }, [lang1]);
 
   return (
     <div>
@@ -49,10 +49,10 @@ const LanguagesForm = (props) => {
           props.setLang1(e.target.value);
         }}
       >
-        <input type="radio" id="lang_english" name="lang" value="ENG" />
-        <label htmlFor="lang_english">English</label>
-        <input type="radio" id="lang_polish" name="lang" value="POL" />
-        <label htmlFor="lang_polish">Polish</label>
+        <input type="radio" id="lang_ENG" name="lang" value="ENG" />
+        <label htmlFor="lang_ENG">English</label>
+        <input type="radio" id="lang_POL" name="lang" value="POL" />
+        <label htmlFor="lang_POL">Polish</label>
       </form>
     </div>
   );

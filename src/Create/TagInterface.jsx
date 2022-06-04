@@ -13,6 +13,10 @@ const TagInterface = (props) => {
   const [fetchedLObjs, setFetchedLObjs] = useState({});
   const [wordtypeInFocus, setWordtypeInFocus] = useState(props.wordtype);
   const lang1 = useContext(LanguageContext);
+  const exit = () => {
+    props.revertTraitValueInputString(true);
+    props.exitTraitBox(false);
+  };
 
   useEffect(() => {
     fetchWordsByTag(
@@ -48,153 +52,155 @@ const TagInterface = (props) => {
   }, [clickCounter]);
 
   return (
-    <div className={styles.mainBox}>
-      <div className={styles.leftDiv}>
-        <div className={styles.buttonHolder}>
-          <button
-            alt="Tick icon / Check icon"
-            className={`${gstyles.tickButton} ${
-              tickDisabled && gstyles.disabled
-            }`}
-            onClick={(e) => {
-              e.preventDefault();
-              if (tickDisabled) {
-                setClickCounter((prev) => prev + 1);
-              } else {
-                props.checkAndSetTraitValue(true);
-              }
-            }}
-          >
-            &#10003;
-          </button>
+    <>
+      <div className={gstyles.obscurus} onClick={exit}></div>
+      <div className={styles.mainBox}>
+        <div className={styles.leftDiv}>
+          <div className={styles.buttonHolder}>
+            <button
+              alt="Tick icon / Check icon"
+              className={`${gstyles.tickButton} ${
+                tickDisabled && gstyles.disabled
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                if (tickDisabled) {
+                  setClickCounter((prev) => prev + 1);
+                } else {
+                  props.checkAndSetTraitValue(true);
+                }
+              }}
+            >
+              &#10003;
+            </button>
 
-          <button
-            alt="Cross icon"
-            className={`${gstyles.sideButton} ${gstyles.redButton}`}
-            onClick={() => {
-              props.revertTraitValueInputString(true);
-              props.exitTraitBox(false);
-            }}
-          >
-            &times;
-          </button>
+            <button
+              alt="Cross icon"
+              className={`${gstyles.sideButton} ${gstyles.redButton}`}
+              onClick={exit}
+            >
+              &times;
+            </button>
 
-          <button
-            alt="Undo icon"
-            className={`${gstyles.sideButton} ${gstyles.blueButton}`}
-            onClick={() => {
-              props.revertTraitValueInputString();
-              props.revertTraitValueInputString(true);
-            }}
-          >
-            &#8634;
-          </button>
+            <button
+              alt="Undo icon"
+              className={`${gstyles.sideButton} ${gstyles.blueButton}`}
+              onClick={() => {
+                props.revertTraitValueInputString();
+                props.revertTraitValueInputString(true);
+              }}
+            >
+              &#8634;
+            </button>
 
-          <button
-            alt="Reset icon"
-            className={`${gstyles.sideButton} ${gstyles.blueButton}`}
-            onClick={() => {
-              props.pushpopTraitValueInputString(
-                props.backedUpTags,
-                true,
-                false,
-                true
-              );
-              props.pushpopTraitValueInputString(null, true, true, true);
-            }}
-          >
-            &#8647;
-          </button>
-        </div>
+            <button
+              alt="Reset icon"
+              className={`${gstyles.sideButton} ${gstyles.blueButton}`}
+              onClick={() => {
+                props.pushpopTraitValueInputString(
+                  props.backedUpTags,
+                  true,
+                  false,
+                  true
+                );
+                props.pushpopTraitValueInputString(null, true, true, true);
+              }}
+            >
+              &#8647;
+            </button>
+          </div>
 
-        {[props.traitValueInputString, props.traitValueInputString2].map(
-          (traitValueInputString, index) => {
-            const heading = ["Select And-Tags", "Select Or-Tags"][index];
-            const isSecondary = index === 1;
-            return (
-              <div key={heading} className={styles.heading}>
-                <div className={styles.div1}>
-                  <h1>{heading}</h1>
+          {[props.traitValueInputString, props.traitValueInputString2].map(
+            (traitValueInputString, index) => {
+              const heading = ["Select And-Tags", "Select Or-Tags"][index];
+              const isSecondary = index === 1;
+              return (
+                <div key={heading} className={styles.heading}>
+                  <div className={styles.div1}>
+                    <h1>{heading}</h1>
 
-                  <select
-                    className={styles.tagSelector}
-                    name="tag"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      props.pushpopTraitValueInputString(
-                        e.target.value,
-                        true,
-                        isSecondary
-                      );
-                    }}
-                  >
-                    {tags
-                      .filter(
-                        (tag) =>
-                          !diUtils.asArray(traitValueInputString).includes(tag)
-                      )
-                      .map((tag) => (
-                        <option value={tag} key={tag}>
-                          {tag}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-                <div className={styles.etiquetteHolder}>
-                  {diUtils.asArray(traitValueInputString).map((tag) => (
-                    <div
-                      onClick={() => {
+                    <select
+                      className={styles.tagSelector}
+                      name="tag"
+                      onClick={(e) => {
+                        e.preventDefault();
                         props.pushpopTraitValueInputString(
-                          tag,
-                          false,
+                          e.target.value,
+                          true,
                           isSecondary
                         );
                       }}
-                      className={`${styles.etiquette} ${styles.etiquetteClickable}`}
-                      key={tag}
                     >
-                      {tag}
-                    </div>
-                  ))}
+                      {tags
+                        .filter(
+                          (tag) =>
+                            !diUtils
+                              .asArray(traitValueInputString)
+                              .includes(tag)
+                        )
+                        .map((tag) => (
+                          <option value={tag} key={tag}>
+                            {tag}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                  <div className={styles.etiquetteHolder}>
+                    {diUtils.asArray(traitValueInputString).map((tag) => (
+                      <div
+                        onClick={() => {
+                          props.pushpopTraitValueInputString(
+                            tag,
+                            false,
+                            isSecondary
+                          );
+                        }}
+                        className={`${styles.etiquette} ${styles.etiquetteClickable}`}
+                        key={tag}
+                      >
+                        {tag}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            );
-          }
-        )}
-      </div>
-
-      <div className={styles.rightDiv}>
-        <div className={styles.div3}>
-          <div className={styles.wordtypeButtonsHolder}>
-            {Object.keys(fetchedLObjs).map((wordtype) => {
-              let count = fetchedLObjs[wordtype].length;
-              return (
-                <button
-                  disabled={!count}
-                  key={wordtype}
-                  className={`${gstyles[wordtype]} ${styles.wordtypeButton} ${
-                    wordtypeInFocus === wordtype &&
-                    styles.wordtypeButtonSelected
-                  }`}
-                  onClick={() => {
-                    setWordtypeInFocus(wordtype);
-                  }}
-                >
-                  {wordtype}
-                </button>
               );
-            })}
-          </div>
-          <div className={styles.tableHolder}>
-            <LemmasTable
-              setWordtypeInFocus={setWordtypeInFocus}
-              wordtypeInFocus={wordtypeInFocus}
-              fetchedLObjs={fetchedLObjs}
-            />
+            }
+          )}
+        </div>
+
+        <div className={styles.rightDiv}>
+          <div className={styles.div3}>
+            <div className={styles.wordtypeButtonsHolder}>
+              {Object.keys(fetchedLObjs).map((wordtype) => {
+                let count = fetchedLObjs[wordtype].length;
+                return (
+                  <button
+                    disabled={!count}
+                    key={wordtype}
+                    className={`${gstyles[wordtype]} ${styles.wordtypeButton} ${
+                      wordtypeInFocus === wordtype &&
+                      styles.wordtypeButtonSelected
+                    }`}
+                    onClick={() => {
+                      setWordtypeInFocus(wordtype);
+                    }}
+                  >
+                    {wordtype}
+                  </button>
+                );
+              })}
+            </div>
+            <div className={styles.tableHolder}>
+              <LemmasTable
+                setWordtypeInFocus={setWordtypeInFocus}
+                wordtypeInFocus={wordtypeInFocus}
+                fetchedLObjs={fetchedLObjs}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
