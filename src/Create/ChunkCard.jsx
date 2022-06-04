@@ -236,6 +236,7 @@ const ChunkCard = (props) => {
       {structureChunk && (
         <div className={styles.traitBoxesHolder}>
           <ToggleShowButton
+            id={`ToggleShowButton-${props.batch}-Group1-${props.chunkCardIndex}`}
             setShowTraitKeysGroup={setShowTraitKeysGroupOne}
             showTraitKeysGroup={showTraitKeysGroupOne}
             traitKeysHoldSomeValues={traitKeysGroup1.some(
@@ -283,6 +284,7 @@ const ChunkCard = (props) => {
               );
             })}
           <ToggleShowButton
+            id={`ToggleShowButton-${props.batch}-Group2-${props.chunkCardIndex}`}
             setShowTraitKeysGroup={setShowTraitKeysGroupTwo}
             showTraitKeysGroup={showTraitKeysGroupTwo}
             traitKeysHoldSomeValues={traitKeysGroup2.some(

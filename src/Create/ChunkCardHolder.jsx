@@ -5,6 +5,7 @@ import gstyles from "../css/Global.module.css";
 import LineHolder from "../Cogs/LineHolder";
 import { isAgreeOrConnected } from "../utils/identityUtils";
 import diUtils from "../utils/displayUtils.js";
+import icons from "../utils/icons.js";
 import $ from "jquery";
 import { fetchSentence } from "../utils/putUtils";
 import LanguageContext from "../context/LanguageContext.js";
@@ -23,6 +24,7 @@ const ChunkCardHolder = (props) => {
   const [showListPopup, setShowListPopup] = useState();
   const [listPopupData, setListPopupData] = useState();
   const [chunkOrders, setChunkOrders] = useState([]);
+  const [showAllTraitBoxes, setShowAllTraitBoxes] = useState(false);
 
   const [showChunkOrdersPopup, setShowChunkOrdersPopup] = useState();
   const [highlightedCard, setHighlightedCard] = useState();
@@ -103,7 +105,7 @@ const ChunkCardHolder = (props) => {
       )}
       <div className={styles.buttonHolder}>
         <button
-          alt="Dots icon"
+          alt="Three dots icon"
           className={`${gstyles.cardButton1}`}
           onClick={() => {
             setShowChunkOrdersPopup(true);
@@ -164,6 +166,35 @@ const ChunkCardHolder = (props) => {
         >
           &#42476;
         </button>
+        <button
+          alt="Triangle icon"
+          className={`${gstyles.cardButton1}`}
+          onMouseEnter={() => {
+            console.log("showAllTraitBoxes", showAllTraitBoxes);
+          }}
+          onClick={() => {
+            setShowAllTraitBoxes((prev) => !prev);
+            $.each(
+              $(`button[id^='ToggleShowButton-${props.batch}-']`),
+              function () {
+                let button = $(this);
+                let buttonIsShowing = [
+                  icons.downBlackTriangle,
+                  icons.downWhiteTriangle,
+                ].includes(button[0].innerText);
+
+                if (
+                  (showAllTraitBoxes && !buttonIsShowing) |
+                  (!showAllTraitBoxes && buttonIsShowing)
+                ) {
+                  button.click();
+                }
+              }
+            );
+          }}
+        >
+          {showAllTraitBoxes ? icons.upBlackTriangle : icons.downBlackTriangle}
+        </button>
       </div>
       <div className={styles.cardHolder} key={meaninglessCounter}>
         <LineHolder elementsToDrawLineBetween={[]} />
@@ -173,6 +204,7 @@ const ChunkCardHolder = (props) => {
           return (
             <ChunkCard
               key={`${index}-${word}`}
+              batch={props.batch}
               chunkCardKey={`${index}-${word}`}
               word={word}
               index={index}
