@@ -16,16 +16,22 @@ export const fetchSentence = (lang1, rawChunks, orders) => {
     return processedStCh;
   });
 
-  let primaryOrders = orders
-    .filter((obj) => obj.isPrimary)
-    .map((obj) => obj.order);
-
-  let additionalOrders = orders
-    .filter((obj) => !obj.isPrimary)
-    .map((obj) => obj.order);
-
   if (!processedChunks.length) {
     return;
+  }
+
+  let sentenceFormula = {
+    sentenceStructure: processedChunks,
+  };
+
+  if (orders) {
+    sentenceFormula.primaryOrders = orders
+      .filter((obj) => obj.isPrimary)
+      .map((obj) => obj.order);
+
+    sentenceFormula.additionalOrders = orders
+      .filter((obj) => !obj.isPrimary)
+      .map((obj) => obj.order);
   }
 
   console.log("Will request", lang1, processedChunks);
@@ -34,11 +40,7 @@ export const fetchSentence = (lang1, rawChunks, orders) => {
       `${baseUrl}/educator/sandbox?lang=${lang1}`,
       {
         questionLanguage: lang1,
-        sentenceFormula: {
-          sentenceStructure: processedChunks,
-          primaryOrders,
-          additionalOrders,
-        },
+        sentenceFormula,
       }
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )

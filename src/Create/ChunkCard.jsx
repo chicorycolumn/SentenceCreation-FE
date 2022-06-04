@@ -139,7 +139,7 @@ const ChunkCard = (props) => {
                     fetchedData.length > 1 ? "s" : ""
                   } for "${chunkId}" with traits you specified`,
                   list: fetchedData.map(
-                    (obj) => `${obj.lObjID}            ${obj.selectedWord}`
+                    (obj) => `${obj.selectedWord} - - - - ${obj.lObjID}`
                   ),
                 });
               },

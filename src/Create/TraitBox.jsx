@@ -278,89 +278,7 @@ class TraitBox extends Component {
     };
 
     return (
-      <div
-        id={traitBoxID}
-        key={traitBoxID}
-        className={`${styles.preventSelection} ${styles.traitBox} ${
-          idUtils.isAgreeOrConnected(traitKey) && styles.traitBoxCircle1
-        } ${idUtils.isChunkId(traitKey) && styles.traitBoxCircle2} ${
-          !traitObject.traitValue && styles.traitBoxEmpty
-        } ${this.state.hasJustBlurred && styles.shimmer} ${
-          (this.state.isHovered || this.state.isSelected) &&
-          styles.traitBoxHover
-        } ${this.state.isSoftHighlighted && gstyles.highlighted0} ${
-          this.state.isSelected && styles.traitBoxSelected
-        } ${
-          (this.state.isHighlighted || isClickableFlowerstem(this.props)) &&
-          gstyles.highlighted1
-        } ${
-          (this.state.isExtraHighlighted ||
-            this.state.isFlowerSearchingForStem) &&
-          gstyles.highlighted2
-        }
-        `}
-        onClick={() => {
-          if (isClickableFlowerstem(this.props)) {
-            this.props.stemFoundForFlowerBrace[1](this.props.chunkId);
-            this.setState({ isExtraHighlighted: false });
-          }
-        }}
-        onMouseEnter={() => {
-          if (isClickableFlowerstem(this.props)) {
-            this.setState({ isExtraHighlighted: true });
-          } else if (traitKey === "chunkId") {
-            diUtils.connectChunkIdWithItsFlowers(
-              traitBoxID,
-              this.state.traitValueInputString,
-              [this.props.setElementsToDrawLinesBetween]
-            );
-          } else if (idUtils.isAgreeOrConnected(traitKey)) {
-            diUtils.connectChunkIdWithItsFlowers(
-              traitBoxID,
-              this.state.traitValueInputString,
-              [this.props.setElementsToDrawLinesBetween],
-              false,
-              ["chunkId"]
-            );
-          }
-        }}
-        onMouseLeave={() => {
-          if (traitKey === "chunkId") {
-            this.setState({ isExtraHighlighted: false });
-            diUtils.connectChunkIdWithItsFlowers(
-              traitBoxID,
-              this.state.traitValueInputString,
-              [this.props.setElementsToDrawLinesBetween],
-              true
-            );
-          } else if (idUtils.isAgreeOrConnected(traitKey)) {
-            diUtils.connectChunkIdWithItsFlowers(
-              traitBoxID,
-              this.state.traitValueInputString,
-              [this.props.setElementsToDrawLinesBetween],
-              true,
-              ["chunkId"]
-            );
-          }
-          this.setState({ isHighlighted: false, isSoftHighlighted: false });
-        }}
-      >
-        {this.state.justCopied && (
-          <div className={styles.floatingAlert}>Copied</div>
-        )}
-        {idUtils.isTagTrait(traitKey) &&
-          !this.state.isHovered &&
-          !this.state.hasJustBlurred && (
-            <button
-              alt="Magnifying glass icon"
-              className={styles.floatingButton}
-              onMouseOver={() => {
-                this.setState({ isHovered: true, isInputActive: true });
-              }}
-            >
-              &#128269;
-            </button>
-          )}
+      <>
         {this.state.showTagInterface && (
           <TagInterface
             traitValueInputString={this.state.traitValueInputString}
@@ -376,364 +294,451 @@ class TraitBox extends Component {
             backedUpTags={this.props.backedUpStructureChunk.andTags.traitValue}
           />
         )}
+
         <div
-          className={`${styles.traitTitleHolder} ${
-            idUtils.isChunkId(traitKey) && gstyles.hidden
-          }`}
-          id={`traitTitleHolder-${traitKey}`}
-          onMouseEnter={() => {
-            //devlogging
-            console.log("");
-            console.log("state.traitValueInputString HAS VALUE:");
-            console.log("> > >", this.state.traitValueInputString);
-            console.log("props.traitObject.traitValue HAS VALUE:");
-            console.log("> > >", this.props.traitObject.traitValue);
-            if (this.state.traitValueInputString2) {
-              console.log("");
-              console.log("state.traitValueInputString2 HAS VALUE:");
-              console.log("> > >", this.state.traitValueInputString2);
-              console.log("props.traitObject.traitValue2 HAS VALUE:");
-              console.log("> > >", this.props.traitObject2.traitValue);
+          id={traitBoxID}
+          key={traitBoxID}
+          className={`${styles.preventSelection} ${styles.traitBox} ${
+            idUtils.isAgreeOrConnected(traitKey) && styles.traitBoxCircle1
+          } ${idUtils.isChunkId(traitKey) && styles.traitBoxCircle2} ${
+            !traitObject.traitValue && styles.traitBoxEmpty
+          } ${this.state.hasJustBlurred && styles.shimmer} ${
+            (this.state.isHovered || this.state.isSelected) &&
+            styles.traitBoxHover
+          } ${this.state.isSoftHighlighted && gstyles.highlighted0} ${
+            this.state.isSelected && styles.traitBoxSelected
+          } ${
+            (this.state.isHighlighted || isClickableFlowerstem(this.props)) &&
+            gstyles.highlighted1
+          } ${
+            (this.state.isExtraHighlighted ||
+              this.state.isFlowerSearchingForStem) &&
+            gstyles.highlighted2
+          }
+        `}
+          onClick={() => {
+            if (isClickableFlowerstem(this.props)) {
+              this.props.stemFoundForFlowerBrace[1](this.props.chunkId);
+              this.setState({ isExtraHighlighted: false });
             }
           }}
-          onClick={(e) => {
-            console.log("%traitTitleHolder");
+          onMouseEnter={() => {
+            if (isClickableFlowerstem(this.props)) {
+              this.setState({ isExtraHighlighted: true });
+            } else if (traitKey === "chunkId") {
+              diUtils.connectChunkIdWithItsFlowers(
+                traitBoxID,
+                this.state.traitValueInputString,
+                [this.props.setElementsToDrawLinesBetween]
+              );
+            } else if (idUtils.isAgreeOrConnected(traitKey)) {
+              diUtils.connectChunkIdWithItsFlowers(
+                traitBoxID,
+                this.state.traitValueInputString,
+                [this.props.setElementsToDrawLinesBetween],
+                false,
+                ["chunkId"]
+              );
+            }
+          }}
+          onMouseLeave={() => {
             if (traitKey === "chunkId") {
-              return;
+              this.setState({ isExtraHighlighted: false });
+              diUtils.connectChunkIdWithItsFlowers(
+                traitBoxID,
+                this.state.traitValueInputString,
+                [this.props.setElementsToDrawLinesBetween],
+                true
+              );
+            } else if (idUtils.isAgreeOrConnected(traitKey)) {
+              diUtils.connectChunkIdWithItsFlowers(
+                traitBoxID,
+                this.state.traitValueInputString,
+                [this.props.setElementsToDrawLinesBetween],
+                true,
+                ["chunkId"]
+              );
             }
-            if (idUtils.isAgreeOrConnected(traitKey)) {
-              if (this.state.isFlowerSearchingForStem) {
-                this.props.flowerSearchingForStemBrace[1]();
-                this.setState({ isFlowerSearchingForStem: false });
-              } else {
-                this.props.flowerSearchingForStemBrace[1](this.props.chunkId);
-                this.setState({
-                  isHighlighted: false,
-                  isFlowerSearchingForStem: true,
-                });
-                e.target.focus();
-              }
-              return;
-            }
-            if (this.state.isSelected) {
-              checkAndSetTraitValue();
-            } else {
-              this.setState({
-                isSelected: true,
-                showTagInterface: idUtils.isTagTrait(traitKey),
-              });
-
-              if (traitObject.expectedTypeOnStCh === "string") {
-                forceShowInputThenFocus(
-                  `${this.props.chunkCardKey}-${traitKey}_textarea`
-                );
-              }
-            }
+            this.setState({ isHighlighted: false, isSoftHighlighted: false });
           }}
         >
-          <p
-            className={`${styles.traitTitle} ${
-              traitObject.isLexical && styles.lexicalTraitTitle
-            }`}
-          >
-            {traitKey}
-            {traitKey2 && ` / ${traitKey2}`}
-          </p>
-        </div>
-        {(!uUtils.isEmpty(traitObject.traitValue) ||
-          this.state.forceShowInput ||
-          idUtils.isTagTrait(traitKey)) && (
+          {this.state.justCopied && (
+            <div className={styles.floatingAlert}>Copied</div>
+          )}
+          {idUtils.isTagTrait(traitKey) &&
+            !this.state.isHovered &&
+            !this.state.hasJustBlurred && (
+              <button
+                alt="Magnifying glass icon"
+                className={styles.floatingButton}
+                onMouseOver={() => {
+                  this.setState({ isHovered: true, isInputActive: true });
+                }}
+              >
+                &#128269;
+              </button>
+            )}
           <div
-            key={`${this.state.traitValueInputString}-${
-              this.state.traitValueInputString2
-                ? this.state.traitValueInputString2
-                : ""
+            className={`${styles.traitTitleHolder} ${
+              idUtils.isChunkId(traitKey) && gstyles.hidden
             }`}
-            onMouseLeave={() => {
-              this.setState({
-                isHovered: false,
-                isInputActive: false,
-              });
+            id={`traitTitleHolder-${traitKey}`}
+            onMouseEnter={() => {
+              //devlogging
+              console.log("");
+              console.log("state.traitValueInputString HAS VALUE:");
+              console.log("> > >", this.state.traitValueInputString);
+              console.log("props.traitObject.traitValue HAS VALUE:");
+              console.log("> > >", this.props.traitObject.traitValue);
+              if (this.state.traitValueInputString2) {
+                console.log("");
+                console.log("state.traitValueInputString2 HAS VALUE:");
+                console.log("> > >", this.state.traitValueInputString2);
+                console.log("props.traitObject.traitValue2 HAS VALUE:");
+                console.log("> > >", this.props.traitObject2.traitValue);
+              }
+            }}
+            onClick={(e) => {
+              console.log("%traitTitleHolder");
+              if (traitKey === "chunkId") {
+                return;
+              }
+              if (idUtils.isAgreeOrConnected(traitKey)) {
+                if (this.state.isFlowerSearchingForStem) {
+                  this.props.flowerSearchingForStemBrace[1]();
+                  this.setState({ isFlowerSearchingForStem: false });
+                } else {
+                  this.props.flowerSearchingForStemBrace[1](this.props.chunkId);
+                  this.setState({
+                    isHighlighted: false,
+                    isFlowerSearchingForStem: true,
+                  });
+                  e.target.focus();
+                }
+                return;
+              }
+              if (this.state.isSelected) {
+                checkAndSetTraitValue();
+              } else {
+                this.setState({
+                  isSelected: true,
+                  showTagInterface: idUtils.isTagTrait(traitKey),
+                });
+
+                if (traitObject.expectedTypeOnStCh === "string") {
+                  forceShowInputThenFocus(
+                    `${this.props.chunkCardKey}-${traitKey}_textarea`
+                  );
+                }
+              }
             }}
           >
-            {[traitKey, traitKey2]
-              .filter((el) => el)
-              .map((traitKey, index) => {
-                const isSecondary = index === 1;
-                const traitValueInputStringKey = isSecondary
-                  ? "traitValueInputString2"
-                  : "traitValueInputString";
+            <p
+              className={`${styles.traitTitle} ${
+                traitObject.isLexical && styles.lexicalTraitTitle
+              }`}
+            >
+              {traitKey}
+              {traitKey2 && ` / ${traitKey2}`}
+            </p>
+          </div>
+          {(!uUtils.isEmpty(traitObject.traitValue) ||
+            this.state.forceShowInput ||
+            idUtils.isTagTrait(traitKey)) && (
+            <div
+              key={`${this.state.traitValueInputString}-${
+                this.state.traitValueInputString2
+                  ? this.state.traitValueInputString2
+                  : ""
+              }`}
+              onMouseLeave={() => {
+                this.setState({
+                  isHovered: false,
+                  isInputActive: false,
+                });
+              }}
+            >
+              {[traitKey, traitKey2]
+                .filter((el) => el)
+                .map((traitKey, index) => {
+                  const isSecondary = index === 1;
+                  const traitValueInputStringKey = isSecondary
+                    ? "traitValueInputString2"
+                    : "traitValueInputString";
 
-                return (
-                  <div
-                    key={`${this.props.chunkCardKey}-${traitKey}_div-for-textarea`}
-                    className={styles.traitValuesBox}
-                  >
-                    <textarea
-                      key={`${this.props.chunkCardKey}-${traitKey}_textarea`}
-                      id={`${this.props.chunkCardKey}-${traitKey}_textarea`}
-                      disabled={
-                        idUtils.isTagTrait(traitKey) ||
-                        idUtils.isChunkId(traitKey) ||
-                        idUtils.isAgreeOrConnected(traitKey) ||
-                        traitObject.possibleTraitValues ||
-                        traitObject.expectedTypeOnStCh === "boolean"
-                      }
-                      className={`${styles.traitValuesInput} ${
-                        idUtils.isTagTrait(traitKey) &&
-                        styles.traitValuesInputLarge
-                      } ${styles.preventSelection}`}
-                      value={
-                        `textarea-${traitKey}` === this.state.activeTextarea
-                          ? null
-                          : this.state[traitValueInputStringKey]
-                      }
-                      onClick={(e) => {
-                        console.log("%textarea");
-                        e.stopPropagation();
-                        if (
+                  return (
+                    <div
+                      key={`${this.props.chunkCardKey}-${traitKey}_div-for-textarea`}
+                      className={styles.traitValuesBox}
+                    >
+                      <textarea
+                        key={`${this.props.chunkCardKey}-${traitKey}_textarea`}
+                        id={`${this.props.chunkCardKey}-${traitKey}_textarea`}
+                        disabled={
+                          idUtils.isTagTrait(traitKey) ||
+                          idUtils.isChunkId(traitKey) ||
                           idUtils.isAgreeOrConnected(traitKey) ||
-                          idUtils.isChunkId(traitKey)
-                        ) {
-                          e.target.select();
+                          traitObject.possibleTraitValues ||
+                          traitObject.expectedTypeOnStCh === "boolean"
                         }
-                      }}
-                      onMouseEnter={() => {
-                        //devlogging
-                        console.log(
-                          "textarea.value:",
-                          document.getElementById(
-                            `${this.props.chunkCardKey}-${traitKey}_textarea`
-                          ).value
-                        );
-                      }}
-                      onBlur={(e) => {
-                        e.stopPropagation();
-                        console.log("%traitValuesInput-onBlur");
-                        if (idUtils.isTagTrait(traitKey)) {
-                          e.preventDefault();
-                          return;
+                        className={`${styles.traitValuesInput} ${
+                          idUtils.isTagTrait(traitKey) &&
+                          styles.traitValuesInputLarge
+                        } ${styles.preventSelection}`}
+                        value={
+                          `textarea-${traitKey}` === this.state.activeTextarea
+                            ? null
+                            : this.state[traitValueInputStringKey]
                         }
-                        this.setState(() => {
-                          let newState = {};
-                          newState[traitValueInputStringKey] = e.target.value;
-                          newState.activeTextarea = null;
-                          return newState;
-                        });
-                        setTimeout(() => {
-                          checkAndSetTraitValue(isSecondary);
-                        }, 500);
-                      }}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        console.log("%traitValuesInput-onChange");
-                        console.log(
-                          "textarea.value:",
-                          document.getElementById(
-                            `${this.props.chunkCardKey}-${traitKey}_textarea`
-                          ).value
-                        );
-                        if (idUtils.isTagTrait(traitKey)) {
-                          e.preventDefault();
-                          return;
-                        }
-                        this.setState({
-                          activeTextarea: `textarea-${traitKey}`,
-                        });
-                      }}
-                    />
-                    {traitKey === "chunkId" ? (
-                      <button
-                        alt="Clipboard icon"
-                        className={`${gstyles.blueButton} ${gstyles.sideButton} ${styles.copyButton}`}
                         onClick={(e) => {
-                          console.log("%clipboard");
+                          console.log("%textarea");
                           e.stopPropagation();
-                          navigator.clipboard.writeText(
-                            this.state.traitValueInputString
+                          if (
+                            idUtils.isAgreeOrConnected(traitKey) ||
+                            idUtils.isChunkId(traitKey)
+                          ) {
+                            e.target.select();
+                          }
+                        }}
+                        onMouseEnter={() => {
+                          //devlogging
+                          console.log(
+                            "textarea.value:",
+                            document.getElementById(
+                              `${this.props.chunkCardKey}-${traitKey}_textarea`
+                            ).value
                           );
-                          this.setState({ justCopied: true });
+                        }}
+                        onBlur={(e) => {
+                          e.stopPropagation();
+                          console.log("%traitValuesInput-onBlur");
+                          if (idUtils.isTagTrait(traitKey)) {
+                            e.preventDefault();
+                            return;
+                          }
+                          this.setState(() => {
+                            let newState = {};
+                            newState[traitValueInputStringKey] = e.target.value;
+                            newState.activeTextarea = null;
+                            return newState;
+                          });
                           setTimeout(() => {
-                            this.setState({ justCopied: false });
+                            checkAndSetTraitValue(isSecondary);
                           }, 500);
                         }}
-                      >
-                        &#x1f4cb;
-                      </button>
-                    ) : (
-                      !this.state.isHovered && (
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          console.log("%traitValuesInput-onChange");
+                          console.log(
+                            "textarea.value:",
+                            document.getElementById(
+                              `${this.props.chunkCardKey}-${traitKey}_textarea`
+                            ).value
+                          );
+                          if (idUtils.isTagTrait(traitKey)) {
+                            e.preventDefault();
+                            return;
+                          }
+                          this.setState({
+                            activeTextarea: `textarea-${traitKey}`,
+                          });
+                        }}
+                      />
+                      {traitKey === "chunkId" ? (
                         <button
-                          alt="Cross icon"
-                          className={`${gstyles.sideButton} ${gstyles.redButton} ${styles.clearButton}`}
+                          alt="Clipboard icon"
+                          className={`${gstyles.blueButton} ${gstyles.sideButton} ${styles.copyButton}`}
                           onClick={(e) => {
-                            console.log("%cross1");
+                            console.log("%clipboard");
                             e.stopPropagation();
-                            diUtils.connectChunkIdWithItsFlowers(
-                              traitBoxID,
-                              this.state.traitValueInputString,
-                              [this.props.setElementsToDrawLinesBetween],
-                              true,
-                              ["chunkId"]
+                            navigator.clipboard.writeText(
+                              this.state.traitValueInputString
                             );
-                            this.setState(() => {
-                              let newState = {};
-                              newState[traitValueInputStringKey] = null;
-                              return newState;
-                            });
+                            this.setState({ justCopied: true });
                             setTimeout(() => {
-                              checkAndSetTraitValue(isSecondary);
+                              this.setState({ justCopied: false });
                             }, 500);
                           }}
                         >
-                          &times;
+                          &#x1f4cb;
                         </button>
-                      )
-                    )}
-                  </div>
-                );
-              })}
-          </div>
-        )}
+                      ) : (
+                        !this.state.isHovered && (
+                          <button
+                            alt="Cross icon"
+                            className={`${gstyles.sideButton} ${gstyles.redButton} ${styles.clearButton}`}
+                            onClick={(e) => {
+                              console.log("%cross1");
+                              e.stopPropagation();
+                              diUtils.connectChunkIdWithItsFlowers(
+                                traitBoxID,
+                                this.state.traitValueInputString,
+                                [this.props.setElementsToDrawLinesBetween],
+                                true,
+                                ["chunkId"]
+                              );
+                              this.setState(() => {
+                                let newState = {};
+                                newState[traitValueInputStringKey] = null;
+                                return newState;
+                              });
+                              setTimeout(() => {
+                                checkAndSetTraitValue(isSecondary);
+                              }, 500);
+                            }}
+                          >
+                            &times;
+                          </button>
+                        )
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
+          )}
 
-        {this.state.isSelected && (
-          <div className={styles.inputOptionsHolder}>
-            {traitObject.expectedTypeOnStCh === "array" && (
-              <div>
-                {traitObject.possibleTraitValues ? (
-                  traitObject.possibleTraitValues.map(
-                    (possibleTraitValue, index) => (
-                      <div key={`${traitKey}-${index}`}>
-                        <input
-                          className={styles.checkbox}
-                          type="checkbox"
-                          id={`${traitKey}-${index}`}
-                          name={`${traitKey}-${index}`}
-                          value={possibleTraitValue}
-                          checked={
-                            this.state.traitValueInputString &&
-                            diUtils
-                              .asArray(this.state.traitValueInputString)
-                              .includes(possibleTraitValue)
-                          }
-                          onChange={(e) => {
-                            e.stopPropagation();
-                            console.log("%checkbox-onChange");
-                            this.setState((prevState) => {
-                              if (
-                                prevState.traitValueInputString &&
-                                diUtils
-                                  .asArray(prevState.traitValueInputString)
-                                  .includes(e.target.value) &&
-                                !e.target.checked
-                              ) {
-                                let newtraitValueInputString = diUtils.asString(
+          {this.state.isSelected && (
+            <div className={styles.inputOptionsHolder}>
+              {traitObject.expectedTypeOnStCh === "array" && (
+                <div>
+                  {traitObject.possibleTraitValues ? (
+                    traitObject.possibleTraitValues.map(
+                      (possibleTraitValue, index) => (
+                        <div key={`${traitKey}-${index}`}>
+                          <input
+                            className={styles.checkbox}
+                            type="checkbox"
+                            id={`${traitKey}-${index}`}
+                            name={`${traitKey}-${index}`}
+                            value={possibleTraitValue}
+                            checked={
+                              this.state.traitValueInputString &&
+                              diUtils
+                                .asArray(this.state.traitValueInputString)
+                                .includes(possibleTraitValue)
+                            }
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              console.log("%checkbox-onChange");
+                              this.setState((prevState) => {
+                                if (
+                                  prevState.traitValueInputString &&
                                   diUtils
                                     .asArray(prevState.traitValueInputString)
-                                    .filter((el) => el !== e.target.value)
-                                );
-                                return {
-                                  traitValueInputString:
-                                    newtraitValueInputString,
-                                };
-                              } else if (
-                                (!prevState.traitValueInputString ||
-                                  !diUtils
-                                    .asArray(prevState.traitValueInputString)
-                                    .includes(e.target.value)) &&
-                                e.target.checked
-                              ) {
-                                let newtraitValueInputString = diUtils.asString(
-                                  [
-                                    ...diUtils.asArray(
-                                      prevState.traitValueInputString
-                                    ),
-                                    e.target.value,
-                                  ]
-                                );
-                                return {
-                                  traitValueInputString:
-                                    newtraitValueInputString,
-                                };
-                              }
-                            });
-                          }}
-                        />
-                        <label
-                          className={styles.checkboxLabel}
-                          htmlFor={`${traitKey}-${index}`}
-                        >
-                          {possibleTraitValue}
-                        </label>
-                      </div>
+                                    .includes(e.target.value) &&
+                                  !e.target.checked
+                                ) {
+                                  let newtraitValueInputString =
+                                    diUtils.asString(
+                                      diUtils
+                                        .asArray(
+                                          prevState.traitValueInputString
+                                        )
+                                        .filter((el) => el !== e.target.value)
+                                    );
+                                  return {
+                                    traitValueInputString:
+                                      newtraitValueInputString,
+                                  };
+                                } else if (
+                                  (!prevState.traitValueInputString ||
+                                    !diUtils
+                                      .asArray(prevState.traitValueInputString)
+                                      .includes(e.target.value)) &&
+                                  e.target.checked
+                                ) {
+                                  let newtraitValueInputString =
+                                    diUtils.asString([
+                                      ...diUtils.asArray(
+                                        prevState.traitValueInputString
+                                      ),
+                                      e.target.value,
+                                    ]);
+                                  return {
+                                    traitValueInputString:
+                                      newtraitValueInputString,
+                                  };
+                                }
+                              });
+                            }}
+                          />
+                          <label
+                            className={styles.checkboxLabel}
+                            htmlFor={`${traitKey}-${index}`}
+                          >
+                            {possibleTraitValue}
+                          </label>
+                        </div>
+                      )
                     )
-                  )
-                ) : (
-                  <button
-                    onClick={(e) => {
-                      console.log("%msv");
-                      e.stopPropagation();
-                      forceShowInputThenFocus(
-                        `${this.props.chunkCardKey}-${traitKey}_textarea`
-                      );
-                    }}
-                  >
-                    Multiple string values, comma separated
-                  </button>
-                )}
-              </div>
-            )}
-            {traitObject.expectedTypeOnStCh === "string" && (
-              <button
-                onClick={(e) => {
-                  console.log("%osv");
-                  e.stopPropagation();
-                  this.setState({ forceShowInput: true });
-                }}
-              >
-                One string value
-              </button>
-            )}
-            {traitObject.expectedTypeOnStCh === "boolean" &&
-              !traitObject.traitValue && (
-                <div>
-                  <input
-                    className={styles.checkbox}
-                    type="checkbox"
-                    id={`${traitKey}-0`}
-                    name={`${traitKey}-0`}
-                    checked={this.state.traitValueInputString === "true"}
-                    onChange={(e) => {
-                      e.stopPropagation();
-                      console.log("%checkbox2-onChange");
-                      this.setState((prevState) => {
-                        if (
-                          prevState.traitValueInputString === "true" &&
-                          !e.target.checked
-                        ) {
-                          return { traitValueInputString: "false" };
-                        } else if (
-                          prevState.traitValueInputString !== "true" &&
-                          e.target.checked
-                        ) {
-                          return { traitValueInputString: "true" };
-                        }
-                      });
-                    }}
-                  />
-                  <label
-                    className={styles.checkboxLabel}
-                    htmlFor={`${traitKey}-0`}
-                  >
-                    True
-                  </label>
+                  ) : (
+                    <button
+                      onClick={(e) => {
+                        console.log("%msv");
+                        e.stopPropagation();
+                        forceShowInputThenFocus(
+                          `${this.props.chunkCardKey}-${traitKey}_textarea`
+                        );
+                      }}
+                    >
+                      Multiple string values, comma separated
+                    </button>
+                  )}
                 </div>
               )}
-            {!["string", "boolean", "array"].includes(
-              traitObject.expectedTypeOnStCh
-            ) && <p>expectedTypeOnStCh: {traitObject.expectedTypeOnStCh}</p>}
-          </div>
-        )}
-      </div>
+              {traitObject.expectedTypeOnStCh === "string" && (
+                <button
+                  onClick={(e) => {
+                    console.log("%osv");
+                    e.stopPropagation();
+                    this.setState({ forceShowInput: true });
+                  }}
+                >
+                  One string value
+                </button>
+              )}
+              {traitObject.expectedTypeOnStCh === "boolean" &&
+                !traitObject.traitValue && (
+                  <div>
+                    <input
+                      className={styles.checkbox}
+                      type="checkbox"
+                      id={`${traitKey}-0`}
+                      name={`${traitKey}-0`}
+                      checked={this.state.traitValueInputString === "true"}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        console.log("%checkbox2-onChange");
+                        this.setState((prevState) => {
+                          if (
+                            prevState.traitValueInputString === "true" &&
+                            !e.target.checked
+                          ) {
+                            return { traitValueInputString: "false" };
+                          } else if (
+                            prevState.traitValueInputString !== "true" &&
+                            e.target.checked
+                          ) {
+                            return { traitValueInputString: "true" };
+                          }
+                        });
+                      }}
+                    />
+                    <label
+                      className={styles.checkboxLabel}
+                      htmlFor={`${traitKey}-0`}
+                    >
+                      True
+                    </label>
+                  </div>
+                )}
+              {!["string", "boolean", "array"].includes(
+                traitObject.expectedTypeOnStCh
+              ) && <p>expectedTypeOnStCh: {traitObject.expectedTypeOnStCh}</p>}
+            </div>
+          )}
+        </div>
+      </>
     );
   }
 }

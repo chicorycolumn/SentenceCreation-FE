@@ -12,6 +12,7 @@
   display: flex;
   flex-direction: row;
   border-radius: 5px;
+  z-index: 5;
 }
 
 .etiquetteHolder {
@@ -91,14 +92,13 @@
 
 .wordtypeButtonsHolder {
   padding-top: 10px;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  height: 50px;
-  /* border: black solid 1px; */
+  height: fit-content;
 }
 
 .wordtypeButton {
@@ -126,6 +126,5 @@
   align-items: center;
   padding-left: 50px;
   padding-right: 50px;
-  /* border: chartreuse solid 3px; */
   height: 50px;
 }
