@@ -11,6 +11,7 @@ import { fetchSentence } from "../utils/putUtils";
 import LanguageContext from "../context/LanguageContext.js";
 import ListPopup from "../Cogs/ListPopup.jsx";
 import ChunkOrdersPopup from "./ChunkOrdersPopup.jsx";
+import { isEmpty } from "../utils/universalUtils";
 
 const ChunkCardHolder = (props) => {
   const lang1 = useContext(LanguageContext);
@@ -117,11 +118,25 @@ const ChunkCardHolder = (props) => {
           alt="Star icon"
           className={`${gstyles.cardButton1}`}
           onClick={() => {
-            fetchSentence(
-              lang1,
-              props.formula.map((el) => el.structureChunk),
-              chunkOrders
-            ).then(
+            let sentenceStructure = props.formula.map(
+              (el) => el.structureChunk
+            );
+
+            let badChunk = sentenceStructure.filter(
+              (stCh) =>
+                ["npe", "nco", "ver", "adj"].includes(stCh.wordtype) &&
+                isEmpty(stCh.andTags.traitValue) &&
+                isEmpty(stCh.orTags.traitValue)
+            )[0];
+
+            if (badChunk) {
+              alert(
+                `Cannot query whole sentence because no tags are specified on chunk "${badChunk.chunkId.traitValue}".`
+              );
+              return;
+            }
+
+            fetchSentence(lang1, sentenceStructure, chunkOrders).then(
               (fetchedData) => {
                 setPopup({
                   title: `${fetchedData.length} sentence${
