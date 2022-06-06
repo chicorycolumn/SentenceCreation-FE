@@ -314,6 +314,11 @@ class TraitBox extends Component {
             (this.state.isExtraHighlighted ||
               this.state.isFlowerSearchingForStem) &&
             gstyles.highlighted2
+          } ${
+            idUtils.isTagTrait(traitKey) &&
+            !this.state.traitValueInputString &&
+            !this.state.traitValueInputString2 &&
+            styles.badBox
           }
         `}
           onClick={() => {

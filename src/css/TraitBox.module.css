@@ -152,8 +152,11 @@
   position: absolute;
   background-color: none;
   background: none;
-  font-size: 18px;
+  font-size: 14px;
   border: none;
+  padding: 0px;
+  margin-left: 2.5px;
+  margin-top: 7.5px;
 }
 
 .floatingAlert {
@@ -179,4 +182,8 @@
 
 .traitTitleHolderMultiple {
   justify-content: space-between;
+}
+
+.badBox {
+  background-color: crimson !important;
 }
