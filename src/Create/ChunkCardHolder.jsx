@@ -20,6 +20,7 @@ const ChunkCardHolder = (props) => {
     []
   );
   const [drawnLinesAsBold, setDrawnLinesAsBold] = useState(false);
+  const [linesAreDrawn, setLinesAreDrawn] = useState(false);
   const [flowerSearchingForStem, setFlowerSearchingForStem] = useState();
   const [stemFoundForFlower, setStemFoundForFlower] = useState();
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
@@ -145,7 +146,8 @@ const ChunkCardHolder = (props) => {
                   title: `${fetchedData.length} sentence${
                     fetchedData.length > 1 ? "s" : ""
                   } from traits you specified`,
-                  list: fetchedData,
+                  headers: ["sentence"],
+                  rows: fetchedData.map((el) => [el]),
                 });
               },
               (error) => {
@@ -159,7 +161,11 @@ const ChunkCardHolder = (props) => {
         <button
           alt="Connection icon"
           className={`${gstyles.cardButton1}`}
-          onMouseEnter={() => {
+          onClick={() => {
+            if (linesAreDrawn) {
+              return;
+            }
+            setLinesAreDrawn(true);
             $("*[id*=traitTitleHolder-chunkId]").each(function () {
               let id = $(this).parent()[0].id;
               let value = $(this).parent().find("textarea")[0].value;
@@ -170,6 +176,7 @@ const ChunkCardHolder = (props) => {
             });
           }}
           onMouseLeave={() => {
+            setLinesAreDrawn(false);
             $("*[id*=traitTitleHolder-chunkId]").each(function () {
               let id = $(this).parent()[0].id;
               let value = $(this).parent().find("textarea")[0].value;

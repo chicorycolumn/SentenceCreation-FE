@@ -138,9 +138,11 @@ const ChunkCard = (props) => {
                   title: `${fetchedData.length} lemma${
                     fetchedData.length > 1 ? "s" : ""
                   } for "${chunkId}" with traits you specified`,
-                  list: fetchedData.map(
-                    (obj) => `${obj.selectedWord} - - - - ${obj.lObjID}`
-                  ),
+                  headers: ["lemma", "id"],
+                  rows: fetchedData.map((obj) => [
+                    obj.selectedWord,
+                    obj.lObjID,
+                  ]),
                 });
               },
               (error) => {

@@ -20,13 +20,32 @@ const ListPopup = (props) => {
         </div>
 
         <div className={styles.bottomHolder}>
-          <ul>
-            {props.data.list.map((element, index) => (
-              <li className={styles.listItem} key={`listitem-${index}`}>
-                <span className={styles.numbering}>{index + 1}</span> {element}
-              </li>
-            ))}
-          </ul>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                {props.data.headers.map((header, hIndex) => (
+                  <th key={`${props.data.title.slice(0, 10)}-th-${hIndex}`}>
+                    {header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+
+            <tbody>
+              {props.data.rows.map((el, rIndex) => (
+                <tr
+                  className={styles.tablerow}
+                  key={`${props.data.title}-tr-${rIndex}`}
+                >
+                  <td>{rIndex + 1}</td>
+                  {el.map((item, dIndex) => (
+                    <td key={`${props.data.title}-td-${dIndex}`}>{item}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </>
