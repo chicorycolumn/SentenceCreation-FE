@@ -189,18 +189,22 @@ const ChunkCardHolder = (props) => {
           }}
           onClick={() => {
             setShowAllTraitBoxes((prev) => !prev);
+
             $.each(
               $(`button[id^='ToggleShowButton-${props.batch}-']`),
               function () {
-                let button = $(this);
+                let button = $(this)[0];
                 let buttonIsShowing = [
                   icons.downBlackTriangle,
                   icons.downWhiteTriangle,
-                ].includes(button[0].innerText);
+                ].includes(button.innerText);
 
                 if (
-                  (showAllTraitBoxes && !buttonIsShowing) |
-                  (!showAllTraitBoxes && buttonIsShowing)
+                  (!showAllTraitBoxes && buttonIsShowing) |
+                  (showAllTraitBoxes &&
+                    !buttonIsShowing &&
+                    (!!button.id.match("Group1") ||
+                      button.innerText === icons.upBlackTriangle))
                 ) {
                   button.click();
                 }
