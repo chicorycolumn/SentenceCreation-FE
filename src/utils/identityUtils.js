@@ -1,5 +1,7 @@
 const uUtils = require("./universalUtils.js");
 
+exports.wordtypesWhichMustHavePopulatedTags = ["npe", "nco", "ver", "adj"];
+
 exports.isTagTrait = (traitKey) => {
   return ["andTags", "orTags"].includes(traitKey);
 };

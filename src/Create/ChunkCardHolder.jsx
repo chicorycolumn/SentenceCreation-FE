@@ -5,6 +5,7 @@ import gstyles from "../css/Global.module.css";
 import LineHolder from "../Cogs/LineHolder";
 import { isAgreeOrConnected } from "../utils/identityUtils";
 import diUtils from "../utils/displayUtils.js";
+import idUtils from "../utils/identityUtils.js";
 import icons from "../utils/icons.js";
 import $ from "jquery";
 import { fetchSentence } from "../utils/putUtils";
@@ -124,7 +125,9 @@ const ChunkCardHolder = (props) => {
 
             let badChunk = sentenceStructure.filter(
               (stCh) =>
-                ["npe", "nco", "ver", "adj"].includes(stCh.wordtype) &&
+                idUtils.wordtypesWhichMustHavePopulatedTags.includes(
+                  stCh.wordtype
+                ) &&
                 isEmpty(stCh.andTags.traitValue) &&
                 isEmpty(stCh.orTags.traitValue)
             )[0];

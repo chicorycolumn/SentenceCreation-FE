@@ -28,6 +28,9 @@ class TraitBox extends Component {
   };
 
   setShowTagInterface = (val) => {
+    if (!val) {
+      this.props.setHighlightedCard();
+    }
     this.setState({ showTagInterface: val });
   };
 
@@ -106,6 +109,7 @@ class TraitBox extends Component {
       setStructureChunkAndFormula,
       wordtype,
       lObjId,
+      structureChunk,
     } = this.props;
 
     const exitTraitBox = (changeToValue = true) => {
@@ -115,9 +119,9 @@ class TraitBox extends Component {
         isHovered: false,
         isSelected: false,
         forceShowInput: false,
-        showTagInterface: false,
         hasJustBlurred: changeToValue,
       });
+      this.setShowTagInterface();
 
       setTimeout(() => {
         this.setState({
@@ -170,7 +174,7 @@ class TraitBox extends Component {
           console.log("/@");
 
           let newStructureChunk = {
-            ...this.props.structureChunk,
+            ...structureChunk,
           };
 
           let newTraitValue = this.state[traitValueInputStringKey];
@@ -316,6 +320,9 @@ class TraitBox extends Component {
             gstyles.highlighted2
           } ${
             idUtils.isTagTrait(traitKey) &&
+            idUtils.wordtypesWhichMustHavePopulatedTags.includes(
+              structureChunk.wordtype
+            ) &&
             !this.state.traitValueInputString &&
             !this.state.traitValueInputString2 &&
             styles.badBox
@@ -408,6 +415,13 @@ class TraitBox extends Component {
               if (traitKey === "chunkId") {
                 return;
               }
+              if (idUtils.isTagTrait(traitKey)) {
+                this.setShowTagInterface(true);
+                this.props.setHighlightedCard(
+                  structureChunk.chunkId.traitValue
+                );
+                return;
+              }
               if (idUtils.isAgreeOrConnected(traitKey)) {
                 if (this.state.isFlowerSearchingForStem) {
                   this.props.flowerSearchingForStemBrace[1]();
@@ -427,7 +441,6 @@ class TraitBox extends Component {
               } else {
                 this.setState({
                   isSelected: true,
-                  showTagInterface: idUtils.isTagTrait(traitKey),
                 });
 
                 if (traitObject.expectedTypeOnStCh === "string") {
