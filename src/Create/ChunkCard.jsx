@@ -124,7 +124,7 @@ const ChunkCard = (props) => {
         props.highlightedCard !== chunkId &&
         gstyles.translucent
       }`}
-      key={props.word}
+      id={props.chunkCardKey}
     >
       <div className={styles.cardButtonsHolder}>
         <button
@@ -303,6 +303,7 @@ const ChunkCard = (props) => {
                   <TraitBox
                     key={traitKey}
                     traitKey={traitKey}
+                    chunkCardKey={props.chunkCardKey}
                     traitObject={structureChunk[traitKey]}
                     word={props.word}
                     setStructureChunkAndFormula={setStructureChunkAndFormula}

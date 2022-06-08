@@ -484,6 +484,26 @@ class TraitBox extends Component {
                     ? "traitValueInputString2"
                     : "traitValueInputString";
 
+                  const textareaBlur = (e, value) => {
+                    console.log("%traitValuesInput-onBlur");
+                    if (!value) {
+                      value = e.target.value;
+                    }
+                    if (idUtils.isTagTrait(traitKey)) {
+                      e.preventDefault();
+                      return;
+                    }
+                    this.setState(() => {
+                      let newState = {};
+                      newState[traitValueInputStringKey] = value;
+                      newState.activeTextarea = null;
+                      return newState;
+                    });
+                    setTimeout(() => {
+                      checkAndSetTraitValue(isSecondary);
+                    }, 50);
+                  };
+
                   return (
                     <div
                       key={`${this.props.chunkCardKey}-${traitKey}_div-for-textarea`}
@@ -529,20 +549,28 @@ class TraitBox extends Component {
                         }}
                         onBlur={(e) => {
                           e.stopPropagation();
-                          console.log("%traitValuesInput-onBlur");
-                          if (idUtils.isTagTrait(traitKey)) {
+                          textareaBlur(e);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
                             e.preventDefault();
+                            textareaBlur(e);
+                            return;
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            textareaBlur(
+                              e,
+                              diUtils.asString(
+                                structureChunk[traitKey].traitValue
+                              )
+                            );
+                            setTimeout(() => {
+                              $(
+                                `#${this.props.chunkCardKey}-${traitKey}_textarea`
+                              ).blur();
+                            }, 500);
                             return;
                           }
-                          this.setState(() => {
-                            let newState = {};
-                            newState[traitValueInputStringKey] = e.target.value;
-                            newState.activeTextarea = null;
-                            return newState;
-                          });
-                          setTimeout(() => {
-                            checkAndSetTraitValue(isSecondary);
-                          }, 500);
                         }}
                         onChange={(e) => {
                           e.stopPropagation();
