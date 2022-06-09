@@ -31,6 +31,11 @@
   color: white;
 }
 
+.redButtonActive {
+  background-color: red !important;
+  color: white;
+}
+
 .redButton:hover {
   background-color: rgb(255, 232, 232);
 }
@@ -45,6 +50,11 @@
   color: white;
 }
 
+.greyButtonActive {
+  background-color: grey !important;
+  color: white;
+}
+
 .greyButton:hover {
   background-color: lightgrey;
 }
@@ -55,6 +65,11 @@
 }
 
 .blueButton:active {
+  background-color: blue !important;
+  color: white;
+}
+
+.blueButtonActive {
   background-color: blue !important;
   color: white;
 }
@@ -83,6 +98,11 @@
 }
 
 .tickButton:active {
+  background-color: limegreen !important;
+  color: white;
+}
+
+.tickButtonActive {
   background-color: limegreen !important;
   color: white;
 }

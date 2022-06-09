@@ -5,6 +5,8 @@ import gstyles from "../css/Global.module.css";
 import LanguageContext from "../context/LanguageContext.js";
 import LemmasTable from "./LemmasTable.jsx";
 import diUtils from "../utils/displayUtils.js";
+import uUtils from "../utils/universalUtils.js";
+import $ from "jquery";
 
 const TagInterface = (props) => {
   const [clickCounter, setClickCounter] = useState(0);
@@ -17,6 +19,28 @@ const TagInterface = (props) => {
     props.revertTraitValueInputString(true);
     props.exitTraitBox(false);
   };
+  const saveAndExit = () => {
+    if (tickDisabled) {
+      setClickCounter((prev) => prev + 1);
+    } else {
+      props.checkAndSetTraitValue(true);
+    }
+  };
+
+  useEffect(() => {
+    uUtils.addListener($, document, "keyup", (e) => {
+      console.log("document listened keyup:", e.key);
+      if (e.key === "Enter") {
+        // $(document).off("keyup");
+        $("#TagInterface-tickbutton").addClass(gstyles.tickButtonActive);
+        setTimeout(saveAndExit, 150);
+      } else if (e.key === "Escape") {
+        // $(document).off("keyup");
+        $("#TagInterface-crossbutton").addClass(gstyles.redButtonActive);
+        setTimeout(exit, 150);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     fetchWordsByTag(
@@ -54,27 +78,25 @@ const TagInterface = (props) => {
   return (
     <>
       <div className={gstyles.obscurus} onClick={exit}></div>
-      <div className={styles.mainBox}>
+      <div id={"TagInterface-mainBox"} className={styles.mainBox}>
         <div className={styles.leftDiv}>
           <div className={styles.buttonHolder}>
             <button
+              id="TagInterface-tickbutton"
               alt="Tick icon / Check icon"
               className={`${gstyles.tickButton} ${
                 tickDisabled && gstyles.disabled
               }`}
               onClick={(e) => {
                 e.preventDefault();
-                if (tickDisabled) {
-                  setClickCounter((prev) => prev + 1);
-                } else {
-                  props.checkAndSetTraitValue(true);
-                }
+                saveAndExit();
               }}
             >
               &#10003;
             </button>
 
             <button
+              id="TagInterface-crossbutton"
               alt="Cross icon"
               className={`${gstyles.sideButton} ${gstyles.redButton}`}
               onClick={exit}

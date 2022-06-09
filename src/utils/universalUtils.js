@@ -1,3 +1,20 @@
+exports.addListener = ($, element, eventName, handler) => {
+  const add = () => {
+    $(element)[eventName](handler);
+  };
+
+  let events = $._data($(document)[0], "events");
+
+  if (!events) {
+    add();
+  } else {
+    let listeners = events[eventName];
+    if (!listeners || !listeners.length) {
+      add();
+    }
+  }
+};
+
 exports.randomString = (length) => {
   const alph = "abcdefghijklmnopqrstuvwxyz";
   let str = "";
