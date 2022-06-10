@@ -55,24 +55,24 @@ const ChunkOrdersPopup = (props) => {
     }
   };
 
+  const exit = () => {
+    $(document).off("keyup");
+    props.exit();
+  };
+
   useEffect(() => {
     uUtils.addListener($, document, "keyup", (e) => {
-      console.log("document listened keyup:", e.key);
+      console.log("via ChunkOrdersPopup document listened keyup:", e.key);
       if (["Enter", "Escape", "Backspace"].includes(e.key)) {
         $("#ChunkOrdersPopup-exitbutton").addClass(gstyles.greyButtonActive);
-        setTimeout(props.exit, 150);
+        setTimeout(exit, 150);
       }
     });
   }, []);
 
   return (
     <>
-      <div
-        className={gstyles.obscurus}
-        onClick={(e) => {
-          props.exit();
-        }}
-      ></div>
+      <div className={gstyles.obscurus} onClick={exit}></div>
       <div className={`${pstyles.mainbox} ${styles.mainboxWide}`}>
         <div className={pstyles.topHolder}>
           <div className={`${gstyles.sideButton} ${gstyles.invisible}`}></div>
@@ -81,7 +81,7 @@ const ChunkOrdersPopup = (props) => {
             id="ChunkOrdersPopup-exitbutton"
             alt="Exit icon"
             className={`${gstyles.sideButton} ${gstyles.greyButton}`}
-            onClick={props.exit}
+            onClick={exit}
           >
             &#8679;
           </button>

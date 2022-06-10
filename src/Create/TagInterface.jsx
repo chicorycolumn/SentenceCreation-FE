@@ -16,6 +16,7 @@ const TagInterface = (props) => {
   const [wordtypeInFocus, setWordtypeInFocus] = useState(props.wordtype);
   const lang1 = useContext(LanguageContext);
   const exit = () => {
+    $(document).off("keyup");
     props.revertTraitValueInputString(true);
     props.exitTraitBox(false);
   };
@@ -23,13 +24,14 @@ const TagInterface = (props) => {
     if (tickDisabled) {
       setClickCounter((prev) => prev + 1);
     } else {
+      $(document).off("keyup");
       props.checkAndSetTraitValue(true);
     }
   };
 
   useEffect(() => {
     uUtils.addListener($, document, "keyup", (e) => {
-      console.log("document listened keyup:", e.key);
+      console.log("via TagInterface document listened keyup:", e.key);
       if (["Enter"].includes(e.key)) {
         $("#TagInterface-tickbutton").addClass(gstyles.tickButtonActive);
         setTimeout(saveAndExit, 150);

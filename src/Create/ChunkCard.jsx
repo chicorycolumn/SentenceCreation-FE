@@ -130,7 +130,8 @@ const ChunkCard = (props) => {
         <button
           alt="Star icon"
           className={gstyles.cardButton1}
-          onClick={() => {
+          onClick={(e) => {
+            e.target.blur();
             props.setHighlightedCard(chunkId);
             fetchSentence(lang1, [structureChunk]).then(
               (fetchedData) => {
@@ -156,7 +157,8 @@ const ChunkCard = (props) => {
         <button
           alt="Pencil icon"
           className={gstyles.cardButton1}
-          onClick={() => {
+          onClick={(e) => {
+            e.target.blur();
             props.setHighlightedCard(chunkId);
             setTimeout(() => {
               let newLemma = prompt("Enter new lemma.");
@@ -172,7 +174,8 @@ const ChunkCard = (props) => {
         <button
           alt="Squares icon"
           className={gstyles.cardButton1}
-          onClick={() => {
+          onClick={(e) => {
+            e.target.blur();
             props.setHighlightedCard(chunkId);
             setTimeout(() => {
               alert(
@@ -187,7 +190,8 @@ const ChunkCard = (props) => {
         <button
           alt="Reset icon"
           className={gstyles.cardButton1}
-          onClick={() => {
+          onClick={(e) => {
+            e.target.blur();
             props.setHighlightedCard(chunkId);
             setTimeout(() => {
               if (
@@ -204,7 +208,8 @@ const ChunkCard = (props) => {
         <button
           alt="Cross icon"
           className={gstyles.cardButton1}
-          onClick={() => {
+          onClick={(e) => {
+            e.target.blur();
             props.setHighlightedCard(chunkId);
             setTimeout(() => {
               if (window.confirm(`Delete this chunk (${chunkId})?`)) {

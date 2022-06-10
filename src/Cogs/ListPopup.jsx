@@ -5,18 +5,23 @@ import uUtils from "../utils/universalUtils.js";
 import $ from "jquery";
 
 const ListPopup = (props) => {
+  const exit = () => {
+    $(document).off("keyup");
+    props.exit();
+  };
+
   useEffect(() => {
     uUtils.addListener($, document, "keyup", (e) => {
-      console.log("dooooocument listened keyup:", e.key);
+      console.log("via ListPopup document listened keyup:", e.key);
       if (["Enter", "Escape", "Backspace"].includes(e.key)) {
         $("#ListPopup-exitbutton").addClass(gstyles.greyButtonActive);
-        setTimeout(props.exit, 150);
+        setTimeout(exit, 150);
       }
     });
   }, []);
   return (
     <>
-      <div className={gstyles.obscurus} onClick={props.exit}></div>
+      <div className={gstyles.obscurus} onClick={exit}></div>
       <div className={`${styles.mainbox}`}>
         <div className={styles.topHolder}>
           <div className={`${gstyles.sideButton} ${gstyles.invisible}`}></div>
@@ -25,7 +30,7 @@ const ListPopup = (props) => {
             id="ListPopup-exitbutton"
             alt="Exit icon"
             className={`${gstyles.sideButton} ${gstyles.greyButton} ${gstyles.squareButton}`}
-            onClick={props.exit}
+            onClick={exit}
           >
             &#8679;
           </button>

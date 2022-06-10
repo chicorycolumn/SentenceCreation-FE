@@ -110,7 +110,8 @@ const ChunkCardHolder = (props) => {
         <button
           alt="Three dots icon"
           className={`${gstyles.cardButton1}`}
-          onClick={() => {
+          onClick={(e) => {
+            e.target.blur();
             setShowChunkOrdersPopup(true);
           }}
         >
@@ -119,7 +120,8 @@ const ChunkCardHolder = (props) => {
         <button
           alt="Star icon"
           className={`${gstyles.cardButton1}`}
-          onClick={() => {
+          onClick={(e) => {
+            e.target.blur();
             let sentenceStructure = props.formula.map(
               (el) => el.structureChunk
             );
@@ -161,7 +163,8 @@ const ChunkCardHolder = (props) => {
         <button
           alt="Connection icon"
           className={`${gstyles.cardButton1}`}
-          onClick={() => {
+          onClick={(e) => {
+            e.target.blur();
             if (linesAreDrawn) {
               return;
             }
@@ -197,7 +200,8 @@ const ChunkCardHolder = (props) => {
           onMouseEnter={() => {
             console.log("showAllTraitBoxes", showAllTraitBoxes);
           }}
-          onClick={() => {
+          onClick={(e) => {
+            e.target.blur();
             setShowAllTraitBoxes((prev) => !prev);
 
             $.each(
