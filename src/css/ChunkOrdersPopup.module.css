@@ -83,3 +83,14 @@
   flex-direction: row;
   justify-content: space-between;
 }
+
+.indexSpan {
+  opacity: 0.25;
+  margin-left: -10px;
+  margin-right: 10px;
+}
+
+.microButton {
+  position: relative;
+  top: -2px;
+}

@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "../css/Popup.module.css";
 import gstyles from "../css/Global.module.css";
+import uUtils from "../utils/universalUtils.js";
+import $ from "jquery";
 
 const ListPopup = (props) => {
+  useEffect(() => {
+    uUtils.addListener($, document, "keyup", (e) => {
+      console.log("dooooocument listened keyup:", e.key);
+      if (["Enter", "Escape", "Backspace"].includes(e.key)) {
+        $("#ListPopup-exitbutton").addClass(gstyles.greyButtonActive);
+        setTimeout(props.exit, 150);
+      }
+    });
+  }, []);
   return (
     <>
       <div className={gstyles.obscurus} onClick={props.exit}></div>
@@ -11,6 +22,7 @@ const ListPopup = (props) => {
           <div className={`${gstyles.sideButton} ${gstyles.invisible}`}></div>
           <h1 className={styles.title}>{props.data.title}</h1>
           <button
+            id="ListPopup-exitbutton"
             alt="Exit icon"
             className={`${gstyles.sideButton} ${gstyles.greyButton} ${gstyles.squareButton}`}
             onClick={props.exit}

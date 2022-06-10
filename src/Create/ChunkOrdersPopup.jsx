@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../css/ChunkOrdersPopup.module.css";
 import pstyles from "../css/Popup.module.css";
 import gstyles from "../css/Global.module.css";
 import diUtils from "../utils/displayUtils.js";
 import uUtils from "../utils/universalUtils.js";
+import $ from "jquery";
 
 const ChunkOrdersPopup = (props) => {
   const [orderBuilt, setOrderBuilt] = useState([]);
@@ -20,6 +21,50 @@ const ChunkOrdersPopup = (props) => {
     return chunkOrder.join(" ");
   };
 
+  const clearOrder = () => {
+    if (orderBuilt.length) {
+      setOrderBuilt([]);
+    }
+  };
+  const addOrder = (orderBuilt) => {
+    if (orderBuilt.length) {
+      props.setChunkOrders((prev) => {
+        let stringifiedOrderBuilt = stringifyChunkOrder(orderBuilt);
+        let indexOfExistingOrder;
+
+        if (
+          props.chunkOrders.filter((obj, index) => {
+            let chunkOrder = obj.order;
+            if (stringifyChunkOrder(chunkOrder) === stringifiedOrderBuilt) {
+              indexOfExistingOrder = index;
+              return true;
+            }
+            return false;
+          }).length
+        ) {
+          alert(
+            `That chunk order is already present at ${
+              indexOfExistingOrder + 1
+            }.`
+          );
+          return prev;
+        }
+        setOrderBuilt([]);
+        return [...prev, { isPrimary: true, order: [...orderBuilt] }];
+      });
+    }
+  };
+
+  useEffect(() => {
+    uUtils.addListener($, document, "keyup", (e) => {
+      console.log("document listened keyup:", e.key);
+      if (["Enter", "Escape", "Backspace"].includes(e.key)) {
+        $("#ChunkOrdersPopup-exitbutton").addClass(gstyles.greyButtonActive);
+        setTimeout(props.exit, 150);
+      }
+    });
+  }, []);
+
   return (
     <>
       <div
@@ -33,6 +78,7 @@ const ChunkOrdersPopup = (props) => {
           <div className={`${gstyles.sideButton} ${gstyles.invisible}`}></div>
           <h1 className={pstyles.title}>Select orders for sentence.</h1>
           <button
+            id="ChunkOrdersPopup-exitbutton"
             alt="Exit icon"
             className={`${gstyles.sideButton} ${gstyles.greyButton}`}
             onClick={props.exit}
@@ -54,6 +100,37 @@ const ChunkOrdersPopup = (props) => {
                 }`}
                 onClick={() => {
                   setOrderBuilt((prev) => [...prev, chunkId]);
+                }}
+                onKeyUp={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                onKeyDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (["Enter"].includes(e.key)) {
+                    $("#ChunkOrdersPopup-tickbutton").addClass(
+                      gstyles.tickButtonActive
+                    );
+                    setTimeout(() => {
+                      addOrder(orderBuilt);
+                      $("#ChunkOrdersPopup-tickbutton").removeClass(
+                        gstyles.tickButtonActive
+                      );
+                    }, 50);
+                    return;
+                  } else if (["Backspace"].includes(e.key)) {
+                    $("#ChunkOrdersPopup-clearbutton").addClass(
+                      gstyles.redButtonActive
+                    );
+                    setTimeout(() => {
+                      clearOrder();
+                      $("#ChunkOrdersPopup-clearbutton").removeClass(
+                        gstyles.redButtonActive
+                      );
+                    }, 50);
+                    return;
+                  }
                 }}
               >
                 <p className={styles.buttonTopHalf}>{lemma}</p>
@@ -90,54 +167,22 @@ const ChunkOrdersPopup = (props) => {
             })}
           </div>
           <button
+            id="ChunkOrdersPopup-tickbutton"
             alt="Tick icon / Check icon"
             className={gstyles.tickButton}
             onClick={() => {
-              if (orderBuilt.length) {
-                props.setChunkOrders((prev) => {
-                  let stringifiedOrderBuilt = stringifyChunkOrder(orderBuilt);
-                  let indexOfExistingOrder;
-
-                  if (
-                    props.chunkOrders.filter((obj, index) => {
-                      console.log(index);
-                      let chunkOrder = obj.order;
-                      if (
-                        stringifyChunkOrder(chunkOrder) ===
-                        stringifiedOrderBuilt
-                      ) {
-                        indexOfExistingOrder = index;
-                        return true;
-                      }
-
-                      return false;
-                    }).length
-                  ) {
-                    alert(
-                      `That chunk order is already present at ${
-                        indexOfExistingOrder + 1
-                      }.`
-                    );
-                    return prev;
-                  }
-                  setOrderBuilt([]);
-                  return [...prev, { isPrimary: true, order: [...orderBuilt] }];
-                });
-              }
+              addOrder(orderBuilt);
             }}
           >
             &#10003;
           </button>
           <button
-            alt="Undo icon"
-            className={`${gstyles.blueButton} ${gstyles.rectangleButton}`}
-            onClick={() => {
-              if (orderBuilt.length) {
-                setOrderBuilt([]);
-              }
-            }}
+            id="ChunkOrdersPopup-clearbutton"
+            alt="Cross icon"
+            className={`${gstyles.redButton} ${gstyles.rectangleButton}`}
+            onClick={clearOrder}
           >
-            &#8634;
+            &times;
           </button>
         </div>
 
@@ -147,9 +192,10 @@ const ChunkOrdersPopup = (props) => {
               let { isPrimary, order } = obj;
               return (
                 <li className={styles.listitem} key={`chunkOrder-${index}`}>
+                  <span className={styles.indexSpan}>{index + 1}</span>
                   <button
                     alt="Black circle / White circle icon"
-                    className={`${gstyles.blueButton}`}
+                    className={`${gstyles.blueButton} ${styles.microButton}`}
                     onClick={() => {
                       setMeaninglessCounter((prev) => prev + 1);
                       setTimeout(() => {
@@ -169,7 +215,7 @@ const ChunkOrdersPopup = (props) => {
                   </button>
                   <button
                     alt="Cross icon"
-                    className={`${gstyles.redButton}`}
+                    className={`${gstyles.redButton} ${styles.microButton}`}
                     onClick={() => {
                       if (props.chunkOrders.length === 1) {
                         alert(

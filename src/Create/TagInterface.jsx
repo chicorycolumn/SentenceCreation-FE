@@ -30,12 +30,10 @@ const TagInterface = (props) => {
   useEffect(() => {
     uUtils.addListener($, document, "keyup", (e) => {
       console.log("document listened keyup:", e.key);
-      if (e.key === "Enter") {
-        // $(document).off("keyup");
+      if (["Enter"].includes(e.key)) {
         $("#TagInterface-tickbutton").addClass(gstyles.tickButtonActive);
         setTimeout(saveAndExit, 150);
-      } else if (e.key === "Escape") {
-        // $(document).off("keyup");
+      } else if (["Escape"].includes(e.key)) {
         $("#TagInterface-crossbutton").addClass(gstyles.redButtonActive);
         setTimeout(exit, 150);
       }

@@ -281,6 +281,21 @@ class TraitBox extends Component {
       );
     };
 
+    const handleKey = (e, type, blurFunction) => {
+      if (["Enter"].includes(e.key)) {
+        e.preventDefault();
+        blurFunction(e);
+        return;
+      } else if (["Escape"].includes(e.key)) {
+        e.preventDefault();
+        blurFunction(e, diUtils.asString(structureChunk[traitKey].traitValue));
+        setTimeout(() => {
+          $(`#${this.props.chunkCardKey}-${traitKey}_${type}`).blur();
+        }, 500);
+        return;
+      }
+    };
+
     return (
       <>
         {this.state.showTagInterface && (
@@ -552,25 +567,7 @@ class TraitBox extends Component {
                           textareaBlur(e);
                         }}
                         onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                            textareaBlur(e);
-                            return;
-                          } else if (e.key === "Escape") {
-                            e.preventDefault();
-                            textareaBlur(
-                              e,
-                              diUtils.asString(
-                                structureChunk[traitKey].traitValue
-                              )
-                            );
-                            setTimeout(() => {
-                              $(
-                                `#${this.props.chunkCardKey}-${traitKey}_textarea`
-                              ).blur();
-                            }, 500);
-                            return;
-                          }
+                          handleKey(e, "textarea", textareaBlur);
                         }}
                         onChange={(e) => {
                           e.stopPropagation();
