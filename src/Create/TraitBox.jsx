@@ -27,6 +27,22 @@ class TraitBox extends Component {
     activeTextarea: null,
   };
 
+  componentDidMount() {
+    uUtils.addListener($, document, "keyup", (e) => {
+      e.preventDefault();
+      console.log(e.key);
+      if (e.key === "Enter") {
+        if (this.state.isSelected) {
+          // checkAndSetTraitValue();
+        }
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    $(document).off("keyup");
+  }
+
   setShowTagInterface = (val) => {
     if (!val) {
       this.props.setHighlightedCard();
