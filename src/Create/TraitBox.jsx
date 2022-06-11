@@ -116,6 +116,24 @@ class TraitBox extends Component {
     }
   };
 
+  handleKey = (e, type, blurFunction) => {
+    if (["Enter"].includes(e.key)) {
+      e.preventDefault();
+      blurFunction(e);
+      return;
+    } else if (["Escape"].includes(e.key)) {
+      e.preventDefault();
+      let value = diUtils.asString(
+        this.props.structureChunk[this.props.traitKey].traitValue
+      );
+      blurFunction(e, value);
+      setTimeout(() => {
+        $(`#${this.props.chunkCardKey}-${this.props.traitKey}_${type}`).blur();
+      }, 500);
+      return;
+    }
+  };
+
   render() {
     let {
       traitKey,
@@ -295,21 +313,6 @@ class TraitBox extends Component {
         propsObject.flowerSearchingForStemBrace[0] !==
           propsObject.traitObject.traitValue
       );
-    };
-
-    const handleKey = (e, type, blurFunction) => {
-      if (["Enter"].includes(e.key)) {
-        e.preventDefault();
-        blurFunction(e);
-        return;
-      } else if (["Escape"].includes(e.key)) {
-        e.preventDefault();
-        blurFunction(e, diUtils.asString(structureChunk[traitKey].traitValue));
-        setTimeout(() => {
-          $(`#${this.props.chunkCardKey}-${traitKey}_${type}`).blur();
-        }, 500);
-        return;
-      }
     };
 
     return (
@@ -517,7 +520,7 @@ class TraitBox extends Component {
 
                   const textareaBlur = (e, value) => {
                     console.log("%traitValuesInput-onBlur");
-                    if (!value) {
+                    if (!value && value !== "") {
                       value = e.target.value;
                     }
                     if (idUtils.isTagTrait(traitKey)) {
@@ -580,10 +583,14 @@ class TraitBox extends Component {
                         }}
                         onBlur={(e) => {
                           e.stopPropagation();
-                          textareaBlur(e);
+                          if (
+                            `textarea-${traitKey}` === this.state.activeTextarea
+                          ) {
+                            textareaBlur(e);
+                          }
                         }}
                         onKeyDown={(e) => {
-                          handleKey(e, "textarea", textareaBlur);
+                          this.handleKey(e, "textarea", textareaBlur);
                         }}
                         onChange={(e) => {
                           e.stopPropagation();

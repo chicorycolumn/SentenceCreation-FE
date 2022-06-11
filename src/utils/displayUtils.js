@@ -217,9 +217,10 @@ const diUtils = {
   },
 
   asString: (values) => {
-    if (!uUtils.isEmpty(values, true)) {
-      return String(values).replace(/,/g, ", ");
+    if (uUtils.isEmpty(values, true)) {
+      return "";
     }
+    return String(values).replace(/,/g, ", ");
   },
 
   asArray: (str, strict = false) => {
