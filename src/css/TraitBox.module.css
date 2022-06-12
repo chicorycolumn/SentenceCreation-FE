@@ -187,3 +187,7 @@
 .badBox {
   background-color: crimson !important;
 }
+
+.briefBlur textarea {
+  color: rgba(0, 0, 0, 0) !important;
+}

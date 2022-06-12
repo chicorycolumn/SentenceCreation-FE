@@ -108,6 +108,10 @@ const ChunkOrdersPopup = (props) => {
                 onKeyDown={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
+                  console.log(
+                    "via ChunkOrdersPopup document listened keyup:",
+                    e.key
+                  );
                   if (["Enter"].includes(e.key)) {
                     $("#ChunkOrdersPopup-tickbutton").addClass(
                       gstyles.tickButtonActive

@@ -27,22 +27,6 @@ class TraitBox extends Component {
     activeTextarea: null,
   };
 
-  componentDidMount() {
-    uUtils.addListener($, document, "keyup", (e) => {
-      e.preventDefault();
-      console.log(e.key);
-      if (e.key === "Enter") {
-        if (this.state.isSelected) {
-          // checkAndSetTraitValue();
-        }
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    $(document).off("keyup");
-  }
-
   setShowTagInterface = (val) => {
     if (!val) {
       this.props.setHighlightedCard();
@@ -148,26 +132,35 @@ class TraitBox extends Component {
 
     const exitTraitBox = (changeToValue = true) => {
       console.log("£exitTraitBox");
+      $(document).off("keyup");
       this.setState({
         isInputActive: false,
         isHovered: false,
         isSelected: false,
         forceShowInput: false,
         hasJustBlurred: changeToValue,
+        hasJustBlurredRegardlessOfChange: true,
       });
       this.setShowTagInterface();
 
       setTimeout(() => {
-        this.setState({
-          hasJustBlurred: false,
-          traitValueInputString: diUtils.asString(
-            this.props.traitObject.traitValue
-          ),
-          traitValueInputString2:
-            this.props.traitObject2 &&
-            diUtils.asString(this.props.traitObject2.traitValue),
-        });
-      }, 500);
+        this.setState({ hasJustBlurredRegardlessOfChange: false });
+      }, 50);
+
+      setTimeout(
+        () => {
+          this.setState({
+            hasJustBlurred: false,
+            traitValueInputString: diUtils.asString(
+              this.props.traitObject.traitValue
+            ),
+            traitValueInputString2:
+              this.props.traitObject2 &&
+              diUtils.asString(this.props.traitObject2.traitValue),
+          });
+        },
+        changeToValue ? 500 : 0
+      );
     };
 
     const checkAndSetTraitValue = (secondaryAsWellAsPrimary = false) => {
@@ -315,6 +308,28 @@ class TraitBox extends Component {
       );
     };
 
+    const wipeTraitValue = (
+      traitBoxID,
+      traitValueInputStringKey,
+      isSecondary
+    ) => {
+      diUtils.connectChunkIdWithItsFlowers(
+        traitBoxID,
+        this.state.traitValueInputString,
+        [this.props.setElementsToDrawLinesBetween],
+        true,
+        ["chunkId"]
+      );
+      this.setState(() => {
+        let newState = {};
+        newState[traitValueInputStringKey] = null;
+        return newState;
+      });
+      setTimeout(() => {
+        checkAndSetTraitValue(isSecondary);
+      }, 500);
+    };
+
     return (
       <>
         {this.state.showTagInterface && (
@@ -341,6 +356,8 @@ class TraitBox extends Component {
           } ${idUtils.isChunkId(traitKey) && styles.traitBoxCircle2} ${
             !traitObject.traitValue && styles.traitBoxEmpty
           } ${this.state.hasJustBlurred && styles.shimmer} ${
+            this.state.hasJustBlurredRegardlessOfChange && styles.briefBlur
+          } ${
             (this.state.isHovered || this.state.isSelected) &&
             styles.traitBoxHover
           } ${this.state.isSoftHighlighted && gstyles.highlighted0} ${
@@ -475,6 +492,23 @@ class TraitBox extends Component {
               } else {
                 this.setState({
                   isSelected: true,
+                });
+                uUtils.addListener($, document, "keyup", (e) => {
+                  e.preventDefault();
+                  console.log(
+                    `via Traitbox ${this.props.chunkCardKey}-${this.props.traitKey} document listened keyup:`,
+                    e.key
+                  );
+
+                  if (this.state.isSelected) {
+                    if (e.key === "Enter") {
+                      checkAndSetTraitValue();
+                    } else if (e.key === "Escape") {
+                      exitTraitBox(false);
+                    } else if (e.key === "Backspace") {
+                      wipeTraitValue(traitBoxID, "traitValueInputString");
+                    }
+                  }
                 });
 
                 if (traitObject.expectedTypeOnStCh === "string") {
@@ -636,21 +670,11 @@ class TraitBox extends Component {
                             onClick={(e) => {
                               console.log("%cross1");
                               e.stopPropagation();
-                              diUtils.connectChunkIdWithItsFlowers(
+                              wipeTraitValue(
                                 traitBoxID,
-                                this.state.traitValueInputString,
-                                [this.props.setElementsToDrawLinesBetween],
-                                true,
-                                ["chunkId"]
+                                traitValueInputStringKey,
+                                isSecondary
                               );
-                              this.setState(() => {
-                                let newState = {};
-                                newState[traitValueInputStringKey] = null;
-                                return newState;
-                              });
-                              setTimeout(() => {
-                                checkAndSetTraitValue(isSecondary);
-                              }, 500);
                             }}
                           >
                             &times;
