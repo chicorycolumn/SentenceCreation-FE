@@ -604,6 +604,10 @@ class TraitBox extends Component {
                             idUtils.isChunkId(traitKey)
                           ) {
                             e.target.select();
+                          } else {
+                            this.setState({
+                              isSelected: true,
+                            });
                           }
                         }}
                         onMouseEnter={() => {
