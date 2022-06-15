@@ -143,7 +143,19 @@ const ChunkCardHolder = (props) => {
             }
 
             fetchSentence(lang1, sentenceStructure, chunkOrders).then(
-              (fetchedData) => {
+              (fetchedDataObj) => {
+                if (fetchedDataObj.messages) {
+                  alert(
+                    Object.keys(fetchedDataObj.messages).map((key) => {
+                      let val = fetchedDataObj.messages[key];
+                      return `${key}:       ${val}`;
+                    })
+                  );
+                  return;
+                }
+
+                let fetchedData = fetchedDataObj.data;
+
                 setPopup({
                   title: `${fetchedData.length} sentence${
                     fetchedData.length > 1 ? "s" : ""

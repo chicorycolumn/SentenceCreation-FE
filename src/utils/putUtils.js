@@ -48,10 +48,15 @@ export const fetchSentence = (lang1, rawChunks, orders) => {
       return res.data;
     })
     .then((data) => {
+      let responseObj = { messages: data.messages };
+
       if (processedChunks.length === 1) {
-        return data.wordsAndIDs;
+        responseObj.data = data.wordsAndIDs;
       } else {
-        return uUtils.flatten(data.wordsAndIDs);
+        responseObj.data = uUtils.flatten(data.wordsAndIDs);
       }
-    });
+
+      return responseObj;
+    })
+    .catch((e) => console.log(e));
 };

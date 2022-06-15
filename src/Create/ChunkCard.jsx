@@ -134,7 +134,20 @@ const ChunkCard = (props) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
             fetchSentence(lang1, [structureChunk]).then(
-              (fetchedData) => {
+              (fetchedDataObj) => {
+                if (fetchedDataObj.messages) {
+                  alert(
+                    Object.keys(fetchedDataObj.messages).map((key) => {
+                      let val = fetchedDataObj.messages[key];
+                      return `${key}:       ${val}`;
+                    })
+                  );
+                  props.setHighlightedCard();
+                  return;
+                }
+
+                let fetchedData = fetchedDataObj.data;
+
                 props.setPopup({
                   title: `${fetchedData.length} lemma${
                     fetchedData.length > 1 ? "s" : ""
