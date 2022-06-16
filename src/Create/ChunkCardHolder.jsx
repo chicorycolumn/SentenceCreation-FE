@@ -3,7 +3,7 @@ import ChunkCard from "./ChunkCard";
 import styles from "../css/ChunkCardHolder.module.css";
 import gstyles from "../css/Global.module.css";
 import LineHolder from "../Cogs/LineHolder";
-import { isAgreeOrConnected } from "../utils/identityUtils";
+import uUtils from "../utils/universalUtils.js";
 import diUtils from "../utils/displayUtils.js";
 import idUtils from "../utils/identityUtils.js";
 import icons from "../utils/icons.js";
@@ -37,7 +37,7 @@ const ChunkCardHolder = (props) => {
         if (stChObj.structureChunk) {
           Object.keys(stChObj.structureChunk).forEach((traitKey) => {
             if (
-              isAgreeOrConnected(traitKey) &&
+              uUtils.isAgreeOrConnected(traitKey) &&
               stChObj.structureChunk[traitKey].traitValue === chunkId
             ) {
               stChObj.structureChunk[traitKey].traitValue = newChunkId;
