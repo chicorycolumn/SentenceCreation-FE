@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import styles from "../css/ChunkCard.module.css";
 import gstyles from "../css/Global.module.css";
-import { fetchLObjsByLemma } from "../utils/getUtils.js";
+import getUtils from "../utils/getUtils.js";
 import { fetchSentence } from "../utils/putUtils.js";
 import LanguageContext from "../context/LanguageContext.js";
 import TraitBox from "./TraitBox.jsx";
@@ -92,7 +92,7 @@ const ChunkCard = (props) => {
     console.log("~");
     if (lang1 && props.word) {
       console.log("~~");
-      fetchLObjsByLemma(lang1, props.word).then(
+      getUtils.fetchLObjsByLemma(lang1, props.word).then(
         (fetchedLObjs) => {
           setLObjs(fetchedLObjs);
         },
