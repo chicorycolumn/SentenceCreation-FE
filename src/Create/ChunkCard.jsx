@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import styles from "../css/ChunkCard.module.css";
 import gstyles from "../css/Global.module.css";
 import getUtils from "../utils/getUtils.js";
-import { fetchSentence } from "../utils/putUtils.js";
+import putUtils from "../utils/putUtils.js";
 import LanguageContext from "../context/LanguageContext.js";
 import TraitBox from "./TraitBox.jsx";
 import ToggleShowButton from "./ToggleShowButton.jsx";
@@ -133,7 +133,7 @@ const ChunkCard = (props) => {
           onClick={(e) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
-            fetchSentence(lang1, [structureChunk]).then(
+            putUtils.fetchSentence(lang1, [structureChunk]).then(
               (fetchedDataObj) => {
                 if (fetchedDataObj.messages) {
                   alert(
