@@ -12,8 +12,6 @@ import { fetchSentence } from "../utils/putUtils";
 import LanguageContext from "../context/LanguageContext.js";
 import ListPopup from "../Cogs/ListPopup.jsx";
 import ChunkOrdersPopup from "./ChunkOrdersPopup.jsx";
-import { isEmpty } from "../utils/universalUtils";
-
 const ChunkCardHolder = (props) => {
   const lang1 = useContext(LanguageContext);
   const [elementsToDrawLinesBetween, setElementsToDrawLinesBetween] = useState(
@@ -131,8 +129,8 @@ const ChunkCardHolder = (props) => {
                 idUtils.wordtypesWhichMustHavePopulatedTags.includes(
                   stCh.wordtype
                 ) &&
-                isEmpty(stCh.andTags.traitValue) &&
-                isEmpty(stCh.orTags.traitValue)
+                uUtils.isEmpty(stCh.andTags.traitValue) &&
+                uUtils.isEmpty(stCh.orTags.traitValue)
             )[0];
 
             if (badChunk) {
