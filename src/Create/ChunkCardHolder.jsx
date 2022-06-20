@@ -8,7 +8,7 @@ import diUtils from "../utils/displayUtils.js";
 import idUtils from "../utils/identityUtils.js";
 import icons from "../utils/icons.js";
 import $ from "jquery";
-import { fetchSentence } from "../utils/putUtils";
+import putUtils from "../utils/putUtils";
 import LanguageContext from "../context/LanguageContext.js";
 import ListPopup from "../Cogs/ListPopup.jsx";
 import ChunkOrdersPopup from "./ChunkOrdersPopup.jsx";
@@ -140,7 +140,7 @@ const ChunkCardHolder = (props) => {
               return;
             }
 
-            fetchSentence(lang1, sentenceStructure, chunkOrders).then(
+            putUtils.fetchSentence(lang1, sentenceStructure, chunkOrders).then(
               (fetchedDataObj) => {
                 if (fetchedDataObj.messages) {
                   alert(
