@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { fetchTags, fetchWordsByTag } from "../utils/getUtils.js";
+import getUtils from "../utils/getUtils.js";
 import styles from "../css/TagInterface.module.css";
 import gstyles from "../css/Global.module.css";
 import LanguageContext from "../context/LanguageContext.js";
@@ -64,7 +65,7 @@ const TagInterface = (props) => {
   ]);
 
   useEffect(() => {
-    fetchTags(lang1).then((fetchedTags) => {
+    getUtils.fetchTags(lang1).then((fetchedTags) => {
       setTags(fetchedTags.sort((x, y) => x.localeCompare(y)));
     });
   }, [lang1]);
