@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import { fetchTags, fetchWordsByTag } from "../utils/getUtils.js";
 import getUtils from "../utils/getUtils.js";
 import styles from "../css/TagInterface.module.css";
 import gstyles from "../css/Global.module.css";
@@ -44,7 +43,7 @@ const TagInterface = (props) => {
   }, []);
 
   useEffect(() => {
-    fetchWordsByTag(
+    getUtils.fetchWordsByTag(
       lang1,
       diUtils.asArray(props.traitValueInputString),
       diUtils.asArray(props.traitValueInputString2)
