@@ -8,7 +8,6 @@ import TraitBox from "./TraitBox.jsx";
 import ToggleShowButton from "./ToggleShowButton.jsx";
 import { testStChs } from "../utils/testData.js";
 import diUtils from "../utils/displayUtils.js";
-import idUtils from "../utils/identityUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 const traitsToNotDisplayInOwnBox = ["orTags", "id", "lemma"];
 
