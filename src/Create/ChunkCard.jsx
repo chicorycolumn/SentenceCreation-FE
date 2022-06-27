@@ -8,7 +8,6 @@ import TraitBox from "./TraitBox.jsx";
 import ToggleShowButton from "./ToggleShowButton.jsx";
 import diUtils from "../utils/displayUtils.js";
 const uUtils = require("../utils/universalUtils.js");
-const traitsToNotDisplayInOwnBox = ["orTags", "id", "lemma"];
 
 const ChunkCard = (props) => {
   const [lObjs, setLObjs] = useState([]);
@@ -275,7 +274,7 @@ const ChunkCard = (props) => {
               let traitObject2 = traitKey2 ? structureChunk[traitKey2] : null;
 
               return (
-                !traitsToNotDisplayInOwnBox.includes(traitKey) && (
+                !diUtils.traitsToNotDisplayInOwnBox.includes(traitKey) && (
                   <TraitBox
                     chunkId={chunkId}
                     chunkCardKey={props.chunkCardKey}
@@ -315,7 +314,7 @@ const ChunkCard = (props) => {
           {showTraitKeysGroupTwo &&
             traitKeysGroup2.map(
               (traitKey) =>
-                !traitsToNotDisplayInOwnBox.includes(traitKey) && (
+                !diUtils.traitsToNotDisplayInOwnBox.includes(traitKey) && (
                   <TraitBox
                     key={traitKey}
                     traitKey={traitKey}

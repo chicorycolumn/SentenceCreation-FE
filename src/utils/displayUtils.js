@@ -4,6 +4,7 @@ import $ from "jquery";
 const uUtils = require("./universalUtils.js");
 
 const diUtils = {
+  traitsToNotDisplayInOwnBox: ["orTags", "id", "lemma"],
   connectChunkIdWithItsFlowers: (
     flowerstemID,
     flowerstemValue,
