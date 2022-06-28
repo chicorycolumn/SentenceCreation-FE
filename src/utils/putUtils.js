@@ -1,6 +1,5 @@
 import axios from "axios";
 const uUtils = require("../utils/universalUtils.js");
-const idUtils = require("../utils/identityUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
