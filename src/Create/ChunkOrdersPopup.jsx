@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styles from "../css/ChunkOrdersPopup.module.css";
 import pstyles from "../css/Popup.module.css";
 import gstyles from "../css/Global.module.css";
-import diUtils from "../utils/displayUtils.js";
 import uUtils from "../utils/universalUtils.js";
 import $ from "jquery";
 
