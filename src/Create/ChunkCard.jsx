@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
+import LanguageContext from "../context/LanguageContext.js";
+import TraitBox from "./TraitBox.jsx";
+import ToggleShowButton from "./ToggleShowButton.jsx";
 import styles from "../css/ChunkCard.module.css";
 import gstyles from "../css/Global.module.css";
 import getUtils from "../utils/getUtils.js";
 import putUtils from "../utils/putUtils.js";
-import LanguageContext from "../context/LanguageContext.js";
-import TraitBox from "./TraitBox.jsx";
-import ToggleShowButton from "./ToggleShowButton.jsx";
 import diUtils from "../utils/displayUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 
