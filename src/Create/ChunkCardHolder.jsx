@@ -1,17 +1,18 @@
 import React, { useEffect, useState, useContext } from "react";
 import ChunkCard from "./ChunkCard";
+import LanguageContext from "../context/LanguageContext.js";
+import ListPopup from "../Cogs/ListPopup.jsx";
+import ChunkOrdersPopup from "./ChunkOrdersPopup.jsx";
 import styles from "../css/ChunkCardHolder.module.css";
 import gstyles from "../css/Global.module.css";
 import LineHolder from "../Cogs/LineHolder";
 import uUtils from "../utils/universalUtils.js";
 import diUtils from "../utils/displayUtils.js";
 import idUtils from "../utils/identityUtils.js";
+import putUtils from "../utils/putUtils";
 import icons from "../utils/icons.js";
 import $ from "jquery";
-import putUtils from "../utils/putUtils";
-import LanguageContext from "../context/LanguageContext.js";
-import ListPopup from "../Cogs/ListPopup.jsx";
-import ChunkOrdersPopup from "./ChunkOrdersPopup.jsx";
+
 const ChunkCardHolder = (props) => {
   const lang1 = useContext(LanguageContext);
   const [elementsToDrawLinesBetween, setElementsToDrawLinesBetween] = useState(
