@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
-import styles from "../css/TagInterface.module.css";
-import gstyles from "../css/Global.module.css";
 import LanguageContext from "../context/LanguageContext.js";
 import LemmasTable from "./LemmasTable.jsx";
+import styles from "../css/TagInterface.module.css";
+import gstyles from "../css/Global.module.css";
 import getUtils from "../utils/getUtils.js";
 import diUtils from "../utils/displayUtils.js";
 import uUtils from "../utils/universalUtils.js";

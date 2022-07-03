@@ -1,7 +1,7 @@
 import React, { Component } from "react";
+import TagInterface from "./TagInterface.jsx";
 import styles from "../css/TraitBox.module.css";
 import gstyles from "../css/Global.module.css";
-import TagInterface from "./TagInterface.jsx";
 import $ from "jquery";
 import diUtils from "../utils/displayUtils.js";
 const uUtils = require("../utils/universalUtils.js");
