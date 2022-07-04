@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
-import gstyles from "../css/Global.module.css";
 import LanguageContext from "../context/LanguageContext.js";
+import gstyles from "../css/Global.module.css";
 
 const LanguagesForm = (props) => {
   const lang1 = useContext(LanguageContext);
