@@ -9,9 +9,9 @@ import LineHolder from "../Cogs/LineHolder";
 import uUtils from "../utils/universalUtils.js";
 import diUtils from "../utils/displayUtils.js";
 import idUtils from "../utils/identityUtils.js";
-import putUtils from "../utils/putUtils";
 import icons from "../utils/icons.js";
 import $ from "jquery";
+const putUtils = require("../utils/putUtils.js");
 
 const ChunkCardHolder = (props) => {
   const lang1 = useContext(LanguageContext);

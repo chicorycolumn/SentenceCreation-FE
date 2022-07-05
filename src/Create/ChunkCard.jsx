@@ -4,9 +4,9 @@ import TraitBox from "./TraitBox.jsx";
 import ToggleShowButton from "./ToggleShowButton.jsx";
 import styles from "../css/ChunkCard.module.css";
 import gstyles from "../css/Global.module.css";
-import getUtils from "../utils/getUtils.js";
-import putUtils from "../utils/putUtils.js";
 import diUtils from "../utils/displayUtils.js";
+const putUtils = require("../utils/putUtils.js");
+const getUtils = require("../utils/getUtils.js");
 const uUtils = require("../utils/universalUtils.js");
 
 const ChunkCard = (props) => {

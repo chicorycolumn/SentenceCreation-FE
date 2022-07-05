@@ -3,10 +3,10 @@ import LanguageContext from "../context/LanguageContext.js";
 import LemmasTable from "./LemmasTable.jsx";
 import styles from "../css/TagInterface.module.css";
 import gstyles from "../css/Global.module.css";
-import getUtils from "../utils/getUtils.js";
 import diUtils from "../utils/displayUtils.js";
 import uUtils from "../utils/universalUtils.js";
 import $ from "jquery";
+const getUtils = require("../utils/getUtils.js");
 
 const TagInterface = (props) => {
   const [clickCounter, setClickCounter] = useState(0);
@@ -43,18 +43,22 @@ const TagInterface = (props) => {
   }, []);
 
   useEffect(() => {
-    getUtils.fetchWordsByTag(
-      lang1,
-      diUtils.asArray(props.traitValueInputString),
-      diUtils.asArray(props.traitValueInputString2)
-    ).then((fetchedWords) => {
-      setFetchedLObjs(fetchedWords);
+    getUtils
+      .fetchWordsByTag(
+        lang1,
+        diUtils.asArray(props.traitValueInputString),
+        diUtils.asArray(props.traitValueInputString2)
+      )
+      .then((fetchedWords) => {
+        setFetchedLObjs(fetchedWords);
 
-      setTickDisabled(
-        !fetchedWords[props.wordtype] ||
-          !fetchedWords[props.wordtype].some((lObj) => lObj.id === props.lObjId)
-      );
-    });
+        setTickDisabled(
+          !fetchedWords[props.wordtype] ||
+            !fetchedWords[props.wordtype].some(
+              (lObj) => lObj.id === props.lObjId
+            )
+        );
+      });
   }, [
     props.traitValueInputString,
     props.traitValueInputString2,
