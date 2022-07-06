@@ -332,6 +332,15 @@ class TraitBox extends Component {
 
     return (
       <>
+        {this.state.isSelected && (
+          <div
+            className={gstyles.obscurus}
+            onClick={() => {
+              exitTraitBox(false);
+            }}
+          ></div>
+        )}
+
         {this.state.showTagInterface && (
           <TagInterface
             traitValueInputString={this.state.traitValueInputString}
