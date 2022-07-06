@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import LanguageContext from "../context/LanguageContext.js";
 import TraitBox from "./TraitBox.jsx";
 import ToggleShowButton from "./ToggleShowButton.jsx";
+import Tooltip from "../Cogs/Tooltip.jsx";
 import styles from "../css/ChunkCard.module.css";
 import gstyles from "../css/Global.module.css";
 import diUtils from "../utils/displayUtils.js";
@@ -126,7 +127,7 @@ const ChunkCard = (props) => {
       <div className={styles.cardButtonsHolder}>
         <button
           alt="Star icon"
-          className={gstyles.cardButton1}
+          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
           onClick={(e) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
@@ -163,10 +164,11 @@ const ChunkCard = (props) => {
           }}
         >
           &#9733;
+          <Tooltip text="Query word" />
         </button>
         <button
           alt="Pencil icon"
-          className={gstyles.cardButton1}
+          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
           onClick={(e) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
@@ -180,10 +182,11 @@ const ChunkCard = (props) => {
           }}
         >
           &#9998;
+          <Tooltip text="Edit" />
         </button>
         <button
           alt="Squares icon"
-          className={gstyles.cardButton1}
+          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
           onClick={(e) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
@@ -196,10 +199,11 @@ const ChunkCard = (props) => {
           }}
         >
           &#10697;
+          <Tooltip text="Connect to Answer sentence" />
         </button>
         <button
           alt="Reset icon"
-          className={gstyles.cardButton1}
+          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
           onClick={(e) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
@@ -214,10 +218,11 @@ const ChunkCard = (props) => {
           }}
         >
           &#8647;
+          <Tooltip text="Reset" />
         </button>
         <button
           alt="Cross icon"
-          className={gstyles.cardButton1}
+          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
           onClick={(e) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
@@ -230,6 +235,7 @@ const ChunkCard = (props) => {
           }}
         >
           &times;
+          <Tooltip text="Delete" />
         </button>
       </div>
       <h1

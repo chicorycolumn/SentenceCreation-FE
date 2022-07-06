@@ -1,4 +1,5 @@
 import React from "react";
+import Tooltip from "../Cogs/Tooltip.jsx";
 import styles from "../css/LemmasTable.module.css";
 import gstyles from "../css/Global.module.css";
 import diUtils from "../utils/displayUtils.js";
@@ -21,9 +22,7 @@ const LemmasTable = (props) => {
             .map((lObj) => (
               <tr key={`${lObj.id}`}>
                 <td className={`${gstyles.tooltipHolder}`}>
-                  <span className={`${gstyles.tooltip} ${styles.tooltipCell}`}>
-                    {diUtils.asString(lObj.tags)}
-                  </span>
+                  <Tooltip text={diUtils.asString(lObj.tags)} tooltipType="2" />
                   {lObj.lemma}
                 </td>
                 <td>{lObj.id}</td>

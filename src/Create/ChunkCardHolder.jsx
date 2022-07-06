@@ -3,6 +3,7 @@ import ChunkCard from "./ChunkCard";
 import LanguageContext from "../context/LanguageContext.js";
 import ListPopup from "../Cogs/ListPopup.jsx";
 import ChunkOrdersPopup from "./ChunkOrdersPopup.jsx";
+import Tooltip from "../Cogs/Tooltip.jsx";
 import styles from "../css/ChunkCardHolder.module.css";
 import gstyles from "../css/Global.module.css";
 import LineHolder from "../Cogs/LineHolder";
@@ -108,17 +109,18 @@ const ChunkCardHolder = (props) => {
       <div className={styles.buttonHolder}>
         <button
           alt="Three dots icon"
-          className={`${gstyles.cardButton1}`}
+          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
           onClick={(e) => {
             e.target.blur();
             setShowChunkOrdersPopup(true);
           }}
         >
           &#11819;
+          <Tooltip text="Set orders" />
         </button>
         <button
           alt="Star icon"
-          className={`${gstyles.cardButton1}`}
+          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
           onClick={(e) => {
             e.target.blur();
             let sentenceStructure = props.formula.map(
@@ -170,10 +172,11 @@ const ChunkCardHolder = (props) => {
           }}
         >
           &#9733;
+          <Tooltip text="Query sentence" />
         </button>
         <button
           alt="Connection icon"
-          className={`${gstyles.cardButton1}`}
+          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
           onClick={(e) => {
             e.target.blur();
             if (linesAreDrawn) {
@@ -204,10 +207,11 @@ const ChunkCardHolder = (props) => {
           }}
         >
           &#42476;
+          <Tooltip text="View dependencies between chunks" />
         </button>
         <button
           alt="Triangle icon"
-          className={`${gstyles.cardButton1}`}
+          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
           onMouseEnter={() => {
             console.log("showAllTraitBoxes", showAllTraitBoxes);
           }}
@@ -238,6 +242,7 @@ const ChunkCardHolder = (props) => {
           }}
         >
           {showAllTraitBoxes ? icons.upBlackTriangle : icons.downBlackTriangle}
+          <Tooltip text="Show or hide trait boxes" />
         </button>
       </div>
       <div className={styles.cardHolder} key={meaninglessCounter}>

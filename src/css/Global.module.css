@@ -123,14 +123,39 @@
   border-radius: 5px;
   margin-left: -65px;
   margin-top: -40px;
+  transition-delay: 0s !important;
+}
+
+.tooltip1 {
+  margin-left: -32.5px;
+  margin-top: -35px;
+  font-size: 14px;
+  opacity: 1;
 }
 
 .tooltipHolder:hover .tooltip {
   visibility: visible;
 }
 
+.tooltipHolderDelayed:hover .tooltip {
+  visibility: visible;
+  transition-delay: 1s !important;
+}
+
 .tooltip:hover {
-  visibility: hidden !important;
+  visibility: hidden;
+}
+
+.tooltip2 {
+  margin-left: 70px;
+  margin-top: -10px;
+  opacity: 1;
+  font-size: 14px;
+  width: 62.5%;
+}
+
+.tooltip2:hover {
+  visibility: visible !important;
 }
 
 .npeLight {

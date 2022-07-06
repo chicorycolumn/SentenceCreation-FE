@@ -703,7 +703,7 @@ class TraitBox extends Component {
           {this.state.isSelected && (
             <div className={styles.inputOptionsHolder}>
               {traitObject.expectedTypeOnStCh === "array" && (
-                <div>
+                <div className={styles.inputOptionsSubHolder}>
                   {traitObject.possibleTraitValues ? (
                     traitObject.possibleTraitValues.map(
                       (possibleTraitValue, index) => (

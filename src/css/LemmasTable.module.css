@@ -39,16 +39,3 @@ table tr:nth-child(even) {
 tbody {
   font-size: 13px;
 }
-
-.tooltipCell {
-  margin-left: 70px;
-  margin-top: -10px;
-  opacity: 1;
-  font-size: 14px;
-  /* visibility: visible; */
-  width: 62.5%;
-}
-
-.tooltipCell:hover {
-  visibility: visible;
-}
