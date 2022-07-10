@@ -6,6 +6,7 @@ import Tooltip from "../Cogs/Tooltip.jsx";
 import styles from "../css/ChunkCard.module.css";
 import gstyles from "../css/Global.module.css";
 import diUtils from "../utils/displayUtils.js";
+import idUtils from "../utils/identityUtils.js";
 const putUtils = require("../utils/putUtils.js");
 const getUtils = require("../utils/getUtils.js");
 const uUtils = require("../utils/universalUtils.js");
@@ -21,61 +22,57 @@ const ChunkCard = (props) => {
   const setStructureChunkAndFormula = (newStCh) => {
     setStructureChunk(newStCh);
     props.setFormula((prevFormula) => {
-      return prevFormula.map((structureChunkObject, index) => {
+      return prevFormula.map((formulaItem, index) => {
         if (index === props.index) {
-          structureChunkObject.structureChunk = newStCh;
+          formulaItem.structureChunk = newStCh;
         }
-        return structureChunkObject;
+        return formulaItem;
       });
     });
   };
 
   useEffect(() => {
-    if (lObjs) {
-      let fetchedLObjs = lObjs;
+    let fetchedLObjs = lObjs;
 
-      if (structureChunk) {
-        console.log("Already done this one actually.");
-        return;
-      }
+    if (structureChunk) {
+      console.log("Already done this one actually.");
+      return;
+    }
 
-      if (fetchedLObjs.length) {
-        let stCh = fetchedLObjs[0];
-        if (fetchedLObjs.length > 1) {
-          if (!chosenId) {
-            let idFromPrompt = prompt(
-              `\n"${props.formula
-                .map((structureChunkObject, i) =>
-                  i === props.chunkCardIndex
-                    ? structureChunkObject.word.toUpperCase()
-                    : i === 0
-                    ? uUtils.capitaliseFirst(structureChunkObject.word)
-                    : structureChunkObject.word
-                )
-                .join(" ")}."\n\nWhich ${props.word.toUpperCase()} of these ${
-                fetchedLObjs.length
-              } matches are you after?\n\n(Hint: Look at the wordtype)`,
-              fetchedLObjs.map((lObj) => lObj.id).join("|")
-            );
-            setChosenId(idFromPrompt);
-          }
-          let matchingStChs = fetchedLObjs.filter(
-            (lObj) => lObj.id === chosenId
+    if (fetchedLObjs && fetchedLObjs.length) {
+      let stCh = fetchedLObjs[0];
+      if (fetchedLObjs.length > 1) {
+        if (!chosenId) {
+          let idFromPrompt = prompt(
+            `\n"${props.formula
+              .map((formulaItem, i) =>
+                i === props.chunkCardIndex
+                  ? formulaItem.word.toUpperCase()
+                  : i === 0
+                  ? uUtils.capitaliseFirst(formulaItem.word)
+                  : formulaItem.word
+              )
+              .join(" ")}."\n\nWhich ${props.word.toUpperCase()} of these ${
+              fetchedLObjs.length
+            } matches are you after?\n\n(Hint: Look at the wordtype)`,
+            fetchedLObjs.map((lObj) => lObj.id).join("|")
           );
-          if (matchingStChs.length === 1) {
-            stCh = matchingStChs[0];
-          } else {
-            return;
-          }
+          setChosenId(idFromPrompt);
         }
-        let idSplit = stCh.id.split("-");
-        stCh.chunkId.traitValue = `${idSplit[1]}-${
-          props.chunkCardIndex
-        }${idSplit[2].split("").reverse().join("")}-${stCh.lemma}`;
-
-        setStructureChunkAndFormula(stCh);
-        setBackedUpStructureChunk(uUtils.copyWithoutReference(stCh));
+        let matchingStChs = fetchedLObjs.filter((lObj) => lObj.id === chosenId);
+        if (matchingStChs.length === 1) {
+          stCh = matchingStChs[0];
+        } else {
+          return;
+        }
       }
+      let idSplit = stCh.id.split("-");
+      stCh.chunkId.traitValue = `${idSplit[1]}-${
+        props.chunkCardIndex
+      }${idSplit[2].split("").reverse().join("")}-${stCh.lemma}`;
+
+      setStructureChunkAndFormula(stCh);
+      setBackedUpStructureChunk(uUtils.copyWithoutReference(stCh));
     }
   }, [
     lObjs,

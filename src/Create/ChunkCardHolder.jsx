@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, Fragment } from "react";
 import ChunkCard from "./ChunkCard";
 import LanguageContext from "../context/LanguageContext.js";
 import ListPopup from "../Cogs/ListPopup.jsx";
@@ -248,12 +248,13 @@ const ChunkCardHolder = (props) => {
       <div className={styles.cardHolder} key={meaninglessCounter}>
         <LineHolder elementsToDrawLineBetween={[]} />
         {/* Unused LineHolder for flexbox spacing. */}
-        {props.formula.map((structureChunkObject, index) => {
-          let { word, structureChunk } = structureChunkObject;
+        {props.formula.map((formulaItem, index) => {
+          let { word, structureChunk } = formulaItem;
           return (
-            <>
+            <Fragment key={`chunkCardOuterFragment-${index}`}>
               {index ? (
                 <div
+                  key={`plusButton-${index}`}
                   alt="Plus icon"
                   className={styles.plusButton}
                   onClick={() => {
@@ -304,7 +305,7 @@ const ChunkCardHolder = (props) => {
                 highlightedCard={highlightedCard}
                 setHighlightedCard={setHighlightedCard}
               />
-            </>
+            </Fragment>
           );
         })}
         <LineHolder
