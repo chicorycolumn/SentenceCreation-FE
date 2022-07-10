@@ -37,7 +37,7 @@ const ChunkCardHolder = (props) => {
         if (stChObj.structureChunk) {
           Object.keys(stChObj.structureChunk).forEach((traitKey) => {
             if (
-              uUtils.isAgreeOrConnected(traitKey) &&
+              idUtils.isAgreeOrConnected(traitKey) &&
               stChObj.structureChunk[traitKey].traitValue === chunkId
             ) {
               stChObj.structureChunk[traitKey].traitValue = newChunkId;
@@ -251,32 +251,60 @@ const ChunkCardHolder = (props) => {
         {props.formula.map((structureChunkObject, index) => {
           let { word, structureChunk } = structureChunkObject;
           return (
-            <ChunkCard
-              key={`${index}-${word}`}
-              batch={props.batch}
-              chunkCardKey={`${index}-${word}`}
-              word={word}
-              index={index}
-              structureChunk={structureChunk}
-              chunkCardIndex={index}
-              formula={props.formula}
-              setFormula={props.setFormula}
-              setElementsToDrawLinesBetween={setElementsToDrawLinesBetween}
-              flowerSearchingForStemBrace={[
-                flowerSearchingForStem,
-                setFlowerSearchingForStem,
-              ]}
-              stemFoundForFlowerBrace={[
-                stemFoundForFlower,
-                setStemFoundForFlower,
-              ]}
-              editLemma={(newLemma, chunkId) => {
-                editLemmaAtIndex(index, newLemma, chunkId);
-              }}
-              setPopup={setPopup}
-              highlightedCard={highlightedCard}
-              setHighlightedCard={setHighlightedCard}
-            />
+            <>
+              {index ? (
+                <div
+                  alt="Plus icon"
+                  className={styles.plusButton}
+                  onClick={() => {
+                    let newLemma = prompt("Enter new lemma");
+                    if (newLemma) {
+                      props.setFormula((prevFormula) => {
+                        let newFormulaObject = {
+                          word: newLemma,
+                          structureChunk: null,
+                        };
+                        return [
+                          ...prevFormula.slice(0, index),
+                          newFormulaObject,
+                          ...prevFormula.slice(index),
+                        ];
+                      });
+                    }
+                  }}
+                >
+                  &#8853;
+                </div>
+              ) : (
+                ""
+              )}
+              <ChunkCard
+                key={`${index}-${word}`}
+                batch={props.batch}
+                chunkCardKey={`${index}-${word}`}
+                word={word}
+                index={index}
+                structureChunk={structureChunk}
+                chunkCardIndex={index}
+                formula={props.formula}
+                setFormula={props.setFormula}
+                setElementsToDrawLinesBetween={setElementsToDrawLinesBetween}
+                flowerSearchingForStemBrace={[
+                  flowerSearchingForStem,
+                  setFlowerSearchingForStem,
+                ]}
+                stemFoundForFlowerBrace={[
+                  stemFoundForFlower,
+                  setStemFoundForFlower,
+                ]}
+                editLemma={(newLemma, chunkId) => {
+                  editLemmaAtIndex(index, newLemma, chunkId);
+                }}
+                setPopup={setPopup}
+                highlightedCard={highlightedCard}
+                setHighlightedCard={setHighlightedCard}
+              />
+            </>
           );
         })}
         <LineHolder

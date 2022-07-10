@@ -87,9 +87,9 @@ const ChunkCard = (props) => {
   ]);
 
   useEffect(() => {
-    console.log("~");
+    console.log(1410, props.word);
     if (lang1 && props.word) {
-      console.log("~~");
+      console.log(14100, props.word);
       getUtils.fetchLObjsByLemma(lang1, props.word).then(
         (fetchedLObjs) => {
           setLObjs(fetchedLObjs);
