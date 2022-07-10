@@ -182,7 +182,7 @@ const ChunkCard = (props) => {
           }}
         >
           &#9998;
-          <Tooltip text="Edit" />
+          <Tooltip text="Change word" />
         </button>
         <button
           alt="Squares icon"
