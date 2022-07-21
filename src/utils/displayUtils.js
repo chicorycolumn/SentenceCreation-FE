@@ -200,7 +200,10 @@ const diUtils = {
         .filter((traitKey) => !orderedTraitKeys.includes(traitKey))
         .sort((x, y) => x.localeCompare(y)),
     ];
-    if (orderedTraitKeys.length !== Object.keys(stCh).length) {
+    if (
+      orderedTraitKeys.length !== Object.keys(stCh).length &&
+      stCh.chunkId.traitValue.split("-")[0] !== "fix"
+    ) {
       throw `gluj: orderedTraitKeys.length ${
         orderedTraitKeys.length
       } !== Object.keys(stCh).length ${Object.keys(stCh).length}`;

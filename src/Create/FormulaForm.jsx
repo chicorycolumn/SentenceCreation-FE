@@ -30,6 +30,7 @@ const FormulaForm = (props) => {
         </button>
         <button>Run it</button>
       </form>
+      <p>Prefix a word with "*" to make it a fixed chunk</p>
     </div>
   );
 };

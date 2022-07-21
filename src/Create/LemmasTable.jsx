@@ -22,7 +22,7 @@ const LemmasTable = (props) => {
             .map((lObj) => (
               <tr key={`${lObj.id}`}>
                 <td className={`${gstyles.tooltipHolder}`}>
-                  <Tooltip text={diUtils.asString(lObj.tags)} tooltipType="2" />
+                  <Tooltip text={diUtils.asString(lObj.tags)} num="2" />
                   {lObj.lemma}
                 </td>
                 <td>{lObj.id}</td>

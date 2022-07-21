@@ -39,6 +39,16 @@ const ChunkCard = (props) => {
       return;
     }
 
+    if (props.word[0] === "*") {
+      let stCh = idUtils.createFixedChunkFormulaItem(
+        props.word,
+        props.index,
+        props.formula
+      );
+      setStructureChunkAndFormula(stCh);
+      setBackedUpStructureChunk(uUtils.copyWithoutReference(stCh));
+    }
+
     if (fetchedLObjs && fetchedLObjs.length) {
       let stCh = fetchedLObjs[0];
       if (fetchedLObjs.length > 1) {
@@ -252,7 +262,10 @@ const ChunkCard = (props) => {
       >
         {props.word}
       </h1>
-      <p className={styles.wordtype}>{structureChunk && structureChunk.id}</p>
+      <p className={`${styles.wordtype} ${gstyles.tooltipHolderDelayed}`}>
+        {structureChunk && structureChunk.id}
+        <Tooltip text="lemma ID (of an example lemma)" />
+      </p>
       {structureChunk && (
         <div className={styles.traitBoxesHolder}>
           <ToggleShowButton

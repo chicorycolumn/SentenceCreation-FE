@@ -1,9 +1,12 @@
 const uUtils = require("./universalUtils.js");
 
 exports.createFixedChunkFormulaItem = (word, index, formula) => {
-  let existingNumbers = formula.map(
-    (formulaItem) => formulaItem.structureChunk.chunkId.split("-")[1]
-  );
+  let existingNumbers = formula
+    .filter((formulaItem) => formulaItem.structureChunk)
+    .map(
+      (formulaItem) =>
+        formulaItem.structureChunk.chunkId.traitValue.split("-")[1]
+    );
 
   let newNumber = index.toString() + Math.random().toString().slice(2, 5);
 
@@ -13,7 +16,7 @@ exports.createFixedChunkFormulaItem = (word, index, formula) => {
 
   let chunkId = `fix-${newNumber}-${word}`;
 
-  return { word, structureChunk: { chunkId } };
+  return { chunkId: { traitValue: chunkId } };
 };
 
 exports.wordtypesWhichMustHavePopulatedTags = ["npe", "nco", "ver", "adj"];

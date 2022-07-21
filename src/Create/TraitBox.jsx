@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import TagInterface from "./TagInterface.jsx";
+import Tooltip from "../Cogs/Tooltip.jsx";
 import styles from "../css/TraitBox.module.css";
 import gstyles from "../css/Global.module.css";
 import $ from "jquery";
@@ -584,8 +585,13 @@ class TraitBox extends Component {
                   return (
                     <div
                       key={`${this.props.chunkCardKey}-${traitKey}_div-for-textarea`}
-                      className={styles.traitValuesBox}
+                      className={`${styles.traitValuesBox} ${
+                        traitKey === "chunkId" && gstyles.tooltipHolderDelayed
+                      }`}
                     >
+                      {traitKey === "chunkId" && (
+                        <Tooltip text="chunk ID" num={3} />
+                      )}
                       <textarea
                         key={`${this.props.chunkCardKey}-${traitKey}_textarea`}
                         id={`${this.props.chunkCardKey}-${traitKey}_textarea`}
