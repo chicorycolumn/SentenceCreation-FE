@@ -1,5 +1,9 @@
 const uUtils = require("./universalUtils.js");
 
+exports.isFixedChunk = (stCh) => {
+  return stCh.chunkId.traitValue.split("-")[0] === "fix";
+};
+
 exports.createFixedChunkFormulaItem = (word, index, formula) => {
   let existingNumbers = formula
     .filter((formulaItem) => formulaItem.structureChunk)
@@ -14,7 +18,7 @@ exports.createFixedChunkFormulaItem = (word, index, formula) => {
     newNumber = index.toString() + Math.random().toString().slice(2, 5);
   }
 
-  let chunkId = `fix-${newNumber}-${word}`;
+  let chunkId = `fix-${newNumber}-${word.slice(1)}`;
 
   return { chunkId: { traitValue: chunkId } };
 };

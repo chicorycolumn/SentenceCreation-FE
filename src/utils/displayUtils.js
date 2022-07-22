@@ -2,6 +2,7 @@ import gstyles from "../css/Global.module.css";
 import styles from "../css/TraitBox.module.css";
 import $ from "jquery";
 const uUtils = require("./universalUtils.js");
+const idUtils = require("./identityUtils.js");
 
 const diUtils = {
   traitsToNotDisplayInOwnBox: ["orTags", "id", "lemma"],
@@ -202,7 +203,7 @@ const diUtils = {
     ];
     if (
       orderedTraitKeys.length !== Object.keys(stCh).length &&
-      stCh.chunkId.traitValue.split("-")[0] !== "fix"
+      !idUtils.isFixedChunk(stCh)
     ) {
       throw `gluj: orderedTraitKeys.length ${
         orderedTraitKeys.length

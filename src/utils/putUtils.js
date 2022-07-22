@@ -33,7 +33,7 @@ export const fetchSentence = (lang1, rawChunks, orders) => {
       .map((obj) => obj.order);
   }
 
-  console.log("Will request", lang1, processedChunks);
+  console.log("Will request sentence", lang1, processedChunks);
   return axios
     .put(
       `${baseUrl}/educator/sandbox?lang=${lang1}`,

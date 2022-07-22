@@ -35,7 +35,7 @@ const ChunkCard = (props) => {
     let fetchedLObjs = lObjs;
 
     if (structureChunk) {
-      console.log("Already done this one actually.");
+      console.log(`Already done "${props.word}" actually.`);
       return;
     }
 
@@ -45,8 +45,11 @@ const ChunkCard = (props) => {
         props.index,
         props.formula
       );
+
       setStructureChunkAndFormula(stCh);
       setBackedUpStructureChunk(uUtils.copyWithoutReference(stCh));
+      props.editLemma(props.word.slice(1), stCh.chunkId.traitValue, stCh);
+      return;
     }
 
     if (fetchedLObjs && fetchedLObjs.length) {
@@ -95,7 +98,7 @@ const ChunkCard = (props) => {
 
   useEffect(() => {
     console.log(1410, props.word);
-    if (lang1 && props.word) {
+    if (lang1 && (!structureChunk || !idUtils.isFixedChunk(structureChunk))) {
       console.log(14100, props.word);
       getUtils.fetchLObjsByLemma(lang1, props.word).then(
         (fetchedLObjs) => {
@@ -122,6 +125,9 @@ const ChunkCard = (props) => {
     chunkId = structureChunk.chunkId.traitValue;
   }
 
+  let isFixedChunkOrNoChunk =
+    !structureChunk || idUtils.isFixedChunk(structureChunk);
+
   return (
     <div
       className={`${styles.card} ${wordtype && gstyles[wordtype]} ${
@@ -134,7 +140,10 @@ const ChunkCard = (props) => {
       <div className={styles.cardButtonsHolder}>
         <button
           alt="Star icon"
-          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+          disabled={isFixedChunkOrNoChunk}
+          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed} ${
+            isFixedChunkOrNoChunk && gstyles.disabled
+          }`}
           onClick={(e) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
@@ -210,7 +219,10 @@ const ChunkCard = (props) => {
         </button>
         <button
           alt="Reset icon"
-          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+          disabled={isFixedChunkOrNoChunk}
+          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed} ${
+            isFixedChunkOrNoChunk && gstyles.disabled
+          }`}
           onClick={(e) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
@@ -248,6 +260,9 @@ const ChunkCard = (props) => {
       <h1
         onClick={() => {
           //devlogging
+          console.log("");
+          console.log("structureChunk:", structureChunk);
+          console.log("");
           console.log("structureChunk keys:");
           if (structureChunk) {
             Object.keys(structureChunk).forEach((traitKey) => {
@@ -290,7 +305,9 @@ const ChunkCard = (props) => {
               let traitObject2 = traitKey2 ? structureChunk[traitKey2] : null;
 
               return (
-                !diUtils.traitsToNotDisplayInOwnBox.includes(traitKey) && (
+                !diUtils.traitsToNotDisplayInOwnBox.includes(traitKey) &&
+                (traitKey === "chunkId" ||
+                  !idUtils.isFixedChunk(structureChunk)) && (
                   <TraitBox
                     chunkId={chunkId}
                     chunkCardKey={props.chunkCardKey}
@@ -317,20 +334,23 @@ const ChunkCard = (props) => {
                 )
               );
             })}
-          <ToggleShowButton
-            id={`ToggleShowButton-${props.batch}-Group2-${props.chunkCardIndex}`}
-            setShowTraitKeysGroup={setShowTraitKeysGroupTwo}
-            showTraitKeysGroup={showTraitKeysGroupTwo}
-            traitKeysHoldSomeValues={traitKeysGroup2.some(
-              (traitKey) =>
-                structureChunk[traitKey] &&
-                !uUtils.isEmpty(structureChunk[traitKey].traitValue)
-            )}
-          />
+          {!idUtils.isFixedChunk(structureChunk) && (
+            <ToggleShowButton
+              id={`ToggleShowButton-${props.batch}-Group2-${props.chunkCardIndex}`}
+              setShowTraitKeysGroup={setShowTraitKeysGroupTwo}
+              showTraitKeysGroup={showTraitKeysGroupTwo}
+              traitKeysHoldSomeValues={traitKeysGroup2.some(
+                (traitKey) =>
+                  structureChunk[traitKey] &&
+                  !uUtils.isEmpty(structureChunk[traitKey].traitValue)
+              )}
+            />
+          )}
           {showTraitKeysGroupTwo &&
             traitKeysGroup2.map(
               (traitKey) =>
-                !diUtils.traitsToNotDisplayInOwnBox.includes(traitKey) && (
+                !diUtils.traitsToNotDisplayInOwnBox.includes(traitKey) &&
+                !idUtils.isFixedChunk(structureChunk) && (
                   <TraitBox
                     key={traitKey}
                     traitKey={traitKey}

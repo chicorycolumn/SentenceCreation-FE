@@ -4,7 +4,7 @@ const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
 export const fetchLObjsByLemma = (lang1, lemma) => {
-  console.log("Will request", lang1, lemma);
+  console.log("Will request lObjs for", lang1, lemma);
   return axios
     .get(
       `${baseUrl}/educator/info?infoType=lObjs&lang=${lang1}&lemma=${lemma}`

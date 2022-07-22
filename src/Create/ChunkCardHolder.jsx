@@ -31,7 +31,7 @@ const ChunkCardHolder = (props) => {
 
   const [showChunkOrdersPopup, setShowChunkOrdersPopup] = useState();
   const [highlightedCard, setHighlightedCard] = useState();
-  const editLemmaAtIndex = (index, newLemma, chunkId) => {
+  const editLemmaAtIndex = (index, newLemma, chunkId, structureChunk) => {
     function updateFlowers(newFormula, chunkId, newChunkId) {
       newFormula.forEach((stChObj) => {
         if (stChObj.structureChunk) {
@@ -53,7 +53,7 @@ const ChunkCardHolder = (props) => {
         updateFlowers(newFormula, chunkId, null);
         return newFormula;
       }
-      prevFormula[index] = { word: newLemma, structureChunk: null };
+      prevFormula[index] = { word: newLemma, structureChunk };
       updateFlowers(prevFormula, chunkId, null);
       return prevFormula;
     });
@@ -298,8 +298,8 @@ const ChunkCardHolder = (props) => {
                   stemFoundForFlower,
                   setStemFoundForFlower,
                 ]}
-                editLemma={(newLemma, chunkId) => {
-                  editLemmaAtIndex(index, newLemma, chunkId);
+                editLemma={(newLemma, chunkId, stCh) => {
+                  editLemmaAtIndex(index, newLemma, chunkId, stCh);
                 }}
                 setPopup={setPopup}
                 highlightedCard={highlightedCard}
