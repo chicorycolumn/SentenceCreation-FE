@@ -65,16 +65,29 @@ const ChunkCardHolder = (props) => {
   };
 
   useEffect(() => {
-    if (!chunkOrders.length) {
-      if (props.formula.every((obj) => obj.structureChunk)) {
+    if (props.formula.every((obj) => obj.structureChunk)) {
+      if (!chunkOrders.length) {
         setChunkOrders([
           {
             isPrimary: true,
+            isDefault: true,
             order: props.formula.map(
               (obj) => obj.structureChunk.chunkId.traitValue
             ),
           },
         ]);
+      } else {
+        let defaultChunkOrders = chunkOrders.filter(
+          (chunkOrder) => chunkOrder.isDefault
+        );
+
+        if (defaultChunkOrders.length) {
+          defaultChunkOrders.forEach((defaultChunkOrder) => {
+            defaultChunkOrder.order = props.formula.map(
+              (obj) => obj.structureChunk.chunkId.traitValue
+            );
+          });
+        }
       }
     }
   }, [props.formula, chunkOrders]);
@@ -127,18 +140,20 @@ const ChunkCardHolder = (props) => {
               (el) => el.structureChunk
             );
 
-            let badChunk = sentenceStructure.filter(
+            let badChunks = sentenceStructure.filter(
               (stCh) =>
                 idUtils.wordtypesWhichMustHavePopulatedTags.includes(
                   stCh.wordtype
                 ) &&
                 uUtils.isEmpty(stCh.andTags.traitValue) &&
                 uUtils.isEmpty(stCh.orTags.traitValue)
-            )[0];
+            );
 
-            if (badChunk) {
+            if (badChunks.length) {
               alert(
-                `Cannot query whole sentence because no tags are specified on chunk "${badChunk.chunkId.traitValue}".`
+                `Cannot query whole sentence because no tags are specified on chunk "${badChunks
+                  .map((badCh) => badCh.chunkId.traitValue)
+                  .join('","')}".`
               );
               return;
             }

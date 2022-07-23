@@ -5,6 +5,8 @@ exports.isFixedChunk = (stCh) => {
 };
 
 exports.createFixedChunkFormulaItem = (word, index, formula) => {
+  word = word.slice(1);
+
   let existingNumbers = formula
     .filter((formulaItem) => formulaItem.structureChunk)
     .map(
@@ -18,9 +20,9 @@ exports.createFixedChunkFormulaItem = (word, index, formula) => {
     newNumber = index.toString() + Math.random().toString().slice(2, 5);
   }
 
-  let chunkId = `fix-${newNumber}-${word.slice(1)}`;
+  let chunkId = `fix-${newNumber}-${word}`;
 
-  return { chunkId: { traitValue: chunkId } };
+  return { chunkId: { traitValue: chunkId }, chunkValue: { traitValue: word } };
 };
 
 exports.wordtypesWhichMustHavePopulatedTags = ["npe", "nco", "ver", "adj"];
