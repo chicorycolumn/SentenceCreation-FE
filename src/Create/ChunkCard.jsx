@@ -13,11 +13,20 @@ const uUtils = require("../utils/universalUtils.js");
 
 const ChunkCard = (props) => {
   const [lObjs, setLObjs] = useState([]);
+  const [noLObjsFetched, setNoLObjsFetched] = useState();
   const [backedUpStructureChunk, setBackedUpStructureChunk] = useState();
   const [chosenId, setChosenId] = useState();
   const [structureChunk, setStructureChunk] = useState(props.structureChunk);
   const [showTraitKeysGroupOne, setShowTraitKeysGroupOne] = useState(true);
   const [showTraitKeysGroupTwo, setShowTraitKeysGroupTwo] = useState();
+
+  const [traitKeysGroup1, setTraitKeysGroup1] = useState([]);
+  const [traitKeysGroup2, setTraitKeysGroup2] = useState([]);
+  const [wordtype, setWordtype] = useState();
+  const [chunkId, setChunkId] = useState();
+
+  const [shouldRetryFetch, setShouldRetryFetch] = useState(0);
+
   const lang1 = useContext(LanguageContext);
   const setStructureChunkAndFormula = (newStCh) => {
     setStructureChunk(newStCh);
@@ -100,37 +109,46 @@ const ChunkCard = (props) => {
     console.log(1410, props.word);
     if (lang1 && (!structureChunk || !idUtils.isFixedChunk(structureChunk))) {
       console.log(14100, props.word);
-      getUtils.fetchLObjsByLemma(lang1, props.word).then(
-        (fetchedLObjs) => {
-          setLObjs(fetchedLObjs);
-        },
-        (error) => {
-          console.log("ERROR 0307:", error);
-        }
-      );
+
+      getUtils
+        .fetchLObjsByLemma(lang1, props.word)
+        .then(
+          (fetchedLObjs) => {
+            console.log(
+              `Received ${fetchedLObjs.length} lObjs for "${props.word}".`
+            );
+            setLObjs(fetchedLObjs);
+            setNoLObjsFetched(!fetchedLObjs.length);
+          },
+          (error) => {
+            console.log("ERROR 0307:", error);
+          }
+        )
+        .catch((e) => {
+          console.log(1709, e);
+        });
     }
-  }, [lang1, props.word]);
+  }, [lang1, props.word, shouldRetryFetch]);
 
-  let traitKeysGroup1 = [];
-  let traitKeysGroup2 = [];
-  let wordtype;
-  let chunkId;
-
-  if (structureChunk) {
-    let { orderedTraitKeysGroup1, orderedTraitKeysGroup2, wordtypeFromStCh } =
-      diUtils.orderTraitKeys(structureChunk);
-    traitKeysGroup1 = orderedTraitKeysGroup1;
-    traitKeysGroup2 = orderedTraitKeysGroup2;
-    wordtype = wordtypeFromStCh;
-    chunkId = structureChunk.chunkId.traitValue;
-  }
+  useEffect(() => {
+    if (structureChunk) {
+      let { orderedTraitKeysGroup1, orderedTraitKeysGroup2, wordtypeFromStCh } =
+        diUtils.orderTraitKeys(structureChunk);
+      setTraitKeysGroup1(orderedTraitKeysGroup1);
+      setTraitKeysGroup2(orderedTraitKeysGroup2);
+      setWordtype(wordtypeFromStCh);
+      setChunkId(structureChunk.chunkId.traitValue);
+    }
+  }, [structureChunk]);
 
   let isFixedChunkOrNoChunk =
     !structureChunk || idUtils.isFixedChunk(structureChunk);
 
   return (
     <div
-      className={`${styles.card} ${wordtype && gstyles[wordtype]} ${
+      className={`${styles.card} ${noLObjsFetched && styles.shortCard} ${
+        wordtype && gstyles[wordtype]
+      } ${
         props.highlightedCard &&
         props.highlightedCard !== chunkId &&
         gstyles.translucent
@@ -138,50 +156,132 @@ const ChunkCard = (props) => {
       id={props.chunkCardKey}
     >
       <div className={styles.cardButtonsHolder}>
-        <button
-          alt="Star icon"
-          disabled={isFixedChunkOrNoChunk}
-          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed} ${
-            isFixedChunkOrNoChunk && gstyles.disabled
-          }`}
-          onClick={(e) => {
-            e.target.blur();
-            props.setHighlightedCard(chunkId);
-            putUtils.fetchSentence(lang1, [structureChunk]).then(
-              (fetchedDataObj) => {
-                if (fetchedDataObj.messages) {
+        {noLObjsFetched ? (
+          <>
+            <button
+              alt="Letter F in circle icon"
+              className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+              onClick={(e) => {
+                e.target.blur();
+                if (
+                  window.confirm(
+                    `Do you want to make "${props.word}" a fixed chunk? You'd better be sure this is an actual word and not one you mistyped.`
+                  )
+                ) {
+                  props.editLemma("*" + props.word);
+                }
+              }}
+            >
+              &#9403;
+              <Tooltip text="Make this a fixed chunk" />
+            </button>
+            <button
+              alt="Download icon"
+              className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+              onClick={(e) => {
+                e.target.blur();
+                alert(
+                  `Will retry find lemma objects for "${
+                    chunkId || props.word
+                  }".`
+                );
+                setShouldRetryFetch((prev) => prev + 1);
+              }}
+            >
+              &#10515;
+              <Tooltip text="Retry find lemma objects" />
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              alt="Star icon"
+              disabled={isFixedChunkOrNoChunk}
+              className={`${gstyles.cardButton1} ${
+                gstyles.tooltipHolderDelayed
+              } ${isFixedChunkOrNoChunk && gstyles.disabled}`}
+              onClick={(e) => {
+                e.target.blur();
+                props.setHighlightedCard(chunkId);
+                putUtils.fetchSentence(lang1, [structureChunk]).then(
+                  (fetchedDataObj) => {
+                    if (fetchedDataObj.messages) {
+                      alert(
+                        Object.keys(fetchedDataObj.messages).map((key) => {
+                          let val = fetchedDataObj.messages[key];
+                          return `${key}:       ${val}`;
+                        })
+                      );
+                      props.setHighlightedCard();
+                      return;
+                    }
+
+                    let fetchedData = fetchedDataObj.data;
+
+                    props.setPopup({
+                      title: `${fetchedData.length} lemma${
+                        fetchedData.length > 1 ? "s" : ""
+                      } for "${chunkId}" with traits you specified`,
+                      headers: ["lemma", "id"],
+                      rows: fetchedData.map((obj) => [
+                        obj.selectedWord,
+                        obj.lObjID,
+                      ]),
+                    });
+                  },
+                  (error) => {
+                    console.log("ERROR 0302:", error);
+                  }
+                );
+              }}
+            >
+              &#9733;
+              <Tooltip text="Query word" />
+            </button>
+            <button
+              alt="Reset icon"
+              disabled={isFixedChunkOrNoChunk}
+              className={`${gstyles.cardButton1} ${
+                gstyles.tooltipHolderDelayed
+              } ${isFixedChunkOrNoChunk && gstyles.disabled}`}
+              onClick={(e) => {
+                e.target.blur();
+                props.setHighlightedCard(chunkId);
+                setTimeout(() => {
+                  if (
+                    window.confirm(
+                      `Reset all traits on this chunk (${chunkId})?`
+                    )
+                  ) {
+                    setStructureChunkAndFormula(null);
+                  }
+                  props.setHighlightedCard();
+                }, 0);
+              }}
+            >
+              &#8647;
+              <Tooltip text="Reset" />
+            </button>
+            <button
+              alt="Squares icon"
+              className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+              onClick={(e) => {
+                e.target.blur();
+                props.setHighlightedCard(chunkId);
+                setTimeout(() => {
                   alert(
-                    Object.keys(fetchedDataObj.messages).map((key) => {
-                      let val = fetchedDataObj.messages[key];
-                      return `${key}:       ${val}`;
-                    })
+                    "Let's connect chunk cards from Question sentence to their counterparts in Answer sentence."
                   );
                   props.setHighlightedCard();
-                  return;
-                }
+                }, 0);
+              }}
+            >
+              &#10697;
+              <Tooltip text="Connect to Answer sentence" />
+            </button>
+          </>
+        )}
 
-                let fetchedData = fetchedDataObj.data;
-
-                props.setPopup({
-                  title: `${fetchedData.length} lemma${
-                    fetchedData.length > 1 ? "s" : ""
-                  } for "${chunkId}" with traits you specified`,
-                  headers: ["lemma", "id"],
-                  rows: fetchedData.map((obj) => [
-                    obj.selectedWord,
-                    obj.lObjID,
-                  ]),
-                });
-              },
-              (error) => {
-                console.log("ERROR 0302:", error);
-              }
-            );
-          }}
-        >
-          &#9733;
-          <Tooltip text="Query word" />
-        </button>
         <button
           alt="Pencil icon"
           className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
@@ -201,52 +301,15 @@ const ChunkCard = (props) => {
           <Tooltip text="Change word" />
         </button>
         <button
-          alt="Squares icon"
-          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
-          onClick={(e) => {
-            e.target.blur();
-            props.setHighlightedCard(chunkId);
-            setTimeout(() => {
-              alert(
-                "Let's connect chunk cards from Question sentence to their counterparts in Answer sentence."
-              );
-              props.setHighlightedCard();
-            }, 0);
-          }}
-        >
-          &#10697;
-          <Tooltip text="Connect to Answer sentence" />
-        </button>
-        <button
-          alt="Reset icon"
-          disabled={isFixedChunkOrNoChunk}
-          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed} ${
-            isFixedChunkOrNoChunk && gstyles.disabled
-          }`}
-          onClick={(e) => {
-            e.target.blur();
-            props.setHighlightedCard(chunkId);
-            setTimeout(() => {
-              if (
-                window.confirm(`Reset all traits on this chunk (${chunkId})?`)
-              ) {
-                setStructureChunkAndFormula(null);
-              }
-              props.setHighlightedCard();
-            }, 0);
-          }}
-        >
-          &#8647;
-          <Tooltip text="Reset" />
-        </button>
-        <button
           alt="Cross icon"
           className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
           onClick={(e) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
             setTimeout(() => {
-              if (window.confirm(`Delete this chunk (${chunkId})?`)) {
+              if (
+                window.confirm(`Delete this chunk "${chunkId || props.word}"?`)
+              ) {
                 props.editLemma(null, chunkId);
               }
               props.setHighlightedCard();

@@ -20,7 +20,9 @@ const Create = () => {
     // ]
     [
       { word: "kobieta", structureChunk: null },
+      { word: "tu", structureChunk: null },
       { word: "jest", structureChunk: null },
+      { word: "*bardzo", structureChunk: null },
       { word: "czerwony", structureChunk: null },
     ]
   );

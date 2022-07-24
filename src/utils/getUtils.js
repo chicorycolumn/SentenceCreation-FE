@@ -4,17 +4,18 @@ const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
 export const fetchLObjsByLemma = (lang1, lemma) => {
-  console.log("Will request lObjs for", lang1, lemma);
+  console.log("Requesting lObjs", lang1, `"${lemma}"`);
+
   return axios
     .get(
       `${baseUrl}/educator/info?infoType=lObjs&lang=${lang1}&lemma=${lemma}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
-      return res.data;
+      return res.data["info"];
     })
-    .then((data) => {
-      return data["info"];
+    .catch((e) => {
+      console.log(1712, lang1, `"${lemma}"`, e);
     });
 };
 

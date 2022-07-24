@@ -275,6 +275,7 @@ const ChunkCardHolder = (props) => {
                   onClick={() => {
                     let newLemma = prompt("Enter new lemma");
                     if (newLemma) {
+                      console.log("swde4");
                       props.setFormula((prevFormula) => {
                         let newFormulaObject = {
                           word: newLemma,

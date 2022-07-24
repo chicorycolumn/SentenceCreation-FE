@@ -22,7 +22,11 @@ exports.createFixedChunkFormulaItem = (word, index, formula) => {
 
   let chunkId = `fix-${newNumber}-${word}`;
 
-  return { chunkId: { traitValue: chunkId }, chunkValue: { traitValue: word } };
+  return {
+    chunkId: { traitValue: chunkId },
+    chunkValue: { traitValue: word },
+    wordtype: "fix",
+  };
 };
 
 exports.wordtypesWhichMustHavePopulatedTags = ["npe", "nco", "ver", "adj"];
