@@ -60,6 +60,7 @@ const ChunkCardHolder = (props) => {
     });
     setMeaninglessCounter((prev) => prev + 1);
   };
+
   const setPopup = (data) => {
     setListPopupData(data);
     setShowListPopup(true);

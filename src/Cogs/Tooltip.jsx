@@ -6,9 +6,10 @@ const Tooltip = (props) => {
     1: gstyles.tooltip1,
     2: gstyles.tooltip2,
     3: gstyles.tooltip3,
+    4: gstyles.tooltip4,
   };
 
-  let tooltipType = props.num || 1;
+  let tooltipType = props.number || 1;
 
   let tooltipTypeClass = dict[tooltipType];
 

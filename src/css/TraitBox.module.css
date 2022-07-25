@@ -195,3 +195,8 @@
 .briefBlur textarea {
   color: rgba(0, 0, 0, 0) !important;
 }
+
+.sideButtonHolder {
+  display: flex;
+  flex-direction: column;
+}

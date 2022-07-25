@@ -40,6 +40,19 @@ const ChunkCard = (props) => {
     });
   };
 
+  const editFormulaImportantTraitKeys = (tKey, remove) => {
+    let newFITKs = structureChunk.formulaImportantTraitKeys.traitValue.slice();
+    if (remove && newFITKs.includes(tKey)) {
+      newFITKs = newFITKs.filter((tk) => tk !== tKey);
+    } else if (!remove && !newFITKs.includes(tKey)) {
+      newFITKs.push(tKey);
+    }
+
+    structureChunk.formulaImportantTraitKeys.traitValue = newFITKs;
+
+    setStructureChunkAndFormula(structureChunk);
+  };
+
   useEffect(() => {
     let fetchedLObjs = lObjs;
 
@@ -382,6 +395,14 @@ const ChunkCard = (props) => {
                     lObjId={structureChunk.id}
                     word={props.word}
                     setStructureChunkAndFormula={setStructureChunkAndFormula}
+                    editFormulaImportantTraitKeys={
+                      editFormulaImportantTraitKeys
+                    }
+                    formulaImportantTraitKeys={
+                      structureChunk.formulaImportantTraitKeys
+                        ? structureChunk.formulaImportantTraitKeys.traitValue
+                        : []
+                    }
                     structureChunk={structureChunk}
                     wordtype={wordtype}
                     setElementsToDrawLinesBetween={

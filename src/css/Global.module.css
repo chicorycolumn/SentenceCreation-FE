@@ -170,6 +170,18 @@
   visibility: visible !important;
 }
 
+.tooltip4 {
+  margin-left: -120px;
+  margin-top: -60px;
+  opacity: 1;
+  font-size: 14px;
+  width: 62.5%;
+}
+
+.tooltip4:hover {
+  visibility: visible !important;
+}
+
 .npeLight {
   background-color: rgb(192, 231, 255) !important;
 }

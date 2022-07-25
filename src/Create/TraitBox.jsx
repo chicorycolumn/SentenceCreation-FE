@@ -331,6 +331,10 @@ class TraitBox extends Component {
       }, 500);
     };
 
+    let traitKeyIsFormulaImportant =
+      this.props.formulaImportantTraitKeys &&
+      this.props.formulaImportantTraitKeys.includes(traitKey);
+
     return (
       <>
         {this.state.isSelected && (
@@ -590,7 +594,7 @@ class TraitBox extends Component {
                       }`}
                     >
                       {traitKey === "chunkId" && (
-                        <Tooltip text="chunk ID" num={3} />
+                        <Tooltip text="chunk ID" number={3} />
                       )}
                       <textarea
                         key={`${this.props.chunkCardKey}-${traitKey}_textarea`}
@@ -683,21 +687,50 @@ class TraitBox extends Component {
                         </button>
                       ) : (
                         !this.state.isHovered && (
-                          <button
-                            alt="Cross icon"
-                            className={`${gstyles.sideButton} ${gstyles.redButton} ${styles.clearButton}`}
-                            onClick={(e) => {
-                              console.log("%cross1");
-                              e.stopPropagation();
-                              wipeTraitValue(
-                                traitBoxID,
-                                traitValueInputStringKey,
-                                isSecondary
-                              );
-                            }}
-                          >
-                            &times;
-                          </button>
+                          <div className={styles.sideButtonHolder}>
+                            <button
+                              alt="Cross icon"
+                              className={`${gstyles.sideButton} ${gstyles.redButton} ${styles.clearButton}`}
+                              onClick={(e) => {
+                                console.log("%cross1");
+                                e.stopPropagation();
+                                wipeTraitValue(
+                                  traitBoxID,
+                                  traitValueInputStringKey,
+                                  isSecondary
+                                );
+                              }}
+                            >
+                              &times;
+                            </button>
+                            {traitObject.isLexical && (
+                              <button
+                                alt="Exclamation mark icon"
+                                className={`${gstyles.sideButton} ${
+                                  gstyles.blueButton
+                                } ${styles.clearButton} ${
+                                  gstyles.tooltipHolderDelayed
+                                } ${
+                                  traitKeyIsFormulaImportant &&
+                                  gstyles.blueButtonActive
+                                }`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  console.log(traitKey);
+                                  this.props.editFormulaImportantTraitKeys(
+                                    traitKey,
+                                    traitKeyIsFormulaImportant
+                                  );
+                                }}
+                              >
+                                !
+                                <Tooltip
+                                  text="Make this a formula important trait key"
+                                  number={4}
+                                />
+                              </button>
+                            )}
+                          </div>
                         )
                       )}
                     </div>
