@@ -31,6 +31,7 @@ const ChunkCardHolder = (props) => {
 
   const [showChunkOrdersPopup, setShowChunkOrdersPopup] = useState();
   const [highlightedCard, setHighlightedCard] = useState();
+
   const editLemmaAtIndex = (index, newLemma, chunkId, structureChunk) => {
     function updateFlowers(newFormula, chunkId, newChunkId) {
       newFormula.forEach((stChObj) => {
@@ -62,6 +63,46 @@ const ChunkCardHolder = (props) => {
   const setPopup = (data) => {
     setListPopupData(data);
     setShowListPopup(true);
+  };
+
+  const checkForStChsWithNoLObjs = () => {
+    let sentenceStructure = props.formula.map((el) => el.structureChunk);
+
+    let indexesOfStChsWithNoLobjs = sentenceStructure
+      .map((el, index) => {
+        return { el, index };
+      })
+      .filter((obj) => !obj.el)
+      .map((obj) => obj.index);
+
+    if (indexesOfStChsWithNoLobjs.length) {
+      alert(
+        `Sorry, chunk(s) number ${indexesOfStChsWithNoLobjs
+          .map((i) => i + 1)
+          .join(", ")} are null.`
+      );
+      return true;
+    }
+  };
+
+  const checkForStChsWithNoTags = () => {
+    let sentenceStructure = props.formula.map((el) => el.structureChunk);
+
+    let badChunks = sentenceStructure.filter(
+      (stCh) =>
+        idUtils.wordtypesWhichMustHavePopulatedTags.includes(stCh.wordtype) &&
+        uUtils.isEmpty(stCh.andTags.traitValue) &&
+        uUtils.isEmpty(stCh.orTags.traitValue)
+    );
+
+    if (badChunks.length) {
+      alert(
+        `Cannot query whole sentence because no tags are specified on chunk "${badChunks
+          .map((badCh) => badCh.chunkId.traitValue)
+          .join('","')}".`
+      );
+      return true;
+    }
   };
 
   useEffect(() => {
@@ -120,145 +161,142 @@ const ChunkCardHolder = (props) => {
         />
       )}
       <div className={styles.buttonHolder}>
-        <button
-          alt="Three dots icon"
-          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
-          onClick={(e) => {
-            e.target.blur();
-            setShowChunkOrdersPopup(true);
-          }}
-        >
-          &#11819;
-          <Tooltip text="Set orders" />
-        </button>
-        <button
-          alt="Star icon"
-          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
-          onClick={(e) => {
-            e.target.blur();
-            let sentenceStructure = props.formula.map(
-              (el) => el.structureChunk
-            );
-
-            let badChunks = sentenceStructure.filter(
-              (stCh) =>
-                idUtils.wordtypesWhichMustHavePopulatedTags.includes(
-                  stCh.wordtype
-                ) &&
-                uUtils.isEmpty(stCh.andTags.traitValue) &&
-                uUtils.isEmpty(stCh.orTags.traitValue)
-            );
-
-            if (badChunks.length) {
-              alert(
-                `Cannot query whole sentence because no tags are specified on chunk "${badChunks
-                  .map((badCh) => badCh.chunkId.traitValue)
-                  .join('","')}".`
-              );
-              return;
-            }
-
-            putUtils.fetchSentence(lang1, sentenceStructure, chunkOrders).then(
-              (fetchedDataObj) => {
-                if (fetchedDataObj.messages) {
-                  alert(
-                    Object.keys(fetchedDataObj.messages).map((key) => {
-                      let val = fetchedDataObj.messages[key];
-                      return `${key}:       ${val}`;
-                    })
-                  );
-                  return;
-                }
-
-                let fetchedData = fetchedDataObj.data;
-
-                setPopup({
-                  title: `${fetchedData.length} sentence${
-                    fetchedData.length > 1 ? "s" : ""
-                  } from traits you specified`,
-                  headers: ["sentence"],
-                  rows: fetchedData.map((el) => [el]),
-                });
-              },
-              (error) => {
-                console.log("ERROR 0302:", error);
+        <p className={styles.buttonHolderTitle}>Question sentence</p>
+        <div className={styles.buttonSubholder}>
+          <button
+            alt="Three dots icon"
+            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+            onClick={(e) => {
+              e.target.blur();
+              if (checkForStChsWithNoLObjs()) {
+                return;
               }
-            );
-          }}
-        >
-          &#9733;
-          <Tooltip text="Query sentence" />
-        </button>
-        <button
-          alt="Connection icon"
-          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
-          onClick={(e) => {
-            e.target.blur();
-            if (linesAreDrawn) {
-              return;
-            }
-            setLinesAreDrawn(true);
-            $("*[id*=traitTitleHolder-chunkId]").each(function () {
-              let id = $(this).parent()[0].id;
-              let value = $(this).parent().find("textarea")[0].value;
-              diUtils.connectChunkIdWithItsFlowers(id, value, [
-                setElementsToDrawLinesBetween,
-                setDrawnLinesAsBold,
-              ]);
-            });
-          }}
-          onMouseLeave={() => {
-            setLinesAreDrawn(false);
-            $("*[id*=traitTitleHolder-chunkId]").each(function () {
-              let id = $(this).parent()[0].id;
-              let value = $(this).parent().find("textarea")[0].value;
-              diUtils.connectChunkIdWithItsFlowers(
-                id,
-                value,
-                [setElementsToDrawLinesBetween],
-                true
-              );
-            });
-          }}
-        >
-          &#42476;
-          <Tooltip text="View dependencies between chunks" />
-        </button>
-        <button
-          alt="Triangle icon"
-          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
-          onMouseEnter={() => {
-            console.log("showAllTraitBoxes", showAllTraitBoxes);
-          }}
-          onClick={(e) => {
-            e.target.blur();
-            setShowAllTraitBoxes((prev) => !prev);
+              setShowChunkOrdersPopup(true);
+            }}
+          >
+            &#11819;
+            <Tooltip text="Set orders" />
+          </button>
+          <button
+            alt="Star icon"
+            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+            onClick={(e) => {
+              e.target.blur();
 
-            $.each(
-              $(`button[id^='ToggleShowButton-${props.batch}-']`),
-              function () {
-                let button = $(this)[0];
-                let buttonIsShowing = [
-                  icons.downBlackTriangle,
-                  icons.downWhiteTriangle,
-                ].includes(button.innerText);
-
-                if (
-                  (!showAllTraitBoxes && buttonIsShowing) |
-                  (showAllTraitBoxes &&
-                    !buttonIsShowing &&
-                    (!!button.id.match("Group1") ||
-                      button.innerText === icons.upBlackTriangle))
-                ) {
-                  button.click();
-                }
+              if (checkForStChsWithNoLObjs() || checkForStChsWithNoTags()) {
+                return;
               }
-            );
-          }}
-        >
-          {showAllTraitBoxes ? icons.upBlackTriangle : icons.downBlackTriangle}
-          <Tooltip text="Show or hide trait boxes" />
-        </button>
+
+              let sentenceStructure = props.formula.map(
+                (el) => el.structureChunk
+              );
+
+              putUtils
+                .fetchSentence(lang1, sentenceStructure, chunkOrders)
+                .then(
+                  (fetchedDataObj) => {
+                    if (fetchedDataObj.messages) {
+                      alert(
+                        Object.keys(fetchedDataObj.messages).map((key) => {
+                          let val = fetchedDataObj.messages[key];
+                          return `${key}:       ${val}`;
+                        })
+                      );
+                      return;
+                    }
+
+                    let fetchedData = fetchedDataObj.data;
+
+                    setPopup({
+                      title: `${fetchedData.length} sentence${
+                        fetchedData.length > 1 ? "s" : ""
+                      } from traits you specified`,
+                      headers: ["sentence"],
+                      rows: fetchedData.map((el) => [el]),
+                    });
+                  },
+                  (error) => {
+                    console.log("ERROR 0302:", error);
+                  }
+                );
+            }}
+          >
+            &#9733;
+            <Tooltip text="Query sentence" />
+          </button>
+          <button
+            alt="Connection icon"
+            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+            onClick={(e) => {
+              e.target.blur();
+              if (linesAreDrawn) {
+                return;
+              }
+              setLinesAreDrawn(true);
+              $("*[id*=traitTitleHolder-chunkId]").each(function () {
+                let id = $(this).parent()[0].id;
+                let value = $(this).parent().find("textarea")[0].value;
+                diUtils.connectChunkIdWithItsFlowers(id, value, [
+                  setElementsToDrawLinesBetween,
+                  setDrawnLinesAsBold,
+                ]);
+              });
+            }}
+            onMouseLeave={() => {
+              setLinesAreDrawn(false);
+              $("*[id*=traitTitleHolder-chunkId]").each(function () {
+                let id = $(this).parent()[0].id;
+                let value = $(this).parent().find("textarea")[0].value;
+                diUtils.connectChunkIdWithItsFlowers(
+                  id,
+                  value,
+                  [setElementsToDrawLinesBetween],
+                  true
+                );
+              });
+            }}
+          >
+            &#42476;
+            <Tooltip text="View dependencies between chunks" />
+          </button>
+          <button
+            alt="Triangle icon"
+            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+            onMouseEnter={() => {
+              console.log("showAllTraitBoxes", showAllTraitBoxes);
+            }}
+            onClick={(e) => {
+              e.target.blur();
+              setShowAllTraitBoxes((prev) => !prev);
+
+              $.each(
+                $(`button[id^='ToggleShowButton-${props.batch}-']`),
+                function () {
+                  let button = $(this)[0];
+                  let buttonIsShowing = [
+                    icons.downBlackTriangle,
+                    icons.downWhiteTriangle,
+                  ].includes(button.innerText);
+
+                  if (
+                    (!showAllTraitBoxes && buttonIsShowing) |
+                    (showAllTraitBoxes &&
+                      !buttonIsShowing &&
+                      (!!button.id.match("Group1") ||
+                        button.innerText === icons.upBlackTriangle))
+                  ) {
+                    button.click();
+                  }
+                }
+              );
+            }}
+          >
+            {showAllTraitBoxes
+              ? icons.upBlackTriangle
+              : icons.downBlackTriangle}
+            <Tooltip text="Show or hide trait boxes" />
+          </button>
+        </div>
       </div>
       <div className={styles.cardHolder} key={meaninglessCounter}>
         <LineHolder elementsToDrawLineBetween={[]} />
