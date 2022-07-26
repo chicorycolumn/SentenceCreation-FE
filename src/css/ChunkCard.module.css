@@ -13,16 +13,37 @@
 }
 
 .shortCard {
-  width: 135px;
-  min-width: 135px;
+  width: 112.5px;
+  min-width: 112.5px;
+}
+
+.needsAttention {
+  border: red solid 2px;
+  box-shadow: 0px 0px 5px red;
+}
+
+.lemmaHolder {
+  width: 100% !important;
+  min-width: 100% !important;
+  height: 65% !important;
+  min-height: 65% !important;
+  overflow-x: hidden;
+  word-wrap: break-word;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  hyphens: auto;
+  margin-bottom: 15px;
+  padding: 0px 5px 0px;
 }
 
 .lemma {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 200;
-  width: 100%;
-  position: relative;
-  top: -10px;
+  padding: 0px;
+  margin: 0px;
+  hyphens: auto;
+  line-height: 26px;
 }
 
 .cardButtonsHolder {
@@ -76,9 +97,10 @@
 .wordtype {
   font-size: 12px;
   margin: 0px;
-  margin-top: 85px;
+  margin-top: 82.5px;
   padding: 0px;
   position: absolute;
   width: 100%;
+  color: rgba(0, 0, 0, 0.5);
   /* top: 0px; */
 }

@@ -159,9 +159,11 @@ const ChunkCard = (props) => {
 
   return (
     <div
-      className={`${styles.card} ${noLObjsFetched && styles.shortCard} ${
-        wordtype && gstyles[wordtype]
-      } ${
+      className={`${styles.card} 
+      ${noLObjsFetched && styles.shortCard}
+      ${noLObjsFetched && styles.needsAttention}
+      ${wordtype && gstyles[wordtype]} 
+      ${
         props.highlightedCard &&
         props.highlightedCard !== chunkId &&
         gstyles.translucent
@@ -333,26 +335,29 @@ const ChunkCard = (props) => {
           <Tooltip text="Delete" />
         </button>
       </div>
-      <h1
-        onClick={() => {
-          //devlogging
-          console.log("");
-          console.log("structureChunk:", structureChunk);
-          console.log("");
-          console.log("structureChunk keys:");
-          if (structureChunk) {
-            Object.keys(structureChunk).forEach((traitKey) => {
-              let traitObject = structureChunk[traitKey];
-              if (!uUtils.isEmpty(traitObject.traitValue)) {
-                console.log(traitKey, traitObject.traitValue);
-              }
-            });
-          }
-        }}
-        className={styles.lemma}
-      >
-        {props.word}
-      </h1>
+      <div className={styles.lemmaHolder}>
+        <h1
+          onClick={() => {
+            //devlogging
+            console.log("");
+            console.log("structureChunk:", structureChunk);
+            console.log("");
+            console.log("structureChunk keys:");
+            if (structureChunk) {
+              Object.keys(structureChunk).forEach((traitKey) => {
+                let traitObject = structureChunk[traitKey];
+                if (!uUtils.isEmpty(traitObject.traitValue)) {
+                  console.log(traitKey, traitObject.traitValue);
+                }
+              });
+            }
+          }}
+          className={styles.lemma}
+        >
+          {props.word}
+        </h1>
+      </div>
+
       <p className={`${styles.wordtype} ${gstyles.tooltipHolderDelayed}`}>
         {structureChunk && structureChunk.id}
         <Tooltip text="lemma ID (of an example lemma)" />
