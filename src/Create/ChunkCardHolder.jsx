@@ -113,9 +113,9 @@ const ChunkCardHolder = (props) => {
           {
             isPrimary: true,
             isDefault: true,
-            order: props.formula.map(
-              (obj) => obj.structureChunk.chunkId.traitValue
-            ),
+            order: props.formula
+              .filter((obj) => !obj.structureChunk.isGhostChunk)
+              .map((obj) => obj.structureChunk.chunkId.traitValue),
           },
         ]);
       } else {
@@ -125,9 +125,9 @@ const ChunkCardHolder = (props) => {
 
         if (defaultChunkOrders.length) {
           defaultChunkOrders.forEach((defaultChunkOrder) => {
-            defaultChunkOrder.order = props.formula.map(
-              (obj) => obj.structureChunk.chunkId.traitValue
-            );
+            defaultChunkOrder.order = props.formula
+              .filter((obj) => !obj.structureChunk.isGhostChunk)
+              .map((obj) => obj.structureChunk.chunkId.traitValue);
           });
         }
       }

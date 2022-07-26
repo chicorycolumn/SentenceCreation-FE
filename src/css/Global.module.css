@@ -154,20 +154,12 @@
   width: 62.5%;
 }
 
-.tooltip2:hover {
-  visibility: visible !important;
-}
-
 .tooltip3 {
   margin-left: 0px;
   margin-top: 0px;
   opacity: 1;
   font-size: 14px;
   width: 62.5%;
-}
-
-.tooltip3:hover {
-  visibility: visible !important;
 }
 
 .tooltip4 {
@@ -178,8 +170,12 @@
   width: 62.5%;
 }
 
-.tooltip4:hover {
-  visibility: visible !important;
+.tooltip5 {
+  margin-left: 10px;
+  margin-top: -15px;
+  font-size: 14px;
+  opacity: 1;
+  width: 210px;
 }
 
 .npeLight {
@@ -369,6 +365,11 @@
 }
 
 .cardButton1:active {
+  background-color: darkblue;
+  color: lightcyan;
+}
+
+.cardButton1Active {
   background-color: darkblue;
   color: lightcyan;
 }

@@ -278,6 +278,25 @@ const ChunkCard = (props) => {
               <Tooltip text="Reset" />
             </button>
             <button
+              alt="Dotted circle icon"
+              disabled={isFixedChunkOrNoChunk}
+              className={`${gstyles.cardButton1} ${
+                gstyles.tooltipHolderDelayed
+              } ${isFixedChunkOrNoChunk && gstyles.disabled} ${
+                structureChunk &&
+                structureChunk.isGhostChunk &&
+                gstyles.cardButton1Active
+              }`}
+              onClick={(e) => {
+                e.target.blur();
+                structureChunk.isGhostChunk = !structureChunk.isGhostChunk;
+                setStructureChunkAndFormula(structureChunk);
+              }}
+            >
+              &#9676;
+              <Tooltip text="Make this a ghost chunk" />
+            </button>
+            <button
               alt="Squares icon"
               className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
               onClick={(e) => {
@@ -352,7 +371,11 @@ const ChunkCard = (props) => {
               });
             }
           }}
-          className={styles.lemma}
+          className={`${styles.lemma} ${
+            structureChunk &&
+            structureChunk.isGhostChunk &&
+            styles.lemmaGhostChunk
+          }`}
         >
           {props.word}
         </h1>

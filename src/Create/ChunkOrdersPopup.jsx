@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "../css/ChunkOrdersPopup.module.css";
+import Tooltip from "../Cogs/Tooltip.jsx";
 import pstyles from "../css/Popup.module.css";
 import gstyles from "../css/Global.module.css";
 import uUtils from "../utils/universalUtils.js";
@@ -94,6 +95,7 @@ const ChunkOrdersPopup = (props) => {
             return (
               <button
                 key={chunkId}
+                disabled={obj.structureChunk.isGhostChunk}
                 className={`${styles.chunkButton} ${
                   highlightedButton === chunkId && styles.highlightedButton
                 }`}
@@ -197,8 +199,8 @@ const ChunkOrdersPopup = (props) => {
                 <li className={styles.listitem} key={`chunkOrder-${index}`}>
                   <span className={styles.indexSpan}>{index + 1}</span>
                   <button
-                    alt="Black circle / White circle icon"
-                    className={`${gstyles.blueButton} ${styles.microButton}`}
+                    alt="Black circle icon / White circle icon"
+                    className={`${gstyles.blueButton} ${styles.microButton} ${gstyles.tooltipHolder}`}
                     onClick={() => {
                       setMeaninglessCounter((prev) => prev + 1);
                       setTimeout(() => {
@@ -215,6 +217,12 @@ const ChunkOrdersPopup = (props) => {
                     }}
                   >
                     {isPrimary ? "●" : "○"}
+                    <Tooltip
+                      text={
+                        "Toggle whether this is a regular or merely additional order"
+                      }
+                      number={5}
+                    />
                   </button>
                   <button
                     alt="Cross icon"

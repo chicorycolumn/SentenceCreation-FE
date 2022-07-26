@@ -46,6 +46,12 @@
   line-height: 26px;
 }
 
+.lemmaGhostChunk {
+  font-style: italic;
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
 .cardButtonsHolder {
   display: flex;
   flex-direction: row;
