@@ -40,15 +40,15 @@ const ChunkCard = (props) => {
     });
   };
 
-  const editFormulaImportantTraitKeys = (tKey, remove) => {
-    let newFITKs = structureChunk.formulaImportantTraitKeys.traitValue.slice();
-    if (remove && newFITKs.includes(tKey)) {
-      newFITKs = newFITKs.filter((tk) => tk !== tKey);
-    } else if (!remove && !newFITKs.includes(tKey)) {
-      newFITKs.push(tKey);
+  const regulateTraitKey = (tKey, regulationGroup) => {
+    let regulatedTraitKeys = structureChunk[regulationGroup].traitValue.slice();
+    if (regulatedTraitKeys.includes(tKey)) {
+      regulatedTraitKeys = regulatedTraitKeys.filter((tk) => tk !== tKey);
+    } else if (!regulatedTraitKeys.includes(tKey)) {
+      regulatedTraitKeys.push(tKey);
     }
 
-    structureChunk.formulaImportantTraitKeys.traitValue = newFITKs;
+    structureChunk[regulationGroup].traitValue = regulatedTraitKeys;
 
     setStructureChunkAndFormula(structureChunk);
   };
@@ -408,6 +408,20 @@ const ChunkCard = (props) => {
 
               let traitObject2 = traitKey2 ? structureChunk[traitKey2] : null;
 
+              const getTraitRegulatorValues = () => {
+                let obj = {};
+
+                idUtils.traitKeyRegulators.forEach((traitRegulator) => {
+                  obj[traitRegulator.name] = structureChunk[traitRegulator.name]
+                    ? structureChunk[traitRegulator.name].traitValue
+                    : [];
+                });
+
+                return obj;
+              };
+
+              let traitRegulatorValues = getTraitRegulatorValues();
+
               return (
                 !diUtils.traitsToNotDisplayInOwnBox.includes(traitKey) &&
                 (traitKey === "chunkId" ||
@@ -423,14 +437,8 @@ const ChunkCard = (props) => {
                     lObjId={structureChunk.id}
                     word={props.word}
                     setStructureChunkAndFormula={setStructureChunkAndFormula}
-                    editFormulaImportantTraitKeys={
-                      editFormulaImportantTraitKeys
-                    }
-                    formulaImportantTraitKeys={
-                      structureChunk.formulaImportantTraitKeys
-                        ? structureChunk.formulaImportantTraitKeys.traitValue
-                        : []
-                    }
+                    regulateTraitKey={regulateTraitKey}
+                    traitRegulatorValues={traitRegulatorValues}
                     structureChunk={structureChunk}
                     wordtype={wordtype}
                     setElementsToDrawLinesBetween={

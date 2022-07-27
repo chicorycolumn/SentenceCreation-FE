@@ -331,9 +331,14 @@ class TraitBox extends Component {
       }, 500);
     };
 
-    let traitKeyIsFormulaImportant =
-      this.props.formulaImportantTraitKeys &&
-      this.props.formulaImportantTraitKeys.includes(traitKey);
+    const traitKeyRegulatorIsActive = (traitKeyRegulator, traitKey) => {
+      return (
+        this.props.traitRegulatorValues[traitKeyRegulator.name] &&
+        this.props.traitRegulatorValues[traitKeyRegulator.name].includes(
+          traitKey
+        )
+      );
+    };
 
     return (
       <>
@@ -544,7 +549,8 @@ class TraitBox extends Component {
           </div>
           {(!uUtils.isEmpty(traitObject.traitValue) ||
             this.state.forceShowInput ||
-            idUtils.isTagTrait(traitKey)) && (
+            idUtils.isTagTrait(traitKey) ||
+            traitObject.isLexical) && (
             <div
               key={`${this.state.traitValueInputString}-${
                 this.state.traitValueInputString2
@@ -704,31 +710,36 @@ class TraitBox extends Component {
                               &times;
                             </button>
                             {traitObject.isLexical && (
-                              <button
-                                alt="Exclamation mark icon"
-                                className={`${gstyles.sideButton} ${
-                                  gstyles.blueButton
-                                } ${styles.clearButton} ${
-                                  gstyles.tooltipHolderDelayed
-                                } ${
-                                  traitKeyIsFormulaImportant &&
-                                  gstyles.blueButtonActive
-                                }`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  console.log(traitKey);
-                                  this.props.editFormulaImportantTraitKeys(
-                                    traitKey,
-                                    traitKeyIsFormulaImportant
-                                  );
-                                }}
-                              >
-                                !
-                                <Tooltip
-                                  text="Make this a formula important trait key"
-                                  number={4}
-                                />
-                              </button>
+                              <div className={styles.miniButtonHolder}>
+                                {idUtils.traitKeyRegulators.map(
+                                  (traitKeyRegulator) => (
+                                    <button
+                                      key={traitKeyRegulator.name}
+                                      className={`${gstyles.blueButton} ${
+                                        styles.miniButton
+                                      } ${gstyles.tooltipHolderDelayed} ${
+                                        traitKeyRegulatorIsActive(
+                                          traitKeyRegulator,
+                                          traitKey
+                                        ) && gstyles.blueButtonActive
+                                      }`}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        this.props.regulateTraitKey(
+                                          traitKey,
+                                          traitKeyRegulator.name
+                                        );
+                                      }}
+                                    >
+                                      {traitKeyRegulator.buttonText}
+                                      <Tooltip
+                                        text={traitKeyRegulator.tooltipText}
+                                        number={4}
+                                      />
+                                    </button>
+                                  )
+                                )}
+                              </div>
                             )}
                           </div>
                         )

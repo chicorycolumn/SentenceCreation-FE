@@ -211,7 +211,11 @@ const diUtils = {
     }
 
     orderedTraitKeys = orderedTraitKeys.filter(
-      (traitKey) => !["wordtype"].includes(traitKey)
+      (traitKey) =>
+        ![
+          "wordtype",
+          ...idUtils.traitKeyRegulators.map((tkr) => tkr.name),
+        ].includes(traitKey)
     );
 
     return {

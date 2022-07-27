@@ -1,5 +1,28 @@
 const uUtils = require("./universalUtils.js");
 
+exports.traitKeyRegulators = [
+  {
+    name: "formulaImportantTraitKeys",
+    tooltipText: "Make formula important trait key",
+    buttonText: "F",
+  },
+  {
+    name: "counterfactuallyImportantTraitKeys",
+    tooltipText: "Make counterfactually important trait key",
+    buttonText: "C",
+  },
+  {
+    name: "hiddenTraits",
+    tooltipText: "Make hidden trait key",
+    buttonText: "H",
+  },
+  {
+    name: "educatorBlocksAnnotationsForTheseTraitKeys",
+    tooltipText: "Block annotations for trait key",
+    buttonText: "B",
+  },
+];
+
 exports.isFixedChunk = (stCh) => {
   return stCh.chunkId.traitValue.split("-")[0] === "fix";
 };
