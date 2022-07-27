@@ -696,7 +696,13 @@ class TraitBox extends Component {
                           <div className={styles.sideButtonHolder}>
                             <button
                               alt="Cross icon"
-                              className={`${gstyles.sideButton} ${gstyles.redButton} ${styles.clearButton}`}
+                              className={`${gstyles.sideButton} ${
+                                gstyles.redButton
+                              } ${
+                                traitObject.isLexical
+                                  ? styles.clearButtonMini
+                                  : styles.clearButton
+                              }`}
                               onClick={(e) => {
                                 console.log("%cross1");
                                 e.stopPropagation();

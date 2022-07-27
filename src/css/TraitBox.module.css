@@ -68,7 +68,7 @@
 }
 
 .traitValuesInput {
-  font-size: 14px;
+  font-size: 13px;
   resize: none;
   text-align: center;
   width: 100%;
@@ -111,12 +111,21 @@
 .traitValuesBox {
   display: flex;
   flex-direction: row;
+  height: 43px;
 }
 
 .clearButton {
   margin: 0;
   font-size: 20px;
   height: auto;
+}
+
+.clearButtonMini {
+  margin: 0;
+  font-size: 20px;
+  line-height: 12px;
+  padding-top: 1px;
+  height: 15px;
 }
 
 .copyButton {
@@ -216,7 +225,7 @@
 .miniButton {
   font-size: 10px;
   width: 15px;
-  height: 15px;
+  height: 14.5px;
   margin: 0px;
   padding: 0px;
   border: black solid 0.5px;
