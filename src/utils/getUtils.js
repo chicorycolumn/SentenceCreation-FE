@@ -3,8 +3,59 @@ const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
+export const backendifyStructureChunk = (stCh) => {
+  if (stCh.booleanTraits) {
+    stCh.booleanTraits.traitValue.forEach((booleanTrait) => {
+      stCh[booleanTrait] = { expectedTypeOnStCh: "boolean", traitValue: true };
+    });
+  }
+
+  let traitKeysToRemove = ["booleanTraits", "isGhostChunk"];
+
+  let processedStCh = {};
+
+  Object.keys(stCh).forEach((traitKey) => {
+    if (traitKeysToRemove.includes(traitKey)) {
+      return;
+    }
+
+    let { traitValue } = stCh[traitKey];
+
+    if (traitValue && (traitValue === true || traitValue.length)) {
+      processedStCh[traitKey] = traitValue;
+    }
+  });
+
+  return processedStCh;
+};
+
+export const frontendifyStructureChunk = (stCh) => {
+  let booleanTraits = {
+    expectedTypeOnStCh: "array",
+    possibleTraitValues: [],
+    traitValue: [],
+  };
+
+  Object.keys(stCh).forEach((traitKey) => {
+    if (
+      typeof stCh[traitKey] === "object" &&
+      stCh[traitKey].expectedTypeOnStCh === "boolean"
+    ) {
+      booleanTraits.possibleTraitValues.push(traitKey);
+      delete stCh[traitKey];
+    }
+  });
+
+  stCh.booleanTraits = booleanTraits;
+
+  return stCh;
+};
+
 export const fetchLObjsByLemma = (lang1, lemma) => {
-  console.log("Requesting lObjs", lang1, `"${lemma}"`);
+  console.log(""); //devlogging
+  console.log("");
+  console.log("**fetchLObjsByLemma**");
+  console.log(lang1, `"${lemma}"`);
 
   return axios
     .get(
@@ -12,10 +63,16 @@ export const fetchLObjsByLemma = (lang1, lemma) => {
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
-      return res.data["info"];
+      let result = res.data["info"];
+      console.log("fetchLObjsByLemma got:", result); //devlogging
+      console.log("/fetchLObjsByLemma");
+      console.log("");
+      console.log("");
+
+      return result;
     })
     .catch((e) => {
-      console.log(1712, lang1, `"${lemma}"`, e);
+      console.log("ERROR 1712", lang1, `"${lemma}"`, e);
     });
 };
 

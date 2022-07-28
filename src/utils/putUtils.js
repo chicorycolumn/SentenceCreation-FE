@@ -1,25 +1,11 @@
 import axios from "axios";
+import { backendifyStructureChunk } from "./getUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
 export const fetchSentence = (lang1, rawChunks, orders) => {
-  let frontEndOnlyTraitKeys = ["isGhostChunk"];
-
-  let processedChunks = rawChunks.map((structureChunk) => {
-    let processedStCh = {};
-    Object.keys(structureChunk).forEach((traitKey) => {
-      if (frontEndOnlyTraitKeys.includes(traitKey)) {
-        return;
-      }
-
-      let { traitValue } = structureChunk[traitKey];
-      if (traitValue && traitValue.length) {
-        processedStCh[traitKey] = traitValue;
-      }
-    });
-    return processedStCh;
-  });
+  let processedChunks = rawChunks.map((stCh) => backendifyStructureChunk(stCh));
 
   if (!processedChunks.length) {
     return;
@@ -39,7 +25,11 @@ export const fetchSentence = (lang1, rawChunks, orders) => {
       .map((obj) => obj.order);
   }
 
-  console.log("Will request sentence", lang1, processedChunks);
+  console.log(""); //devlogging
+  console.log("");
+  console.log("**fetchSentence**");
+  console.log(lang1, sentenceFormula);
+
   return axios
     .put(
       `${baseUrl}/educator/sandbox?lang=${lang1}`,
@@ -54,6 +44,11 @@ export const fetchSentence = (lang1, rawChunks, orders) => {
     })
     .then((data) => {
       let responseObj = { messages: data.messages };
+
+      console.log("fetchSentence got:", data); //devlogging
+      console.log("/fetchSentence");
+      console.log("");
+      console.log("");
 
       if (processedChunks.length === 1) {
         responseObj.data = data.wordsAndIDs;

@@ -101,6 +101,9 @@ const ChunkCard = (props) => {
           return;
         }
       }
+
+      stCh = getUtils.frontendifyStructureChunk(stCh);
+
       let idSplit = stCh.id.split("-");
       stCh.chunkId.traitValue = `${idSplit[1]}-${
         props.chunkCardIndex

@@ -469,15 +469,15 @@ class TraitBox extends Component {
               //devlogging
               console.log("");
               console.log("state.traitValueInputString HAS VALUE:");
-              console.log("> > >", this.state.traitValueInputString);
+              console.log("-->", this.state.traitValueInputString);
               console.log("props.traitObject.traitValue HAS VALUE:");
-              console.log("> > >", this.props.traitObject.traitValue);
+              console.log("-->", this.props.traitObject.traitValue);
               if (this.state.traitValueInputString2) {
                 console.log("");
                 console.log("state.traitValueInputString2 HAS VALUE:");
-                console.log("> > >", this.state.traitValueInputString2);
+                console.log("-->", this.state.traitValueInputString2);
                 console.log("props.traitObject.traitValue2 HAS VALUE:");
-                console.log("> > >", this.props.traitObject2.traitValue);
+                console.log("-->", this.props.traitObject2.traitValue);
               }
             }}
             onClick={(e) => {
@@ -609,13 +609,14 @@ class TraitBox extends Component {
                           idUtils.isTagTrait(traitKey) ||
                           idUtils.isChunkId(traitKey) ||
                           idUtils.isAgreeOrConnected(traitKey) ||
-                          traitObject.possibleTraitValues ||
-                          traitObject.expectedTypeOnStCh === "boolean"
+                          traitObject.possibleTraitValues
                         }
                         className={`${styles.traitValuesInput} ${
                           idUtils.isTagTrait(traitKey) &&
                           styles.traitValuesInputLarge
-                        } ${styles.preventSelection}`}
+                        } ${styles.preventSelection} ${
+                          traitKey === "booleanTraits" && styles.smallText
+                        }`}
                         value={
                           `textarea-${traitKey}` === this.state.activeTextarea
                             ? null
@@ -757,15 +758,38 @@ class TraitBox extends Component {
           )}
 
           {this.state.isSelected && (
-            <div className={styles.inputOptionsHolder}>
+            <div
+              className={`${
+                traitKey === "booleanTraits"
+                  ? styles.inputOptionsHolder2
+                  : styles.inputOptionsHolder
+              } ${traitKey === "booleanTraits" && styles.smallText}`}
+            >
               {traitObject.expectedTypeOnStCh === "array" && (
-                <div className={styles.inputOptionsSubHolder}>
+                <div
+                  className={
+                    traitKey === "booleanTraits"
+                      ? styles.inputOptionsSubHolder2
+                      : styles.inputOptionsSubHolder
+                  }
+                >
                   {traitObject.possibleTraitValues ? (
                     traitObject.possibleTraitValues.map(
                       (possibleTraitValue, index) => (
-                        <div key={`${traitKey}-${index}`}>
+                        <div
+                          key={`${traitKey}-${index}`}
+                          className={
+                            traitKey === "booleanTraits"
+                              ? styles.inputOption2
+                              : styles.inputOption
+                          }
+                        >
                           <input
-                            className={styles.checkbox}
+                            className={
+                              traitKey === "booleanTraits"
+                                ? styles.checkbox2
+                                : styles.checkbox
+                            }
                             type="checkbox"
                             id={`${traitKey}-${index}`}
                             name={`${traitKey}-${index}`}
@@ -856,41 +880,7 @@ class TraitBox extends Component {
                   One string value
                 </button>
               )}
-              {traitObject.expectedTypeOnStCh === "boolean" &&
-                !traitObject.traitValue && (
-                  <div>
-                    <input
-                      className={styles.checkbox}
-                      type="checkbox"
-                      id={`${traitKey}-0`}
-                      name={`${traitKey}-0`}
-                      checked={this.state.traitValueInputString === "true"}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        console.log("%checkbox2-onChange");
-                        this.setState((prevState) => {
-                          if (
-                            prevState.traitValueInputString === "true" &&
-                            !e.target.checked
-                          ) {
-                            return { traitValueInputString: "false" };
-                          } else if (
-                            prevState.traitValueInputString !== "true" &&
-                            e.target.checked
-                          ) {
-                            return { traitValueInputString: "true" };
-                          }
-                        });
-                      }}
-                    />
-                    <label
-                      className={styles.checkboxLabel}
-                      htmlFor={`${traitKey}-0`}
-                    >
-                      True
-                    </label>
-                  </div>
-                )}
+
               {!["string", "boolean", "array"].includes(
                 traitObject.expectedTypeOnStCh
               ) && <p>expectedTypeOnStCh: {traitObject.expectedTypeOnStCh}</p>}
