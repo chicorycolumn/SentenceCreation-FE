@@ -3,6 +3,7 @@ import LanguageContext from "../context/LanguageContext.js";
 import TraitBox from "./TraitBox.jsx";
 import ToggleShowButton from "./ToggleShowButton.jsx";
 import Tooltip from "../Cogs/Tooltip.jsx";
+import Prompt from "../Cogs/Prompt.jsx";
 import styles from "../css/ChunkCard.module.css";
 import gstyles from "../css/Global.module.css";
 import diUtils from "../utils/displayUtils.js";
@@ -26,6 +27,7 @@ const ChunkCard = (props) => {
   const [chunkId, setChunkId] = useState();
 
   const [shouldRetryFetch, setShouldRetryFetch] = useState(0);
+  const [promptData, setPromptData] = useState();
 
   const lang1 = useContext(LanguageContext);
   const setStructureChunkAndFormula = (newStCh) => {
@@ -40,6 +42,19 @@ const ChunkCard = (props) => {
     });
   };
 
+  const formatAndSetStructureChunk = (stCh) => {
+    stCh = getUtils.frontendifyStructureChunk(stCh);
+
+    let idSplit = stCh.id.split("-");
+    stCh.chunkId.traitValue = `${idSplit[1]}-${props.chunkCardIndex}${idSplit[2]
+      .split("")
+      .reverse()
+      .join("")}-${stCh.lemma}`;
+
+    setStructureChunkAndFormula(stCh);
+    setBackedUpStructureChunk(uUtils.copyWithoutReference(stCh));
+  };
+
   const regulateTraitKey = (tKey, regulationGroup) => {
     let regulatedTraitKeys = structureChunk[regulationGroup].traitValue.slice();
     if (regulatedTraitKeys.includes(tKey)) {
@@ -52,6 +67,17 @@ const ChunkCard = (props) => {
 
     setStructureChunkAndFormula(structureChunk);
   };
+
+  useEffect(() => {
+    if (chosenId) {
+      setPromptData();
+      let matchingStChs = lObjs.filter((lObj) => lObj.id === chosenId);
+      if (matchingStChs.length === 1) {
+        formatAndSetStructureChunk(matchingStChs[0]);
+      } else {
+      }
+    }
+  }, [chosenId]);
 
   useEffect(() => {
     let fetchedLObjs = lObjs;
@@ -78,39 +104,33 @@ const ChunkCard = (props) => {
       let stCh = fetchedLObjs[0];
       if (fetchedLObjs.length > 1) {
         if (!chosenId) {
-          let idFromPrompt = prompt(
-            `\n"${props.formula
-              .map((formulaItem, i) =>
-                i === props.chunkCardIndex
-                  ? formulaItem.word.toUpperCase()
-                  : i === 0
-                  ? uUtils.capitaliseFirst(formulaItem.word)
-                  : formulaItem.word
-              )
-              .join(" ")}."\n\nWhich ${props.word.toUpperCase()} of these ${
-              fetchedLObjs.length
-            } matches are you after?\n\n(Hint: Look at the wordtype)`,
-            fetchedLObjs.map((lObj) => lObj.id).join("|")
-          );
-          setChosenId(idFromPrompt);
-        }
-        let matchingStChs = fetchedLObjs.filter((lObj) => lObj.id === chosenId);
-        if (matchingStChs.length === 1) {
-          stCh = matchingStChs[0];
-        } else {
+          let title = `"${props.word}"`;
+          let message = `Which of these ${fetchedLObjs.length} are you after?`;
+
+          let options = fetchedLObjs.map((lObj) => {
+            let extraInfo = lObj.andTags.traitValue.slice();
+            if (lObj.allohomInfo) {
+              extraInfo.unshift(
+                lObj.allohomInfo.text + " " + lObj.allohomInfo.emoji
+              );
+            }
+
+            return {
+              text: lObj.id,
+              color: gstyles[lObj.id.split("-")[1]],
+              extraInfo,
+              callback: () => {
+                setChosenId(lObj.id);
+              },
+            };
+          });
+
+          setPromptData({ message, options, title });
           return;
         }
+      } else {
+        formatAndSetStructureChunk(stCh);
       }
-
-      stCh = getUtils.frontendifyStructureChunk(stCh);
-
-      let idSplit = stCh.id.split("-");
-      stCh.chunkId.traitValue = `${idSplit[1]}-${
-        props.chunkCardIndex
-      }${idSplit[2].split("").reverse().join("")}-${stCh.lemma}`;
-
-      setStructureChunkAndFormula(stCh);
-      setBackedUpStructureChunk(uUtils.copyWithoutReference(stCh));
     }
   }, [
     lObjs,
@@ -122,10 +142,7 @@ const ChunkCard = (props) => {
   ]);
 
   useEffect(() => {
-    console.log(1410, props.word);
     if (lang1 && (!structureChunk || !idUtils.isFixedChunk(structureChunk))) {
-      console.log(14100, props.word);
-
       getUtils
         .fetchLObjsByLemma(lang1, props.word)
         .then(
@@ -173,6 +190,7 @@ const ChunkCard = (props) => {
       }`}
       id={props.chunkCardKey}
     >
+      {promptData && <Prompt data={promptData} />}
       <div className={styles.cardButtonsHolder}>
         {noLObjsFetched ? (
           <>

@@ -13,6 +13,12 @@
   z-index: 8;
 }
 
+.mainboxFit {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  height: fit-content;
+}
+
 .topHolder {
   display: flex;
   flex-direction: row;
@@ -49,5 +55,39 @@
 }
 
 .tablerow {
+  font-size: 16px;
+}
+
+.button {
+  font-size: 16px;
+  height: 40px;
+  background-color: white;
+}
+
+.button:hover {
+  box-shadow: 0px 0px 2.5px black;
+}
+
+.buttonHolder {
+  /* border: black dotted 2px; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.buttonSubholder {
+  /* border: red dotted 2px; */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.extraInfo {
+  font-size: 14px;
+  margin: 10px 0px 0px;
+}
+
+.message {
   font-size: 16px;
 }

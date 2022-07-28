@@ -445,7 +445,7 @@ class TraitBox extends Component {
           }}
         >
           {this.state.justCopied && (
-            <div className={styles.floatingAlert}>Copied</div>
+            <div className={gstyles.floatingAlert}>Copied</div>
           )}
           {idUtils.isTagTrait(traitKey) &&
             !this.state.isHovered &&
@@ -615,7 +615,7 @@ class TraitBox extends Component {
                           idUtils.isTagTrait(traitKey) &&
                           styles.traitValuesInputLarge
                         } ${styles.preventSelection} ${
-                          ["booleanTraits"].includes(traitKey) &&
+                          ["booleanTraits", "agreeWith"].includes(traitKey) &&
                           styles.smallText
                         }`}
                         value={

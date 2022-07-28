@@ -403,3 +403,7 @@
   top: 0px;
   left: 0px;
 }
+
+.bold {
+  font-weight: bold !important;
+}
