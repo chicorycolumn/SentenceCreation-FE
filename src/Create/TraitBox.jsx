@@ -615,7 +615,8 @@ class TraitBox extends Component {
                           idUtils.isTagTrait(traitKey) &&
                           styles.traitValuesInputLarge
                         } ${styles.preventSelection} ${
-                          traitKey === "booleanTraits" && styles.smallText
+                          ["booleanTraits"].includes(traitKey) &&
+                          styles.smallText
                         }`}
                         value={
                           `textarea-${traitKey}` === this.state.activeTextarea

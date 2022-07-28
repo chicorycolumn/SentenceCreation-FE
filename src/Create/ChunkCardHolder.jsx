@@ -195,29 +195,29 @@ const ChunkCardHolder = (props) => {
               putUtils
                 .fetchSentence(lang1, sentenceStructure, chunkOrders)
                 .then(
-                  (fetchedDataObj) => {
-                    if (fetchedDataObj.messages) {
+                  (data) => {
+                    let { payload, messages } = data;
+
+                    if (messages) {
                       alert(
-                        Object.keys(fetchedDataObj.messages).map((key) => {
-                          let val = fetchedDataObj.messages[key];
+                        Object.keys(messages).map((key) => {
+                          let val = messages[key];
                           return `${key}:       ${val}`;
                         })
                       );
                       return;
                     }
 
-                    let fetchedData = fetchedDataObj.data;
-
                     setPopup({
-                      title: `${fetchedData.length} sentence${
-                        fetchedData.length > 1 ? "s" : ""
+                      title: `${payload.length} sentence${
+                        payload.length > 1 ? "s" : ""
                       } from traits you specified`,
                       headers: ["sentence"],
-                      rows: fetchedData.map((el) => [el]),
+                      rows: payload.map((el) => [el]),
                     });
                   },
-                  (error) => {
-                    console.log("ERROR 0302:", error);
+                  (e) => {
+                    console.log("ERROR 0302:", e);
                   }
                 );
             }}
@@ -314,7 +314,6 @@ const ChunkCardHolder = (props) => {
                   onClick={() => {
                     let newLemma = prompt("Enter new lemma");
                     if (newLemma) {
-                      console.log("swde4");
                       props.setFormula((prevFormula) => {
                         let newFormulaObject = {
                           word: newLemma,

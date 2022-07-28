@@ -136,12 +136,12 @@ const ChunkCard = (props) => {
             setLObjs(fetchedLObjs);
             setNoLObjsFetched(!fetchedLObjs.length);
           },
-          (error) => {
-            console.log("ERROR 0307:", error);
+          (e) => {
+            console.log("ERROR 0370:", e);
           }
         )
         .catch((e) => {
-          console.log(1709, e);
+          console.log("ERROR 9071", e);
         });
     }
   }, [lang1, props.word, shouldRetryFetch]);
@@ -222,11 +222,13 @@ const ChunkCard = (props) => {
                 e.target.blur();
                 props.setHighlightedCard(chunkId);
                 putUtils.fetchSentence(lang1, [structureChunk]).then(
-                  (fetchedDataObj) => {
-                    if (fetchedDataObj.messages) {
+                  (data) => {
+                    let { payload, messages } = data;
+
+                    if (messages) {
                       alert(
-                        Object.keys(fetchedDataObj.messages).map((key) => {
-                          let val = fetchedDataObj.messages[key];
+                        Object.keys(messages).map((key) => {
+                          let val = messages[key];
                           return `${key}:       ${val}`;
                         })
                       );
@@ -234,21 +236,19 @@ const ChunkCard = (props) => {
                       return;
                     }
 
-                    let fetchedData = fetchedDataObj.data;
-
                     props.setPopup({
-                      title: `${fetchedData.length} lemma${
-                        fetchedData.length > 1 ? "s" : ""
+                      title: `${payload.length} lemma${
+                        payload.length > 1 ? "s" : ""
                       } for "${chunkId}" with traits you specified`,
                       headers: ["lemma", "id"],
-                      rows: fetchedData.map((obj) => [
+                      rows: payload.map((obj) => [
                         obj.selectedWord,
                         obj.lObjID,
                       ]),
                     });
                   },
-                  (error) => {
-                    console.log("ERROR 0302:", error);
+                  (e) => {
+                    console.log("ERROR 0302:", e);
                   }
                 );
               }}

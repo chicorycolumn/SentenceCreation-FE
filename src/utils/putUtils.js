@@ -5,6 +5,8 @@ const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
 export const fetchSentence = (lang1, rawChunks, orders) => {
+  const requestingSingleWordOnly = !orders;
+
   let processedChunks = rawChunks.map((stCh) => backendifyStructureChunk(stCh));
 
   if (!processedChunks.length) {
@@ -28,7 +30,7 @@ export const fetchSentence = (lang1, rawChunks, orders) => {
   console.log(""); //devlogging
   console.log("");
   console.log("**fetchSentence**");
-  console.log(lang1, sentenceFormula);
+  console.log({ lang1, sentenceFormula, requestingSingleWordOnly });
 
   return axios
     .put(
@@ -36,27 +38,17 @@ export const fetchSentence = (lang1, rawChunks, orders) => {
       {
         questionLanguage: lang1,
         sentenceFormula,
+        requestingSingleWordOnly,
       }
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
-      return res.data;
-    })
-    .then((data) => {
-      let responseObj = { messages: data.messages };
-
-      console.log("fetchSentence got:", data); //devlogging
+      console.log("fetchSentence got:", res.data); //devlogging
       console.log("/fetchSentence");
       console.log("");
       console.log("");
 
-      if (processedChunks.length === 1) {
-        responseObj.data = data.wordsAndIDs;
-      } else {
-        responseObj.data = uUtils.flatten(data.wordsAndIDs);
-      }
-
-      return responseObj;
+      return res.data;
     })
-    .catch((e) => console.log(e));
+    .catch((e) => console.log("ERROR 7461", e));
 };

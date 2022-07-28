@@ -338,8 +338,41 @@ exports.isThisObjectInThisArrayOfObjects = (obj, arr) => {
   return arr.some((objFromArr) => this.areTwoObjectsEqual(objFromArr, obj));
 };
 
+exports.doStringsOrArraysMatch = (actual, sought, every = true) => {
+  if (Array.isArray(actual) && Array.isArray(sought)) {
+    return every
+      ? sought.every((el) => actual.includes(el))
+      : sought.some((el) => actual.includes(el));
+  } else if (Array.isArray(actual)) {
+    return actual.includes(sought);
+  } else if (Array.isArray(sought)) {
+    return sought.includes(actual);
+  } else {
+    return actual === sought;
+  }
+};
+
+exports.selectRandomElementsFromArr = (arr, quantity) => {
+  if (arr.length > quantity) {
+    let limitedArrIndex = [];
+    for (let i = 0; i < quantity; i++) {
+      let selectedIndex;
+      while (!selectedIndex) {
+        let putativeIndex = Math.floor(Math.random() * arr.length);
+        if (!limitedArrIndex.includes(putativeIndex)) {
+          selectedIndex = putativeIndex;
+        }
+      }
+      limitedArrIndex.push(selectedIndex);
+    }
+    console.log(limitedArrIndex);
+    return limitedArrIndex.map((index) => arr[index]);
+  } else {
+    return arr;
+  }
+};
+
 exports.flatten = (arr) => {
-  console.log("--------------", arr);
   let res = [];
   arr.forEach((el) => {
     if (Array.isArray(el)) {

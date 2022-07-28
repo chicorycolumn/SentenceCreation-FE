@@ -55,7 +55,7 @@ export const fetchLObjsByLemma = (lang1, lemma) => {
   console.log(""); //devlogging
   console.log("");
   console.log("**fetchLObjsByLemma**");
-  console.log(lang1, `"${lemma}"`);
+  console.log({ lang1, lemma });
 
   return axios
     .get(
@@ -72,7 +72,7 @@ export const fetchLObjsByLemma = (lang1, lemma) => {
       return result;
     })
     .catch((e) => {
-      console.log("ERROR 1712", lang1, `"${lemma}"`, e);
+      console.log("ERROR 2171", lang1, `"${lemma}"`, e);
     });
 };
 
