@@ -371,7 +371,7 @@ class TraitBox extends Component {
           id={traitBoxID}
           key={traitBoxID}
           className={`${styles.preventSelection} ${styles.traitBox} ${
-            idUtils.isAgreeOrConnected(traitKey) && styles.traitBoxCircle1
+            idUtils.agreementTraits.includes(traitKey) && styles.traitBoxCircle1
           } ${idUtils.isChunkId(traitKey) && styles.traitBoxCircle2} ${
             !traitObject.traitValue && styles.traitBoxEmpty
           } ${this.state.hasJustBlurred && styles.shimmer} ${
@@ -396,7 +396,7 @@ class TraitBox extends Component {
             !this.state.traitValueInputString &&
             !this.state.traitValueInputString2 &&
             styles.badBox
-          }
+          } ${traitKey === "booleanTraits" && gstyles.oddEdges}
         `}
           onClick={() => {
             if (isClickableFlowerstem(this.props)) {
@@ -413,7 +413,7 @@ class TraitBox extends Component {
                 this.state.traitValueInputString,
                 [this.props.setElementsToDrawLinesBetween]
               );
-            } else if (idUtils.isAgreeOrConnected(traitKey)) {
+            } else if (idUtils.agreementTraits.includes(traitKey)) {
               diUtils.connectChunkIdWithItsFlowers(
                 traitBoxID,
                 this.state.traitValueInputString,
@@ -432,7 +432,7 @@ class TraitBox extends Component {
                 [this.props.setElementsToDrawLinesBetween],
                 true
               );
-            } else if (idUtils.isAgreeOrConnected(traitKey)) {
+            } else if (idUtils.agreementTraits.includes(traitKey)) {
               diUtils.connectChunkIdWithItsFlowers(
                 traitBoxID,
                 this.state.traitValueInputString,
@@ -492,7 +492,7 @@ class TraitBox extends Component {
                 );
                 return;
               }
-              if (idUtils.isAgreeOrConnected(traitKey)) {
+              if (idUtils.agreementTraits.includes(traitKey)) {
                 if (this.state.isFlowerSearchingForStem) {
                   this.props.flowerSearchingForStemBrace[1]();
                   this.setState({ isFlowerSearchingForStem: false });
@@ -608,15 +608,17 @@ class TraitBox extends Component {
                         disabled={
                           idUtils.isTagTrait(traitKey) ||
                           idUtils.isChunkId(traitKey) ||
-                          idUtils.isAgreeOrConnected(traitKey) ||
+                          idUtils.agreementTraits.includes(traitKey) ||
                           traitObject.possibleTraitValues
                         }
                         className={`${styles.traitValuesInput} ${
                           idUtils.isTagTrait(traitKey) &&
                           styles.traitValuesInputLarge
                         } ${styles.preventSelection} ${
-                          ["booleanTraits", "agreeWith"].includes(traitKey) &&
-                          styles.smallText
+                          [
+                            "booleanTraits",
+                            ...idUtils.agreementTraits,
+                          ].includes(traitKey) && styles.smallText
                         }`}
                         value={
                           `textarea-${traitKey}` === this.state.activeTextarea
@@ -627,7 +629,7 @@ class TraitBox extends Component {
                           console.log("%textarea");
                           e.stopPropagation();
                           if (
-                            idUtils.isAgreeOrConnected(traitKey) ||
+                            idUtils.agreementTraits.includes(traitKey) ||
                             idUtils.isChunkId(traitKey)
                           ) {
                             e.target.select();

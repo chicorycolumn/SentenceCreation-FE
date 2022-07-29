@@ -39,7 +39,7 @@ const ChunkCardHolder = (props) => {
         if (stChObj.structureChunk) {
           Object.keys(stChObj.structureChunk).forEach((traitKey) => {
             if (
-              idUtils.isAgreeOrConnected(traitKey) &&
+              idUtils.agreementTraits.includes(traitKey) &&
               stChObj.structureChunk[traitKey].traitValue === chunkId
             ) {
               stChObj.structureChunk[traitKey].traitValue = newChunkId;

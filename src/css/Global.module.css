@@ -407,3 +407,10 @@
 .bold {
   font-weight: bold !important;
 }
+
+.oddEdges {
+  border-top-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}

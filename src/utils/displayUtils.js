@@ -11,7 +11,7 @@ const diUtils = {
     flowerstemValue,
     setters,
     remove = false,
-    flowerTraitTitles = ["agreeWith", "connectedTo"],
+    flowerTraitTitles = idUtils.agreementTraits,
     flowerClasses = [gstyles.highlighted1, gstyles.zindex5],
     flowerstemClasses = [gstyles.highlighted1, gstyles.zindex7]
   ) => {
@@ -170,30 +170,36 @@ const diUtils = {
       "chunkId",
       "andTags",
       "orTags",
-      "agreeWith",
-      "connectedTo",
+      ...idUtils.agreementTraits,
     ];
     let lexicalTraitKeys = [];
-    let booleanTraitKeys = [];
+    // let booleanTraitKeys = [];
+
     Object.keys(stCh).forEach((traitKey) => {
       const traitValue = stCh[traitKey];
       if (traitValue.isLexical && !orderedTraitKeys.includes(traitKey)) {
         lexicalTraitKeys.push(traitKey);
-      } else if (
-        traitValue.expectedTypeOnStCh === "boolean" &&
-        !orderedTraitKeys.includes(traitKey)
-      ) {
-        booleanTraitKeys.push(traitKey);
       }
+      // else if (
+      //   traitValue.expectedTypeOnStCh === "boolean" &&
+      //   !orderedTraitKeys.includes(traitKey)
+      // ) {
+      //   booleanTraitKeys.push(traitKey);
+      // }
     });
+
     lexicalTraitKeys = lexicalTraitKeys.sort((x, y) => y.localeCompare(x));
-    booleanTraitKeys = booleanTraitKeys.sort((x, y) => x.localeCompare(y));
+    // booleanTraitKeys = booleanTraitKeys.sort((x, y) => x.localeCompare(y));
 
     orderedTraitKeys = [...orderedTraitKeys, ...lexicalTraitKeys];
 
+    if (stCh.booleanTraits) {
+      orderedTraitKeys.push("booleanTraits");
+    }
+
     const length = orderedTraitKeys.length;
 
-    orderedTraitKeys = [...orderedTraitKeys, ...booleanTraitKeys];
+    // orderedTraitKeys = [...orderedTraitKeys, ...booleanTraitKeys];
 
     orderedTraitKeys = [
       ...orderedTraitKeys,

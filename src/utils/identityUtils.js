@@ -62,6 +62,10 @@ exports.isChunkId = (traitKey) => {
   return ["chunkId"].includes(traitKey);
 };
 
-exports.isAgreeOrConnected = (traitKey) => {
-  return ["agreeWith", "connectedTo"].includes(traitKey);
-};
+exports.agreementTraits = [
+  "agreeWith",
+  "connectedTo",
+  "postHocAgreeWithPrimary",
+  "postHocAgreeWithSecondary",
+  "postHocAgreeWithTertiary",
+];
