@@ -3,6 +3,10 @@ const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
+export const frontendOnlyTraits = ["booleanTraits", "isGhostChunk"];
+
+export const backendOnlyTraits = ["allohomInfo"];
+
 export const backendifyStructureChunk = (stCh) => {
   if (stCh.booleanTraits) {
     stCh.booleanTraits.traitValue.forEach((booleanTrait) => {
@@ -10,12 +14,10 @@ export const backendifyStructureChunk = (stCh) => {
     });
   }
 
-  let traitKeysToRemove = ["booleanTraits", "isGhostChunk"];
-
   let processedStCh = {};
 
   Object.keys(stCh).forEach((traitKey) => {
-    if (traitKeysToRemove.includes(traitKey)) {
+    if (frontendOnlyTraits.includes(traitKey)) {
       return;
     }
 
@@ -47,6 +49,10 @@ export const frontendifyStructureChunk = (stCh) => {
   });
 
   stCh.booleanTraits = booleanTraits;
+
+  backendOnlyTraits.forEach((traitKey) => {
+    delete stCh[traitKey];
+  });
 
   return stCh;
 };

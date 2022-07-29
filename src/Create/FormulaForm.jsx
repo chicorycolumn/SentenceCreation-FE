@@ -1,7 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import LanguageContext from "../context/LanguageContext.js";
 
 const FormulaForm = (props) => {
-  const [formulaInput, setFormulaInput] = useState("");
+  const [formulaInput, setFormulaInput] = useState(
+    "kobieta tu jest *bardzo czerwona"
+  );
+  const [savedFormulaInput, setSavedFormulaInput] = useState();
+
+  const cardIt = (lang, input) => {
+    if (!lang) {
+      return;
+    }
+    let formula = formulaInput || input;
+    if (formula) {
+      setSavedFormulaInput(formula);
+      props.setFormula(
+        formula.split(" ").map((word) => {
+          return { word, structureChunk: null };
+        })
+      );
+    }
+  };
+
+  const lang1 = useContext(LanguageContext);
+
+  useEffect(() => {
+    cardIt(lang1, savedFormulaInput);
+  }, [lang1]);
 
   return (
     <div>
@@ -17,18 +42,11 @@ const FormulaForm = (props) => {
           type="submit"
           onClick={(e) => {
             e.preventDefault();
-            if (formulaInput) {
-              props.setFormula(
-                formulaInput.split(" ").map((word) => {
-                  return { word, structureChunk: null };
-                })
-              );
-            }
+            cardIt(lang1);
           }}
         >
           Card it
         </button>
-        <button>Run it</button>
       </form>
       <p>Prefix a word with "*" to make it a fixed chunk</p>
     </div>

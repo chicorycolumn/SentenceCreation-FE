@@ -8,24 +8,7 @@ const Create = () => {
   const [lang1, setLang1] = useState("POL");
   const [isLoading, setIsLoading] = useState();
   const [error, setError] = useState(null);
-  const [formula, setFormula] = useState(
-    // "My doctor's doctor is a woman"
-    // "Woman women bear doctor's doctor"
-    // "kobieta"
-    // [
-    //   { word: "the", structureChunk: null },
-    //   { word: "woman", structureChunk: null },
-    //   { word: "is", structureChunk: null },
-    //   { word: "red", structureChunk: null },
-    // ]
-    [
-      { word: "kobieta", structureChunk: null },
-      { word: "tu", structureChunk: null },
-      { word: "jest", structureChunk: null },
-      { word: "*bardzo", structureChunk: null },
-      { word: "czerwony", structureChunk: null },
-    ]
-  );
+  const [formula, setFormula] = useState([]);
 
   return (
     <LanguageContextProvider value={lang1}>
