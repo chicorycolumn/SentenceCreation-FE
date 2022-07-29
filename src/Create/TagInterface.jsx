@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import LanguageContext from "../context/LanguageContext.js";
 import LemmasTable from "./LemmasTable.jsx";
+import Tooltip from "../Cogs/Tooltip.jsx";
 import styles from "../css/TagInterface.module.css";
 import gstyles from "../css/Global.module.css";
 import diUtils from "../utils/displayUtils.js";
@@ -88,40 +89,44 @@ const TagInterface = (props) => {
             <button
               id="TagInterface-tickbutton"
               alt="Tick icon / Check icon"
-              className={`${gstyles.tickButton} ${
-                tickDisabled && gstyles.disabled
-              }`}
+              className={`${gstyles.tickButton} 
+              ${tickDisabled && gstyles.disabled}
+              ${gstyles.tooltipHolderDelayed}
+              `}
               onClick={(e) => {
                 e.preventDefault();
                 saveAndExit();
               }}
             >
               &#10003;
+              <Tooltip text={"Exit and save"} />
             </button>
 
             <button
               id="TagInterface-crossbutton"
               alt="Cross icon"
-              className={`${gstyles.sideButton} ${gstyles.redButton}`}
+              className={`${gstyles.sideButton} ${gstyles.redButton} ${gstyles.tooltipHolderDelayed}`}
               onClick={exit}
             >
               &times;
+              <Tooltip text={"Exit without saving"} />
             </button>
 
             <button
               alt="Undo icon"
-              className={`${gstyles.sideButton} ${gstyles.blueButton}`}
+              className={`${gstyles.sideButton} ${gstyles.blueButton} ${gstyles.tooltipHolderDelayed}`}
               onClick={() => {
                 props.revertTraitValueInputString();
                 props.revertTraitValueInputString(true);
               }}
             >
-              &#8634;
+              &#8656;
+              <Tooltip text={"Undo changes"} />
             </button>
 
             <button
               alt="Reset icon"
-              className={`${gstyles.sideButton} ${gstyles.blueButton}`}
+              className={`${gstyles.sideButton} ${gstyles.blueButton} ${gstyles.tooltipHolderDelayed}`}
               onClick={() => {
                 props.pushpopTraitValueInputString(
                   props.backedUpTags,
@@ -133,6 +138,7 @@ const TagInterface = (props) => {
               }}
             >
               &#8647;
+              <Tooltip text={"Revert to this word's original tags"} />
             </button>
           </div>
 

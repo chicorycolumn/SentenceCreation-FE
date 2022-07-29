@@ -303,7 +303,7 @@ const ChunkCardHolder = (props) => {
         <LineHolder elementsToDrawLineBetween={[]} />
         {/* Unused LineHolder for flexbox spacing. */}
         {props.formula.map((formulaItem, index) => {
-          let { word, structureChunk } = formulaItem;
+          let { word, structureChunk, backedUpStructureChunk } = formulaItem;
           return (
             <Fragment key={`chunkCardOuterFragment-${index}`}>
               {index ? (
@@ -340,6 +340,7 @@ const ChunkCardHolder = (props) => {
                 word={word}
                 index={index}
                 structureChunk={structureChunk}
+                backedUpStructureChunk={backedUpStructureChunk}
                 chunkCardIndex={index}
                 formula={props.formula}
                 setFormula={props.setFormula}

@@ -15,7 +15,6 @@ const uUtils = require("../utils/universalUtils.js");
 const ChunkCard = (props) => {
   const [lObjs, setLObjs] = useState([]);
   const [noLObjsFetched, setNoLObjsFetched] = useState();
-  const [backedUpStructureChunk, setBackedUpStructureChunk] = useState();
   const [chosenId, setChosenId] = useState();
   const [structureChunk, setStructureChunk] = useState(props.structureChunk);
   const [showTraitKeysGroupOne, setShowTraitKeysGroupOne] = useState(true);
@@ -30,12 +29,24 @@ const ChunkCard = (props) => {
   const [promptData, setPromptData] = useState();
 
   const lang1 = useContext(LanguageContext);
+
   const setStructureChunkAndFormula = (newStCh) => {
     setStructureChunk(newStCh);
     props.setFormula((prevFormula) => {
       return prevFormula.map((formulaItem, index) => {
         if (index === props.index) {
           formulaItem.structureChunk = newStCh;
+        }
+        return formulaItem;
+      });
+    });
+  };
+
+  const setBackedUpStructureChunkAndFormula = (buStCh) => {
+    props.setFormula((prevFormula) => {
+      return prevFormula.map((formulaItem, index) => {
+        if (index === props.index) {
+          formulaItem.backedUpStructureChunk = buStCh;
         }
         return formulaItem;
       });
@@ -52,7 +63,7 @@ const ChunkCard = (props) => {
       .join("")}-${stCh.lemma}`;
 
     setStructureChunkAndFormula(stCh);
-    setBackedUpStructureChunk(uUtils.copyWithoutReference(stCh));
+    setBackedUpStructureChunkAndFormula(uUtils.copyWithoutReference(stCh));
   };
 
   const regulateTraitKey = (tKey, regulationGroup) => {
@@ -83,7 +94,7 @@ const ChunkCard = (props) => {
     let fetchedLObjs = lObjs;
 
     if (structureChunk) {
-      console.log(`Already done "${props.word}" actually.`);
+      console.log(`Already did "${props.word}".`);
       return;
     }
 
@@ -95,7 +106,7 @@ const ChunkCard = (props) => {
       );
 
       setStructureChunkAndFormula(stCh);
-      setBackedUpStructureChunk(uUtils.copyWithoutReference(stCh));
+      setBackedUpStructureChunkAndFormula(uUtils.copyWithoutReference(stCh));
       props.editLemma(props.word.slice(1), stCh.chunkId.traitValue, stCh);
       return;
     }
@@ -147,9 +158,7 @@ const ChunkCard = (props) => {
         .fetchLObjsByLemma(lang1, props.word)
         .then(
           (fetchedLObjs) => {
-            console.log(
-              `Received ${fetchedLObjs.length} lObjs for "${props.word}".`
-            );
+            console.log(`"${props.word}" got ${fetchedLObjs.length} lObjs.`);
             setLObjs(fetchedLObjs);
             setNoLObjsFetched(!fetchedLObjs.length);
           },
@@ -381,16 +390,20 @@ const ChunkCard = (props) => {
             //devlogging
             console.log("");
             console.log("structureChunk:", structureChunk);
+            console.log(
+              "backedUpStructureChunk:",
+              props.backedUpStructureChunk
+            );
             console.log("");
-            console.log("structureChunk keys:");
-            if (structureChunk) {
-              Object.keys(structureChunk).forEach((traitKey) => {
-                let traitObject = structureChunk[traitKey];
-                if (!uUtils.isEmpty(traitObject.traitValue)) {
-                  console.log(traitKey, traitObject.traitValue);
-                }
-              });
-            }
+            // console.log("structureChunk keys:");
+            // if (structureChunk) {
+            //   Object.keys(structureChunk).forEach((traitKey) => {
+            //     let traitObject = structureChunk[traitKey];
+            //     if (!uUtils.isEmpty(traitObject.traitValue)) {
+            //       console.log(traitKey, traitObject.traitValue);
+            //     }
+            //   });
+            // }
           }}
           className={`${styles.lemma} ${
             structureChunk &&
@@ -461,6 +474,7 @@ const ChunkCard = (props) => {
                     regulateTraitKey={regulateTraitKey}
                     traitRegulatorValues={traitRegulatorValues}
                     structureChunk={structureChunk}
+                    backedUpStructureChunk={props.backedUpStructureChunk}
                     wordtype={wordtype}
                     setElementsToDrawLinesBetween={
                       props.setElementsToDrawLinesBetween
@@ -469,7 +483,6 @@ const ChunkCard = (props) => {
                       props.flowerSearchingForStemBrace
                     }
                     stemFoundForFlowerBrace={props.stemFoundForFlowerBrace}
-                    backedUpStructureChunk={backedUpStructureChunk}
                     setHighlightedCard={props.setHighlightedCard}
                   />
                 )
@@ -500,6 +513,7 @@ const ChunkCard = (props) => {
                     word={props.word}
                     setStructureChunkAndFormula={setStructureChunkAndFormula}
                     structureChunk={structureChunk}
+                    backedUpStructureChunk={props.backedUpStructureChunk}
                     setHighlightedCard={props.setHighlightedCard}
                   />
                 )
