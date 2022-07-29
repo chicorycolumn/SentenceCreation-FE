@@ -37,8 +37,8 @@
 
 .plusButton {
   font-size: 50px;
-  color: rgb(250, 250, 250);
-  /* border: black solid 1px; */
+  color: black;
+  opacity: 0.05;
   min-width: 45px;
   display: flex;
   flex-direction: column;
@@ -48,9 +48,9 @@
 }
 
 .plusButton:hover {
-  color: lightgrey;
+  opacity: 0.15;
 }
 
 .plusButton:active {
-  color: darkgrey;
+  opacity: 0.25;
 }

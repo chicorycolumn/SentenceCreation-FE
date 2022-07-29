@@ -3,6 +3,7 @@ import ChunkCard from "./ChunkCard";
 import LanguageContext from "../context/LanguageContext.js";
 import ListPopup from "../Cogs/ListPopup.jsx";
 import ChunkOrdersPopup from "./ChunkOrdersPopup.jsx";
+import AddChunkButton from "./AddChunkButton.jsx";
 import Tooltip from "../Cogs/Tooltip.jsx";
 import styles from "../css/ChunkCardHolder.module.css";
 import gstyles from "../css/Global.module.css";
@@ -304,35 +305,15 @@ const ChunkCardHolder = (props) => {
         {/* Unused LineHolder for flexbox spacing. */}
         {props.formula.map((formulaItem, index) => {
           let { word, structureChunk, backedUpStructureChunk } = formulaItem;
+
+          let finalIndex = props.formula.length - 1;
+
           return (
             <Fragment key={`chunkCardOuterFragment-${index}`}>
-              {index ? (
-                <div
-                  key={`plusButton-${index}`}
-                  alt="Plus icon"
-                  className={styles.plusButton}
-                  onClick={() => {
-                    let newLemma = prompt("Enter new lemma");
-                    if (newLemma) {
-                      props.setFormula((prevFormula) => {
-                        let newFormulaObject = {
-                          word: newLemma,
-                          structureChunk: null,
-                        };
-                        return [
-                          ...prevFormula.slice(0, index),
-                          newFormulaObject,
-                          ...prevFormula.slice(index),
-                        ];
-                      });
-                    }
-                  }}
-                >
-                  &#8853;
-                </div>
-              ) : (
-                ""
-              )}
+              <AddChunkButton
+                setFormula={props.setFormula}
+                formulaItemIndex={index}
+              />
               <ChunkCard
                 key={`${index}-${word}`}
                 batch={props.batch}
@@ -360,6 +341,14 @@ const ChunkCardHolder = (props) => {
                 highlightedCard={highlightedCard}
                 setHighlightedCard={setHighlightedCard}
               />
+              {index === finalIndex ? (
+                <AddChunkButton
+                  setFormula={props.setFormula}
+                  formulaItemIndex={index + 1}
+                />
+              ) : (
+                ""
+              )}
             </Fragment>
           );
         })}
