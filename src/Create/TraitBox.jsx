@@ -742,7 +742,9 @@ class TraitBox extends Component {
                                             traitKeyRegulator.name
                                           );
                                         } else {
-                                          alert(helpTexts.traitKeyRegulators);
+                                          this.props.setPopup(
+                                            helpTexts.traitKeyRegulators
+                                          );
                                         }
                                       }}
                                     >

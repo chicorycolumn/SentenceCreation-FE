@@ -3,8 +3,23 @@ const uUtils = require("./universalUtils.js");
 exports.traitKeyRegulators = [
   {
     name: "formulaImportantTraitKeys",
-    tooltipText: "Make formula important trait key",
-    buttonText: "F",
+    tooltipText: "Upgrade importance of trait",
+    buttonText: "+",
+  },
+  {
+    name: "educatorBlocksAnnotationsForTheseTraitKeys",
+    tooltipText: "Block annotations for trait",
+    buttonText: "ɐ",
+  },
+  {
+    name: "merelyPreferredChoicesForQuestionSentence",
+    tooltipText: "Downgrade importance of trait",
+    buttonText: "-",
+  },
+  {
+    name: null,
+    tooltipText: "Get info about these buttons",
+    buttonText: "?",
   },
   // {
   //   name: "counterfactuallyImportantTraitKeys", //Not used in BE.
@@ -16,21 +31,6 @@ exports.traitKeyRegulators = [
   //   tooltipText: "Make hidden trait key",
   //   buttonText: "H",
   // },
-  {
-    name: "educatorBlocksAnnotationsForTheseTraitKeys",
-    tooltipText: "Block annotations for trait key",
-    buttonText: "B",
-  },
-  {
-    name: "merelyPreferredChoicesForQuestionSentence",
-    tooltipText: "Mark traitValue as merely preferred",
-    buttonText: "P",
-  },
-  {
-    name: null,
-    tooltipText: "Get info about these buttons",
-    buttonText: "?",
-  },
 ];
 
 exports.isFixedChunk = (stCh) => {

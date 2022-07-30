@@ -488,6 +488,7 @@ const ChunkCard = (props) => {
                     }
                     stemFoundForFlowerBrace={props.stemFoundForFlowerBrace}
                     setHighlightedCard={props.setHighlightedCard}
+                    setPopup={props.setPopup}
                   />
                 )
               );
@@ -519,6 +520,7 @@ const ChunkCard = (props) => {
                     structureChunk={structureChunk}
                     backedUpStructureChunk={props.backedUpStructureChunk}
                     setHighlightedCard={props.setHighlightedCard}
+                    setPopup={props.setPopup}
                   />
                 )
             )}

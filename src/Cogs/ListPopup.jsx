@@ -37,32 +37,36 @@ const ListPopup = (props) => {
         </div>
 
         <div className={styles.bottomHolder}>
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                {props.data.headers.map((header, hIndex) => (
-                  <th key={`${props.data.title.slice(0, 10)}-th-${hIndex}`}>
-                    {header}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-
-            <tbody>
-              {props.data.rows.map((el, rIndex) => (
-                <tr
-                  className={styles.tablerow}
-                  key={`${props.data.title}-tr-${rIndex}`}
-                >
-                  <td>{rIndex + 1}</td>
-                  {el.map((item, dIndex) => (
-                    <td key={`${props.data.title}-td-${dIndex}`}>{item}</td>
+          {props.data.text ? (
+            props.data.text.split("<br>").map((line) => <p>{line}</p>)
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  {props.data.headers.map((header, hIndex) => (
+                    <th key={`${props.data.title.slice(0, 10)}-th-${hIndex}`}>
+                      {header}
+                    </th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                {props.data.rows.map((el, rIndex) => (
+                  <tr
+                    className={styles.tablerow}
+                    key={`${props.data.title}-tr-${rIndex}`}
+                  >
+                    <td>{rIndex + 1}</td>
+                    {el.map((item, dIndex) => (
+                      <td key={`${props.data.title}-td-${dIndex}`}>{item}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </>

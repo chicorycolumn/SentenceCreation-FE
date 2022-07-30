@@ -25,7 +25,6 @@ const ChunkCardHolder = (props) => {
   const [flowerSearchingForStem, setFlowerSearchingForStem] = useState();
   const [stemFoundForFlower, setStemFoundForFlower] = useState();
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
-  const [showListPopup, setShowListPopup] = useState();
   const [listPopupData, setListPopupData] = useState();
   const [chunkOrders, setChunkOrders] = useState([]);
   const [showAllTraitBoxes, setShowAllTraitBoxes] = useState(false);
@@ -60,11 +59,6 @@ const ChunkCardHolder = (props) => {
       return prevFormula;
     });
     setMeaninglessCounter((prev) => prev + 1);
-  };
-
-  const setPopup = (data) => {
-    setListPopupData(data);
-    setShowListPopup(true);
   };
 
   const checkForStChsWithNoLObjs = () => {
@@ -143,11 +137,11 @@ const ChunkCardHolder = (props) => {
 
   return (
     <div className={styles.cardHolderContainer}>
-      {showListPopup && (
+      {listPopupData && (
         <ListPopup
           exit={() => {
-            setShowListPopup(false);
             setHighlightedCard();
+            setListPopupData();
           }}
           data={listPopupData}
         />
@@ -209,7 +203,7 @@ const ChunkCardHolder = (props) => {
                       return;
                     }
 
-                    setPopup({
+                    setListPopupData({
                       title: `${payload.length} sentence${
                         payload.length > 1 ? "s" : ""
                       } from traits you specified`,
@@ -337,7 +331,7 @@ const ChunkCardHolder = (props) => {
                 editLemma={(newLemma, chunkId, stCh) => {
                   editLemmaAtIndex(index, newLemma, chunkId, stCh);
                 }}
-                setPopup={setPopup}
+                setPopup={setListPopupData}
                 highlightedCard={highlightedCard}
                 setHighlightedCard={setHighlightedCard}
               />
