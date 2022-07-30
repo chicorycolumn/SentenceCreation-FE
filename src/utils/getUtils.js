@@ -5,7 +5,7 @@ const baseUrl = "http://localhost:9090/api";
 
 export const frontendOnlyTraits = ["booleanTraits", "isGhostChunk"];
 
-export const backendOnlyTraits = ["allohomInfo"];
+export const backendOnlyTraits = ["allohomInfo", "hiddenTraits"];
 
 export const backendifyStructureChunk = (stCh) => {
   if (stCh.booleanTraits) {

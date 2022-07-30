@@ -112,11 +112,7 @@ exports.testStChs = {
       expectedTypeOnStCh: "boolean",
       needsNoValidation: true,
     },
-    counterfactuallyImportantTraitKeys: {
-      expectedTypeOnStCh: "array",
-      traitValue: [],
-      ultimatelyMultipleTraitValuesOkay: true,
-    },
+
     dontSpecifyOnThisChunk: {
       expectedTypeOnStCh: "boolean",
     },
@@ -148,8 +144,8 @@ exports.testStChs = {
     chunkId: {
       expectedTypeOnStCh: "string",
     },
-    preferredChoicesForQuestionSentence: {
-      expectedTypeOnStCh: "keyValueObject",
+    merelyPreferredChoicesForQuestionSentence: {
+      expectedTypeOnStCh: "array",
     },
     agreeWith: {
       expectedTypeOnStCh: "string",
@@ -287,11 +283,7 @@ exports.testStChs = {
       expectedTypeOnStCh: "boolean",
       needsNoValidation: true,
     },
-    counterfactuallyImportantTraitKeys: {
-      expectedTypeOnStCh: "array",
-      ultimatelyMultipleTraitValuesOkay: true,
-      traitValue: [],
-    },
+
     dontSpecifyOnThisChunk: {
       expectedTypeOnStCh: "boolean",
     },
@@ -318,8 +310,8 @@ exports.testStChs = {
     chunkId: {
       expectedTypeOnStCh: "string",
     },
-    preferredChoicesForQuestionSentence: {
-      expectedTypeOnStCh: "keyValueObject",
+    merelyPreferredChoicesForQuestionSentence: {
+      expectedTypeOnStCh: "array",
     },
     agreeWith: {
       expectedTypeOnStCh: "string",

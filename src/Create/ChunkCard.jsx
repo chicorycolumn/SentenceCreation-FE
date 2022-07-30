@@ -446,6 +446,10 @@ const ChunkCard = (props) => {
                 let obj = {};
 
                 idUtils.traitKeyRegulators.forEach((traitRegulator) => {
+                  if (!traitRegulator.name) {
+                    return;
+                  }
+
                   obj[traitRegulator.name] = structureChunk[traitRegulator.name]
                     ? structureChunk[traitRegulator.name].traitValue
                     : [];

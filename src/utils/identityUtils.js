@@ -6,20 +6,30 @@ exports.traitKeyRegulators = [
     tooltipText: "Make formula important trait key",
     buttonText: "F",
   },
-  {
-    name: "counterfactuallyImportantTraitKeys",
-    tooltipText: "Make counterfactually important trait key",
-    buttonText: "C",
-  },
-  {
-    name: "hiddenTraits",
-    tooltipText: "Make hidden trait key",
-    buttonText: "H",
-  },
+  // {
+  //   name: "counterfactuallyImportantTraitKeys", //Not used in BE.
+  //   tooltipText: "Make counterfactually important trait key",
+  //   buttonText: "C",
+  // },
+  // {
+  //   name: "hiddenTraits", //Only set internally in BE, for tantum nouns.
+  //   tooltipText: "Make hidden trait key",
+  //   buttonText: "H",
+  // },
   {
     name: "educatorBlocksAnnotationsForTheseTraitKeys",
     tooltipText: "Block annotations for trait key",
     buttonText: "B",
+  },
+  {
+    name: "merelyPreferredChoicesForQuestionSentence",
+    tooltipText: "Mark traitValue as merely preferred",
+    buttonText: "P",
+  },
+  {
+    name: null,
+    tooltipText: "Get info about these buttons",
+    buttonText: "?",
   },
 ];
 

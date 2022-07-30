@@ -193,11 +193,11 @@ const diUtils = {
 
     orderedTraitKeys = [...orderedTraitKeys, ...lexicalTraitKeys];
 
+    const length = orderedTraitKeys.length;
+
     if (stCh.booleanTraits) {
       orderedTraitKeys.push("booleanTraits");
     }
-
-    const length = orderedTraitKeys.length;
 
     // orderedTraitKeys = [...orderedTraitKeys, ...booleanTraitKeys];
 
@@ -220,7 +220,9 @@ const diUtils = {
       (traitKey) =>
         ![
           "wordtype",
-          ...idUtils.traitKeyRegulators.map((tkr) => tkr.name),
+          ...idUtils.traitKeyRegulators
+            .map((tkr) => tkr.name)
+            .filter((el) => el),
         ].includes(traitKey)
     );
 

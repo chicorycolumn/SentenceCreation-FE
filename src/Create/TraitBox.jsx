@@ -7,6 +7,7 @@ import $ from "jquery";
 import diUtils from "../utils/displayUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 const idUtils = require("../utils/identityUtils.js");
+const helpTexts = require("../utils/helpTexts.js");
 
 class TraitBox extends Component {
   state = {
@@ -735,10 +736,14 @@ class TraitBox extends Component {
                                       }`}
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        this.props.regulateTraitKey(
-                                          traitKey,
-                                          traitKeyRegulator.name
-                                        );
+                                        if (traitKeyRegulator.name) {
+                                          this.props.regulateTraitKey(
+                                            traitKey,
+                                            traitKeyRegulator.name
+                                          );
+                                        } else {
+                                          alert(helpTexts.traitKeyRegulators);
+                                        }
                                       }}
                                     >
                                       {traitKeyRegulator.buttonText}
