@@ -596,7 +596,13 @@ class TraitBox extends Component {
                   return (
                     <div
                       key={`${this.props.chunkCardKey}-${traitKey}_div-for-textarea`}
-                      className={`${styles.traitValuesBox} ${
+                      className={`
+                      ${styles.traitValuesBox} 
+                      ${
+                        idUtils.agreementTraits.includes(traitKey) &&
+                        styles.reducedHeight
+                      } 
+                      ${
                         traitKey === "chunkId" && gstyles.tooltipHolderDelayed
                       }`}
                     >
@@ -612,14 +618,22 @@ class TraitBox extends Component {
                           idUtils.agreementTraits.includes(traitKey) ||
                           traitObject.possibleTraitValues
                         }
-                        className={`${styles.traitValuesInput} ${
+                        className={`
+                        ${
+                          traitKey === "chunkId"
+                            ? styles.chunkIdDisplay
+                            : styles.traitValuesInput
+                        } 
+                        ${
                           idUtils.isTagTrait(traitKey) &&
                           styles.traitValuesInputLarge
-                        } ${styles.preventSelection} ${
+                        } 
+                        ${styles.preventSelection} 
+                        ${
                           [
                             "booleanTraits",
                             ...idUtils.agreementTraits,
-                          ].includes(traitKey) && styles.smallText
+                          ].includes(traitKey) && styles.verySmallText
                         }`}
                         value={
                           `textarea-${traitKey}` === this.state.activeTextarea
@@ -701,9 +715,11 @@ class TraitBox extends Component {
                           <div className={styles.sideButtonHolder}>
                             <button
                               alt="Cross icon"
-                              className={`${gstyles.sideButton} ${
-                                gstyles.redButton
-                              } ${
+                              className={`
+                              ${gstyles.sideButton} 
+                              ${gstyles.fullHeight} 
+                              ${gstyles.redButton} 
+                              ${
                                 traitObject.isLexical
                                   ? styles.clearButtonMini
                                   : styles.clearButton
@@ -726,6 +742,7 @@ class TraitBox extends Component {
                                   (traitKeyRegulator) => (
                                     <button
                                       key={traitKeyRegulator.name}
+                                      alt={traitKeyRegulator.altText}
                                       className={`${gstyles.blueButton} ${
                                         styles.miniButton
                                       } ${gstyles.tooltipHolderDelayed} ${
@@ -773,7 +790,7 @@ class TraitBox extends Component {
                 traitKey === "booleanTraits"
                   ? styles.inputOptionsHolder2
                   : styles.inputOptionsHolder
-              } ${traitKey === "booleanTraits" && styles.smallText}`}
+              } ${traitKey === "booleanTraits" && styles.verySmallText}`}
             >
               {traitObject.expectedTypeOnStCh === "array" && (
                 <div
@@ -856,7 +873,15 @@ class TraitBox extends Component {
                             }}
                           />
                           <label
-                            className={styles.checkboxLabel}
+                            className={`
+                            ${styles.checkboxLabel}
+                            ${
+                              [
+                                "booleanTraits",
+                                ...idUtils.agreementTraits,
+                              ].includes(traitKey) && styles.smallText
+                            }
+                            `}
                             htmlFor={`${traitKey}-${index}`}
                           >
                             {possibleTraitValue}

@@ -1,11 +1,14 @@
 .sideButton {
-  font-size: 18px;
   box-shadow: none;
   border: black solid 0.5px;
   padding: 0px;
   width: 30px !important;
   height: 30px;
-  font-size: 25px;
+  font-size: 20px;
+}
+
+.fullHeight {
+  height: 100% !important;
 }
 
 .squareButton {

@@ -5,21 +5,25 @@ exports.traitKeyRegulators = [
     name: "formulaImportantTraitKeys",
     tooltipText: "Upgrade importance of trait",
     buttonText: "+",
+    altText: "Plus icon",
   },
   {
     name: "educatorBlocksAnnotationsForTheseTraitKeys",
     tooltipText: "Block annotations for trait",
     buttonText: "ɐ",
+    altText: "Inverted lowercase letter A icon",
   },
   {
     name: "merelyPreferredChoicesForQuestionSentence",
     tooltipText: "Downgrade importance of trait",
     buttonText: "-",
+    altText: "Minus icon",
   },
   {
     name: null,
     tooltipText: "Get info about these buttons",
     buttonText: "?",
+    altText: "Question mark icon",
   },
   // {
   //   name: "counterfactuallyImportantTraitKeys", //Not used in BE.
