@@ -3,7 +3,7 @@ import LanguageContext from "../context/LanguageContext.js";
 
 const FormulaForm = (props) => {
   const [formulaInput, setFormulaInput] = useState(
-    "kobieta tu jest *bardzo czerwona"
+    "kobieta jest *bardzo czerwona"
   );
   const [savedFormulaInput, setSavedFormulaInput] = useState();
 

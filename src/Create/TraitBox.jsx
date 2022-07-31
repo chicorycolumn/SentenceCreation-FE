@@ -397,7 +397,7 @@ class TraitBox extends Component {
             !this.state.traitValueInputString &&
             !this.state.traitValueInputString2 &&
             styles.badBox
-          } ${traitKey === "booleanTraits" && gstyles.oddEdges}
+          } ${this.props.traitKeysGroup === 2 && gstyles.oddEdges}
         `}
           onClick={() => {
             if (isClickableFlowerstem(this.props)) {

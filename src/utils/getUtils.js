@@ -1,4 +1,5 @@
 import axios from "axios";
+import idUtils from "./identityUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
@@ -8,13 +9,16 @@ export const frontendOnlyTraits = ["booleanTraits", "isGhostChunk"];
 export const backendOnlyTraits = ["allohomInfo", "hiddenTraits"];
 
 export const backendifyStructureChunk = (stCh) => {
+  let processedStCh = {};
+
   if (stCh.booleanTraits) {
     stCh.booleanTraits.traitValue.forEach((booleanTrait) => {
-      stCh[booleanTrait] = { expectedTypeOnStCh: "boolean", traitValue: true };
+      processedStCh[booleanTrait] = {
+        expectedTypeOnStCh: "boolean",
+        traitValue: true,
+      };
     });
   }
-
-  let processedStCh = {};
 
   Object.keys(stCh).forEach((traitKey) => {
     if (frontendOnlyTraits.includes(traitKey)) {
@@ -28,10 +32,26 @@ export const backendifyStructureChunk = (stCh) => {
     }
   });
 
+  Object.keys(idUtils.renamedTraitKeys).forEach((backendKey) => {
+    let frontendKey = idUtils.renamedTraitKeys[backendKey];
+    if (Object.keys(processedStCh).includes(frontendKey)) {
+      processedStCh[backendKey] = processedStCh[frontendKey];
+      delete processedStCh[frontendKey];
+    }
+  });
+
   return processedStCh;
 };
 
 export const frontendifyStructureChunk = (stCh) => {
+  Object.keys(idUtils.renamedTraitKeys).forEach((backendKey) => {
+    let frontendKey = idUtils.renamedTraitKeys[backendKey];
+    if (Object.keys(stCh).includes(backendKey)) {
+      stCh[frontendKey] = stCh[backendKey];
+      delete stCh[backendKey];
+    }
+  });
+
   let booleanTraits = {
     expectedTypeOnStCh: "array",
     possibleTraitValues: [],

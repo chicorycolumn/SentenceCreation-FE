@@ -465,6 +465,7 @@ const ChunkCard = (props) => {
                 (traitKey === "chunkId" ||
                   !idUtils.isFixedChunk(structureChunk)) && (
                   <TraitBox
+                    traitKeysGroup={1}
                     chunkId={chunkId}
                     chunkCardKey={props.chunkCardKey}
                     key={`${props.chunkCardKey}-${traitKey}`}
@@ -511,6 +512,7 @@ const ChunkCard = (props) => {
                 !diUtils.traitsToNotDisplayInOwnBox.includes(traitKey) &&
                 !idUtils.isFixedChunk(structureChunk) && (
                   <TraitBox
+                    traitKeysGroup={2}
                     key={traitKey}
                     traitKey={traitKey}
                     chunkCardKey={props.chunkCardKey}
