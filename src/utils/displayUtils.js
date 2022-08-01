@@ -170,7 +170,9 @@ const diUtils = {
       "chunkId",
       "andTags",
       "orTags",
-      ...idUtils.agreementTraits,
+      ...idUtils.agreementTraits.filter(
+        (agreementTrait) => stCh[agreementTrait]
+      ),
     ];
     let lexicalTraitKeys = [];
     // let booleanTraitKeys = [];
@@ -207,11 +209,16 @@ const diUtils = {
         .filter((traitKey) => !orderedTraitKeys.includes(traitKey))
         .sort((x, y) => x.localeCompare(y)),
     ];
+
+    let countOfLeftoverTraitKeys =
+      orderedTraitKeys.length - Object.keys(stCh).length;
+
     if (
-      orderedTraitKeys.length !== Object.keys(stCh).length &&
-      !idUtils.isFixedChunk(stCh)
+      !idUtils.isFixedChunk(stCh) &&
+      countOfLeftoverTraitKeys &&
+      !(countOfLeftoverTraitKeys === 3 && stCh.wordtype !== "pro")
     ) {
-      throw `gluj: orderedTraitKeys.length ${
+      throw `gluj: ${stCh.wordtype} orderedTraitKeys.length ${
         orderedTraitKeys.length
       } !== Object.keys(stCh).length ${Object.keys(stCh).length}`;
     }
