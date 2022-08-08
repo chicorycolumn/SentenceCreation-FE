@@ -5,7 +5,8 @@ const uUtils = require("./universalUtils.js");
 const idUtils = require("./identityUtils.js");
 
 const diUtils = {
-  traitsToNotDisplayInOwnBox: ["orTags", "id", "lemma"],
+  traitsNotToDisplayInOwnBox: ["orTags", "id", "lemma", "lObjId"],
+
   connectChunkIdWithItsFlowers: (
     flowerstemID,
     flowerstemValue,

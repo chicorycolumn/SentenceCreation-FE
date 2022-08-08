@@ -78,14 +78,11 @@ exports.isChunkId = (traitKey) => {
 
 exports.agreementTraits = [
   "agreeWith",
+  "agreeWith2",
   // "connectedTo",
-  "agreeWithP1",
-  "agreeWithP2",
-  "agreeWithP3",
 ];
 
 exports.renamedTraitKeys = {
-  postHocAgreeWithPrimary: "agreeWithP1",
-  postHocAgreeWithSecondary: "agreeWithP2",
-  postHocAgreeWithTertiary: "agreeWithP3",
+  // postHocAgreeWithPrimary: "agreeWith",
+  // postHocAgreeWithSecondary: "agreeWith2",
 };

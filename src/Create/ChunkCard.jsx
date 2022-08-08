@@ -62,6 +62,9 @@ const ChunkCard = (props) => {
       .reverse()
       .join("")}-${stCh.lemma}`;
 
+    stCh.lObjId = stCh.id;
+    delete stCh.id;
+
     setStructureChunkAndFormula(stCh);
     setBackedUpStructureChunkAndFormula(uUtils.copyWithoutReference(stCh));
   };
@@ -415,10 +418,34 @@ const ChunkCard = (props) => {
         </h1>
       </div>
 
-      <p className={`${styles.wordtype} ${gstyles.tooltipHolderDelayed}`}>
-        {structureChunk && structureChunk.id}
-        <Tooltip text="lemma ID (of an example lemma)" />
-      </p>
+      <div className={`${styles.bottomHolder}`}>
+        <div className={`${gstyles.invisible} ${styles.smallButton}`}></div>
+        <p className={`${styles.lObjID} ${gstyles.tooltipHolderDelayed}`}>
+          {structureChunk && structureChunk.lObjId}
+          <Tooltip text="lemma ID (of an example lemma)" />
+        </p>
+        <button
+          alt="Bullseye icon"
+          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed} ${styles.smallButton}`}
+          onClick={(e) => {
+            setStructureChunk((prev) => {
+              prev.specificIds.traitValue = prev.specificIds.traitValue
+                ? prev.specificIds.traitValue.includes(structureChunk.lObjId)
+                  ? prev.specificIds.traitValue
+                  : [...prev.specificIds.traitValue, structureChunk.lObjId]
+                : [structureChunk.lObjId];
+              return prev;
+            });
+            setShowTraitKeysGroupTwo(false);
+            setTimeout(() => {
+              setShowTraitKeysGroupTwo(true);
+            }, 10);
+          }}
+        >
+          &#9678;
+          <Tooltip text="Set as specific lemma for this chunk" />
+        </button>
+      </div>
       {structureChunk && (
         <div className={styles.traitBoxesHolder}>
           <ToggleShowButton
@@ -461,7 +488,7 @@ const ChunkCard = (props) => {
               let traitRegulatorValues = getTraitRegulatorValues();
 
               return (
-                !diUtils.traitsToNotDisplayInOwnBox.includes(traitKey) &&
+                !diUtils.traitsNotToDisplayInOwnBox.includes(traitKey) &&
                 (traitKey === "chunkId" ||
                   !idUtils.isFixedChunk(structureChunk)) && (
                   <TraitBox
@@ -473,7 +500,7 @@ const ChunkCard = (props) => {
                     traitKey2={traitKey2}
                     traitObject={traitObject}
                     traitObject2={traitObject2}
-                    lObjId={structureChunk.id}
+                    lObjId={structureChunk.lObjId}
                     word={props.word}
                     setStructureChunkAndFormula={setStructureChunkAndFormula}
                     regulateTraitKey={regulateTraitKey}
@@ -509,7 +536,7 @@ const ChunkCard = (props) => {
           {showTraitKeysGroupTwo &&
             traitKeysGroup2.map(
               (traitKey) =>
-                !diUtils.traitsToNotDisplayInOwnBox.includes(traitKey) &&
+                !diUtils.traitsNotToDisplayInOwnBox.includes(traitKey) &&
                 !idUtils.isFixedChunk(structureChunk) && (
                   <TraitBox
                     traitKeysGroup={2}

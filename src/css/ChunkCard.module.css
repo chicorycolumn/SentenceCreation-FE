@@ -100,13 +100,29 @@
   font-size: 20px;
 }
 
-.wordtype {
-  font-size: 12px;
+.bottomHolder {
   margin: 0px;
-  margin-top: 82.5px;
+  margin-top: 79.5px;
   padding: 0px;
   position: absolute;
-  width: 100%;
+  width: 160px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.lObjID {
+  font-size: 12px;
+  margin: 0px;
   color: rgba(0, 0, 0, 0.5);
-  /* top: 0px; */
+  margin-bottom: 1px;
+}
+
+.smallButton {
+  font-size: 14px;
+  width: 18px !important;
+  max-width: 18px !important;
+  height: 18px !important;
+  max-height: 18px !important;
 }
