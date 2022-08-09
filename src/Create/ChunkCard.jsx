@@ -189,6 +189,11 @@ const ChunkCard = (props) => {
   let isFixedChunkOrNoChunk =
     !structureChunk || idUtils.isFixedChunk(structureChunk);
 
+  let hasSpecificId =
+    structureChunk &&
+    structureChunk.specificIds &&
+    structureChunk.specificIds.traitValue.length;
+
   return (
     <div
       className={`${styles.card} 
@@ -408,43 +413,69 @@ const ChunkCard = (props) => {
             //   });
             // }
           }}
-          className={`${styles.lemma} ${
+          className={`
+          ${styles.lemma} 
+          ${
             structureChunk &&
             structureChunk.isGhostChunk &&
             styles.lemmaGhostChunk
-          }`}
+          }
+          ${hasSpecificId && gstyles.boldish}          
+          `}
         >
           {props.word}
         </h1>
       </div>
 
       <div className={`${styles.bottomHolder}`}>
-        <div className={`${gstyles.invisible} ${styles.smallButton}`}></div>
+        {structureChunk && !idUtils.isFixedChunk(structureChunk) && (
+          <div className={`${gstyles.invisible} ${styles.smallButton}`}></div>
+        )}
+
         <p className={`${styles.lObjID} ${gstyles.tooltipHolderDelayed}`}>
           {structureChunk && structureChunk.lObjId}
           <Tooltip text="lemma ID (of an example lemma)" />
         </p>
-        <button
-          alt="Bullseye icon"
-          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed} ${styles.smallButton}`}
-          onClick={(e) => {
-            setStructureChunk((prev) => {
-              prev.specificIds.traitValue = prev.specificIds.traitValue
-                ? prev.specificIds.traitValue.includes(structureChunk.lObjId)
-                  ? prev.specificIds.traitValue
-                  : [...prev.specificIds.traitValue, structureChunk.lObjId]
-                : [structureChunk.lObjId];
-              return prev;
-            });
-            setShowTraitKeysGroupTwo(false);
-            setTimeout(() => {
-              setShowTraitKeysGroupTwo(true);
-            }, 10);
-          }}
-        >
-          &#9678;
-          <Tooltip text="Set as specific lemma for this chunk" />
-        </button>
+        {structureChunk && !idUtils.isFixedChunk(structureChunk) && (
+          <button
+            alt="Bullseye icon"
+            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed} ${styles.smallButton}`}
+            onClick={(e) => {
+              e.preventDefault();
+
+              setStructureChunk((prev) => {
+                prev = uUtils.copyWithoutReference(prev);
+
+                if (
+                  prev.specificIds.traitValue &&
+                  prev.specificIds.traitValue.length
+                ) {
+                  prev.specificIds.traitValue = [];
+                  prev.andTags.traitValue =
+                    props.backedUpStructureChunk.andTags.traitValue.slice();
+                  prev.orTags.traitValue =
+                    props.backedUpStructureChunk.orTags.traitValue.slice();
+                } else {
+                  prev.specificIds.traitValue = [structureChunk.lObjId];
+                  prev.andTags.traitValue = [];
+                  prev.orTags.traitValue = [];
+                }
+
+                return prev;
+              });
+
+              setShowTraitKeysGroupTwo(!hasSpecificId);
+            }}
+          >
+            {hasSpecificId ? <span>&#11044;</span> : <span>&#9678;</span>}
+            <Tooltip
+              text={`${
+                hasSpecificId ? "Remove" : "Set"
+              } as specific lemma for this chunk`}
+              number={5}
+            />
+          </button>
+        )}
       </div>
       {structureChunk && (
         <div className={styles.traitBoxesHolder}>
@@ -489,6 +520,7 @@ const ChunkCard = (props) => {
 
               return (
                 !diUtils.traitsNotToDisplayInOwnBox.includes(traitKey) &&
+                !(idUtils.isTagTrait(traitKey) && hasSpecificId) &&
                 (traitKey === "chunkId" ||
                   !idUtils.isFixedChunk(structureChunk)) && (
                   <TraitBox

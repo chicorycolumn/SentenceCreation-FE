@@ -389,15 +389,13 @@ class TraitBox extends Component {
             (this.state.isExtraHighlighted ||
               this.state.isFlowerSearchingForStem) &&
             gstyles.highlighted2
-          } ${
+          } 
+          ${
             idUtils.isTagTrait(traitKey) &&
-            idUtils.wordtypesWhichMustHavePopulatedTags.includes(
-              structureChunk.wordtype
-            ) &&
-            !this.state.traitValueInputString &&
-            !this.state.traitValueInputString2 &&
+            idUtils.isBadChunk(structureChunk) &&
             styles.badBox
-          } ${this.props.traitKeysGroup === 2 && gstyles.oddEdges}
+          } 
+          ${this.props.traitKeysGroup === 2 && gstyles.oddEdges}
         `}
           onClick={() => {
             if (isClickableFlowerstem(this.props)) {

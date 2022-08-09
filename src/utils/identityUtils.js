@@ -1,4 +1,5 @@
 const uUtils = require("./universalUtils.js");
+const idUtils = require("./identityUtils.js");
 
 exports.traitKeyRegulators = [
   {
@@ -85,4 +86,19 @@ exports.agreementTraits = [
 exports.renamedTraitKeys = {
   // postHocAgreeWithPrimary: "agreeWith",
   // postHocAgreeWithSecondary: "agreeWith2",
+};
+
+exports.getBadChunks = (formula) => {
+  return formula
+    .map((el) => el.structureChunk)
+    .filter((stCh) => idUtils.isBadChunk(stCh));
+};
+
+exports.isBadChunk = (stCh) => {
+  return (
+    idUtils.wordtypesWhichMustHavePopulatedTags.includes(stCh.wordtype) &&
+    uUtils.isEmpty(stCh.specificIds.traitValue) &&
+    uUtils.isEmpty(stCh.andTags.traitValue) &&
+    uUtils.isEmpty(stCh.orTags.traitValue)
+  );
 };

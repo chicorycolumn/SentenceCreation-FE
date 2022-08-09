@@ -408,7 +408,11 @@
 }
 
 .bold {
-  font-weight: bold !important;
+  font-weight: 580 !important;
+}
+
+.boldish {
+  font-weight: 450 !important;
 }
 
 .oddEdges {

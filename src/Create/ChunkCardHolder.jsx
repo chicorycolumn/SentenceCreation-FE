@@ -81,26 +81,6 @@ const ChunkCardHolder = (props) => {
     }
   };
 
-  const checkForStChsWithNoTags = () => {
-    let sentenceStructure = props.formula.map((el) => el.structureChunk);
-
-    let badChunks = sentenceStructure.filter(
-      (stCh) =>
-        idUtils.wordtypesWhichMustHavePopulatedTags.includes(stCh.wordtype) &&
-        uUtils.isEmpty(stCh.andTags.traitValue) &&
-        uUtils.isEmpty(stCh.orTags.traitValue)
-    );
-
-    if (badChunks.length) {
-      alert(
-        `Cannot query whole sentence because no tags are specified on chunk "${badChunks
-          .map((badCh) => badCh.chunkId.traitValue)
-          .join('","')}".`
-      );
-      return true;
-    }
-  };
-
   useEffect(() => {
     if (props.formula.every((obj) => obj.structureChunk)) {
       if (!chunkOrders.length) {
@@ -179,7 +159,17 @@ const ChunkCardHolder = (props) => {
             onClick={(e) => {
               e.target.blur();
 
-              if (checkForStChsWithNoLObjs() || checkForStChsWithNoTags()) {
+              let badChunks = idUtils.getBadChunks(props.formula);
+              if (badChunks.length) {
+                alert(
+                  `Cannot query whole sentence because no tags are specified on chunk "${badChunks
+                    .map((badCh) => badCh.chunkId.traitValue)
+                    .join('","')}".`
+                );
+                return;
+              }
+
+              if (checkForStChsWithNoLObjs()) {
                 return;
               }
 
