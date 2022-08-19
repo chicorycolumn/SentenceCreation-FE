@@ -181,6 +181,14 @@
   width: 210px;
 }
 
+.tooltip6 {
+  margin-left: -100px;
+  margin-top: -6px;
+  opacity: 1;
+  font-size: 14px;
+  min-width: 80px;
+}
+
 .npeLight {
   background-color: rgb(192, 231, 255) !important;
 }
