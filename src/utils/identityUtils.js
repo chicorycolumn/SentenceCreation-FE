@@ -52,10 +52,10 @@ exports.createFixedChunkFormulaItem = (word, index, formula) => {
         formulaItem.structureChunk.chunkId.traitValue.split("-")[1]
     );
 
-  let newNumber = index.toString() + Math.random().toString().slice(2, 5);
+  let newNumber = index.toString() + Math.random().toString().slice(2, 6);
 
   while (existingNumbers.includes(newNumber)) {
-    newNumber = index.toString() + Math.random().toString().slice(2, 5);
+    newNumber = index.toString() + Math.random().toString().slice(2, 6);
   }
 
   let chunkId = `fix-${newNumber}-${word}`;

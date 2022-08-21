@@ -5,6 +5,58 @@ const uUtils = require("./universalUtils.js");
 const idUtils = require("./identityUtils.js");
 
 const diUtils = {
+  addChunkId: (stCh, chunkCardIndex, formula) => {
+    let existingChunkIds = [];
+    if (formula) {
+      existingChunkIds = formula
+        .map((formulaItem) => formulaItem.structureChunk)
+        .filter((x) => x)
+        .map((structureChunk) => structureChunk.chunkId)
+        .filter((x) => x)
+        .map((chunkIdObj) => chunkIdObj.traitValue);
+    }
+
+    let idSplit = stCh.id.split("-");
+    let chunkIdBase = `${idSplit[1]}-${chunkCardIndex}`;
+
+    const createChunkId = (idSplit, chunkIdBase, appendRandomDigits) => {
+      let randomDigit = Math.random().toString()[2];
+      let randomDigits = appendRandomDigits
+        ? Math.random().toString().slice(2, 6)
+        : "";
+
+      if (stCh.lemma.includes("*")) {
+        return `${chunkIdBase}000${randomDigit}-${stCh.lemma
+          .split("")
+          .filter((char) => char !== "*")
+          .join("")}${randomDigits}`;
+      } else {
+        return `${chunkIdBase}${idSplit[2]
+          .split("")
+          .reverse()
+          .join("")}${randomDigit}-${stCh.lemma}${randomDigits}`;
+      }
+    };
+
+    let chunkId;
+
+    for (let i = 1; i <= 20; i++) {
+      chunkId = createChunkId(idSplit, chunkIdBase);
+      if (!existingChunkIds.includes(chunkId)) {
+        break;
+      }
+      if (i === 20) {
+        while (existingChunkIds.includes(chunkId)) {
+          chunkId = createChunkId(idSplit, chunkIdBase, true);
+        }
+      }
+    }
+
+    stCh.chunkId.traitValue = chunkId;
+    stCh.lObjId = stCh.id;
+    delete stCh.id;
+  },
+
   traitsNotToDisplayInOwnBox: ["orTags", "id", "lemma", "lObjId"],
 
   connectChunkIdWithItsFlowers: (

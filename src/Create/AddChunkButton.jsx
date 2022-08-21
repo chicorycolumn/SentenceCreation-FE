@@ -11,13 +11,14 @@ const AddChunkButton = (props) => {
         let newLemma = prompt("Enter new lemma");
         if (newLemma) {
           props.setFormula((prevFormula) => {
-            let newFormulaObject = {
+            let newFormulaItem = {
               word: newLemma,
               structureChunk: null,
+              formulaItemId: Math.random().toString().slice(2, 12),
             };
             return [
               ...prevFormula.slice(0, props.formulaItemIndex),
-              newFormulaObject,
+              newFormulaItem,
               ...prevFormula.slice(props.formulaItemIndex),
             ];
           });

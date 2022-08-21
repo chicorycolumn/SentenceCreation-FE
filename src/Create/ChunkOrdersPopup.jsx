@@ -244,9 +244,9 @@ const ChunkOrdersPopup = (props) => {
                   >
                     &times;
                   </button>
-                  {order.map((chunkId, index) => (
+                  {order.map((chunkId, subIndex) => (
                     <span
-                      key={`chunkOrder-${index}-${chunkId}-${index}`}
+                      key={`chunkOrder-${index}-${chunkId}-${subIndex}`}
                       className={`${styles.wordspan} ${
                         !isPrimary && gstyles.translucent2
                       }`}

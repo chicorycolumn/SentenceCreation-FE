@@ -53,18 +53,9 @@ const ChunkCard = (props) => {
     });
   };
 
-  const formatAndSetStructureChunk = (stCh) => {
+  const formatAndSetStructureChunk = (stCh, formula) => {
     stCh = getUtils.frontendifyStructureChunk(stCh);
-
-    let idSplit = stCh.id.split("-");
-    stCh.chunkId.traitValue = `${idSplit[1]}-${props.chunkCardIndex}${idSplit[2]
-      .split("")
-      .reverse()
-      .join("")}-${stCh.lemma}`;
-
-    stCh.lObjId = stCh.id;
-    delete stCh.id;
-
+    diUtils.addChunkId(stCh, props.chunkCardIndex, formula);
     setStructureChunkAndFormula(stCh);
     setBackedUpStructureChunkAndFormula(uUtils.copyWithoutReference(stCh));
   };
@@ -87,8 +78,9 @@ const ChunkCard = (props) => {
       setPromptData();
       let matchingStChs = lObjs.filter((lObj) => lObj.id === chosenId);
       if (matchingStChs.length === 1) {
-        formatAndSetStructureChunk(matchingStChs[0]);
+        formatAndSetStructureChunk(matchingStChs[0], props.formula);
       } else {
+        console.log("NO");
       }
     }
   }, [chosenId]);
@@ -143,7 +135,7 @@ const ChunkCard = (props) => {
           return;
         }
       } else {
-        formatAndSetStructureChunk(stCh);
+        formatAndSetStructureChunk(stCh, props.formula);
       }
     }
   }, [
@@ -428,17 +420,61 @@ const ChunkCard = (props) => {
       </div>
 
       <div className={`${styles.bottomHolder}`}>
-        {structureChunk && !idUtils.isFixedChunk(structureChunk) && (
-          <div className={`${gstyles.invisible} ${styles.smallButton}`}></div>
-        )}
+        {structureChunk && (
+          <button
+            alt="Face icon"
+            className={`${gstyles.cardButton1} ${
+              gstyles.tooltipHolderDelayed
+            } ${styles.smallButton} ${
+              (!structureChunk ||
+                !structureChunk.booleanTraits ||
+                !structureChunk.booleanTraits.possibleTraitValues.includes(
+                  "isPerson"
+                )) &&
+              gstyles.invisible
+            }`}
+            onClick={(e) => {
+              e.preventDefault();
 
+              setStructureChunk((prev) => {
+                let prevCopy = uUtils.copyWithoutReference(prev);
+
+                if (prevCopy.booleanTraits.traitValue.includes("isPerson")) {
+                  prevCopy.booleanTraits.traitValue =
+                    prevCopy.booleanTraits.traitValue.filter(
+                      (booleanTrait) => booleanTrait !== "isPerson"
+                    );
+                } else {
+                  prevCopy.booleanTraits.traitValue.push("isPerson");
+                }
+
+                return prevCopy;
+              });
+
+              setShowTraitKeysGroupTwo(
+                !structureChunk.booleanTraits.traitValue.includes("isPerson")
+              );
+            }}
+          >
+            {structureChunk.booleanTraits &&
+            structureChunk.booleanTraits.traitValue.includes("isPerson") ? (
+              <span>&#9865;</span>
+            ) : (
+              <span>&#9863;</span>
+            )}
+            <Tooltip
+              text="Set this as a person (ie disallow neuter gender)"
+              number={5}
+            />
+          </button>
+        )}
         <p className={`${styles.lObjID} ${gstyles.tooltipHolderDelayed}`}>
           {structureChunk && structureChunk.lObjId}
           <Tooltip text="lemma ID (of an example lemma)" />
         </p>
         {structureChunk && !idUtils.isFixedChunk(structureChunk) && (
           <button
-            alt="Bullseye icon"
+            alt="Target bullseye icon"
             className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed} ${styles.smallButton}`}
             onClick={(e) => {
               e.preventDefault();
