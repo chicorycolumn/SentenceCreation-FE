@@ -545,32 +545,34 @@ class TraitBox extends Component {
               {traitKey}
               {traitKey2 && ` / ${traitKey2}`}
             </p>
-            {this.state.isSelected && (
-              <button
-                className={`${styles.floatRightButton} ${gstyles.tooltipHolderDelayed}`}
-                alt="Six dots icon"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
+            {this.state.isSelected &&
+              !["booleanTraits"].includes(traitKey) &&
+              traitObject.possibleTraitValues && (
+                <button
+                  className={`${styles.floatRightButton} ${gstyles.tooltipHolderDelayed}`}
+                  alt="Six dots icon"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
 
-                  this.setState((prevState) => {
-                    let newString =
-                      prevState.traitValueInputString &&
-                      diUtils.asArray(prevState.traitValueInputString)
-                        .length === traitObject.possibleTraitValues.length
-                        ? ""
-                        : diUtils.asString(traitObject.possibleTraitValues);
+                    this.setState((prevState) => {
+                      let newString =
+                        prevState.traitValueInputString &&
+                        diUtils.asArray(prevState.traitValueInputString)
+                          .length === traitObject.possibleTraitValues.length
+                          ? ""
+                          : diUtils.asString(traitObject.possibleTraitValues);
 
-                    return {
-                      traitValueInputString: newString,
-                    };
-                  });
-                }}
-              >
-                &#10303;
-                <Tooltip text="Select all" number={6} />
-              </button>
-            )}
+                      return {
+                        traitValueInputString: newString,
+                      };
+                    });
+                  }}
+                >
+                  &#10303;
+                  <Tooltip text="Select all" number={6} />
+                </button>
+              )}
           </div>
           {(!uUtils.isEmpty(traitObject.traitValue) ||
             this.state.forceShowInput ||

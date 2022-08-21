@@ -420,7 +420,7 @@ const ChunkCard = (props) => {
             structureChunk.isGhostChunk &&
             styles.lemmaGhostChunk
           }
-          ${hasSpecificId && gstyles.boldish}          
+          ${hasSpecificId && gstyles.bold}          
           `}
         >
           {props.word}
