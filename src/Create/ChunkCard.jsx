@@ -422,7 +422,7 @@ const ChunkCard = (props) => {
       <div className={`${styles.bottomHolder}`}>
         {structureChunk && (
           <button
-            alt="Face icon"
+            alt="Person face icon"
             className={`${gstyles.cardButton1} ${
               gstyles.tooltipHolderDelayed
             } ${styles.smallButton} ${
