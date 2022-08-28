@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import LanguageContext from "../context/LanguageContext.js";
+import { createFormulaItemId } from "../utils/identityUtils.js";
 
 const FormulaForm = (props) => {
   const [formulaInput, setFormulaInput] = useState(
@@ -8,17 +9,22 @@ const FormulaForm = (props) => {
   const [savedFormulaInput, setSavedFormulaInput] = useState();
 
   const cardIt = (lang, input) => {
+    let formula = formulaInput || input;
+    console.log("CARD IT!", lang, formula);
     if (!lang) {
       return;
     }
-    let formula = formulaInput || input;
+
     if (formula) {
       setSavedFormulaInput(formula);
-      props.setFormula(
-        formula.split(" ").map((word) => {
-          return { word, structureChunk: null };
-        })
-      );
+      let formulaItemsArr = formula.split(" ").map((word) => {
+        return {
+          word,
+          structureChunk: null,
+          formulaItemId: createFormulaItemId(),
+        };
+      });
+      props.setFormula(formulaItemsArr);
     }
   };
 

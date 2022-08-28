@@ -126,7 +126,6 @@ class TraitBox extends Component {
       traitObject,
       traitKey2,
       word,
-      setStructureChunkAndFormula,
       wordtype,
       lObjId,
       structureChunk,
@@ -252,7 +251,7 @@ class TraitBox extends Component {
             }
           }
 
-          this.props.setStructureChunkAndFormula(newStructureChunk);
+          this.props.modifyStructureChunkOnThisFormulaItem(newStructureChunk);
           console.log("@2 Changing value.");
           exitTraitBox();
           exitTraitBox(false);

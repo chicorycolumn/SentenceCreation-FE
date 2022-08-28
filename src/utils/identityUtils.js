@@ -1,6 +1,10 @@
 const uUtils = require("./universalUtils.js");
 const idUtils = require("./identityUtils.js");
 
+exports.createFormulaItemId = () => {
+  return Math.random().toString().slice(2, 12);
+};
+
 exports.traitKeyRegulators = [
   {
     name: "formulaImportantTraitKeys",
@@ -42,7 +46,7 @@ exports.isFixedChunk = (stCh) => {
   return stCh.chunkId.traitValue.split("-")[0] === "fix";
 };
 
-exports.createFixedChunkFormulaItem = (word, index, formula) => {
+exports.createFixedChunk = (word, index, formula) => {
   word = word.slice(1);
 
   let existingNumbers = formula
@@ -64,6 +68,7 @@ exports.createFixedChunkFormulaItem = (word, index, formula) => {
     chunkId: { traitValue: chunkId },
     chunkValue: { traitValue: word },
     wordtype: "fix",
+    lemma: word,
   };
 };
 

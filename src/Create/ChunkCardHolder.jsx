@@ -32,7 +32,13 @@ const ChunkCardHolder = (props) => {
   const [showChunkOrdersPopup, setShowChunkOrdersPopup] = useState();
   const [highlightedCard, setHighlightedCard] = useState();
 
-  const editLemmaAtIndex = (index, newLemma, chunkId, structureChunk) => {
+  const editLemmaOfThisFormulaItem = (
+    formulaItemId,
+    index,
+    newLemma,
+    chunkId,
+    structureChunk
+  ) => {
     function updateFlowers(newFormula, chunkId, newChunkId) {
       newFormula.forEach((stChObj) => {
         if (stChObj.structureChunk) {
@@ -50,11 +56,20 @@ const ChunkCardHolder = (props) => {
 
     props.setFormula((prevFormula) => {
       if (!newLemma) {
-        let newFormula = prevFormula.filter((el, i) => i !== index);
+        let newFormula = prevFormula.filter(
+          (formulaItem) => formulaItem.formulaItemId !== formulaItemId
+        );
         updateFlowers(newFormula, chunkId, null);
         return newFormula;
       }
-      prevFormula[index] = { word: newLemma, structureChunk };
+
+      let currentFormulaItem = prevFormula.find(
+        (formulaItem) => formulaItem.formulaItemId === formulaItemId
+      );
+
+      currentFormulaItem.word = newLemma;
+      currentFormulaItem.structureChunk = structureChunk;
+
       updateFlowers(prevFormula, chunkId, null);
       return prevFormula;
     });
@@ -300,6 +315,7 @@ const ChunkCardHolder = (props) => {
                 formulaItemIndex={index}
               />
               <ChunkCard
+                formulaItemId={formulaItemId}
                 key={`${formulaItemId}-${word}`}
                 batch={props.batch}
                 chunkCardKey={`${formulaItemId}-${word}`}
@@ -320,7 +336,13 @@ const ChunkCardHolder = (props) => {
                   setStemFoundForFlower,
                 ]}
                 editLemma={(newLemma, chunkId, stCh) => {
-                  editLemmaAtIndex(index, newLemma, chunkId, stCh);
+                  editLemmaOfThisFormulaItem(
+                    formulaItemId,
+                    index,
+                    newLemma,
+                    chunkId,
+                    stCh
+                  );
                 }}
                 setPopup={setListPopupData}
                 highlightedCard={highlightedCard}

@@ -30,11 +30,14 @@ const ChunkCard = (props) => {
 
   const lang1 = useContext(LanguageContext);
 
-  const setStructureChunkAndFormula = (newStCh) => {
+  const modifyStructureChunkOnThisFormulaItem = (newStCh) => {
+    console.log("modifyStructureChunkOnThisFormulaItem()", newStCh.lemma);
+    console.log("props.formulaItemId", props.formulaItemId);
+
     setStructureChunk(newStCh);
     props.setFormula((prevFormula) => {
-      return prevFormula.map((formulaItem, index) => {
-        if (index === props.index) {
+      return prevFormula.map((formulaItem) => {
+        if (formulaItem.formulaItemId === props.formulaItemId) {
           formulaItem.structureChunk = newStCh;
         }
         return formulaItem;
@@ -44,8 +47,8 @@ const ChunkCard = (props) => {
 
   const setBackedUpStructureChunkAndFormula = (buStCh) => {
     props.setFormula((prevFormula) => {
-      return prevFormula.map((formulaItem, index) => {
-        if (index === props.index) {
+      return prevFormula.map((formulaItem) => {
+        if (formulaItem.formulaItemId === props.formulaItemId) {
           formulaItem.backedUpStructureChunk = buStCh;
         }
         return formulaItem;
@@ -56,7 +59,7 @@ const ChunkCard = (props) => {
   const formatAndSetStructureChunk = (stCh, formula) => {
     stCh = getUtils.frontendifyStructureChunk(stCh);
     diUtils.addChunkId(stCh, props.chunkCardIndex, formula);
-    setStructureChunkAndFormula(stCh);
+    modifyStructureChunkOnThisFormulaItem(stCh);
     setBackedUpStructureChunkAndFormula(uUtils.copyWithoutReference(stCh));
   };
 
@@ -70,7 +73,7 @@ const ChunkCard = (props) => {
 
     structureChunk[regulationGroup].traitValue = regulatedTraitKeys;
 
-    setStructureChunkAndFormula(structureChunk);
+    modifyStructureChunkOnThisFormulaItem(structureChunk);
   };
 
   useEffect(() => {
@@ -94,13 +97,13 @@ const ChunkCard = (props) => {
     }
 
     if (props.word[0] === "*") {
-      let stCh = idUtils.createFixedChunkFormulaItem(
+      let stCh = idUtils.createFixedChunk(
         props.word,
         props.index,
         props.formula
       );
 
-      setStructureChunkAndFormula(stCh);
+      modifyStructureChunkOnThisFormulaItem(stCh);
       setBackedUpStructureChunkAndFormula(uUtils.copyWithoutReference(stCh));
       props.editLemma(props.word.slice(1), stCh.chunkId.traitValue, stCh);
       return;
@@ -140,7 +143,7 @@ const ChunkCard = (props) => {
     }
   }, [
     lObjs,
-    props.chunkCardIndex,
+    // props.chunkCardIndex,
     props.word,
     structureChunk,
     props.formula,
@@ -298,7 +301,7 @@ const ChunkCard = (props) => {
                       `Reset all traits on this chunk (${chunkId})?`
                     )
                   ) {
-                    setStructureChunkAndFormula(null);
+                    modifyStructureChunkOnThisFormulaItem(null);
                   }
                   props.setHighlightedCard();
                 }, 0);
@@ -320,7 +323,7 @@ const ChunkCard = (props) => {
               onClick={(e) => {
                 e.target.blur();
                 structureChunk.isGhostChunk = !structureChunk.isGhostChunk;
-                setStructureChunkAndFormula(structureChunk);
+                modifyStructureChunkOnThisFormulaItem(structureChunk);
               }}
             >
               &#9676;
@@ -389,6 +392,7 @@ const ChunkCard = (props) => {
           onClick={() => {
             //devlogging
             console.log("");
+            console.log("props.formulaItemId:", props.formulaItemId);
             console.log("structureChunk:", structureChunk);
             console.log(
               "backedUpStructureChunk:",
@@ -516,7 +520,7 @@ const ChunkCard = (props) => {
       {structureChunk && (
         <div className={styles.traitBoxesHolder}>
           <ToggleShowButton
-            id={`ToggleShowButton-${props.batch}-Group1-${props.chunkCardIndex}`}
+            id={`ToggleShowButton-${props.batch}-Group1-${props.formulaItemId}`}
             setShowTraitKeysGroup={setShowTraitKeysGroupOne}
             showTraitKeysGroup={showTraitKeysGroupOne}
             traitKeysHoldSomeValues={traitKeysGroup1.some(
@@ -570,7 +574,9 @@ const ChunkCard = (props) => {
                     traitObject2={traitObject2}
                     lObjId={structureChunk.lObjId}
                     word={props.word}
-                    setStructureChunkAndFormula={setStructureChunkAndFormula}
+                    modifyStructureChunkOnThisFormulaItem={
+                      modifyStructureChunkOnThisFormulaItem
+                    }
                     regulateTraitKey={regulateTraitKey}
                     traitRegulatorValues={traitRegulatorValues}
                     structureChunk={structureChunk}
@@ -591,7 +597,7 @@ const ChunkCard = (props) => {
             })}
           {!idUtils.isFixedChunk(structureChunk) && (
             <ToggleShowButton
-              id={`ToggleShowButton-${props.batch}-Group2-${props.chunkCardIndex}`}
+              id={`ToggleShowButton-${props.batch}-Group2-${props.formulaItemId}`}
               setShowTraitKeysGroup={setShowTraitKeysGroupTwo}
               showTraitKeysGroup={showTraitKeysGroupTwo}
               traitKeysHoldSomeValues={traitKeysGroup2.some(
@@ -613,7 +619,9 @@ const ChunkCard = (props) => {
                     chunkCardKey={props.chunkCardKey}
                     traitObject={structureChunk[traitKey]}
                     word={props.word}
-                    setStructureChunkAndFormula={setStructureChunkAndFormula}
+                    modifyStructureChunkOnThisFormulaItem={
+                      modifyStructureChunkOnThisFormulaItem
+                    }
                     structureChunk={structureChunk}
                     backedUpStructureChunk={props.backedUpStructureChunk}
                     setHighlightedCard={props.setHighlightedCard}

@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "../css/ChunkCardHolder.module.css";
+import { createFormulaItemId } from "../utils/identityUtils";
 
 const AddChunkButton = (props) => {
   return (
@@ -14,7 +15,7 @@ const AddChunkButton = (props) => {
             let newFormulaItem = {
               word: newLemma,
               structureChunk: null,
-              formulaItemId: Math.random().toString().slice(2, 12),
+              formulaItemId: createFormulaItemId(),
             };
             return [
               ...prevFormula.slice(0, props.formulaItemIndex),
