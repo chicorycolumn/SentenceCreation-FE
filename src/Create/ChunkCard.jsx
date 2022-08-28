@@ -99,7 +99,7 @@ const ChunkCard = (props) => {
     if (props.word[0] === "*") {
       let stCh = idUtils.createFixedChunk(
         props.word,
-        props.index,
+        props.chunkCardIndex,
         props.formula
       );
 
@@ -141,14 +141,7 @@ const ChunkCard = (props) => {
         formatAndSetStructureChunk(stCh, props.formula);
       }
     }
-  }, [
-    lObjs,
-    // props.chunkCardIndex,
-    props.word,
-    structureChunk,
-    props.formula,
-    chosenId,
-  ]);
+  }, [lObjs, props.word, structureChunk, props.formula, chosenId]);
 
   useEffect(() => {
     if (lang1 && (!structureChunk || !idUtils.isFixedChunk(structureChunk))) {

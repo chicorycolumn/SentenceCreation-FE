@@ -320,7 +320,6 @@ const ChunkCardHolder = (props) => {
                 batch={props.batch}
                 chunkCardKey={`${formulaItemId}-${word}`}
                 word={word}
-                index={index}
                 structureChunk={structureChunk}
                 backedUpStructureChunk={backedUpStructureChunk}
                 chunkCardIndex={index}
