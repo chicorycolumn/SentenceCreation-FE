@@ -32,25 +32,25 @@ export const backendifyStructureChunk = (stCh) => {
     }
   });
 
-  Object.keys(idUtils.renamedTraitKeys).forEach((backendKey) => {
-    let frontendKey = idUtils.renamedTraitKeys[backendKey];
-    if (Object.keys(processedStCh).includes(frontendKey)) {
-      processedStCh[backendKey] = processedStCh[frontendKey];
-      delete processedStCh[frontendKey];
-    }
-  });
+  // Object.keys(idUtils.renamedTraitKeys).forEach((backendKey) => {
+  //   let frontendKey = idUtils.renamedTraitKeys[backendKey];
+  //   if (Object.keys(processedStCh).includes(frontendKey)) {
+  //     processedStCh[backendKey] = processedStCh[frontendKey];
+  //     delete processedStCh[frontendKey];
+  //   }
+  // });
 
   return processedStCh;
 };
 
 export const frontendifyStructureChunk = (stCh) => {
-  Object.keys(idUtils.renamedTraitKeys).forEach((backendKey) => {
-    let frontendKey = idUtils.renamedTraitKeys[backendKey];
-    if (Object.keys(stCh).includes(backendKey)) {
-      stCh[frontendKey] = stCh[backendKey];
-      delete stCh[backendKey];
-    }
-  });
+  // Object.keys(idUtils.renamedTraitKeys).forEach((backendKey) => {
+  //   let frontendKey = idUtils.renamedTraitKeys[backendKey];
+  //   if (Object.keys(stCh).includes(backendKey)) {
+  //     stCh[frontendKey] = stCh[backendKey];
+  //     delete stCh[backendKey];
+  //   }
+  // });
 
   let booleanTraits = {
     expectedTypeOnStCh: "array",

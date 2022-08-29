@@ -433,21 +433,18 @@ const ChunkCard = (props) => {
             onClick={(e) => {
               e.preventDefault();
 
-              setStructureChunk((prev) => {
-                let prevCopy = uUtils.copyWithoutReference(prev);
+              let stCh = uUtils.copyWithoutReference(structureChunk);
 
-                if (prevCopy.booleanTraits.traitValue.includes("isPerson")) {
-                  prevCopy.booleanTraits.traitValue =
-                    prevCopy.booleanTraits.traitValue.filter(
-                      (booleanTrait) => booleanTrait !== "isPerson"
-                    );
-                } else {
-                  prevCopy.booleanTraits.traitValue.push("isPerson");
-                }
+              if (stCh.booleanTraits.traitValue.includes("isPerson")) {
+                stCh.booleanTraits.traitValue =
+                  stCh.booleanTraits.traitValue.filter(
+                    (booleanTrait) => booleanTrait !== "isPerson"
+                  );
+              } else {
+                stCh.booleanTraits.traitValue.push("isPerson");
+              }
 
-                return prevCopy;
-              });
-
+              modifyStructureChunkOnThisFormulaItem(stCh);
               setShowTraitKeysGroupTwo(
                 !structureChunk.booleanTraits.traitValue.includes("isPerson")
               );
@@ -476,27 +473,24 @@ const ChunkCard = (props) => {
             onClick={(e) => {
               e.preventDefault();
 
-              setStructureChunk((prev) => {
-                prev = uUtils.copyWithoutReference(prev);
+              let stCh = uUtils.copyWithoutReference(structureChunk);
 
-                if (
-                  prev.specificIds.traitValue &&
-                  prev.specificIds.traitValue.length
-                ) {
-                  prev.specificIds.traitValue = [];
-                  prev.andTags.traitValue =
-                    props.backedUpStructureChunk.andTags.traitValue.slice();
-                  prev.orTags.traitValue =
-                    props.backedUpStructureChunk.orTags.traitValue.slice();
-                } else {
-                  prev.specificIds.traitValue = [structureChunk.lObjId];
-                  prev.andTags.traitValue = [];
-                  prev.orTags.traitValue = [];
-                }
+              if (
+                stCh.specificIds.traitValue &&
+                stCh.specificIds.traitValue.length
+              ) {
+                stCh.specificIds.traitValue = [];
+                stCh.andTags.traitValue =
+                  props.backedUpStructureChunk.andTags.traitValue.slice();
+                stCh.orTags.traitValue =
+                  props.backedUpStructureChunk.orTags.traitValue.slice();
+              } else {
+                stCh.specificIds.traitValue = [stCh.lObjId];
+                stCh.andTags.traitValue = [];
+                stCh.orTags.traitValue = [];
+              }
 
-                return prev;
-              });
-
+              modifyStructureChunkOnThisFormulaItem(stCh);
               setShowTraitKeysGroupTwo(!hasSpecificId);
             }}
           >
