@@ -11,6 +11,7 @@ import idUtils from "../utils/identityUtils.js";
 const putUtils = require("../utils/putUtils.js");
 const getUtils = require("../utils/getUtils.js");
 const uUtils = require("../utils/universalUtils.js");
+const consol = require("../utils/loggingUtils.js");
 
 const ChunkCard = (props) => {
   const [lObjs, setLObjs] = useState([]);
@@ -27,6 +28,9 @@ const ChunkCard = (props) => {
 
   const [shouldRetryFetch, setShouldRetryFetch] = useState(0);
   const [promptData, setPromptData] = useState();
+
+  const [meaninglessCounterTraitBox, setMeaninglessCounterTraitBox] =
+    useState(0);
 
   const lang1 = useContext(LanguageContext);
 
@@ -383,24 +387,7 @@ const ChunkCard = (props) => {
       <div className={styles.lemmaHolder}>
         <h1
           onClick={() => {
-            //devlogging
-            console.log("");
-            console.log("props.formulaItemId:", props.formulaItemId);
-            console.log("structureChunk:", structureChunk);
-            console.log(
-              "backedUpStructureChunk:",
-              props.backedUpStructureChunk
-            );
-            console.log("");
-            // console.log("structureChunk keys:");
-            // if (structureChunk) {
-            //   Object.keys(structureChunk).forEach((traitKey) => {
-            //     let traitObject = structureChunk[traitKey];
-            //     if (!uUtils.isEmpty(traitObject.traitValue)) {
-            //       console.log(traitKey, traitObject.traitValue);
-            //     }
-            //   });
-            // }
+            consol.logChunkCard(props, structureChunk); //devlogging
           }}
           className={`
           ${styles.lemma} 
@@ -475,19 +462,24 @@ const ChunkCard = (props) => {
 
               let stCh = uUtils.copyWithoutReference(structureChunk);
 
+              let traitsAffectedBySpecificId = ["andTags", "orTags"];
+
               if (
                 stCh.specificIds.traitValue &&
                 stCh.specificIds.traitValue.length
               ) {
                 stCh.specificIds.traitValue = [];
-                stCh.andTags.traitValue =
-                  props.backedUpStructureChunk.andTags.traitValue.slice();
-                stCh.orTags.traitValue =
-                  props.backedUpStructureChunk.orTags.traitValue.slice();
+                console.log("Resetting", traitsAffectedBySpecificId);
+                traitsAffectedBySpecificId.forEach((traitKey) => {
+                  stCh[traitKey].traitValue =
+                    props.backedUpStructureChunk[traitKey].traitValue.slice();
+                });
               } else {
                 stCh.specificIds.traitValue = [stCh.lObjId];
-                stCh.andTags.traitValue = [];
-                stCh.orTags.traitValue = [];
+                console.log("Blanking", traitsAffectedBySpecificId);
+                traitsAffectedBySpecificId.forEach((traitKey) => {
+                  stCh[traitKey].traitValue = [];
+                });
               }
 
               modifyStructureChunkOnThisFormulaItem(stCh);
@@ -578,6 +570,10 @@ const ChunkCard = (props) => {
                     stemFoundForFlowerBrace={props.stemFoundForFlowerBrace}
                     setHighlightedCard={props.setHighlightedCard}
                     setPopup={props.setPopup}
+                    meaninglessCounterTraitBox={meaninglessCounterTraitBox}
+                    setMeaninglessCounterTraitBox={
+                      setMeaninglessCounterTraitBox
+                    }
                   />
                 )
               );

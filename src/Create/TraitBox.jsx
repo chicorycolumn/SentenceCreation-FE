@@ -7,6 +7,8 @@ import $ from "jquery";
 import diUtils from "../utils/displayUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 const idUtils = require("../utils/identityUtils.js");
+const scUtils = require("../utils/structureChunkUtils.js");
+const consol = require("../utils/loggingUtils.js");
 const helpTexts = require("../utils/helpTexts.js");
 
 class TraitBox extends Component {
@@ -28,6 +30,19 @@ class TraitBox extends Component {
     justCopied: false,
     activeTextarea: null,
   };
+
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.meaninglessCounterTraitBox !==
+      this.props.meaninglessCounterTraitBox
+    ) {
+      this.setState({
+        traitValueInputString: diUtils.asString(
+          this.props.traitObject.traitValue
+        ),
+      });
+    }
+  }
 
   setShowTagInterface = (val) => {
     if (!val) {
@@ -165,7 +180,7 @@ class TraitBox extends Component {
     };
 
     const checkAndSetTraitValue = (secondaryAsWellAsPrimary = false) => {
-      console.log("£checkAndSetTraitValue");
+      console.log(`(${structureChunk.lemma})`, "£checkAndSetTraitValue");
 
       const innerFunction = (
         traitKeyKey = "traitKey",
@@ -173,8 +188,9 @@ class TraitBox extends Component {
         traitObjectKey = "traitObject"
       ) => {
         const traitKey = this.props[traitKeyKey];
-        console.log("@...");
+        console.log(`(${structureChunk.lemma})`, "@...");
         console.log(
+          `(${structureChunk.lemma})`,
           `this.state[traitValueInputStringKey]`,
           this.state[traitValueInputStringKey],
           typeof this.state[traitValueInputStringKey]
@@ -188,18 +204,20 @@ class TraitBox extends Component {
             uUtils.isEmpty(this.props[traitObjectKey].traitValue, true)
           )
         ) {
-          console.log("@You have changed value.");
+          console.log(`(${structureChunk.lemma})`, "@You have changed value.");
           console.log(
+            `(${structureChunk.lemma})`,
             `@this.state[traitValueInputStringKey]`,
             this.state[traitValueInputStringKey],
             typeof this.state[traitValueInputStringKey]
           );
           console.log(
+            `(${structureChunk.lemma})`,
             `@this.props[traitObjectKey].traitValue`,
             this.props[traitObjectKey].traitValue,
             typeof this.props[traitObjectKey].traitValue
           );
-          console.log("/@");
+          console.log(`(${structureChunk.lemma})`, "/@");
 
           let newStructureChunk = {
             ...structureChunk,
@@ -213,11 +231,11 @@ class TraitBox extends Component {
           let expectedType = newStructureChunk[traitKey].expectedTypeOnStCh;
 
           if (expectedType === "array") {
-            console.log("::", newTraitValue);
+            console.log(`(${structureChunk.lemma})`, "::", newTraitValue);
             if (newTraitValue) {
               newTraitValue = diUtils.asArray(newTraitValue);
             }
-            console.log(":::", newTraitValue);
+            console.log(`(${structureChunk.lemma})`, ":::", newTraitValue);
           } else if (expectedType === "string") {
             if (newTraitValue && newTraitValue.includes(",")) {
               alert(
@@ -229,8 +247,11 @@ class TraitBox extends Component {
                 ),
               });
               //Aborting without changing anything.
-              console.log("@1 No change to value.");
-              exitTraitBox();
+              console.log(
+                `(${structureChunk.lemma})`,
+                "@1 No change to value."
+              );
+              exitTraitBox(); //alpha why both exitTraitBox?
               exitTraitBox(false);
             }
           } else if (expectedType === "boolean") {
@@ -241,35 +262,48 @@ class TraitBox extends Component {
             ...newStructureChunk[traitKey],
           };
 
-          if (newTraitValue) {
-            newStructureChunk[traitKey].traitValue = newTraitValue;
-          } else {
-            if (expectedType === "array") {
-              newStructureChunk[traitKey].traitValue = [];
-            } else {
-              delete newStructureChunk[traitKey].traitValue;
-            }
+          scUtils.setNewTraitValue(newStructureChunk, traitKey, newTraitValue);
+
+          if (idUtils.agreementTraits.includes(traitKey)) {
+            let traitsAffectedByAgreementTrait =
+              structureChunk._info.inheritableInflectionKeys;
+            traitsAffectedByAgreementTrait.forEach((tk) => {
+              if (newTraitValue) {
+                scUtils.setNewTraitValue(newStructureChunk, tk, null);
+              } else {
+                newStructureChunk[tk].traitValue = uUtils.copyWithoutReference(
+                  this.props.backedUpStructureChunk[tk].traitValue
+                );
+              }
+            });
+
+            setTimeout(() => {
+              this.props.setMeaninglessCounterTraitBox((prev) => prev + 1);
+            }, 100);
           }
 
           this.props.modifyStructureChunkOnThisFormulaItem(newStructureChunk);
-          console.log("@2 Changing value.");
+          console.log(`(${structureChunk.lemma})`, "@2 Changing value.");
           exitTraitBox();
           exitTraitBox(false);
         }
-        console.log("@3 No change to value.");
+        console.log(`(${structureChunk.lemma})`, "@3 No change to value.");
         exitTraitBox();
         exitTraitBox(false);
       };
 
-      console.log("###");
-      console.log("checkAndSetTraitValue PRIMARY");
-      console.log("###");
+      console.log(`(${structureChunk.lemma})`, "###");
+      console.log(`(${structureChunk.lemma})`, "checkAndSetTraitValue PRIMARY");
+      console.log(`(${structureChunk.lemma})`, "###");
       innerFunction();
 
       if (secondaryAsWellAsPrimary) {
-        console.log("###");
-        console.log("checkAndSetTraitValue SECONDARY");
-        console.log("###");
+        console.log(`(${structureChunk.lemma})`, "###");
+        console.log(
+          `(${structureChunk.lemma})`,
+          "checkAndSetTraitValue SECONDARY"
+        );
+        console.log(`(${structureChunk.lemma})`, "###");
         innerFunction("traitKey2", "traitValueInputString2", "traitObject2");
       }
     };
@@ -464,19 +498,7 @@ class TraitBox extends Component {
             }`}
             id={`traitTitleHolder-${traitKey}`}
             onMouseEnter={() => {
-              //devlogging
-              console.log("");
-              console.log("state.traitValueInputString HAS VALUE:");
-              console.log("-->", this.state.traitValueInputString);
-              console.log("props.traitObject.traitValue HAS VALUE:");
-              console.log("-->", this.props.traitObject.traitValue);
-              if (this.state.traitValueInputString2) {
-                console.log("");
-                console.log("state.traitValueInputString2 HAS VALUE:");
-                console.log("-->", this.state.traitValueInputString2);
-                console.log("props.traitObject.traitValue2 HAS VALUE:");
-                console.log("-->", this.props.traitObject2.traitValue);
-              }
+              consol.logTraitBox(this.state, this.props); //devlogging
             }}
             onClick={(e) => {
               console.log("%traitTitleHolder");
