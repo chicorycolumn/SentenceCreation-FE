@@ -591,7 +591,7 @@ class TraitBox extends Component {
                   }}
                 >
                   &#10303;
-                  <Tooltip text="Select all" number={6} />
+                  <Tooltip text="Select all" number={7} />
                 </button>
               )}
           </div>
@@ -815,7 +815,7 @@ class TraitBox extends Component {
                                       {traitKeyRegulator.buttonText}
                                       <Tooltip
                                         text={traitKeyRegulator.tooltipText}
-                                        number={4}
+                                        number={6}
                                       />
                                     </button>
                                   )

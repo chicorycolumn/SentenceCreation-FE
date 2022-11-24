@@ -120,7 +120,7 @@ const TagInterface = (props) => {
                 props.revertTraitValueInputString(true);
               }}
             >
-              &#8656;
+              &#8634;
               <Tooltip text={"Undo changes"} />
             </button>
 

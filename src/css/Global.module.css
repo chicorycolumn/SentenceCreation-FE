@@ -182,11 +182,21 @@
 }
 
 .tooltip6 {
-  margin-left: -100px;
-  margin-top: -6px;
+  margin-left: -130px;
+  margin-top: -50px;
   opacity: 1;
   font-size: 14px;
   min-width: 80px;
+  width: 120px;
+}
+
+.tooltip7 {
+  margin-left: -140px;
+  margin-top: 0px;
+  opacity: 1;
+  font-size: 14px;
+  min-width: 80px;
+  width: 120px;
 }
 
 .npeLight {
