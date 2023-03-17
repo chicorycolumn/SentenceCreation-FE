@@ -283,7 +283,7 @@ const diUtils = {
           ...idUtils.traitKeyRegulators
             .map((tkr) => tkr.name)
             .filter((el) => el),
-        ].includes(traitKey)
+        ].includes(traitKey) && traitKey[0] !== "_"
     );
 
     return {

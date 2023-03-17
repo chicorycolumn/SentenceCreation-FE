@@ -6,7 +6,15 @@ const baseUrl = "http://localhost:9090/api";
 
 export const frontendOnlyTraits = ["booleanTraits", "isGhostChunk"];
 
-export const backendOnlyTraits = ["allohomInfo", "hiddenTraits", "PHD_type"];
+export const backendOnlyTraits = [
+  "allohomInfo",
+  "hiddenTraits",
+  "PHD_type",
+  "hypernymy",
+  "semanticGender",
+  "virilityDetail",
+  "originalSitSelectedLObj",
+];
 
 export const backendifyStructureChunk = (stCh) => {
   let processedStCh = {};

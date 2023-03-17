@@ -10,6 +10,12 @@
   overflow: hidden;
   background-color: rgb(244, 208, 244);
   border: purple solid 1px;
+  border-radius: 5px;
+}
+
+.lexicalTraitBox {
+  background-color: rgb(244, 208, 244);
+  border-radius: 0px;
 }
 
 .traitBoxCircle1 {
@@ -98,10 +104,6 @@
 .traitValuesInputLarge {
   height: 50px;
   padding-left: 27.5px;
-}
-
-.lexicalTraitTitle {
-  font-style: italic;
 }
 
 .shimmer {

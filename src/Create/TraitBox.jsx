@@ -405,6 +405,8 @@ class TraitBox extends Component {
           id={traitBoxID}
           key={traitBoxID}
           className={`${styles.preventSelection} ${styles.traitBox} ${
+            traitObject.isLexical && styles.lexicalTraitBox
+          } ${this.props.disabled && gstyles.borderNone} ${
             idUtils.agreementTraits.includes(traitKey) && styles.traitBoxCircle1
           } ${idUtils.isChunkId(traitKey) && styles.traitBoxCircle2} ${
             !traitObject.traitValue && styles.traitBoxEmpty
@@ -429,7 +431,7 @@ class TraitBox extends Component {
             styles.badBox
           } 
           ${this.props.traitKeysGroup === 2 && gstyles.oddEdges}
-        `}
+          `}
           onClick={() => {
             if (isClickableFlowerstem(this.props)) {
               this.props.stemFoundForFlowerBrace[1](this.props.chunkId);
@@ -479,6 +481,13 @@ class TraitBox extends Component {
           {this.state.justCopied && (
             <div className={gstyles.floatingAlert}>Copied</div>
           )}
+
+          {this.props.disabled ? (
+            <div className={gstyles.localObscurus}></div>
+          ) : (
+            ""
+          )}
+
           {idUtils.isTagTrait(traitKey) &&
             !this.state.isHovered &&
             !this.state.hasJustBlurred && (
@@ -558,11 +567,7 @@ class TraitBox extends Component {
               }
             }}
           >
-            <p
-              className={`${styles.traitTitle} ${
-                traitObject.isLexical && styles.lexicalTraitTitle
-              }`}
-            >
+            <p className={`${styles.traitTitle}`}>
               {traitKey}
               {traitKey2 && ` / ${traitKey2}`}
             </p>

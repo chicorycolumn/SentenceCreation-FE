@@ -227,8 +227,8 @@ const ChunkCardHolder = (props) => {
           </button>
           <button
             alt="Connection icon"
-            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
-            onClick={(e) => {
+            className={`${gstyles.cardButton1} ${gstyles.cardButton1_inactive} ${gstyles.tooltipHolderDelayed}`}
+            onMouseEnter={(e) => {
               e.target.blur();
               if (linesAreDrawn) {
                 return;
@@ -258,7 +258,7 @@ const ChunkCardHolder = (props) => {
             }}
           >
             &#42476;
-            <Tooltip text="View dependencies between chunks" />
+            <Tooltip text="Hover to view dependencies between chunks" />
           </button>
           <button
             alt="Triangle icon"

@@ -295,7 +295,7 @@ const ChunkCard = (props) => {
                 setTimeout(() => {
                   if (
                     window.confirm(
-                      `Reset all traits on this chunk (${chunkId})?`
+                      `Reset all traits (excluding andTags/orTags) on this chunk (${chunkId})?`
                     )
                   ) {
                     modifyStructureChunkOnThisFormulaItem(null);
@@ -573,7 +573,6 @@ const ChunkCard = (props) => {
 
               return (
                 !diUtils.traitsNotToDisplayInOwnBox.includes(traitKey) &&
-                !(idUtils.isTagTrait(traitKey) && hasSpecificId) &&
                 (traitKey === "chunkId" ||
                   !idUtils.isFixedChunk(structureChunk)) && (
                   <TraitBox
@@ -608,6 +607,7 @@ const ChunkCard = (props) => {
                     setMeaninglessCounterTraitBox={
                       setMeaninglessCounterTraitBox
                     }
+                    disabled={idUtils.isTagTrait(traitKey) && hasSpecificId}
                   />
                 )
               );
