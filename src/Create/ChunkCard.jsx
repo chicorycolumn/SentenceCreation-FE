@@ -87,7 +87,7 @@ const ChunkCard = (props) => {
       if (matchingStChs.length === 1) {
         formatAndSetStructureChunk(matchingStChs[0], props.formula);
       } else {
-        console.log("NO");
+        console.log("3311 NO" + matchingStChs.map((x) => x.id));
       }
     }
   }, [chosenId]);
@@ -461,6 +461,7 @@ const ChunkCard = (props) => {
               e.preventDefault();
 
               let stCh = uUtils.copyWithoutReference(structureChunk);
+              let isSecondClick;
 
               let traitsAffectedBySpecificId = ["andTags", "orTags"];
 
@@ -468,13 +469,22 @@ const ChunkCard = (props) => {
                 stCh.specificIds.traitValue &&
                 stCh.specificIds.traitValue.length
               ) {
-                stCh.specificIds.traitValue = [];
-                console.log("Resetting", traitsAffectedBySpecificId);
-                traitsAffectedBySpecificId.forEach((traitKey) => {
-                  stCh[traitKey].traitValue =
-                    props.backedUpStructureChunk[traitKey].traitValue.slice();
-                });
+                if (stCh.specificIds.traitValue.some((tv) => tv[0] === "^")) {
+                  //Third click - remove specificIds.
+                  stCh.specificIds.traitValue = [];
+                  console.log("Resetting", traitsAffectedBySpecificId);
+                  traitsAffectedBySpecificId.forEach((traitKey) => {
+                    stCh[traitKey].traitValue =
+                      props.backedUpStructureChunk[traitKey].traitValue.slice();
+                  });
+                } else {
+                  //Second click - Upgrade specificIds with ^caret.
+                  isSecondClick = true;
+                  stCh.specificIds.traitValue =
+                    structureChunk.specificIds.traitValue.map((tv) => `^${tv}`);
+                }
               } else {
+                //First click - Add specificIds.
                 stCh.specificIds.traitValue = [stCh.lObjId];
                 console.log("Blanking", traitsAffectedBySpecificId);
                 traitsAffectedBySpecificId.forEach((traitKey) => {
@@ -483,13 +493,37 @@ const ChunkCard = (props) => {
               }
 
               modifyStructureChunkOnThisFormulaItem(stCh);
-              setShowTraitKeysGroupTwo(!hasSpecificId);
+
+              if (isSecondClick) {
+                setShowTraitKeysGroupTwo(false);
+                setTimeout(() => {
+                  setShowTraitKeysGroupTwo(true);
+                }, 25);
+              } else {
+                setShowTraitKeysGroupTwo(!hasSpecificId);
+              }
             }}
           >
-            {hasSpecificId ? <span>&#11044;</span> : <span>&#9678;</span>}
+            {hasSpecificId ? (
+              structureChunk.specificIds.traitValue.some(
+                (tv) => tv[0] === "^"
+              ) ? (
+                <span>&#11044;</span>
+              ) : (
+                <span>&#10687;</span>
+              )
+            ) : (
+              <span>&#9678;</span>
+            )}
             <Tooltip
               text={`${
-                hasSpecificId ? "Remove" : "Set"
+                hasSpecificId
+                  ? structureChunk.specificIds.traitValue.some(
+                      (tv) => tv[0] === "^"
+                    )
+                    ? "Remove"
+                    : "Upgrade"
+                  : "Set"
               } as specific lemma for this chunk`}
               number={5}
             />
