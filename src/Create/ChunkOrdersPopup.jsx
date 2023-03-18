@@ -26,6 +26,7 @@ const ChunkOrdersPopup = (props) => {
       setOrderBuilt([]);
     }
   };
+
   const addOrder = (orderBuilt) => {
     if (orderBuilt.length) {
       props.setChunkOrders((prev) => {
@@ -56,6 +57,18 @@ const ChunkOrdersPopup = (props) => {
   };
 
   const exit = () => {
+    if (
+      props.chunkOrders.length &&
+      !props.chunkOrders.some((chunkOrder) => chunkOrder.isPrimary)
+    ) {
+      $("#isPrimaryButton-0").click();
+      setTimeout(() => {
+        $(document).off("keyup");
+        props.exit();
+      }, 250);
+      return;
+    }
+
     $(document).off("keyup");
     props.exit();
   };
@@ -199,6 +212,7 @@ const ChunkOrdersPopup = (props) => {
                 <li className={styles.listitem} key={`chunkOrder-${index}`}>
                   <span className={styles.indexSpan}>{index + 1}</span>
                   <button
+                    id={`isPrimaryButton-${index}`}
                     alt="Black circle icon / White circle icon"
                     className={`${gstyles.blueButton} ${styles.microButton} ${gstyles.tooltipHolder}`}
                     onClick={() => {

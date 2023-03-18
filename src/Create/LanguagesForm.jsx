@@ -2,6 +2,8 @@ import React, { useContext, useEffect } from "react";
 import LanguageContext from "../context/LanguageContext.js";
 import gstyles from "../css/Global.module.css";
 
+const putUtils = require("../utils/putUtils.js");
+
 const LanguagesForm = (props) => {
   const lang1 = useContext(LanguageContext);
 
@@ -21,7 +23,7 @@ const LanguagesForm = (props) => {
             console.log("");
           }}
         >
-          1
+          ł1
         </button>
         <button
           onClick={() => {
@@ -29,9 +31,20 @@ const LanguagesForm = (props) => {
             console.log("");
             console.log("2");
             console.log("");
+            putUtils.fetchFormula("ENG-00-101a", "POL").then((data) => {
+              console.log("");
+              console.log("");
+              console.log("");
+              console.log("");
+              console.log(data);
+              console.log("");
+              console.log("");
+              console.log("");
+              console.log("");
+            });
           }}
         >
-          2
+          ł2
         </button>
         <button
           onClick={() => {
@@ -41,7 +54,7 @@ const LanguagesForm = (props) => {
             console.log("");
           }}
         >
-          3
+          ł3
         </button>
       </div>
       <form

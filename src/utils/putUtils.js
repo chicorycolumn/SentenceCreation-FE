@@ -4,6 +4,25 @@ const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
+export const fetchFormula = (sentenceFormulaId, answerLanguage) => {
+  console.log("START fetchFormula", { sentenceFormulaId, answerLanguage });
+
+  return axios
+    .get(
+      `${baseUrl}/educator/formulas?id=${sentenceFormulaId}&lang=${answerLanguage}`
+      // ,{headers: { Authorization: `BEARER ${token}` }}
+    )
+    .then((res) => {
+      console.log("fetchFormula got:", res.data); //devlogging
+      console.log("/fetchFormula");
+      console.log("");
+      console.log("");
+
+      return res.data;
+    })
+    .catch((e) => console.log("ERROR 9820", e));
+};
+
 export const fetchSentence = (lang1, rawChunks, orders) => {
   const requestingSingleWordOnly = !orders;
 
