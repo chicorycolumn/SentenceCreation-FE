@@ -140,8 +140,7 @@ class TraitBox extends Component {
       traitKey,
       traitObject,
       traitKey2,
-      word,
-      wordtype,
+      guideword,
       lObjId,
       structureChunk,
     } = this.props;
@@ -394,8 +393,8 @@ class TraitBox extends Component {
             revertTraitValueInputString={this.revertTraitValueInputString}
             checkAndSetTraitValue={checkAndSetTraitValue}
             exitTraitBox={exitTraitBox}
-            wordtype={wordtype}
-            word={word}
+            wordtype={idUtils.getWordtypeShorthandStCh(structureChunk)}
+            guideword={guideword}
             lObjId={lObjId}
             backedUpTags={this.props.backedUpStructureChunk.andTags.traitValue}
           />
@@ -439,6 +438,8 @@ class TraitBox extends Component {
             }
           }}
           onMouseEnter={() => {
+            console.log("traitObject-->", traitObject);
+
             if (isClickableFlowerstem(this.props)) {
               this.setState({ isExtraHighlighted: true });
             } else if (traitKey === "chunkId") {

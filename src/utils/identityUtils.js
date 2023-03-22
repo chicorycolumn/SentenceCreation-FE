@@ -1,10 +1,6 @@
 const uUtils = require("./universalUtils.js");
 const idUtils = require("./identityUtils.js");
 
-exports.createFormulaItemId = () => {
-  return Math.random().toString().slice(2, 12);
-};
-
 exports.traitKeyRegulators = [
   {
     name: "formulaImportantTraitKeys",
@@ -46,8 +42,8 @@ exports.isFixedChunk = (stCh) => {
   return stCh.chunkId.traitValue.split("-")[0] === "fix";
 };
 
-exports.createFixedChunk = (word, index, formula) => {
-  word = word.slice(1);
+exports.createFixedChunk = (guideword, index, formula) => {
+  guideword = guideword.slice(1);
 
   let existingNumbers = formula
     .filter((formulaItem) => formulaItem.structureChunk)
@@ -62,13 +58,12 @@ exports.createFixedChunk = (word, index, formula) => {
     newNumber = index.toString() + Math.random().toString().slice(2, 6);
   }
 
-  let chunkId = `fix-${newNumber}-${word}`;
+  let chunkId = `fix-${newNumber}-${guideword}`;
 
   return {
     chunkId: { traitValue: chunkId },
-    chunkValue: { traitValue: word },
-    wordtype: "fix",
-    lemma: word,
+    chunkValue: { traitValue: guideword },
+    lemma: guideword,
   };
 };
 
@@ -79,7 +74,7 @@ exports.isTagTrait = (traitKey) => {
 };
 
 exports.isChunkId = (traitKey) => {
-  return ["chunkId"].includes(traitKey);
+  return traitKey === "chunkId";
 };
 
 exports.agreementTraits = [
@@ -87,11 +82,6 @@ exports.agreementTraits = [
   "agreeWith2",
   // "connectedTo",
 ];
-
-exports.renamedTraitKeys = {
-  // postHocAgreeWithPrimary: "agreeWith",
-  // postHocAgreeWithSecondary: "agreeWith2",
-};
 
 exports.getBadChunks = (formula) => {
   return formula
@@ -101,9 +91,15 @@ exports.getBadChunks = (formula) => {
 
 exports.isBadChunk = (stCh) => {
   return (
-    idUtils.wordtypesWhichMustHavePopulatedTags.includes(stCh.wordtype) &&
+    idUtils.wordtypesWhichMustHavePopulatedTags.includes(
+      idUtils.getWordtypeShorthandStCh(stCh)
+    ) &&
     uUtils.isEmpty(stCh.specificIds.traitValue) &&
     uUtils.isEmpty(stCh.andTags.traitValue) &&
     uUtils.isEmpty(stCh.orTags.traitValue)
   );
+};
+
+exports.getWordtypeShorthandStCh = (stCh) => {
+  return stCh.chunkId.traitValue.split("-")[0];
 };

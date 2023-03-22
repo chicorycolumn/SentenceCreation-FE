@@ -14,8 +14,8 @@ const uUtils = require("../utils/universalUtils.js");
 const consol = require("../utils/loggingUtils.js");
 
 const ChunkCard = (props) => {
-  const [lObjs, setLObjs] = useState([]);
-  const [noLObjsFetched, setNoLObjsFetched] = useState();
+  const [fetchedEnChsByLemma, setFetchedEnChsByLemma] = useState([]);
+  const [noEnChsFetched, setNoEnChsFetched] = useState();
   const [chosenId, setChosenId] = useState();
   const [structureChunk, setStructureChunk] = useState(props.structureChunk);
   const [showTraitKeysGroupOne, setShowTraitKeysGroupOne] = useState(true);
@@ -23,7 +23,6 @@ const ChunkCard = (props) => {
 
   const [traitKeysGroup1, setTraitKeysGroup1] = useState([]);
   const [traitKeysGroup2, setTraitKeysGroup2] = useState([]);
-  const [wordtype, setWordtype] = useState();
   const [chunkId, setChunkId] = useState();
 
   const [shouldRetryFetch, setShouldRetryFetch] = useState(0);
@@ -34,37 +33,32 @@ const ChunkCard = (props) => {
 
   const lang1 = useContext(LanguageContext);
 
-  const modifyStructureChunkOnThisFormulaItem = (newStCh) => {
-    console.log("modifyStructureChunkOnThisFormulaItem()", newStCh.lemma);
+  const modifyStructureChunkOnThisFormulaItem = (newStCh, shouldBackUp) => {
+    if (shouldBackUp) {
+      if (!newStCh) {
+        throw "Woah there";
+      }
+      props.backUpStCh(newStCh);
+    }
+
+    console.log("modifyStructureChunkOnThisFormulaItem", newStCh);
     console.log("props.formulaItemId", props.formulaItemId);
 
-    setStructureChunk(newStCh);
-    props.setFormula((prevFormula) => {
-      return prevFormula.map((formulaItem) => {
-        if (formulaItem.formulaItemId === props.formulaItemId) {
-          formulaItem.structureChunk = newStCh;
-        }
-        return formulaItem;
-      });
-    });
+    setStructureChunk(newStCh); // This should be unnec, right?
+    props.setStructureChunkOnFormula(newStCh);
   };
 
-  const setBackedUpStructureChunkAndFormula = (buStCh) => {
-    props.setFormula((prevFormula) => {
-      return prevFormula.map((formulaItem) => {
-        if (formulaItem.formulaItemId === props.formulaItemId) {
-          formulaItem.backedUpStructureChunk = buStCh;
-        }
-        return formulaItem;
-      });
-    });
-  };
+  const formatAndSetStructureChunk = (stCh, formula, guideword, label) => {
+    console.log("formatAndSetStructureChunk", label, guideword);
 
-  const formatAndSetStructureChunk = (stCh, formula) => {
-    stCh = getUtils.frontendifyStructureChunk(stCh);
-    diUtils.addChunkId(stCh, props.chunkCardIndex, formula);
-    modifyStructureChunkOnThisFormulaItem(stCh);
-    setBackedUpStructureChunkAndFormula(uUtils.copyWithoutReference(stCh));
+    if (!guideword) {
+      guideword = "blank";
+    }
+
+    if (!stCh.chunkId.traitValue) {
+      diUtils.addChunkId(stCh, props.chunkCardIndex, guideword, formula);
+    }
+    modifyStructureChunkOnThisFormulaItem(stCh, true);
   };
 
   const regulateTraitKey = (tKey, regulationGroup) => {
@@ -83,79 +77,98 @@ const ChunkCard = (props) => {
   useEffect(() => {
     if (chosenId) {
       setPromptData();
-      let matchingStChs = lObjs.filter((lObj) => lObj.id === chosenId);
-      if (matchingStChs.length === 1) {
-        formatAndSetStructureChunk(matchingStChs[0], props.formula);
+      let matches = fetchedEnChsByLemma.filter((lObj) => lObj.id === chosenId);
+      if (matches.length === 1) {
+        formatAndSetStructureChunk(
+          matches[0],
+          props.formula,
+          props.guideword,
+          "chosenId useEffect"
+        );
+        setFetchedEnChsByLemma([]);
+        setChosenId();
       } else {
-        console.log("3311 NO" + matchingStChs.map((x) => x.id));
+        alert(
+          `There are ${matches.length} matches for "${chosenId}". I expected 1 so unsure how to proceed.`
+        );
       }
     }
   }, [chosenId]);
 
   useEffect(() => {
-    let fetchedLObjs = lObjs;
-
     if (structureChunk) {
-      console.log(`Already did "${props.word}".`);
+      console.log(`Already did "${props.guideword}".`);
       return;
     }
 
-    if (props.word[0] === "*") {
+    if (props.guideword[0] === "*") {
       let stCh = idUtils.createFixedChunk(
-        props.word,
+        props.guideword,
         props.chunkCardIndex,
         props.formula
       );
 
-      modifyStructureChunkOnThisFormulaItem(stCh);
-      setBackedUpStructureChunkAndFormula(uUtils.copyWithoutReference(stCh));
-      props.editLemma(props.word.slice(1), stCh.chunkId.traitValue, stCh);
+      modifyStructureChunkOnThisFormulaItem(stCh, true);
+      props.editLemma(props.guideword.slice(1), stCh.chunkId.traitValue, stCh);
       return;
     }
 
-    if (fetchedLObjs && fetchedLObjs.length) {
-      let stCh = fetchedLObjs[0];
-      if (fetchedLObjs.length > 1) {
-        if (!chosenId) {
-          let title = `"${props.word}"`;
-          let message = `Which of these ${fetchedLObjs.length} are you after?`;
-
-          let options = fetchedLObjs.map((lObj) => {
-            let extraInfo = lObj.andTags.traitValue.slice();
-            if (lObj.allohomInfo) {
-              extraInfo.unshift(
-                lObj.allohomInfo.text + " " + lObj.allohomInfo.emoji
-              );
-            }
-
-            return {
-              text: lObj.id,
-              color: gstyles[lObj.id.split("-")[1]],
-              extraInfo,
-              callback: () => {
-                setChosenId(lObj.id);
-              },
-            };
-          });
-
-          setPromptData({ message, options, title });
-          return;
-        }
-      } else {
-        formatAndSetStructureChunk(stCh, props.formula);
-      }
+    if (fetchedEnChsByLemma.length === 1) {
+      let chosenEnCh = fetchedEnChsByLemma[0];
+      formatAndSetStructureChunk(
+        chosenEnCh,
+        props.formula,
+        props.guideword,
+        "fetchedEnChsByLemma.length===1 useEffect"
+      );
+      setFetchedEnChsByLemma([]);
+      return;
     }
-  }, [lObjs, props.word, structureChunk, props.formula, chosenId]);
+
+    if (fetchedEnChsByLemma.length > 1 && !chosenId) {
+      let title = `"${props.guideword}"`;
+      let message = `Which of these ${fetchedEnChsByLemma.length} are you after?`;
+
+      let options = fetchedEnChsByLemma.map((lObj) => {
+        let extraInfo = lObj.andTags.traitValue.slice();
+        if (lObj._info.allohomInfo) {
+          extraInfo.unshift(
+            lObj._info.allohomInfo.text + " " + lObj._info.allohomInfo.emoji
+          );
+        }
+
+        return {
+          text: lObj.id,
+          color: gstyles[lObj.id.split("-")[1]],
+          extraInfo,
+          callback: () => {
+            setChosenId(lObj.id);
+          },
+        };
+      });
+
+      setPromptData({ message, options, title });
+      return;
+    }
+  }, [
+    fetchedEnChsByLemma,
+    props.guideword,
+    structureChunk,
+    props.formula,
+    chosenId,
+  ]);
 
   useEffect(() => {
-    if (lang1 && (!structureChunk || !idUtils.isFixedChunk(structureChunk))) {
+    if (lang1 && !structureChunk) {
       getUtils
-        .fetchLObjsByLemma(lang1, props.word)
+        .fetchEnChsByLemma(lang1, props.guideword)
         .then(
-          (fetchedLObjs) => {
-            console.log(`"${props.word}" got ${fetchedLObjs.length} lObjs.`);
-            setLObjs(fetchedLObjs);
-            setNoLObjsFetched(!fetchedLObjs.length);
+          (fetchedEnChs) => {
+            console.log(
+              `"${props.guideword}" got ${fetchedEnChs.length} fetchedEnChs.`
+            );
+            setFetchedEnChsByLemma(fetchedEnChs);
+            setNoEnChsFetched(!fetchedEnChs.length);
           },
           (e) => {
             console.log("ERROR 0370:", e);
@@ -165,18 +178,36 @@ const ChunkCard = (props) => {
           console.log("ERROR 9071", e);
         });
     }
-  }, [lang1, props.word, shouldRetryFetch]);
+  }, [lang1, props.guideword, shouldRetryFetch]);
 
   useEffect(() => {
     if (structureChunk) {
-      let { orderedTraitKeysGroup1, orderedTraitKeysGroup2, wordtypeFromStCh } =
+      let { orderedTraitKeysGroup1, orderedTraitKeysGroup2 } =
         diUtils.orderTraitKeys(structureChunk);
       setTraitKeysGroup1(orderedTraitKeysGroup1);
       setTraitKeysGroup2(orderedTraitKeysGroup2);
-      setWordtype(wordtypeFromStCh);
       setChunkId(structureChunk.chunkId.traitValue);
+    } else if (props.backedUpStructureChunk) {
+      // Restore stCh from backup. (unrelated to above clause)
+      modifyStructureChunkOnThisFormulaItem(
+        uUtils.copyWithoutReference(props.backedUpStructureChunk)
+      );
     }
   }, [structureChunk]);
+
+  useEffect(() => {
+    if (props.formulaWasLoaded) {
+      formatAndSetStructureChunk(
+        structureChunk,
+        props.formula,
+        props.guideword,
+        "formulaWasLoaded useEffect"
+      );
+      setTimeout(() => {
+        props.setFormulaWasLoaded(0);
+      }, 500);
+    }
+  }, [props.formulaWasLoaded]);
 
   let isFixedChunkOrNoChunk =
     !structureChunk || idUtils.isFixedChunk(structureChunk);
@@ -184,14 +215,18 @@ const ChunkCard = (props) => {
   let hasSpecificId =
     structureChunk &&
     structureChunk.specificIds &&
+    structureChunk.specificIds.traitValue &&
     structureChunk.specificIds.traitValue.length;
 
   return (
     <div
       className={`${styles.card} 
-      ${noLObjsFetched && styles.shortCard}
-      ${noLObjsFetched && styles.needsAttention}
-      ${wordtype && gstyles[wordtype]} 
+      ${noEnChsFetched && styles.shortCard}
+      ${noEnChsFetched && styles.needsAttention}
+      ${
+        structureChunk &&
+        gstyles[idUtils.getWordtypeShorthandStCh(structureChunk)]
+      } 
       ${
         props.highlightedCard &&
         props.highlightedCard !== chunkId &&
@@ -201,7 +236,7 @@ const ChunkCard = (props) => {
     >
       {promptData && <Prompt data={promptData} />}
       <div className={styles.cardButtonsHolder}>
-        {noLObjsFetched ? (
+        {noEnChsFetched ? (
           <>
             <button
               alt="Letter F in circle icon"
@@ -210,10 +245,10 @@ const ChunkCard = (props) => {
                 e.target.blur();
                 if (
                   window.confirm(
-                    `Do you want to make "${props.word}" a fixed chunk? You'd better be sure this is an actual word and not one you mistyped.`
+                    `Do you want to make "${props.guideword}" a fixed chunk? You'd better be sure this is an actual word and not one you mistyped.`
                   )
                 ) {
-                  props.editLemma("*" + props.word);
+                  props.editLemma("*" + props.guideword);
                 }
               }}
             >
@@ -227,7 +262,7 @@ const ChunkCard = (props) => {
                 e.target.blur();
                 alert(
                   `Will retry find lemma objects for "${
-                    chunkId || props.word
+                    chunkId || props.guideword
                   }".`
                 );
                 setShouldRetryFetch((prev) => prev + 1);
@@ -248,7 +283,10 @@ const ChunkCard = (props) => {
               onClick={(e) => {
                 e.target.blur();
                 props.setHighlightedCard(chunkId);
-                putUtils.fetchSentence(lang1, [structureChunk]).then(
+
+                let formula = { sentenceStructure: [structureChunk] };
+
+                putUtils.fetchSentence(lang1, formula).then(
                   (data) => {
                     let { payload, messages } = data;
 
@@ -372,7 +410,9 @@ const ChunkCard = (props) => {
             props.setHighlightedCard(chunkId);
             setTimeout(() => {
               if (
-                window.confirm(`Delete this chunk "${chunkId || props.word}"?`)
+                window.confirm(
+                  `Delete this chunk "${chunkId || props.guideword}"?`
+                )
               ) {
                 props.editLemma(null, chunkId);
               }
@@ -399,7 +439,7 @@ const ChunkCard = (props) => {
           ${hasSpecificId && gstyles.bold}          
           `}
         >
-          {props.word}
+          {props.guideword}
         </h1>
       </div>
 
@@ -585,7 +625,7 @@ const ChunkCard = (props) => {
                     traitObject={traitObject}
                     traitObject2={traitObject2}
                     lObjId={structureChunk.lObjId}
-                    word={props.word}
+                    guideword={props.guideword}
                     modifyStructureChunkOnThisFormulaItem={
                       modifyStructureChunkOnThisFormulaItem
                     }
@@ -593,7 +633,6 @@ const ChunkCard = (props) => {
                     traitRegulatorValues={traitRegulatorValues}
                     structureChunk={structureChunk}
                     backedUpStructureChunk={props.backedUpStructureChunk}
-                    wordtype={wordtype}
                     setElementsToDrawLinesBetween={
                       props.setElementsToDrawLinesBetween
                     }
@@ -635,7 +674,7 @@ const ChunkCard = (props) => {
                     traitKey={traitKey}
                     chunkCardKey={props.chunkCardKey}
                     traitObject={structureChunk[traitKey]}
-                    word={props.word}
+                    guideword={props.guideword}
                     modifyStructureChunkOnThisFormulaItem={
                       modifyStructureChunkOnThisFormulaItem
                     }

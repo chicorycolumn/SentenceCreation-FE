@@ -1,5 +1,5 @@
 import axios from "axios";
-import { backendifyStructureChunk } from "./getUtils.js";
+import { backendifyFormula } from "./getUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
@@ -23,42 +23,33 @@ export const fetchFormula = (sentenceFormulaId, answerLanguage) => {
     .catch((e) => console.log("ERROR 9820", e));
 };
 
-export const fetchSentence = (lang1, rawChunks, orders) => {
-  const requestingSingleWordOnly = !orders;
+export const fetchSentence = (lang1, sentenceFormula) => {
+  backendifyFormula(sentenceFormula);
 
-  let processedChunks = rawChunks.map((stCh) => backendifyStructureChunk(stCh));
-
-  if (!processedChunks.length) {
+  if (!sentenceFormula.sentenceStructure.length) {
     return;
   }
 
-  let sentenceFormula = {
-    sentenceStructure: processedChunks,
+  let requestingSingleWordOnly =
+    (!sentenceFormula.primaryOrders || !sentenceFormula.primaryOrders.length) &&
+    (!sentenceFormula.additionalOrders ||
+      !sentenceFormula.additionalOrders.length);
+
+  let body = {
+    questionLanguage: lang1,
+    sentenceFormula,
+    requestingSingleWordOnly,
   };
-
-  if (orders) {
-    sentenceFormula.primaryOrders = orders
-      .filter((obj) => obj.isPrimary)
-      .map((obj) => obj.order);
-
-    sentenceFormula.additionalOrders = orders
-      .filter((obj) => !obj.isPrimary)
-      .map((obj) => obj.order);
-  }
 
   console.log(""); //devlogging
   console.log("");
   console.log("**fetchSentence**");
-  console.log({ lang1, sentenceFormula, requestingSingleWordOnly });
+  console.log(body);
 
   return axios
     .put(
-      `${baseUrl}/educator/sandbox?lang=${lang1}`,
-      {
-        questionLanguage: lang1,
-        sentenceFormula,
-        requestingSingleWordOnly,
-      }
+      `${baseUrl}/educator/sentences?lang=${lang1}`,
+      body
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {

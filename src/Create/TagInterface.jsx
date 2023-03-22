@@ -13,8 +13,8 @@ const TagInterface = (props) => {
   const [clickCounter, setClickCounter] = useState(0);
   const [tickDisabled, setTickDisabled] = useState();
   const [tags, setTags] = useState([]);
-  const [fetchedLObjs, setFetchedLObjs] = useState({});
-  const [wordtypeInFocus, setWordtypeInFocus] = useState(props.wordtype);
+  const [fetchedWordsByWordtype, setFetchedWordsByWordtype] = useState({});
+  const [focusedWordtype, setFocusedWordtype] = useState(props.wordtype);
   const lang1 = useContext(LanguageContext);
   const exit = () => {
     $(document).off("keyup");
@@ -51,7 +51,7 @@ const TagInterface = (props) => {
         diUtils.asArray(props.traitValueInputString2)
       )
       .then((fetchedWords) => {
-        setFetchedLObjs(fetchedWords);
+        setFetchedWordsByWordtype(fetchedWords);
 
         setTickDisabled(
           !fetchedWords[props.wordtype] ||
@@ -203,18 +203,18 @@ const TagInterface = (props) => {
         <div className={styles.rightDiv}>
           <div className={styles.div3}>
             <div className={styles.wordtypeButtonsHolder}>
-              {Object.keys(fetchedLObjs).map((wordtype) => {
-                let count = fetchedLObjs[wordtype].length;
+              {Object.keys(fetchedWordsByWordtype).map((wordtype) => {
+                let count = fetchedWordsByWordtype[wordtype].length;
                 return (
                   <button
                     disabled={!count}
                     key={wordtype}
                     className={`${gstyles[wordtype]} ${styles.wordtypeButton} ${
-                      wordtypeInFocus === wordtype &&
+                      focusedWordtype === wordtype &&
                       styles.wordtypeButtonSelected
                     }`}
                     onClick={() => {
-                      setWordtypeInFocus(wordtype);
+                      setFocusedWordtype(wordtype);
                     }}
                   >
                     {wordtype}
@@ -224,9 +224,9 @@ const TagInterface = (props) => {
             </div>
             <div className={styles.tableHolder}>
               <LemmasTable
-                setWordtypeInFocus={setWordtypeInFocus}
-                wordtypeInFocus={wordtypeInFocus}
-                fetchedLObjs={fetchedLObjs}
+                setFocusedWordtype={setFocusedWordtype}
+                focusedWordtype={focusedWordtype}
+                fetchedWordsByWordtype={fetchedWordsByWordtype}
               />
             </div>
           </div>

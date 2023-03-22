@@ -67,7 +67,7 @@ const ChunkCardHolder = (props) => {
         (formulaItem) => formulaItem.formulaItemId === formulaItemId
       );
 
-      currentFormulaItem.word = newLemma;
+      currentFormulaItem.guideword = newLemma;
       currentFormulaItem.structureChunk = structureChunk;
 
       updateFlowers(prevFormula, chunkId, null);
@@ -102,7 +102,7 @@ const ChunkCardHolder = (props) => {
         setChunkOrders([
           {
             isPrimary: true,
-            isDefault: true,
+            isDefault: true, // Beta remove this.
             order: props.formula
               .filter((obj) => !obj.structureChunk.isGhostChunk)
               .map((obj) => obj.structureChunk.chunkId.traitValue),
@@ -155,7 +155,7 @@ const ChunkCardHolder = (props) => {
         <p className={styles.buttonHolderTitle}>Question sentence</p>
         <div className={styles.buttonSubholder}>
           <button
-            alt="Three dots icon"
+            alt="Alternate arrows icon"
             className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
               e.target.blur();
@@ -165,7 +165,7 @@ const ChunkCardHolder = (props) => {
               setShowChunkOrdersPopup(true);
             }}
           >
-            &#11819;
+            &#10562;
             <Tooltip text="Set orders" />
           </button>
           <button
@@ -188,38 +188,37 @@ const ChunkCardHolder = (props) => {
                 return;
               }
 
-              let sentenceStructure = props.formula.map(
-                (el) => el.structureChunk
-              );
+              let formula = {
+                sentenceStructure: props.formula.map((el) => el.structureChunk),
+                orders: chunkOrders,
+              };
 
-              putUtils
-                .fetchSentence(lang1, sentenceStructure, chunkOrders)
-                .then(
-                  (data) => {
-                    let { payload, messages } = data;
+              putUtils.fetchSentence(lang1, formula).then(
+                (data) => {
+                  let { payload, messages } = data;
 
-                    if (messages) {
-                      alert(
-                        Object.keys(messages).map((key) => {
-                          let val = messages[key];
-                          return `${key}:       ${val}`;
-                        })
-                      );
-                      return;
-                    }
-
-                    setListPopupData({
-                      title: `${payload.length} sentence${
-                        payload.length > 1 ? "s" : ""
-                      } from traits you specified`,
-                      headers: ["sentence"],
-                      rows: payload.map((el) => [el]),
-                    });
-                  },
-                  (e) => {
-                    console.log("ERROR 0302:", e);
+                  if (messages) {
+                    alert(
+                      Object.keys(messages).map((key) => {
+                        let val = messages[key];
+                        return `${key}:       ${val}`;
+                      })
+                    );
+                    return;
                   }
-                );
+
+                  setListPopupData({
+                    title: `${payload.length} sentence${
+                      payload.length > 1 ? "s" : ""
+                    } from traits you specified`,
+                    headers: ["sentence"],
+                    rows: payload.map((el) => [el]),
+                  });
+                },
+                (e) => {
+                  console.log("ERROR 0302:", e);
+                }
+              );
             }}
           >
             &#9733;
@@ -300,11 +299,18 @@ const ChunkCardHolder = (props) => {
         </div>
       </div>
       <div className={styles.cardHolder} key={meaninglessCounter}>
-        <LineHolder elementsToDrawLineBetween={[]} />
-        {/* Unused LineHolder for flexbox spacing. */}
+        <LineHolder
+          elementsToDrawLineBetween={[]}
+          id="Unused LineHolder for flexbox spacing."
+        />
+
         {props.formula.map((formulaItem, index) => {
-          let { word, structureChunk, backedUpStructureChunk, formulaItemId } =
-            formulaItem;
+          let {
+            guideword,
+            structureChunk,
+            backedUpStructureChunk,
+            formulaItemId,
+          } = formulaItem;
 
           let finalIndex = props.formula.length - 1;
 
@@ -316,15 +322,35 @@ const ChunkCardHolder = (props) => {
               />
               <ChunkCard
                 formulaItemId={formulaItemId}
-                key={`${formulaItemId}-${word}`}
+                key={`${formulaItemId}-${guideword}`}
                 batch={props.batch}
-                chunkCardKey={`${formulaItemId}-${word}`}
-                word={word}
+                chunkCardKey={`${formulaItemId}-${guideword}`}
+                guideword={guideword}
                 structureChunk={structureChunk}
                 backedUpStructureChunk={backedUpStructureChunk}
                 chunkCardIndex={index}
                 formula={props.formula}
-                setFormula={props.setFormula}
+                setStructureChunkOnFormula={(newStCh) => {
+                  props.setFormula((prevFormula) => {
+                    return prevFormula.map((formulaItem) => {
+                      if (formulaItem.formulaItemId === formulaItemId) {
+                        formulaItem.structureChunk = newStCh;
+                      }
+                      return formulaItem;
+                    });
+                  });
+                }}
+                backUpStCh={(newStCh) => {
+                  props.setFormula((prevFormula) => {
+                    return prevFormula.map((formulaItem) => {
+                      if (formulaItem.formulaItemId === formulaItemId) {
+                        formulaItem.backedUpStructureChunk =
+                          uUtils.copyWithoutReference(newStCh);
+                      }
+                      return formulaItem;
+                    });
+                  });
+                }}
                 setElementsToDrawLinesBetween={setElementsToDrawLinesBetween}
                 flowerSearchingForStemBrace={[
                   flowerSearchingForStem,
@@ -346,6 +372,8 @@ const ChunkCardHolder = (props) => {
                 setPopup={setListPopupData}
                 highlightedCard={highlightedCard}
                 setHighlightedCard={setHighlightedCard}
+                formulaWasLoaded={props.formulaWasLoaded}
+                setFormulaWasLoaded={props.setFormulaWasLoaded}
               />
               {index === finalIndex ? (
                 <AddChunkButton

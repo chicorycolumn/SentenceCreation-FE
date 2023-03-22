@@ -6,100 +6,61 @@ const baseUrl = "http://localhost:9090/api";
 
 export const frontendOnlyTraits = ["booleanTraits", "isGhostChunk"];
 
-export const backendOnlyTraits = [
-  "allohomInfo",
-  "hiddenTraits",
-  "PHD_type",
-  "hypernymy",
-  "semanticGender",
-  "virilityDetail",
-  "originalSitSelectedLObj",
-];
+export const backendifyFormula = (formula) => {
+  // 1. Orders
+  if (formula.orders) {
+    formula.primaryOrders = formula.orders
+      .filter((obj) => obj.isPrimary)
+      .map((obj) => obj.order);
 
-export const backendifyStructureChunk = (stCh) => {
-  let processedStCh = {};
+    formula.additionalOrders = formula.orders
+      .filter((obj) => !obj.isPrimary)
+      .map((obj) => obj.order);
 
-  if (stCh.booleanTraits) {
-    stCh.booleanTraits.traitValue.forEach((booleanTrait) => {
-      processedStCh[booleanTrait] = {
-        expectedTypeOnStCh: "boolean",
-        traitValue: true,
-      };
-    });
+    delete formula.orders;
   }
 
-  Object.keys(stCh).forEach((traitKey) => {
-    if (frontendOnlyTraits.includes(traitKey)) {
-      return;
+  formula.sentenceStructure = formula.sentenceStructure.map((enCh) => {
+    let stCh = {};
+
+    // 2b. Unpack booleans
+    if (enCh.booleanTraits) {
+      enCh.booleanTraits.traitValue.forEach((booleanTrait) => {
+        stCh[booleanTrait] = true;
+      });
     }
 
-    let { traitValue } = stCh[traitKey];
+    // 2a. enCh to stCh
+    Object.keys(enCh).forEach((traitKey) => {
+      if (frontendOnlyTraits.includes(traitKey)) {
+        return;
+      }
 
-    if (traitValue && (traitValue === true || traitValue.length)) {
-      processedStCh[traitKey] = traitValue;
-    }
+      let { traitValue } = enCh[traitKey];
+      if (traitValue && (traitValue === true || traitValue.length)) {
+        stCh[traitKey] = traitValue;
+      }
+    });
+
+    return stCh;
   });
-
-  // Object.keys(idUtils.renamedTraitKeys).forEach((backendKey) => {
-  //   let frontendKey = idUtils.renamedTraitKeys[backendKey];
-  //   if (Object.keys(processedStCh).includes(frontendKey)) {
-  //     processedStCh[backendKey] = processedStCh[frontendKey];
-  //     delete processedStCh[frontendKey];
-  //   }
-  // });
-
-  return processedStCh;
 };
 
-export const frontendifyStructureChunk = (stCh) => {
-  // Object.keys(idUtils.renamedTraitKeys).forEach((backendKey) => {
-  //   let frontendKey = idUtils.renamedTraitKeys[backendKey];
-  //   if (Object.keys(stCh).includes(backendKey)) {
-  //     stCh[frontendKey] = stCh[backendKey];
-  //     delete stCh[backendKey];
-  //   }
-  // });
-
-  let booleanTraits = {
-    expectedTypeOnStCh: "array",
-    possibleTraitValues: [],
-    traitValue: [],
-  };
-
-  Object.keys(stCh).forEach((traitKey) => {
-    if (
-      typeof stCh[traitKey] === "object" &&
-      stCh[traitKey].expectedTypeOnStCh === "boolean"
-    ) {
-      booleanTraits.possibleTraitValues.push(traitKey);
-      delete stCh[traitKey];
-    }
-  });
-
-  stCh.booleanTraits = booleanTraits;
-
-  backendOnlyTraits.forEach((traitKey) => {
-    delete stCh[traitKey];
-  });
-
-  return stCh;
-};
-
-export const fetchLObjsByLemma = (lang1, lemma) => {
+export const fetchEnChsByLemma = (lang1, lemma) => {
   console.log(""); //devlogging
   console.log("");
-  console.log("**fetchLObjsByLemma**");
+  console.log("**fetchEnChsByLemm'a**");
   console.log({ lang1, lemma });
 
   return axios
     .get(
-      `${baseUrl}/educator/info?infoType=lObjs&lang=${lang1}&lemma=${lemma}`
+      `${baseUrl}/educator/chunks?&lang=${lang1}&lemma=${lemma}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
       let result = res.data["info"];
-      console.log("fetchLObjsByLemma got:", result); //devlogging
-      console.log("/fetchLObjsByLemma");
+      console.log("fetchEnChsByLemm'a got:", result); //devlogging
+      console.log("/fetchEnChsByLemm'a");
       console.log("");
       console.log("");
 

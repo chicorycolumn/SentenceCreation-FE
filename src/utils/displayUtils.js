@@ -5,7 +5,7 @@ const uUtils = require("./universalUtils.js");
 const idUtils = require("./identityUtils.js");
 
 const diUtils = {
-  addChunkId: (stCh, chunkCardIndex, formula) => {
+  addChunkId: (stCh, chunkCardIndex, guideword, formula) => {
     let existingChunkIds = [];
     if (formula) {
       existingChunkIds = formula
@@ -19,35 +19,37 @@ const diUtils = {
     let idSplit = stCh.id.split("-");
     let chunkIdBase = `${idSplit[1]}-${chunkCardIndex}`;
 
-    const createChunkId = (idSplit, chunkIdBase, appendRandomDigits) => {
+    const createChunkId = (
+      idSplit,
+      chunkIdBase,
+      guideword,
+      appendRandomDigits
+    ) => {
       let randomDigit = Math.random().toString()[2];
       let randomDigits = appendRandomDigits
         ? Math.random().toString().slice(2, 6)
         : "";
 
       if (stCh.lemma.includes("*")) {
-        return `${chunkIdBase}000${randomDigit}-${stCh.lemma
-          .split("")
-          .filter((char) => char !== "*")
-          .join("")}${randomDigits}`;
+        return `${chunkIdBase}000${randomDigit}-${guideword}${randomDigits}`;
       } else {
         return `${chunkIdBase}${idSplit[2]
           .split("")
           .reverse()
-          .join("")}${randomDigit}-${stCh.lemma}${randomDigits}`;
+          .join("")}${randomDigit}-${guideword}${randomDigits}`;
       }
     };
 
     let chunkId;
 
     for (let i = 1; i <= 20; i++) {
-      chunkId = createChunkId(idSplit, chunkIdBase);
+      chunkId = createChunkId(idSplit, chunkIdBase, guideword);
       if (!existingChunkIds.includes(chunkId)) {
         break;
       }
       if (i === 20) {
         while (existingChunkIds.includes(chunkId)) {
-          chunkId = createChunkId(idSplit, chunkIdBase, true);
+          chunkId = createChunkId(idSplit, chunkIdBase, guideword, true);
         }
       }
     }
@@ -266,12 +268,14 @@ const diUtils = {
     let countOfLeftoverTraitKeys =
       orderedTraitKeys.length - Object.keys(stCh).length;
 
+    let wordtype = idUtils.getWordtypeShorthandStCh(stCh);
+
     if (
       !idUtils.isFixedChunk(stCh) &&
       countOfLeftoverTraitKeys &&
-      !(countOfLeftoverTraitKeys === 3 && stCh.wordtype !== "pro")
+      !(countOfLeftoverTraitKeys === 3 && wordtype !== "pro")
     ) {
-      throw `gluj: ${stCh.wordtype} orderedTraitKeys.length ${
+      throw `gluj: ${wordtype} orderedTraitKeys.length ${
         orderedTraitKeys.length
       } !== Object.keys(stCh).length ${Object.keys(stCh).length}`;
     }
@@ -279,7 +283,6 @@ const diUtils = {
     orderedTraitKeys = orderedTraitKeys.filter(
       (traitKey) =>
         ![
-          "wordtype",
           ...idUtils.traitKeyRegulators
             .map((tkr) => tkr.name)
             .filter((el) => el),
@@ -289,7 +292,6 @@ const diUtils = {
     return {
       orderedTraitKeysGroup1: orderedTraitKeys.slice(0, length),
       orderedTraitKeysGroup2: orderedTraitKeys.slice(length),
-      wordtypeFromStCh: stCh.wordtype,
     };
   },
 

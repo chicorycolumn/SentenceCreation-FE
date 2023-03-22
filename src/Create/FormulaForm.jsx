@@ -1,27 +1,29 @@
 import React, { useState, useContext, useEffect } from "react";
 import LanguageContext from "../context/LanguageContext.js";
-import { createFormulaItemId } from "../utils/identityUtils.js";
+import { egSentenceString1 } from "../utils/testData.js";
+import { getRandomNumberString } from "../utils/universalUtils.js";
 
 const FormulaForm = (props) => {
-  const [formulaInput, setFormulaInput] = useState(
-    "kobieta jest *bardzo czerwona"
-  );
+  const [formulaInput, setFormulaInput] = useState(); //egSentenceString1
+
   const [savedFormulaInput, setSavedFormulaInput] = useState();
 
   const cardIt = (lang, input) => {
-    let formula = formulaInput || input;
-    console.log("CARD IT!", lang, formula);
     if (!lang) {
+      alert("No language specified.");
       return;
     }
 
+    let formula = formulaInput || input;
+    console.log("CARD IT!", lang, formula);
+
     if (formula) {
       setSavedFormulaInput(formula);
-      let formulaItemsArr = formula.split(" ").map((word) => {
+      let formulaItemsArr = formula.split(" ").map((guideword) => {
         return {
-          word,
+          guideword,
           structureChunk: null,
-          formulaItemId: createFormulaItemId(),
+          formulaItemId: getRandomNumberString(10),
         };
       });
       props.setFormula(formulaItemsArr);
