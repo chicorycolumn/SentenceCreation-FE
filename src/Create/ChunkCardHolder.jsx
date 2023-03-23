@@ -16,7 +16,9 @@ import $ from "jquery";
 const putUtils = require("../utils/putUtils.js");
 
 const ChunkCardHolder = (props) => {
-  const lang1 = useContext(LanguageContext);
+  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
+    useContext(LanguageContext)
+  );
   const [elementsToDrawLinesBetween, setElementsToDrawLinesBetween] = useState(
     []
   );

@@ -31,7 +31,9 @@ const ChunkCard = (props) => {
   const [meaninglessCounterTraitBox, setMeaninglessCounterTraitBox] =
     useState(0);
 
-  const lang1 = useContext(LanguageContext);
+  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
+    useContext(LanguageContext)
+  );
 
   const modifyStructureChunkOnThisFormulaItem = (newStCh, shouldBackUp) => {
     if (shouldBackUp) {

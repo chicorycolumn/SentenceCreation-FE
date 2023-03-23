@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import LanguageContext from "../context/LanguageContext.js";
+import idUtils from "../utils/identityUtils.js";
 import { egSentenceString1 } from "../utils/testData.js";
 import { getRandomNumberString } from "../utils/universalUtils.js";
 
@@ -30,7 +31,9 @@ const FormulaForm = (props) => {
     }
   };
 
-  const lang1 = useContext(LanguageContext);
+  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
+    useContext(LanguageContext)
+  );
 
   useEffect(() => {
     cardIt(lang1, savedFormulaInput);

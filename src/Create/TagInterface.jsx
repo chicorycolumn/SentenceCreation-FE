@@ -7,6 +7,7 @@ import gstyles from "../css/Global.module.css";
 import diUtils from "../utils/displayUtils.js";
 import uUtils from "../utils/universalUtils.js";
 import $ from "jquery";
+import idUtils from "../utils/identityUtils.js";
 const getUtils = require("../utils/getUtils.js");
 
 const TagInterface = (props) => {
@@ -15,7 +16,9 @@ const TagInterface = (props) => {
   const [tags, setTags] = useState([]);
   const [fetchedWordsByWordtype, setFetchedWordsByWordtype] = useState({});
   const [focusedWordtype, setFocusedWordtype] = useState(props.wordtype);
-  const lang1 = useContext(LanguageContext);
+  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
+    useContext(LanguageContext)
+  );
   const exit = () => {
     $(document).off("keyup");
     props.revertTraitValueInputString(true);

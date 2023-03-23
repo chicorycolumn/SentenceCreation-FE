@@ -103,3 +103,11 @@ exports.isBadChunk = (stCh) => {
 exports.getWordtypeShorthandStCh = (stCh) => {
   return stCh.chunkId.traitValue.split("-")[0];
 };
+
+exports.getLangsAndEnv = (str) => {
+  let split = str.split("-");
+  const lang1 = split[0];
+  const lang2 = split[1];
+  const beEnv = split[2];
+  return { lang1, lang2, beEnv };
+};

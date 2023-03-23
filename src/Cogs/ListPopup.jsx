@@ -57,6 +57,12 @@ const ListPopup = (props) => {
                   <tr
                     className={styles.tablerow}
                     key={`${props.data.title}-tr-${rIndex}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (props.data.rowCallback) {
+                        props.data.rowCallback(el);
+                      }
+                    }}
                   >
                     <td>{rIndex + 1}</td>
                     {el.map((item, dIndex) => (
