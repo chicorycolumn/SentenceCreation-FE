@@ -18,10 +18,11 @@ const Create = () => {
   const [formula, setFormula] = useState([]);
   const [showFormulasPopup, setShowFormulasPopup] = useState();
   const [chosenFormulaID, setChosenFormulaID] = useState();
+  const [shouldFetchFormula, setShouldFetchFormula] = useState();
   const [fetchedFormulaIds, setFetchedFormulaIds] = useState([]);
 
   useEffect(() => {
-    if (chosenFormulaID) {
+    if (chosenFormulaID && shouldFetchFormula) {
       fetchFormula(chosenFormulaID, lang2).then((data) => {
         console.log(
           "\nHey look I got this data back from fetchFormula",
@@ -31,9 +32,10 @@ const Create = () => {
 
         setFormula(data.questionSentenceFormula.sentenceStructure);
         setFormulaWasLoaded((prev) => prev + 1);
+        setChosenFormulaID();
       });
     }
-  }, [chosenFormulaID]);
+  }, [chosenFormulaID, shouldFetchFormula]);
 
   return (
     <LanguageContextProvider value={`${lang1}-${lang2}-${beEnv}`}>
@@ -100,6 +102,7 @@ const Create = () => {
                 rowCallback: (row) => {
                   let formulaID = row[0];
                   setChosenFormulaID(formulaID);
+                  setShouldFetchFormula(true);
                   setShowFormulasPopup();
                 },
               };
