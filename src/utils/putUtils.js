@@ -4,6 +4,21 @@ const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
+export const fetchFormulaIds = (lang1, lang2, env) => {
+  return axios
+    .get(
+      `${baseUrl}/educator/formulaids?lang1=${lang1}&lang2=${lang2}&env=${env}`
+      // ,{headers: { Authorization: `BEARER ${token}` }}
+    )
+    .then((res) => {
+      console.log("fetchFormulaIds got:", res.data); //devlogging
+      console.log("/fetchFormulaIds");
+
+      return res.data;
+    })
+    .catch((e) => console.log("ERROR 7070", e));
+};
+
 export const fetchFormula = (sentenceFormulaId, answerLanguage) => {
   console.log("START fetchFormula", { sentenceFormulaId, answerLanguage });
 

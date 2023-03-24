@@ -22,7 +22,7 @@ const ListPopup = (props) => {
   return (
     <>
       <div className={gstyles.obscurus} onClick={exit}></div>
-      <div className={`${styles.mainbox}`}>
+      <div className={`${styles.mainbox} ${props.wide && styles.mainboxWide}`}>
         <div className={styles.topHolder}>
           <div className={`${gstyles.sideButton} ${gstyles.invisible}`}></div>
           <h1 className={styles.title}>{props.data.title}</h1>

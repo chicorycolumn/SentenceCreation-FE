@@ -4,7 +4,7 @@ import FormulaForm from "./Create/FormulaForm.jsx";
 import ChunkCardHolder from "./Create/ChunkCardHolder.jsx";
 import ListPopup from "./Cogs/ListPopup.jsx";
 import { LanguageContextProvider } from "./context/LanguageContext.js";
-import { fetchFormula } from "./utils/putUtils.js";
+import { fetchFormula, fetchFormulaIds } from "./utils/putUtils.js";
 import $ from "jquery";
 
 const Create = () => {
@@ -17,20 +17,7 @@ const Create = () => {
   const [formula, setFormula] = useState([]);
   const [showFormulasPopup, setShowFormulasPopup] = useState();
   const [chosenFormulaID, setChosenFormulaID] = useState();
-
-  let testFetchedFormulas = {
-    title: "Formulas",
-    headers: ["Formula ID", "Guidewords"],
-    rows: [
-      ["POL-00-101c", "Kobieta czyta."],
-      ["POL-00-101a", "Jestem lekarzem."],
-    ],
-    rowCallback: (row) => {
-      let formulaID = row[0];
-      setChosenFormulaID(formulaID);
-      setShowFormulasPopup();
-    },
-  };
+  const [fetchedFormulaIds, setFetchedFormulaIds] = useState([]);
 
   useEffect(() => {
     if (chosenFormulaID) {
@@ -85,13 +72,35 @@ const Create = () => {
             exit={() => {
               setShowFormulasPopup();
             }}
-            data={testFetchedFormulas}
+            data={fetchedFormulaIds}
+            wide={true}
           />
         )}
         <button
           onClick={(e) => {
             e.preventDefault();
-            setShowFormulasPopup(true);
+
+            fetchFormulaIds(lang1, lang2, beEnv).then((data) => {
+              console.log(
+                "\nHey look I got this data back from fetchFormulaIds",
+                data,
+                "\n"
+              );
+
+              let formattedData = {
+                title: "Formulas",
+                headers: ["Formula ID", "Guidewords"],
+                rows: data.formulaIds,
+                rowCallback: (row) => {
+                  let formulaID = row[0];
+                  setChosenFormulaID(formulaID);
+                  setShowFormulasPopup();
+                },
+              };
+
+              setFetchedFormulaIds(formattedData);
+              setShowFormulasPopup(true);
+            });
           }}
         >
           Load a formula
