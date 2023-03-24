@@ -393,7 +393,7 @@ class TraitBox extends Component {
             revertTraitValueInputString={this.revertTraitValueInputString}
             checkAndSetTraitValue={checkAndSetTraitValue}
             exitTraitBox={exitTraitBox}
-            wordtype={idUtils.getWordtypeShorthandStCh(structureChunk)}
+            wordtype={idUtils.getWordtypeShorthandEnCh(structureChunk)}
             guideword={guideword}
             lObjId={lObjId}
             backedUpTags={this.props.backedUpStructureChunk.andTags.traitValue}

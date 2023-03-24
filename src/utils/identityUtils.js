@@ -92,7 +92,7 @@ exports.getBadChunks = (formula) => {
 exports.isBadChunk = (stCh) => {
   return (
     idUtils.wordtypesWhichMustHavePopulatedTags.includes(
-      idUtils.getWordtypeShorthandStCh(stCh)
+      idUtils.getWordtypeShorthandEnCh(stCh)
     ) &&
     uUtils.isEmpty(stCh.specificIds.traitValue) &&
     uUtils.isEmpty(stCh.andTags.traitValue) &&
@@ -100,8 +100,8 @@ exports.isBadChunk = (stCh) => {
   );
 };
 
-exports.getWordtypeShorthandStCh = (stCh) => {
-  return stCh.chunkId.traitValue.split("-")[0];
+exports.getWordtypeShorthandEnCh = (enCh) => {
+  return enCh.chunkId.traitValue.split("-")[0];
 };
 
 exports.getLangsAndEnv = (str) => {

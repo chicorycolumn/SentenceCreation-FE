@@ -7,11 +7,12 @@ import Prompt from "../Cogs/Prompt.jsx";
 import styles from "../css/ChunkCard.module.css";
 import gstyles from "../css/Global.module.css";
 import diUtils from "../utils/displayUtils.js";
-import idUtils from "../utils/identityUtils.js";
+import idUtils, { getWordtypeShorthandEnCh } from "../utils/identityUtils.js";
 const putUtils = require("../utils/putUtils.js");
 const getUtils = require("../utils/getUtils.js");
 const uUtils = require("../utils/universalUtils.js");
 const consol = require("../utils/loggingUtils.js");
+const cmUtils = require("../utils/chunkModifyingUtils.js");
 
 const ChunkCard = (props) => {
   const [fetchedEnChsByLemma, setFetchedEnChsByLemma] = useState([]);
@@ -240,7 +241,7 @@ const ChunkCard = (props) => {
       ${noEnChsFetched && styles.needsAttention}
       ${
         structureChunk &&
-        gstyles[idUtils.getWordtypeShorthandStCh(structureChunk)]
+        gstyles[idUtils.getWordtypeShorthandEnCh(structureChunk)]
       } 
       ${
         props.highlightedCard &&
@@ -323,7 +324,7 @@ const ChunkCard = (props) => {
                       headers: ["lemma", "id"],
                       rows: payload.map((obj) => [
                         obj.selectedWord,
-                        obj.lObjID,
+                        obj.lObjId,
                       ]),
                     });
                   },
@@ -504,7 +505,7 @@ const ChunkCard = (props) => {
             />
           </button>
         )}
-        <p className={`${styles.lObjID} ${gstyles.tooltipHolderDelayed}`}>
+        <p className={`${styles.lObjId} ${gstyles.tooltipHolderDelayed}`}>
           {structureChunk && structureChunk.lObjId}
           <Tooltip text="lemma ID (of an example lemma)" />
         </p>
@@ -515,39 +516,40 @@ const ChunkCard = (props) => {
             onClick={(e) => {
               e.preventDefault();
 
-              let stCh = uUtils.copyWithoutReference(structureChunk);
+              let newStCh = uUtils.copyWithoutReference(structureChunk);
               let isSecondClick;
 
               let traitsAffectedBySpecificId = ["andTags", "orTags"];
 
               if (
-                stCh.specificIds.traitValue &&
-                stCh.specificIds.traitValue.length
+                newStCh.specificIds.traitValue &&
+                newStCh.specificIds.traitValue.length
               ) {
-                if (stCh.specificIds.traitValue.some((tv) => tv[0] === "^")) {
+                if (
+                  newStCh.specificIds.traitValue.some((tv) => tv[0] === "^")
+                ) {
                   //Third click - remove specificIds.
-                  stCh.specificIds.traitValue = [];
-                  console.log("Resetting", traitsAffectedBySpecificId);
-                  traitsAffectedBySpecificId.forEach((traitKey) => {
-                    stCh[traitKey].traitValue =
-                      props.backedUpStructureChunk[traitKey].traitValue.slice();
-                  });
+                  if (getWordtypeShorthandEnCh(newStCh) !== "pro") {
+                    cmUtils.removeSpecificId(
+                      newStCh,
+                      traitsAffectedBySpecificId,
+                      props.backedUpStructureChunk
+                    );
+                  } else {
+                    //Unless it's pronombre in which case not allowed to have no specificIds.
+                    cmUtils.addSpecificId(newStCh, traitsAffectedBySpecificId);
+                  }
                 } else {
                   //Second click - Upgrade specificIds with ^caret.
                   isSecondClick = true;
-                  stCh.specificIds.traitValue =
-                    structureChunk.specificIds.traitValue.map((tv) => `^${tv}`);
+                  cmUtils.upgradeSpecificId(newStCh, structureChunk);
                 }
               } else {
                 //First click - Add specificIds.
-                stCh.specificIds.traitValue = [stCh.lObjId];
-                console.log("Blanking", traitsAffectedBySpecificId);
-                traitsAffectedBySpecificId.forEach((traitKey) => {
-                  stCh[traitKey].traitValue = [];
-                });
+                cmUtils.addSpecificId(newStCh, traitsAffectedBySpecificId);
               }
 
-              modifyStructureChunkOnThisFormulaItem(stCh);
+              modifyStructureChunkOnThisFormulaItem(newStCh);
 
               if (isSecondClick) {
                 setShowTraitKeysGroupTwo(false);
@@ -576,7 +578,11 @@ const ChunkCard = (props) => {
                   ? structureChunk.specificIds.traitValue.some(
                       (tv) => tv[0] === "^"
                     )
-                    ? "Remove"
+                    ? `${
+                        getWordtypeShorthandEnCh(structureChunk) === "pro"
+                          ? "Downgrade"
+                          : "Remove"
+                      }`
                     : "Upgrade"
                   : "Set"
               } as specific lemma for this chunk`}
