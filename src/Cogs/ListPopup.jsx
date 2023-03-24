@@ -1,10 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../css/Popup.module.css";
 import gstyles from "../css/Global.module.css";
 import uUtils from "../utils/universalUtils.js";
 import $ from "jquery";
 
 const ListPopup = (props) => {
+  const [headersWhichAreSortedDescending, setHeadersWhichAreSortedDescending] =
+    useState([]);
+
   const exit = () => {
     $(document).off("keyup");
     props.exit();
@@ -45,7 +48,30 @@ const ListPopup = (props) => {
                 <tr>
                   <th>#</th>
                   {props.data.headers.map((header, hIndex) => (
-                    <th key={`${props.data.title.slice(0, 10)}-th-${hIndex}`}>
+                    <th
+                      key={`${props.data.title.slice(0, 10)}-th-${hIndex}`}
+                      className={`${styles.listHeader} ${gstyles.noSelect}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+
+                        props.setData((prev) => {
+                          prev.rows = prev.rows.sort((x, y) => {
+                            return headersWhichAreSortedDescending.includes(
+                              header
+                            )
+                              ? x[hIndex].localeCompare(y[hIndex])
+                              : y[hIndex].localeCompare(x[hIndex]);
+                          });
+                          return prev;
+                        });
+
+                        setHeadersWhichAreSortedDescending((prev) => {
+                          return prev.includes(header)
+                            ? prev.filter((x) => x !== header)
+                            : [...prev, header];
+                        });
+                      }}
+                    >
                       {header}
                     </th>
                   ))}
@@ -55,7 +81,9 @@ const ListPopup = (props) => {
               <tbody>
                 {props.data.rows.map((el, rIndex) => (
                   <tr
-                    className={styles.tablerow}
+                    className={`${styles.tablerow} ${
+                      props.data.rowCallback && styles.hoverableRow
+                    }`}
                     key={`${props.data.title}-tr-${rIndex}`}
                     onClick={(e) => {
                       e.preventDefault();

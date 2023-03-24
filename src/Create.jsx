@@ -78,6 +78,7 @@ const Create = () => {
               setShowFormulasPopup();
             }}
             data={fetchedFormulaIds}
+            setData={setFetchedFormulaIds}
             wide={true}
           />
         )}
@@ -94,7 +95,7 @@ const Create = () => {
 
               let formattedData = {
                 title: "Formulas",
-                headers: ["Formula ID", "Guidewords"],
+                headers: ["Formula ID", "Guidewords", "Symbol"],
                 rows: data.formulaIds,
                 rowCallback: (row) => {
                   let formulaID = row[0];

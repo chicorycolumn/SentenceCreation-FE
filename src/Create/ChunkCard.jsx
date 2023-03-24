@@ -205,11 +205,24 @@ const ChunkCard = (props) => {
         props.guideword,
         "formulaWasLoaded useEffect"
       );
+
       setTimeout(() => {
         props.setFormulaWasLoaded(0);
       }, 500);
     }
   }, [props.formulaWasLoaded]);
+
+  useEffect(() => {
+    if (traitKeysGroup2.length) {
+      setTimeout(() => {
+        if (
+          diUtils.doTraitKeysHoldSomeValues(traitKeysGroup2, structureChunk)
+        ) {
+          setShowTraitKeysGroupTwo(true);
+        }
+      }, 500);
+    }
+  }, [traitKeysGroup2]);
 
   let isFixedChunkOrNoChunk =
     !structureChunk || idUtils.isFixedChunk(structureChunk);
@@ -658,10 +671,9 @@ const ChunkCard = (props) => {
               id={`ToggleShowButton-${props.batch}-Group2-${props.formulaItemId}`}
               setShowTraitKeysGroup={setShowTraitKeysGroupTwo}
               showTraitKeysGroup={showTraitKeysGroupTwo}
-              traitKeysHoldSomeValues={traitKeysGroup2.some(
-                (traitKey) =>
-                  structureChunk[traitKey] &&
-                  !uUtils.isEmpty(structureChunk[traitKey].traitValue)
+              traitKeysHoldSomeValues={diUtils.doTraitKeysHoldSomeValues(
+                traitKeysGroup2,
+                structureChunk
               )}
             />
           )}

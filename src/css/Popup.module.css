@@ -14,7 +14,7 @@
 }
 
 .mainboxWide {
-  width: 600px !important;
+  width: 850px !important;
 }
 
 .mainboxFit {
@@ -94,4 +94,19 @@
 
 .message {
   font-size: 16px;
+}
+
+.listHeader:hover {
+  background-color: white !important;
+}
+
+.hoverableRow:hover {
+  background-color: rgb(193, 193, 193) !important;
+}
+
+th,
+td {
+  padding-left: 5px;
+  padding-right: 5px;
+  border-left: rgba(0, 0, 0, 0.5) solid 0.5px;
 }

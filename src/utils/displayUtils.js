@@ -312,6 +312,14 @@ const diUtils = {
       .filter((element) => element);
     return strict && !res.length ? null : res;
   },
+
+  doTraitKeysHoldSomeValues: (traitKeysGroup, structureChunk) => {
+    return traitKeysGroup.some(
+      (traitKey) =>
+        structureChunk[traitKey] &&
+        !uUtils.isEmpty(structureChunk[traitKey].traitValue)
+    );
+  },
 };
 
 export default diUtils;

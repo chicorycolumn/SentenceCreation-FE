@@ -403,7 +403,7 @@ class TraitBox extends Component {
         <div
           id={traitBoxID}
           key={traitBoxID}
-          className={`${styles.preventSelection} ${styles.traitBox} ${
+          className={`${gstyles.noSelect} ${styles.traitBox} ${
             traitObject.isLexical && styles.lexicalTraitBox
           } ${this.props.disabled && gstyles.borderNone} ${
             idUtils.agreementTraits.includes(traitKey) && styles.traitBoxCircle1
@@ -681,7 +681,7 @@ class TraitBox extends Component {
                           idUtils.isTagTrait(traitKey) &&
                           styles.traitValuesInputLarge
                         } 
-                        ${styles.preventSelection} 
+                        ${gstyles.noSelect} 
                         ${
                           [
                             "booleanTraits",
