@@ -42,6 +42,9 @@ export const backendifyFormula = (formula) => {
       }
     });
 
+    // 2c. isGhostChunk already removed by 2a, and is not coded in BE in any way.
+    // Just in FE where chunks not appearing in any orderObj are labelled ghost.
+
     return stCh;
   });
 };

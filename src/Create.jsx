@@ -6,6 +6,7 @@ import ListPopup from "./Cogs/ListPopup.jsx";
 import { LanguageContextProvider } from "./context/LanguageContext.js";
 import { fetchFormula, fetchFormulaIds } from "./utils/putUtils.js";
 import $ from "jquery";
+import { getRandomNumberString } from "./utils/universalUtils.js";
 
 const Create = () => {
   const [lang1, setLang1] = useState("POL");
@@ -21,7 +22,7 @@ const Create = () => {
 
   useEffect(() => {
     if (chosenFormulaID) {
-      fetchFormula(chosenFormulaID, "ENG").then((data) => {
+      fetchFormula(chosenFormulaID, lang2).then((data) => {
         console.log(
           "\nHey look I got this data back from fetchFormula",
           data,
@@ -30,7 +31,6 @@ const Create = () => {
 
         setFormula(data.questionSentenceFormula.sentenceStructure);
         setFormulaWasLoaded((prev) => prev + 1);
-        setChosenFormulaID();
       });
     }
   }, [chosenFormulaID]);
@@ -66,7 +66,12 @@ const Create = () => {
           }}
           setBeEnv={setBeEnv}
         />
-        <FormulaForm setFormula={setFormula} />
+        <FormulaForm
+          setFormula={(formulaItemsArr) => {
+            setFormula(formulaItemsArr);
+            setChosenFormulaID(`${lang1}-XX-${getRandomNumberString(10)}`);
+          }}
+        />
         {showFormulasPopup && (
           <ListPopup
             exit={() => {
@@ -109,6 +114,7 @@ const Create = () => {
         <ChunkCardHolder
           formula={formula}
           setFormula={setFormula}
+          chosenFormulaID={chosenFormulaID}
           batch={"QuestionBatch"}
           formulaWasLoaded={formulaWasLoaded}
           setFormulaWasLoaded={setFormulaWasLoaded}

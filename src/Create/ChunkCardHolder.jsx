@@ -154,7 +154,9 @@ const ChunkCardHolder = (props) => {
         />
       )}
       <div className={styles.buttonHolder}>
-        <p className={styles.buttonHolderTitle}>Question sentence</p>
+        <p className={styles.buttonHolderTitle}>
+          Question sentence: {props.chosenFormulaID}
+        </p>
         <div className={styles.buttonSubholder}>
           <button
             alt="Alternate arrows icon"
