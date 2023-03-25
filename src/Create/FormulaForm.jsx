@@ -1,11 +1,10 @@
 import React, { useState, useContext, useEffect } from "react";
 import LanguageContext from "../context/LanguageContext.js";
 import idUtils from "../utils/identityUtils.js";
-import { egSentenceString1 } from "../utils/testData.js";
 import { getRandomNumberString } from "../utils/universalUtils.js";
 
 const FormulaForm = (props) => {
-  const [formulaInput, setFormulaInput] = useState(); //egSentenceString1
+  const [formulaInput, setFormulaInput] = useState(); // "kobieta jest *bardzo czerwona"
 
   const [savedFormulaInput, setSavedFormulaInput] = useState();
 
