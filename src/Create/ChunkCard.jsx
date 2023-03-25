@@ -80,7 +80,9 @@ const ChunkCard = (props) => {
   useEffect(() => {
     if (chosenId) {
       setPromptData();
-      let matches = fetchedEnChsByLemma.filter((lObj) => lObj.id === chosenId);
+      let matches = fetchedEnChsByLemma.filter(
+        (enCh) => enCh.lObjId === chosenId
+      );
       if (matches.length === 1) {
         formatAndSetStructureChunk(
           matches[0],
@@ -132,20 +134,20 @@ const ChunkCard = (props) => {
       let title = `"${props.guideword}"`;
       let message = `Which of these ${fetchedEnChsByLemma.length} are you after?`;
 
-      let options = fetchedEnChsByLemma.map((lObj) => {
-        let extraInfo = lObj.andTags.traitValue.slice();
-        if (lObj._info.allohomInfo) {
+      let options = fetchedEnChsByLemma.map((enCh) => {
+        let extraInfo = enCh.andTags.traitValue.slice();
+        if (enCh._info.allohomInfo) {
           extraInfo.unshift(
-            lObj._info.allohomInfo.text + " " + lObj._info.allohomInfo.emoji
+            enCh._info.allohomInfo.text + " " + enCh._info.allohomInfo.emoji
           );
         }
 
         return {
-          text: lObj.id,
-          color: gstyles[lObj.id.split("-")[1]],
+          text: enCh.lObjId,
+          color: gstyles[enCh.lObjId.split("-")[1]],
           extraInfo,
           callback: () => {
-            setChosenId(lObj.id);
+            setChosenId(enCh.lObjId);
           },
         };
       });
@@ -537,7 +539,12 @@ const ChunkCard = (props) => {
                     );
                   } else {
                     //Unless it's pronombre in which case not allowed to have no specificIds.
-                    cmUtils.addSpecificId(newStCh, traitsAffectedBySpecificId);
+                    cmUtils.addSpecificId(
+                      newStCh,
+                      traitsAffectedBySpecificId,
+                      lang1,
+                      props.guideword
+                    );
                   }
                 } else {
                   //Second click - Upgrade specificIds with ^caret.
@@ -546,7 +553,12 @@ const ChunkCard = (props) => {
                 }
               } else {
                 //First click - Add specificIds.
-                cmUtils.addSpecificId(newStCh, traitsAffectedBySpecificId);
+                cmUtils.addSpecificId(
+                  newStCh,
+                  traitsAffectedBySpecificId,
+                  lang1,
+                  props.guideword
+                );
               }
 
               modifyStructureChunkOnThisFormulaItem(newStCh);

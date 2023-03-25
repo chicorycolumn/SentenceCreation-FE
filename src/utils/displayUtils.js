@@ -16,7 +16,7 @@ const diUtils = {
         .map((chunkIdObj) => chunkIdObj.traitValue);
     }
 
-    let idSplit = stCh.id.split("-");
+    let idSplit = stCh.lObjId.split("-");
     let chunkIdBase = `${idSplit[1]}-${chunkCardIndex}`;
 
     const createChunkId = (
@@ -55,8 +55,6 @@ const diUtils = {
     }
 
     stCh.chunkId.traitValue = chunkId;
-    stCh.lObjId = stCh.id;
-    delete stCh.id;
   },
 
   traitsNotToDisplayInOwnBox: ["orTags", "id", "lemma", "lObjId"],
