@@ -7,7 +7,7 @@ import Prompt from "../Cogs/Prompt.jsx";
 import styles from "../css/ChunkCard.module.css";
 import gstyles from "../css/Global.module.css";
 import diUtils from "../utils/displayUtils.js";
-import idUtils, { getWordtypeShorthandEnCh } from "../utils/identityUtils.js";
+import idUtils, { getWordtypeEnCh } from "../utils/identityUtils.js";
 const putUtils = require("../utils/putUtils.js");
 const getUtils = require("../utils/getUtils.js");
 const uUtils = require("../utils/universalUtils.js");
@@ -241,10 +241,7 @@ const ChunkCard = (props) => {
       className={`${styles.card} 
       ${noEnChsFetched && styles.shortCard}
       ${noEnChsFetched && styles.needsAttention}
-      ${
-        structureChunk &&
-        gstyles[idUtils.getWordtypeShorthandEnCh(structureChunk)]
-      } 
+      ${structureChunk && gstyles[idUtils.getWordtypeEnCh(structureChunk)]} 
       ${
         props.highlightedCard &&
         props.highlightedCard !== chunkId &&
@@ -531,7 +528,7 @@ const ChunkCard = (props) => {
                   newStCh.specificIds.traitValue.some((tv) => tv[0] === "^")
                 ) {
                   //Third click - remove specificIds.
-                  if (getWordtypeShorthandEnCh(newStCh) !== "pro") {
+                  if (getWordtypeEnCh(newStCh) !== "pro") {
                     cmUtils.removeSpecificId(
                       newStCh,
                       traitsAffectedBySpecificId,
@@ -591,7 +588,7 @@ const ChunkCard = (props) => {
                       (tv) => tv[0] === "^"
                     )
                     ? `${
-                        getWordtypeShorthandEnCh(structureChunk) === "pro"
+                        getWordtypeEnCh(structureChunk) === "pro"
                           ? "Downgrade"
                           : "Remove"
                       }`

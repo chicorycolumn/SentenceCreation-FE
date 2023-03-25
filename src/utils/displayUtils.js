@@ -266,7 +266,7 @@ const diUtils = {
     let countOfLeftoverTraitKeys =
       orderedTraitKeys.length - Object.keys(stCh).length;
 
-    let wordtype = idUtils.getWordtypeShorthandEnCh(stCh);
+    let wordtype = idUtils.getWordtypeEnCh(stCh);
 
     if (
       !idUtils.isFixedChunk(stCh) &&
