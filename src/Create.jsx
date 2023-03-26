@@ -71,6 +71,7 @@ const Create = () => {
         <FormulaForm
           setFormula={(formulaItemsArr) => {
             setFormula(formulaItemsArr);
+            setShouldFetchFormula();
             setChosenFormulaID(`${lang1}-XX-${getRandomNumberString(10)}`);
           }}
         />

@@ -7,7 +7,7 @@ const baseUrl = "http://localhost:9090/api";
 export const frontendOnlyTraits = ["booleanTraits", "isGhostChunk"];
 
 export const backendifyFormula = (formula) => {
-  // 1. Orders
+  // Backendify-1: Orders
   if (formula.orders) {
     formula.primaryOrders = formula.orders
       .filter((obj) => obj.isPrimary)
@@ -23,14 +23,14 @@ export const backendifyFormula = (formula) => {
   formula.sentenceStructure = formula.sentenceStructure.map((enCh) => {
     let stCh = {};
 
-    // 2b. Unpack booleans
+    // Backendify-2b: Unpack booleans
     if (enCh.booleanTraits) {
       enCh.booleanTraits.traitValue.forEach((booleanTrait) => {
         stCh[booleanTrait] = true;
       });
     }
 
-    // 2a. enCh to stCh
+    // Backendify-2a: enCh to stCh
     Object.keys(enCh).forEach((traitKey) => {
       if (frontendOnlyTraits.includes(traitKey)) {
         return;
@@ -42,7 +42,7 @@ export const backendifyFormula = (formula) => {
       }
     });
 
-    // 2c. isGhostChunk already removed by 2a, and is not coded in BE in any way.
+    // Backendify-2c: isGhostChunk already removed by 2a, and is not coded in BE in any way.
     // Just in FE where chunks not appearing in any orderObj are labelled ghost.
 
     return stCh;
