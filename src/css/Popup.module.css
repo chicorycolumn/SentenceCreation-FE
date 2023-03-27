@@ -96,7 +96,7 @@
   font-size: 16px;
 }
 
-.listHeader:hover {
+.listHeaderHoverable:hover {
   background-color: white !important;
 }
 

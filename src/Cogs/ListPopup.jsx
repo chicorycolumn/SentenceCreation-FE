@@ -50,26 +50,30 @@ const ListPopup = (props) => {
                   {props.data.headers.map((header, hIndex) => (
                     <th
                       key={`${props.data.title.slice(0, 10)}-th-${hIndex}`}
-                      className={`${styles.listHeader} ${gstyles.noSelect}`}
+                      className={`${styles.listHeader} ${
+                        props.setData && styles.listHeaderHoverable
+                      } ${gstyles.noSelect}`}
                       onClick={(e) => {
                         e.preventDefault();
 
-                        props.setData((prev) => {
-                          prev.rows = prev.rows.sort((x, y) => {
-                            return headersWhichAreSortedDescending.includes(
-                              header
-                            )
-                              ? x[hIndex].localeCompare(y[hIndex])
-                              : y[hIndex].localeCompare(x[hIndex]);
+                        if (props.setData) {
+                          props.setData((prev) => {
+                            prev.rows = prev.rows.sort((x, y) => {
+                              return headersWhichAreSortedDescending.includes(
+                                header
+                              )
+                                ? x[hIndex].localeCompare(y[hIndex])
+                                : y[hIndex].localeCompare(x[hIndex]);
+                            });
+                            return prev;
                           });
-                          return prev;
-                        });
 
-                        setHeadersWhichAreSortedDescending((prev) => {
-                          return prev.includes(header)
-                            ? prev.filter((x) => x !== header)
-                            : [...prev, header];
-                        });
+                          setHeadersWhichAreSortedDescending((prev) => {
+                            return prev.includes(header)
+                              ? prev.filter((x) => x !== header)
+                              : [...prev, header];
+                          });
+                        }
                       }}
                     >
                       {header}
