@@ -1,18 +1,30 @@
 const getUtils = require("./getUtils.js");
 
-exports.addSpecificId = (stCh, traitsAffectedBySpecificId, lang, guideword) => {
+exports.addSpecificId = (
+  stCh,
+  traitsAffectedBySpecificId,
+  lang,
+  guideword,
+  stateModifyingCallback
+) => {
   if (!stCh.lObjId) {
-    let success = exports.addLObjIdToChunk(stCh, lang, guideword);
-    if (!success) {
-      return;
-    }
+    exports.addLObjIdToChunk(stCh, lang, guideword);
+  }
+
+  if (!stCh.lObjId) {
+    return;
   }
 
   stCh.specificIds.traitValue = [stCh.lObjId];
-  console.log("Blanking", traitsAffectedBySpecificId);
+
   traitsAffectedBySpecificId.forEach((traitKey) => {
+    console.log("Blanking", traitKey);
     stCh[traitKey].traitValue = [];
   });
+
+  if (stateModifyingCallback) {
+    stateModifyingCallback(stCh);
+  }
 };
 
 exports.removeSpecificId = (
@@ -41,12 +53,13 @@ exports.addLObjIdToChunk = (newStCh, lang1, guideword) => {
       (fetchedEnChs) => {
         console.log(`"${guideword}" got ${fetchedEnChs.length} fetchedEnChs.`);
         let lObjIds = fetchedEnChs.map((enCh) => enCh.lObjId).filter((x) => x);
-        if (!lObjIds.length) {
-          alert(`Failed to find any lemma objects for "${guideword}".`);
-          return false;
-        } else {
+        if (lObjIds.length) {
+          console.log("addLObjIdToChunk Success.");
           newStCh.lObjId = lObjIds[0];
-          return true;
+        } else {
+          console.log(
+            `addLObjIdToChunk Failed to find any lemma objects for "${guideword}".`
+          );
         }
       },
       (e) => {

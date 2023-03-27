@@ -202,6 +202,8 @@ const ChunkCard = (props) => {
 
   useEffect(() => {
     if (props.formulaWasLoaded) {
+      cmUtils.addSpecificId(structureChunk, [], lang1, props.guideword);
+
       formatAndSetStructureChunk(
         structureChunk,
         props.formula,
