@@ -33,7 +33,11 @@ const diUtils = {
       if (stCh.lemma.includes("*")) {
         return `${chunkIdBase}000${randomDigit}-${guideword}${randomDigits}`;
       } else {
-        return `${chunkIdBase}${idSplit[2]
+        let idNumber = /^\d.+$/.test(idSplit[2])
+          ? idSplit[2]
+          : uUtils.getRandomNumberString(3);
+
+        return `${chunkIdBase}${idNumber
           .split("")
           .reverse()
           .join("")}${randomDigit}-${guideword}${randomDigits}`;

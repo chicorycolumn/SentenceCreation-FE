@@ -181,19 +181,21 @@ class TraitBox extends Component {
     const checkAndSetTraitValue = (secondaryAsWellAsPrimary = false) => {
       console.log(`(${structureChunk.lemma})`, "£checkAndSetTraitValue");
 
-      const innerFunction = (
+      const _checkAndSetTV = (
         traitKeyKey = "traitKey",
         traitValueInputStringKey = "traitValueInputString",
         traitObjectKey = "traitObject"
       ) => {
         const traitKey = this.props[traitKeyKey];
-        console.log(`(${structureChunk.lemma})`, "@...");
-        console.log(
-          `(${structureChunk.lemma})`,
-          `this.state[traitValueInputStringKey]`,
-          this.state[traitValueInputStringKey],
-          typeof this.state[traitValueInputStringKey]
-        );
+
+        console.log("");
+        console.log("@Beginning _checkAndSetTV with args:");
+        console.log({
+          "NEW this.state[traitValueInputStringKey]":
+            this.state[traitValueInputStringKey],
+          "OLD this.props[traitObjectKey].traitValue":
+            this.props[traitObjectKey].traitValue,
+        });
 
         if (
           this.state[traitValueInputStringKey] !==
@@ -285,16 +287,17 @@ class TraitBox extends Component {
           console.log(`(${structureChunk.lemma})`, "@2 Changing value.");
           exitTraitBox();
           exitTraitBox(false);
+        } else {
+          console.log(`(${structureChunk.lemma})`, "@3 No change to value.");
+          exitTraitBox();
+          exitTraitBox(false);
         }
-        console.log(`(${structureChunk.lemma})`, "@3 No change to value.");
-        exitTraitBox();
-        exitTraitBox(false);
       };
 
       console.log(`(${structureChunk.lemma})`, "###");
       console.log(`(${structureChunk.lemma})`, "checkAndSetTraitValue PRIMARY");
       console.log(`(${structureChunk.lemma})`, "###");
-      innerFunction();
+      _checkAndSetTV();
 
       if (secondaryAsWellAsPrimary) {
         console.log(`(${structureChunk.lemma})`, "###");
@@ -303,7 +306,7 @@ class TraitBox extends Component {
           "checkAndSetTraitValue SECONDARY"
         );
         console.log(`(${structureChunk.lemma})`, "###");
-        innerFunction("traitKey2", "traitValueInputString2", "traitObject2");
+        _checkAndSetTV("traitKey2", "traitValueInputString2", "traitObject2");
       }
     };
 
@@ -315,6 +318,7 @@ class TraitBox extends Component {
     };
 
     const traitBoxID = `${this.props.chunkCardKey}-${traitKey}_maindiv`;
+    const wipeButtonId = `${this.props.chunkCardKey}-${traitKey}_wipeButton`;
 
     if (
       this.state.isFlowerSearchingForStem &&
@@ -355,8 +359,7 @@ class TraitBox extends Component {
         ["chunkId"]
       );
       this.setState(() => {
-        let newState = {};
-        newState[traitValueInputStringKey] = null;
+        let newState = { traitValueInputStringKey: null };
         return newState;
       });
       setTimeout(() => {
@@ -480,7 +483,7 @@ class TraitBox extends Component {
           }}
         >
           {this.state.justCopied && (
-            <div className={gstyles.floatingAlert}>Copied</div>
+            <div className={styles.floatingAlert}>Copied!</div>
           )}
 
           {this.props.disabled ? (
@@ -767,6 +770,7 @@ class TraitBox extends Component {
                         !this.state.isHovered && (
                           <div className={styles.sideButtonHolder}>
                             <button
+                              id={wipeButtonId}
                               alt="Cross icon"
                               className={`
                               ${gstyles.sideButton} 

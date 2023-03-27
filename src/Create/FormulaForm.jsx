@@ -4,9 +4,9 @@ import idUtils from "../utils/identityUtils.js";
 import { getRandomNumberString } from "../utils/universalUtils.js";
 
 const FormulaForm = (props) => {
-  const [formulaInput, setFormulaInput] = useState(); // "kobieta jest *bardzo czerwona"
-
-  const [savedFormulaInput, setSavedFormulaInput] = useState();
+  const [formulaInput, setFormulaInput] = useState(
+    "kobieta jest *bardzo czerwona"
+  ); //
 
   const cardIt = (lang, input) => {
     if (!lang) {
@@ -18,7 +18,6 @@ const FormulaForm = (props) => {
     console.log("CARD IT!", lang, formula);
 
     if (formula) {
-      setSavedFormulaInput(formula);
       let formulaItemsArr = formula.split(" ").map((guideword) => {
         return {
           guideword,
@@ -34,10 +33,6 @@ const FormulaForm = (props) => {
     useContext(LanguageContext)
   );
 
-  useEffect(() => {
-    cardIt(lang1, savedFormulaInput);
-  }, [lang1]);
-
   return (
     <div>
       <h3>FormulaForm</h3>
@@ -47,6 +42,7 @@ const FormulaForm = (props) => {
             setFormulaInput(e.target.value);
           }}
           placeholder="Enter example sentence"
+          value={formulaInput}
         ></input>
         <button
           type="submit"
