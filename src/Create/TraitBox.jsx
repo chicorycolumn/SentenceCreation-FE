@@ -179,7 +179,10 @@ class TraitBox extends Component {
     };
 
     const checkAndSetTraitValue = (secondaryAsWellAsPrimary = false) => {
-      console.log(`(${structureChunk.lemma})`, "£checkAndSetTraitValue");
+      console.log(
+        `(${diUtils.print1(structureChunk)})`,
+        "£checkAndSetTraitValue"
+      );
 
       const _checkAndSetTV = (
         traitKeyKey = "traitKey",
@@ -205,20 +208,23 @@ class TraitBox extends Component {
             uUtils.isEmpty(this.props[traitObjectKey].traitValue, true)
           )
         ) {
-          console.log(`(${structureChunk.lemma})`, "@You have changed value.");
           console.log(
-            `(${structureChunk.lemma})`,
+            `(${diUtils.print1(structureChunk)})`,
+            "@You have changed value."
+          );
+          console.log(
+            `(${diUtils.print1(structureChunk)})`,
             `@this.state[traitValueInputStringKey]`,
             this.state[traitValueInputStringKey],
             typeof this.state[traitValueInputStringKey]
           );
           console.log(
-            `(${structureChunk.lemma})`,
+            `(${diUtils.print1(structureChunk)})`,
             `@this.props[traitObjectKey].traitValue`,
             this.props[traitObjectKey].traitValue,
             typeof this.props[traitObjectKey].traitValue
           );
-          console.log(`(${structureChunk.lemma})`, "/@");
+          console.log(`(${diUtils.print1(structureChunk)})`, "/@");
 
           let newStructureChunk = {
             ...structureChunk,
@@ -232,11 +238,19 @@ class TraitBox extends Component {
           let expectedType = newStructureChunk[traitKey].expectedTypeOnStCh;
 
           if (expectedType === "array") {
-            console.log(`(${structureChunk.lemma})`, "::", newTraitValue);
+            console.log(
+              `(${diUtils.print1(structureChunk)})`,
+              "::",
+              newTraitValue
+            );
             if (newTraitValue) {
               newTraitValue = diUtils.asArray(newTraitValue);
             }
-            console.log(`(${structureChunk.lemma})`, ":::", newTraitValue);
+            console.log(
+              `(${diUtils.print1(structureChunk)})`,
+              ":::",
+              newTraitValue
+            );
           } else if (expectedType === "string") {
             if (newTraitValue && newTraitValue.includes(",")) {
               alert(
@@ -249,7 +263,7 @@ class TraitBox extends Component {
               });
               //Aborting without changing anything.
               console.log(
-                `(${structureChunk.lemma})`,
+                `(${diUtils.print1(structureChunk)})`,
                 "@1 No change to value."
               );
               exitTraitBox(); //alpha why both exitTraitBox?
@@ -284,26 +298,35 @@ class TraitBox extends Component {
           }
 
           this.props.modifyStructureChunkOnThisFormulaItem(newStructureChunk);
-          console.log(`(${structureChunk.lemma})`, "@2 Changing value.");
+          console.log(
+            `(${diUtils.print1(structureChunk)})`,
+            "@2 Changing value."
+          );
         } else {
-          console.log(`(${structureChunk.lemma})`, "@3 No change to value.");
+          console.log(
+            `(${diUtils.print1(structureChunk)})`,
+            "@3 No change to value."
+          );
         }
         exitTraitBox();
         exitTraitBox(false);
       };
 
-      console.log(`(${structureChunk.lemma})`, "###");
-      console.log(`(${structureChunk.lemma})`, "checkAndSetTraitValue PRIMARY");
-      console.log(`(${structureChunk.lemma})`, "###");
+      console.log(`(${diUtils.print1(structureChunk)})`, "###");
+      console.log(
+        `(${diUtils.print1(structureChunk)})`,
+        "checkAndSetTraitValue PRIMARY"
+      );
+      console.log(`(${diUtils.print1(structureChunk)})`, "###");
       _checkAndSetTV();
 
       if (secondaryAsWellAsPrimary) {
-        console.log(`(${structureChunk.lemma})`, "###");
+        console.log(`(${diUtils.print1(structureChunk)})`, "###");
         console.log(
-          `(${structureChunk.lemma})`,
+          `(${diUtils.print1(structureChunk)})`,
           "checkAndSetTraitValue SECONDARY"
         );
-        console.log(`(${structureChunk.lemma})`, "###");
+        console.log(`(${diUtils.print1(structureChunk)})`, "###");
         _checkAndSetTV("traitKey2", "traitValueInputString2", "traitObject2");
       }
     };

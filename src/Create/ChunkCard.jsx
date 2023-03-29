@@ -102,19 +102,20 @@ const ChunkCard = (props) => {
 
   useEffect(() => {
     if (structureChunk) {
-      console.log(`Already did "${props.guideword}".`);
+      console.log(`Already did "${diUtils.print1(props)}".`);
       return;
     }
 
     if (props.guideword[0] === "*") {
       let stCh = idUtils.createFixedChunk(
         props.guideword,
+        props.demoword,
         props.chunkCardIndex,
         props.formula
       );
 
       modifyStructureChunkOnThisFormulaItem(stCh, true);
-      props.editLemma(props.guideword.slice(1), stCh.chunkId.traitValue, stCh);
+      // props.editLemma(props.guideword.slice(1), stCh.chunkId.traitValue, stCh);
       return;
     }
 
@@ -131,7 +132,7 @@ const ChunkCard = (props) => {
     }
 
     if (fetchedEnChsByLemma.length > 1 && !chosenId) {
-      let title = `"${props.guideword}"`;
+      let title = `"${diUtils.print1(props)}"`;
       let message = `Which of these ${fetchedEnChsByLemma.length} are you after?`;
 
       let options = fetchedEnChsByLemma.map((enCh) => {
@@ -158,6 +159,7 @@ const ChunkCard = (props) => {
   }, [
     fetchedEnChsByLemma,
     props.guideword,
+    props.demoword,
     structureChunk,
     props.formula,
     chosenId,
@@ -166,11 +168,13 @@ const ChunkCard = (props) => {
   useEffect(() => {
     if (lang1 && !structureChunk) {
       getUtils
-        .fetchEnChsByLemma(lang1, props.guideword)
+        .fetchEnChsByLemma(lang1, props.demoword)
         .then(
           (fetchedEnChs) => {
             console.log(
-              `"${props.guideword}" got ${fetchedEnChs.length} fetchedEnChs.`
+              `"${diUtils.print1(props)}" got ${
+                fetchedEnChs.length
+              } fetchedEnChs.`
             );
             setFetchedEnChsByLemma(fetchedEnChs);
             setNoEnChsFetched(!fetchedEnChs.length);
@@ -183,7 +187,7 @@ const ChunkCard = (props) => {
           console.log("ERROR 9071", e);
         });
     }
-  }, [lang1, props.guideword, shouldRetryFetch]);
+  }, [lang1, props.demoword, shouldRetryFetch]);
 
   useEffect(() => {
     if (structureChunk) {
@@ -202,7 +206,18 @@ const ChunkCard = (props) => {
 
   useEffect(() => {
     if (props.formulaWasLoaded) {
-      cmUtils.addSpecificId(structureChunk, [], lang1, props.guideword);
+      let newSelectedWord = cmUtils.addSpecificId(
+        structureChunk,
+        [],
+        lang1,
+        props.guideword,
+        props.demoword,
+        props.editLemma
+      );
+
+      if (newSelectedWord) {
+        props.editLemma(newSelectedWord); //swde
+      }
 
       formatAndSetStructureChunk(
         structureChunk,
@@ -262,10 +277,12 @@ const ChunkCard = (props) => {
                 e.target.blur();
                 if (
                   window.confirm(
-                    `Do you want to make "${props.guideword}" a fixed chunk? You'd better be sure this is an actual word and not one you mistyped.`
+                    `Do you want to make "${diUtils.print1(
+                      props
+                    )}" a fixed chunk? You'd better be sure this is an actual word and not one you mistyped.`
                   )
                 ) {
-                  props.editLemma("*" + props.guideword);
+                  props.editLemma("*" + props.demoword);
                 }
               }}
             >
@@ -278,15 +295,13 @@ const ChunkCard = (props) => {
               onClick={(e) => {
                 e.target.blur();
                 alert(
-                  `Will retry find lemma objects for "${
-                    chunkId || props.guideword
-                  }".`
+                  `Will retry find lobjs for "${chunkId || props.guideword}".`
                 );
                 setShouldRetryFetch((prev) => prev + 1);
               }}
             >
               &#10515;
-              <Tooltip text="Retry find lemma objects" />
+              <Tooltip text="Retry find lobjs" />
             </button>
           </>
         ) : (
@@ -319,10 +334,10 @@ const ChunkCard = (props) => {
                     }
 
                     props.setPopup({
-                      title: `${payload.length} lemma${
+                      title: `${payload.length} Lemma${
                         payload.length > 1 ? "s" : ""
                       } for "${chunkId}" with traits you specified`,
-                      headers: ["lemma", "id"],
+                      headers: ["Lemma", "ID"],
                       rows: payload.map((obj) => [
                         obj.selectedWord,
                         obj.lObjId,
@@ -408,7 +423,7 @@ const ChunkCard = (props) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
             setTimeout(() => {
-              let newLemma = prompt("Enter new lemma.");
+              let newLemma = prompt("Enter new demoword.");
               if (newLemma) {
                 props.editLemma(newLemma, chunkId);
               }
@@ -508,7 +523,7 @@ const ChunkCard = (props) => {
         )}
         <p className={`${styles.lObjId} ${gstyles.tooltipHolderDelayed}`}>
           {structureChunk && structureChunk.lObjId}
-          <Tooltip text="lemma ID (of an example lemma)" />
+          <Tooltip text="lobj ID (of an example lobj)" />
         </p>
         {structureChunk && !idUtils.isFixedChunk(structureChunk) && (
           <button
@@ -542,7 +557,8 @@ const ChunkCard = (props) => {
                       newStCh,
                       traitsAffectedBySpecificId,
                       lang1,
-                      props.guideword
+                      props.guideword,
+                      props.demoword
                     );
                   }
                 } else {
@@ -556,7 +572,8 @@ const ChunkCard = (props) => {
                   newStCh,
                   traitsAffectedBySpecificId,
                   lang1,
-                  props.guideword
+                  props.guideword,
+                  props.demoword
                 );
               }
 
@@ -596,7 +613,7 @@ const ChunkCard = (props) => {
                       }`
                     : "Upgrade"
                   : "Set"
-              } as specific lemma for this chunk`}
+              } as specific lobj for this chunk`}
               number={5}
             />
           </button>

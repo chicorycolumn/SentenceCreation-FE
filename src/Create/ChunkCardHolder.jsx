@@ -37,10 +37,12 @@ const ChunkCardHolder = (props) => {
   const editLemmaOfThisFormulaItem = (
     formulaItemId,
     index,
-    newLemma,
+    newWords,
     chunkId,
     structureChunk
   ) => {
+    let [guideword, demoword] = newWords;
+
     function updateFlowers(newFormula, chunkId, newChunkId) {
       newFormula.forEach((stChObj) => {
         if (stChObj.structureChunk) {
@@ -311,6 +313,7 @@ const ChunkCardHolder = (props) => {
         {props.formula.map((formulaItem, index) => {
           let {
             guideword,
+            demoword,
             structureChunk,
             backedUpStructureChunk,
             formulaItemId,
@@ -330,6 +333,7 @@ const ChunkCardHolder = (props) => {
                 batch={props.batch}
                 chunkCardKey={`${formulaItemId}-${guideword}`}
                 guideword={guideword}
+                demoword={demoword}
                 structureChunk={structureChunk}
                 backedUpStructureChunk={backedUpStructureChunk}
                 chunkCardIndex={index}
@@ -339,6 +343,18 @@ const ChunkCardHolder = (props) => {
                     return prevFormula.map((formulaItem) => {
                       if (formulaItem.formulaItemId === formulaItemId) {
                         formulaItem.structureChunk = newStCh;
+
+                        let bodgeTransfers = ["demoword", "guideword"];
+                        bodgeTransfers.forEach((bodgeTransferKey) => {
+                          if (
+                            newStCh[bodgeTransferKey] &&
+                            newStCh[bodgeTransferKey].traitValue
+                          ) {
+                            formulaItem[bodgeTransferKey] =
+                              newStCh[bodgeTransferKey].traitValue;
+                            delete newStCh[bodgeTransferKey];
+                          }
+                        });
                       }
                       return formulaItem;
                     });
@@ -364,11 +380,11 @@ const ChunkCardHolder = (props) => {
                   stemFoundForFlower,
                   setStemFoundForFlower,
                 ]}
-                editLemma={(newLemma, chunkId, stCh) => {
+                editLemma={(newWords, chunkId, stCh) => {
                   editLemmaOfThisFormulaItem(
                     formulaItemId,
                     index,
-                    newLemma,
+                    newWords,
                     chunkId,
                     stCh
                   );

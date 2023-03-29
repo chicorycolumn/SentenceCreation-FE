@@ -9,11 +9,24 @@ const AddChunkButton = (props) => {
       alt="Plus icon"
       className={styles.plusButton}
       onClick={() => {
-        let newLemma = prompt("Enter new lemma");
-        if (newLemma) {
+        let info = prompt(
+          'Enter new demo word, and guide word after a comma if different. eg "woman", or "kobieta,woman".'
+        );
+        if (!info) {
+          return;
+        }
+        info = info.split(",").map((str) => str.trim());
+        let newDemoword = info[0];
+        let newGuideword = info[1] || info[0];
+        if (newDemoword[0] === "*" && newGuideword[0] !== "*") {
+          newGuideword = "*" + newGuideword;
+        }
+
+        if (newDemoword) {
           props.setFormula((prevFormula) => {
             let newFormulaItem = {
-              guideword: newLemma,
+              guideword: newGuideword,
+              demoword: newDemoword,
               structureChunk: null,
               formulaItemId: getRandomNumberString(10),
             };

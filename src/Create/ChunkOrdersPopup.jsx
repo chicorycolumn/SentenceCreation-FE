@@ -11,10 +11,14 @@ const ChunkOrdersPopup = (props) => {
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const [highlightedButton, setHighlightedButton] = useState();
 
-  const getLemmaFromFormula = (chunkId) => {
-    return props.formula.filter(
+  const getDemowordGuidewordFromFormula = (chunkId) => {
+    let x = props.formula.filter(
       (fItem) => fItem.structureChunk.chunkId.traitValue === chunkId
-    )[0].guideword;
+    )[0];
+    return {
+      guideword: x.guideword,
+      demoword: x.demoword,
+    };
   };
 
   const stringifyChunkOrder = (chunkOrder) => {
@@ -103,7 +107,6 @@ const ChunkOrdersPopup = (props) => {
         <div className={styles.buttonHolder}>
           {props.formula.map((fItem) => {
             let chunkId = fItem.structureChunk.chunkId.traitValue;
-            let lemma = fItem.guideword;
 
             return (
               <button
@@ -151,7 +154,7 @@ const ChunkOrdersPopup = (props) => {
                   }
                 }}
               >
-                <p className={styles.buttonTopHalf}>{lemma}</p>
+                <p className={styles.buttonTopHalf}>{fItem.demoword}</p>
                 <p className={styles.buttonBottomHalf}>{chunkId}</p>
               </button>
             );
@@ -161,7 +164,6 @@ const ChunkOrdersPopup = (props) => {
         <div className={styles.orderBuilderHolder}>
           <div className={styles.orderBuilder}>
             {orderBuilt.map((chunkId, index) => {
-              let lemma = getLemmaFromFormula(chunkId);
               return (
                 <button
                   key={`orderBuilt-${chunkId}-${index}`}
@@ -179,7 +181,7 @@ const ChunkOrdersPopup = (props) => {
                     );
                   }}
                 >
-                  {lemma}
+                  {getDemowordGuidewordFromFormula(chunkId).demoword}
                 </button>
               );
             })}
@@ -265,7 +267,7 @@ const ChunkOrdersPopup = (props) => {
                         !isPrimary && gstyles.translucent2
                       }`}
                     >
-                      {getLemmaFromFormula(chunkId)}
+                      {getDemowordGuidewordFromFormula(chunkId).demoword}
                     </span>
                   ))}
                 </li>
