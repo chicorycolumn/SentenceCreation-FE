@@ -37,10 +37,18 @@ const ChunkCardHolder = (props) => {
   const editLemmaOfThisFormulaItem = (
     formulaItemId,
     index,
-    newLemma,
+    newWords,
     chunkId,
     structureChunk
   ) => {
+    console.log("editLemmaOfThisFormulaItem START", {
+      formulaItemId,
+      index,
+      newWords,
+      chunkId,
+      structureChunk,
+    });
+
     function updateFlowers(newFormula, chunkId, newChunkId) {
       newFormula.forEach((stChObj) => {
         if (stChObj.structureChunk) {
@@ -57,7 +65,9 @@ const ChunkCardHolder = (props) => {
     }
 
     props.setFormula((prevFormula) => {
-      if (!newLemma) {
+      prevFormula = uUtils.copyWithoutReference(prevFormula);
+
+      if (!newWords) {
         let newFormula = prevFormula.filter(
           (formulaItem) => formulaItem.formulaItemId !== formulaItemId
         );
@@ -69,10 +79,28 @@ const ChunkCardHolder = (props) => {
         (formulaItem) => formulaItem.formulaItemId === formulaItemId
       );
 
-      currentFormulaItem.guideword = newLemma;
-      currentFormulaItem.structureChunk = structureChunk;
+      delete currentFormulaItem.guideword;
+      currentFormulaItem.guideword = newWords.guideword;
+
+      delete currentFormulaItem.demoword;
+      currentFormulaItem.demoword = newWords.demoword;
+
+      if (structureChunk) {
+        delete currentFormulaItem.structureChunk;
+        currentFormulaItem.structureChunk = structureChunk;
+      } else {
+        delete currentFormulaItem.structureChunk;
+        delete currentFormulaItem.backedUpStructureChunk;
+      }
+
+      console.log(
+        "Setting currentFormulaItem.structureChunk to",
+        newWords,
+        structureChunk
+      );
 
       updateFlowers(prevFormula, chunkId, null);
+      console.log("NEW formula is:", prevFormula);
       return prevFormula;
     });
     setMeaninglessCounter((prev) => prev + 1);
@@ -311,6 +339,7 @@ const ChunkCardHolder = (props) => {
         {props.formula.map((formulaItem, index) => {
           let {
             guideword,
+            demoword,
             structureChunk,
             backedUpStructureChunk,
             formulaItemId,
@@ -330,6 +359,7 @@ const ChunkCardHolder = (props) => {
                 batch={props.batch}
                 chunkCardKey={`${formulaItemId}-${guideword}`}
                 guideword={guideword}
+                demoword={demoword}
                 structureChunk={structureChunk}
                 backedUpStructureChunk={backedUpStructureChunk}
                 chunkCardIndex={index}
@@ -339,6 +369,18 @@ const ChunkCardHolder = (props) => {
                     return prevFormula.map((formulaItem) => {
                       if (formulaItem.formulaItemId === formulaItemId) {
                         formulaItem.structureChunk = newStCh;
+
+                        let bodgeTransfers = ["demoword", "guideword"];
+                        bodgeTransfers.forEach((bodgeTransferKey) => {
+                          if (
+                            newStCh[bodgeTransferKey] &&
+                            newStCh[bodgeTransferKey].traitValue
+                          ) {
+                            formulaItem[bodgeTransferKey] =
+                              newStCh[bodgeTransferKey].traitValue;
+                            delete newStCh[bodgeTransferKey];
+                          }
+                        });
                       }
                       return formulaItem;
                     });
@@ -364,11 +406,11 @@ const ChunkCardHolder = (props) => {
                   stemFoundForFlower,
                   setStemFoundForFlower,
                 ]}
-                editLemma={(newLemma, chunkId, stCh) => {
+                editLemma={(newWords, chunkId, stCh) => {
                   editLemmaOfThisFormulaItem(
                     formulaItemId,
                     index,
-                    newLemma,
+                    newWords,
                     chunkId,
                     stCh
                   );
