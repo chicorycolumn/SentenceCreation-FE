@@ -30,7 +30,7 @@ const diUtils = {
         ? Math.random().toString().slice(2, 6)
         : "";
 
-      if (stCh.lemma.includes("*")) {
+      if (guideword.includes("*")) {
         return `${chunkIdBase}000${randomDigit}-${guideword}${randomDigits}`;
       } else {
         let idNumber = /^\d.+$/.test(idSplit[2])
@@ -61,7 +61,7 @@ const diUtils = {
     stCh.chunkId.traitValue = chunkId;
   },
 
-  traitsNotToDisplayInOwnBox: ["orTags", "id", "lemma", "lObjId"],
+  traitsNotToDisplayInOwnBox: ["orTags", "id", "guideword", "lObjId"],
 
   connectChunkIdWithItsFlowers: (
     flowerstemID,
@@ -215,11 +215,6 @@ const diUtils = {
     line.style.top = top + "px";
     line.style.left = left + "px";
     line.style.height = H + "px";
-  },
-
-  getLemmaFromChunkId: (chunkId) => {
-    let split = chunkId.split("-");
-    return split[split.length - 1];
   },
 
   orderTraitKeys: (stCh) => {

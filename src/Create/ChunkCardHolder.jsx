@@ -10,7 +10,7 @@ import gstyles from "../css/Global.module.css";
 import LineHolder from "../Cogs/LineHolder";
 import uUtils from "../utils/universalUtils.js";
 import diUtils from "../utils/displayUtils.js";
-import idUtils from "../utils/identityUtils.js";
+import idUtils, { isFixedChunk } from "../utils/identityUtils.js";
 import icons from "../utils/icons.js";
 import $ from "jquery";
 const putUtils = require("../utils/putUtils.js");
@@ -37,10 +37,18 @@ const ChunkCardHolder = (props) => {
   const editLemmaOfThisFormulaItem = (
     formulaItemId,
     index,
-    newLemma,
+    newWords,
     chunkId,
     structureChunk
   ) => {
+    console.log("editLemmaOfThisFormulaItem START", {
+      formulaItemId,
+      index,
+      newWords,
+      chunkId,
+      structureChunk,
+    });
+
     function updateFlowers(newFormula, chunkId, newChunkId) {
       newFormula.forEach((stChObj) => {
         if (stChObj.structureChunk) {
@@ -57,7 +65,9 @@ const ChunkCardHolder = (props) => {
     }
 
     props.setFormula((prevFormula) => {
-      if (!newLemma) {
+      prevFormula = uUtils.copyWithoutReference(prevFormula);
+
+      if (!newWords) {
         let newFormula = prevFormula.filter(
           (formulaItem) => formulaItem.formulaItemId !== formulaItemId
         );
@@ -65,14 +75,41 @@ const ChunkCardHolder = (props) => {
         return newFormula;
       }
 
+      let { guideword } = newWords;
+
+      if (/^\d+$/.test(guideword)) {
+        if (structureChunk && structureChunk.lObjId) {
+          guideword = structureChunk.lObjId.split("-").slice(-1);
+        } else if (isFixedChunk(structureChunk)) {
+          guideword = structureChunk.chunkValue.traitValue;
+        } else {
+          guideword = "#";
+        }
+      }
+
       let currentFormulaItem = prevFormula.find(
         (formulaItem) => formulaItem.formulaItemId === formulaItemId
       );
 
-      currentFormulaItem.guideword = newLemma;
-      currentFormulaItem.structureChunk = structureChunk;
+      delete currentFormulaItem.guideword;
+      currentFormulaItem.guideword = guideword;
+
+      if (structureChunk) {
+        delete currentFormulaItem.structureChunk;
+        currentFormulaItem.structureChunk = structureChunk;
+      } else {
+        delete currentFormulaItem.structureChunk;
+        delete currentFormulaItem.backedUpStructureChunk;
+      }
+
+      console.log(
+        "Setting currentFormulaItem.structureChunk to",
+        newWords,
+        structureChunk
+      );
 
       updateFlowers(prevFormula, chunkId, null);
+      console.log("NEW formula is:", prevFormula);
       return prevFormula;
     });
     setMeaninglessCounter((prev) => prev + 1);
@@ -339,6 +376,18 @@ const ChunkCardHolder = (props) => {
                     return prevFormula.map((formulaItem) => {
                       if (formulaItem.formulaItemId === formulaItemId) {
                         formulaItem.structureChunk = newStCh;
+
+                        let bodgeTransfers = ["guideword"];
+                        bodgeTransfers.forEach((bodgeTransferKey) => {
+                          if (
+                            newStCh[bodgeTransferKey] &&
+                            newStCh[bodgeTransferKey].traitValue
+                          ) {
+                            formulaItem[bodgeTransferKey] =
+                              newStCh[bodgeTransferKey].traitValue;
+                            delete newStCh[bodgeTransferKey];
+                          }
+                        });
                       }
                       return formulaItem;
                     });
@@ -364,11 +413,11 @@ const ChunkCardHolder = (props) => {
                   stemFoundForFlower,
                   setStemFoundForFlower,
                 ]}
-                editLemma={(newLemma, chunkId, stCh) => {
+                editLemma={(newWords, chunkId, stCh) => {
                   editLemmaOfThisFormulaItem(
                     formulaItemId,
                     index,
-                    newLemma,
+                    newWords,
                     chunkId,
                     stCh
                   );
