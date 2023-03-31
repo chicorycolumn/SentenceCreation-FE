@@ -43,9 +43,7 @@ exports.isFixedChunk = (stCh) => {
 };
 
 exports.createFixedChunk = (guideword, index, formula) => {
-  if (guideword[0] === "*") {
-    guideword = guideword.slice(1);
-  }
+  guideword = guideword.slice(1);
 
   let existingNumbers = formula
     .filter((formulaItem) => formulaItem.structureChunk)
@@ -65,7 +63,7 @@ exports.createFixedChunk = (guideword, index, formula) => {
   return {
     chunkId: { traitValue: chunkId },
     chunkValue: { traitValue: guideword },
-    guideword: { traitValue: guideword }, // Will be transferred to formulaItem by bodge.
+    lemma: guideword,
   };
 };
 

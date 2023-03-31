@@ -6,7 +6,6 @@ import { getRandomNumberString } from "../utils/universalUtils.js";
 const FormulaForm = (props) => {
   const [formulaInput, setFormulaInput] = useState(
     "kobieta jest *bardzo czerwona"
-    // "kobieta"
   );
 
   const cardIt = (lang, input) => {
@@ -19,9 +18,9 @@ const FormulaForm = (props) => {
     console.log("CARD IT!", lang, formula);
 
     if (formula) {
-      let formulaItemsArr = formula.split(" ").map((word) => {
+      let formulaItemsArr = formula.split(" ").map((guideword) => {
         return {
-          guideword: word,
+          guideword,
           structureChunk: null,
           formulaItemId: getRandomNumberString(10),
         };
