@@ -30,9 +30,10 @@ const Create = () => {
           "\n"
         );
 
-        setFormula(data.questionSentenceFormula.sentenceStructure);
+        let formulaItems = data.questionSentenceFormula.sentenceStructure;
+
+        setFormula(formulaItems);
         setFormulaWasLoaded((prev) => prev + 1);
-        setChosenFormulaID();
       });
     }
   }, [chosenFormulaID, shouldFetchFormula]);
