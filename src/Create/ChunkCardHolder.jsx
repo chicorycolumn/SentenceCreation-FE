@@ -14,6 +14,7 @@ import idUtils from "../utils/identityUtils.js";
 import icons from "../utils/icons.js";
 import $ from "jquery";
 const putUtils = require("../utils/putUtils.js");
+const scUtils = require("../utils/structureChunkUtils.js");
 
 const ChunkCardHolder = (props) => {
   const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
@@ -37,10 +38,18 @@ const ChunkCardHolder = (props) => {
   const editLemmaOfThisFormulaItem = (
     formulaItemId,
     index,
-    newLemma,
+    newWords,
     chunkId,
     structureChunk
   ) => {
+    console.log("editLemmaOfThisFormulaItem START", {
+      formulaItemId,
+      index,
+      newWords,
+      chunkId,
+      structureChunk,
+    });
+
     function updateFlowers(newFormula, chunkId, newChunkId) {
       newFormula.forEach((stChObj) => {
         if (stChObj.structureChunk) {
@@ -57,7 +66,10 @@ const ChunkCardHolder = (props) => {
     }
 
     props.setFormula((prevFormula) => {
-      if (!newLemma) {
+      prevFormula = uUtils.copyWithoutReference(prevFormula);
+
+      if (!newWords) {
+        // Option 1: Delete this fItem.
         let newFormula = prevFormula.filter(
           (formulaItem) => formulaItem.formulaItemId !== formulaItemId
         );
@@ -69,10 +81,30 @@ const ChunkCardHolder = (props) => {
         (formulaItem) => formulaItem.formulaItemId === formulaItemId
       );
 
-      currentFormulaItem.guideword = newLemma;
-      currentFormulaItem.structureChunk = structureChunk;
+      delete currentFormulaItem.guideword;
+      currentFormulaItem.guideword = scUtils.improveGuideword(
+        newWords.guideword,
+        structureChunk
+      );
+
+      if (structureChunk) {
+        // Option 2: Update the stCh.
+        delete currentFormulaItem.structureChunk;
+        currentFormulaItem.structureChunk = structureChunk;
+      } else {
+        // Option 3: A new stCh will loaded via BE request from guideword.
+        delete currentFormulaItem.structureChunk;
+        delete currentFormulaItem.backedUpStructureChunk; //bug-318
+      }
+
+      console.log(
+        "Setting currentFormulaItem.structureChunk to",
+        newWords,
+        structureChunk
+      );
 
       updateFlowers(prevFormula, chunkId, null);
+      console.log("NEW formula is:", prevFormula);
       return prevFormula;
     });
     setMeaninglessCounter((prev) => prev + 1);
@@ -111,6 +143,7 @@ const ChunkCardHolder = (props) => {
           },
         ]);
       } else {
+        // beta should setOrders here also.
         let defaultChunkOrders = chunkOrders.filter(
           (chunkOrder) => chunkOrder.isDefault
         );
@@ -192,12 +225,12 @@ const ChunkCardHolder = (props) => {
                 return;
               }
 
-              let formula = {
+              let formulaToSend = {
                 sentenceStructure: props.formula.map((el) => el.structureChunk),
                 orders: chunkOrders,
               };
 
-              putUtils.fetchSentence(lang1, formula).then(
+              putUtils.fetchSentence(lang1, formulaToSend).then(
                 (data) => {
                   let { payload, messages } = data;
 
@@ -339,6 +372,18 @@ const ChunkCardHolder = (props) => {
                     return prevFormula.map((formulaItem) => {
                       if (formulaItem.formulaItemId === formulaItemId) {
                         formulaItem.structureChunk = newStCh;
+
+                        let bodgeTransfers = ["guideword"];
+                        bodgeTransfers.forEach((bodgeTransferKey) => {
+                          if (
+                            newStCh[bodgeTransferKey] &&
+                            newStCh[bodgeTransferKey].traitValue
+                          ) {
+                            formulaItem[bodgeTransferKey] =
+                              newStCh[bodgeTransferKey].traitValue;
+                            delete newStCh[bodgeTransferKey];
+                          }
+                        });
                       }
                       return formulaItem;
                     });
@@ -364,11 +409,11 @@ const ChunkCardHolder = (props) => {
                   stemFoundForFlower,
                   setStemFoundForFlower,
                 ]}
-                editLemma={(newLemma, chunkId, stCh) => {
+                editLemma={(newWords, chunkId, stCh) => {
                   editLemmaOfThisFormulaItem(
                     formulaItemId,
                     index,
-                    newLemma,
+                    newWords,
                     chunkId,
                     stCh
                   );

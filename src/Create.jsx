@@ -32,7 +32,6 @@ const Create = () => {
 
         setFormula(data.questionSentenceFormula.sentenceStructure);
         setFormulaWasLoaded((prev) => prev + 1);
-        setChosenFormulaID();
       });
     }
   }, [chosenFormulaID, shouldFetchFormula]);
