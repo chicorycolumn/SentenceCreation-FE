@@ -131,8 +131,12 @@ const ChunkCardHolder = (props) => {
   };
 
   useEffect(() => {
-    if (props.formulaWasLoaded && props.formulaOrders) {
-      setChunkOrders(props.formulaOrders);
+    if (props.formulaWasLoaded) {
+      if (props.formulaOrders) {
+        setChunkOrders(props.formulaOrders);
+      } else {
+        setChunkOrders([]);
+      }
     }
   }, [props.formulaWasLoaded]);
 
@@ -428,7 +432,6 @@ const ChunkCardHolder = (props) => {
                 highlightedCard={highlightedCard}
                 setHighlightedCard={setHighlightedCard}
                 formulaWasLoaded={props.formulaWasLoaded}
-                setFormulaWasLoaded={props.setFormulaWasLoaded}
               />
               {index === finalIndex ? (
                 <AddChunkButton

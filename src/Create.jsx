@@ -6,7 +6,10 @@ import ListPopup from "./Cogs/ListPopup.jsx";
 import { LanguageContextProvider } from "./context/LanguageContext.js";
 import { fetchFormula, fetchFormulaIds } from "./utils/putUtils.js";
 import $ from "jquery";
-import { getRandomNumberString } from "./utils/universalUtils.js";
+import {
+  copyWithoutReference,
+  getRandomNumberString,
+} from "./utils/universalUtils.js";
 
 const Create = () => {
   const [lang1, setLang1] = useState("POL");
@@ -25,6 +28,14 @@ const Create = () => {
   useEffect(() => {
     if (chosenFormulaID && shouldFetchFormula) {
       fetchFormula(chosenFormulaID, lang2).then((data) => {
+        data.questionSentenceFormula.sentenceStructure.forEach(
+          (sentenceStructureItem) => {
+            sentenceStructureItem.backedUpStructureChunk = copyWithoutReference(
+              sentenceStructureItem.structureChunk
+            );
+          }
+        );
+
         setFormula(data.questionSentenceFormula.sentenceStructure);
         setFormulaOrders(data.questionSentenceFormula.orders);
         setFormulaWasLoaded((prev) => prev + 1);
@@ -68,6 +79,7 @@ const Create = () => {
             setFormula(formulaItemsArr);
             setShouldFetchFormula();
             setChosenFormulaID(`${lang1}-XX-${getRandomNumberString(10)}`);
+            setFormulaWasLoaded(0);
           }}
         />
         {showFormulasPopup && (
@@ -118,7 +130,6 @@ const Create = () => {
           chosenFormulaID={chosenFormulaID}
           batch={"QuestionBatch"}
           formulaWasLoaded={formulaWasLoaded}
-          setFormulaWasLoaded={setFormulaWasLoaded}
         />
       </div>
     </LanguageContextProvider>
