@@ -16,6 +16,7 @@ const Create = () => {
   const [error, setError] = useState(null);
   const [formulaWasLoaded, setFormulaWasLoaded] = useState(0);
   const [formula, setFormula] = useState([]);
+  const [formulaOrders, setFormulaOrders] = useState([]);
   const [showFormulasPopup, setShowFormulasPopup] = useState();
   const [chosenFormulaID, setChosenFormulaID] = useState();
   const [shouldFetchFormula, setShouldFetchFormula] = useState();
@@ -24,13 +25,8 @@ const Create = () => {
   useEffect(() => {
     if (chosenFormulaID && shouldFetchFormula) {
       fetchFormula(chosenFormulaID, lang2).then((data) => {
-        console.log(
-          "\nHey look I got this data back from fetchFormula",
-          data,
-          "\n"
-        );
-
         setFormula(data.questionSentenceFormula.sentenceStructure);
+        setFormulaOrders(data.questionSentenceFormula.orders);
         setFormulaWasLoaded((prev) => prev + 1);
       });
     }
@@ -117,6 +113,7 @@ const Create = () => {
 
         <ChunkCardHolder
           formula={formula}
+          formulaOrders={formulaOrders}
           setFormula={setFormula}
           chosenFormulaID={chosenFormulaID}
           batch={"QuestionBatch"}

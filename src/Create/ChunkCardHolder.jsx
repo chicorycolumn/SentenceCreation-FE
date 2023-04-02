@@ -131,19 +131,25 @@ const ChunkCardHolder = (props) => {
   };
 
   useEffect(() => {
-    if (props.formula.every((obj) => obj.structureChunk)) {
+    if (props.formulaWasLoaded && props.formulaOrders) {
+      setChunkOrders(props.formulaOrders);
+    }
+  }, [props.formulaWasLoaded]);
+
+  useEffect(() => {
+    if (props.formula.every((fItem) => fItem.structureChunk)) {
       if (!chunkOrders.length) {
         setChunkOrders([
           {
             isPrimary: true,
             isDefault: true, // Beta remove this.
             order: props.formula
-              .filter((obj) => !obj.structureChunk.isGhostChunk)
-              .map((obj) => obj.structureChunk.chunkId.traitValue),
+              .filter((fItem) => !fItem.structureChunk.isGhostChunk)
+              .map((fItem) => fItem.structureChunk.chunkId.traitValue),
           },
         ]);
       } else {
-        // beta should setOrders here also.
+        // beta should setOrders here also? Or, what is this for?
         let defaultChunkOrders = chunkOrders.filter(
           (chunkOrder) => chunkOrder.isDefault
         );
@@ -151,8 +157,8 @@ const ChunkCardHolder = (props) => {
         if (defaultChunkOrders.length) {
           defaultChunkOrders.forEach((defaultChunkOrder) => {
             defaultChunkOrder.order = props.formula
-              .filter((obj) => !obj.structureChunk.isGhostChunk)
-              .map((obj) => obj.structureChunk.chunkId.traitValue);
+              .filter((fItem) => !fItem.structureChunk.isGhostChunk)
+              .map((fItem) => fItem.structureChunk.chunkId.traitValue);
           });
         }
       }

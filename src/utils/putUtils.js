@@ -28,8 +28,7 @@ export const fetchFormula = (sentenceFormulaId, answerLanguage) => {
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
-      console.log("fetchFormula got:", res.data); //devlogging
-      console.log("/fetchFormula");
+      console.log("END fetchFormula GOT:", res.data); //devlogging
       console.log("");
       console.log("");
 
