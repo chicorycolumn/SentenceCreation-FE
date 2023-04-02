@@ -22,7 +22,6 @@ const ChunkCard = (props) => {
   const [fetchedEnChsByLemma, setFetchedEnChsByLemma] = useState([]);
   const [noEnChsFetched, setNoEnChsFetched] = useState();
   const [chosenId, setChosenId] = useState();
-  const [structureChunk, setStructureChunk] = useState(props.structureChunk);
   const [showTraitKeysGroupOne, setShowTraitKeysGroupOne] = useState(true);
   const [showTraitKeysGroupTwo, setShowTraitKeysGroupTwo] = useState();
 
@@ -39,6 +38,15 @@ const ChunkCard = (props) => {
   const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
     useContext(LanguageContext)
   );
+
+  const nudgeBooleanTraitRefresh = () => {
+    setTimeout(() => {
+      setShowTraitKeysGroupTwo(false);
+      setTimeout(() => {
+        setShowTraitKeysGroupTwo(true);
+      }, 50);
+    }, 50);
+  };
 
   const modifyStructureChunkOnThisFormulaItem = (
     label,
@@ -57,7 +65,6 @@ const ChunkCard = (props) => {
       props.backUpStCh(newStCh);
     }
 
-    setStructureChunk(newStCh); // This should be unnec, right?
     props.setStructureChunkOnFormula(newStCh);
   };
 
@@ -82,16 +89,20 @@ const ChunkCard = (props) => {
   };
 
   const regulateTraitKey = (tKey, regulationGroup) => {
-    let regulatedTraitKeys = structureChunk[regulationGroup].traitValue.slice();
+    let regulatedTraitKeys =
+      props.structureChunk[regulationGroup].traitValue.slice();
     if (regulatedTraitKeys.includes(tKey)) {
       regulatedTraitKeys = regulatedTraitKeys.filter((tk) => tk !== tKey);
     } else if (!regulatedTraitKeys.includes(tKey)) {
       regulatedTraitKeys.push(tKey);
     }
 
-    structureChunk[regulationGroup].traitValue = regulatedTraitKeys;
+    props.structureChunk[regulationGroup].traitValue = regulatedTraitKeys;
 
-    modifyStructureChunkOnThisFormulaItem("regulateTraitKey", structureChunk);
+    modifyStructureChunkOnThisFormulaItem(
+      "regulateTraitKey",
+      props.structureChunk
+    );
   };
 
   useEffect(() => {
@@ -120,8 +131,8 @@ const ChunkCard = (props) => {
 
   useEffect(() => {
     console.log("Begin useEffect 952");
-    if (structureChunk) {
-      if (!isFixedChunk(structureChunk) && !structureChunk.lObjId) {
+    if (props.structureChunk) {
+      if (!isFixedChunk(props.structureChunk) && !props.structureChunk.lObjId) {
         throw 750;
         console.log(
           `Just adding lobjid to existing chunk "${consol.log1(
@@ -201,13 +212,13 @@ const ChunkCard = (props) => {
   }, [
     fetchedEnChsByLemma,
     props.guideword,
-    structureChunk,
+    props.structureChunk,
     props.formula,
     chosenId,
   ]);
 
   useEffect(() => {
-    if (lang1 && !structureChunk) {
+    if (lang1 && !props.structureChunk) {
       getUtils
         .fetchEnChsByLemma(lang1, props.guideword)
         .then(
@@ -229,12 +240,12 @@ const ChunkCard = (props) => {
   }, [lang1, props.guideword, shouldRetryFetch]);
 
   useEffect(() => {
-    if (structureChunk) {
+    if (props.structureChunk) {
       let { orderedTraitKeysGroup1, orderedTraitKeysGroup2 } =
-        diUtils.orderTraitKeys(structureChunk);
+        diUtils.orderTraitKeys(props.structureChunk);
       setTraitKeysGroup1(orderedTraitKeysGroup1);
       setTraitKeysGroup2(orderedTraitKeysGroup2);
-      setChunkId(structureChunk.chunkId.traitValue);
+      setChunkId(props.structureChunk.chunkId.traitValue);
     } else if (props.backedUpStructureChunk) {
       // Restore stCh from backup. (unrelated to above clause)
       modifyStructureChunkOnThisFormulaItem(
@@ -242,19 +253,24 @@ const ChunkCard = (props) => {
         uUtils.copyWithoutReference(props.backedUpStructureChunk)
       );
     }
-  }, [structureChunk]);
+  }, [props.structureChunk]);
 
   useEffect(() => {
     if (traitKeysGroup2.length) {
       setTimeout(() => {
         if (
-          diUtils.doTraitKeysHoldSomeValues(traitKeysGroup2, structureChunk)
+          diUtils.doTraitKeysHoldSomeValues(
+            traitKeysGroup2,
+            props.structureChunk
+          )
         ) {
           setShowTraitKeysGroupTwo(true);
         }
       }, 500);
     }
   }, [traitKeysGroup2]);
+
+  let { structureChunk } = props;
 
   let isFixedChunkOrNoChunk =
     !structureChunk || idUtils.isFixedChunk(structureChunk);
@@ -522,9 +538,7 @@ const ChunkCard = (props) => {
               }
 
               modifyStructureChunkOnThisFormulaItem("Person button", stCh);
-              setShowTraitKeysGroupTwo(
-                !structureChunk.booleanTraits.traitValue.includes("isPerson")
-              );
+              nudgeBooleanTraitRefresh();
             }}
           >
             {structureChunk.booleanTraits &&

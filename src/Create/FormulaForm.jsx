@@ -6,6 +6,7 @@ import { getRandomNumberString } from "../utils/universalUtils.js";
 const FormulaForm = (props) => {
   const [formulaInput, setFormulaInput] = useState(
     "kobieta jest *bardzo czerwona"
+    // "on jest"
   );
 
   const cardIt = (lang, input) => {
