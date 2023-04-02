@@ -29,9 +29,7 @@ const ChunkCardHolder = (props) => {
   const [stemFoundForFlower, setStemFoundForFlower] = useState();
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const [listPopupData, setListPopupData] = useState();
-  const [chunkOrders, setChunkOrders] = useState([]);
   const [showAllTraitBoxes, setShowAllTraitBoxes] = useState(false);
-
   const [showChunkOrdersPopup, setShowChunkOrdersPopup] = useState();
   const [highlightedCard, setHighlightedCard] = useState();
 
@@ -131,19 +129,9 @@ const ChunkCardHolder = (props) => {
   };
 
   useEffect(() => {
-    if (props.formulaWasLoaded) {
-      if (props.formulaOrders) {
-        setChunkOrders(props.formulaOrders);
-      } else {
-        setChunkOrders([]);
-      }
-    }
-  }, [props.formulaWasLoaded]);
-
-  useEffect(() => {
     if (props.formula.every((fItem) => fItem.structureChunk)) {
-      if (!chunkOrders.length) {
-        setChunkOrders([
+      if (!props.chunkOrders.length) {
+        props.setChunkOrders([
           {
             isPrimary: true,
             isDefault: true, // Beta remove this.
@@ -154,7 +142,7 @@ const ChunkCardHolder = (props) => {
         ]);
       } else {
         // beta should setOrders here also? Or, what is this for?
-        let defaultChunkOrders = chunkOrders.filter(
+        let defaultChunkOrders = props.chunkOrders.filter(
           (chunkOrder) => chunkOrder.isDefault
         );
 
@@ -167,7 +155,7 @@ const ChunkCardHolder = (props) => {
         }
       }
     }
-  }, [props.formula, chunkOrders]);
+  }, [props.formula, props.chunkOrders]);
 
   useEffect(() => {
     if (!elementsToDrawLinesBetween.length) {
@@ -191,8 +179,8 @@ const ChunkCardHolder = (props) => {
           exit={() => {
             setShowChunkOrdersPopup(false);
           }}
-          chunkOrders={chunkOrders}
-          setChunkOrders={setChunkOrders}
+          chunkOrders={props.chunkOrders}
+          setChunkOrders={props.setChunkOrders}
           formula={props.formula}
         />
       )}
@@ -201,6 +189,17 @@ const ChunkCardHolder = (props) => {
           Question sentence: {props.chosenFormulaID}
         </p>
         <div className={styles.buttonSubholder}>
+          <button
+            alt="Question mark"
+            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+            onClick={(e) => {
+              console.log("hello");
+              console.log({ chunkOrders: props.chunkOrders });
+            }}
+          >
+            ?
+            <Tooltip text="Dev get info" />
+          </button>
           <button
             alt="Alternate arrows icon"
             className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
@@ -237,7 +236,7 @@ const ChunkCardHolder = (props) => {
 
               let formulaToSend = {
                 sentenceStructure: props.formula.map((el) => el.structureChunk),
-                orders: chunkOrders,
+                orders: props.chunkOrders,
               };
 
               putUtils.fetchSentence(lang1, formulaToSend).then(

@@ -19,7 +19,7 @@ const Create = () => {
   const [error, setError] = useState(null);
   const [formulaWasLoaded, setFormulaWasLoaded] = useState(0);
   const [formula, setFormula] = useState([]);
-  const [formulaOrders, setFormulaOrders] = useState([]);
+  const [chunkOrders, setChunkOrders] = useState([]);
   const [showFormulasPopup, setShowFormulasPopup] = useState();
   const [chosenFormulaID, setChosenFormulaID] = useState();
   const [shouldFetchFormula, setShouldFetchFormula] = useState();
@@ -37,7 +37,7 @@ const Create = () => {
         );
 
         setFormula(data.questionSentenceFormula.sentenceStructure);
-        setFormulaOrders(data.questionSentenceFormula.orders);
+        setChunkOrders(data.questionSentenceFormula.orders);
         setFormulaWasLoaded((prev) => prev + 1);
       });
     }
@@ -78,6 +78,7 @@ const Create = () => {
           setFormula={(formulaItemsArr) => {
             setFormula(formulaItemsArr);
             setShouldFetchFormula();
+            setChunkOrders([]);
             setChosenFormulaID(`${lang1}-XX-${getRandomNumberString(10)}`);
             setFormulaWasLoaded(0);
           }}
@@ -125,7 +126,8 @@ const Create = () => {
 
         <ChunkCardHolder
           formula={formula}
-          formulaOrders={formulaOrders}
+          chunkOrders={chunkOrders}
+          setChunkOrders={setChunkOrders}
           setFormula={setFormula}
           chosenFormulaID={chosenFormulaID}
           batch={"QuestionBatch"}
