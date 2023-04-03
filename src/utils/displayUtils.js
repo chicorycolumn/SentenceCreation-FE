@@ -243,9 +243,14 @@ const diUtils = {
     });
 
     lexicalTraitKeys = lexicalTraitKeys.sort((x, y) => y.localeCompare(x));
-    // booleanTraitKeys = booleanTraitKeys.sort((x, y) => x.localeCompare(y));
 
-    orderedTraitKeys = [...orderedTraitKeys, ...lexicalTraitKeys];
+    if (lexicalTraitKeys.includes("tense")) {
+      // Aesthetically I prefer "tense" traitBox shown at the bottom of group1.
+      lexicalTraitKeys = lexicalTraitKeys.filter((x) => x !== "tense");
+      lexicalTraitKeys.push("tense");
+    }
+
+    orderedTraitKeys.push(...lexicalTraitKeys);
 
     const length = orderedTraitKeys.length;
 
@@ -255,12 +260,11 @@ const diUtils = {
 
     // orderedTraitKeys = [...orderedTraitKeys, ...booleanTraitKeys];
 
-    orderedTraitKeys = [
-      ...orderedTraitKeys,
+    orderedTraitKeys.push(
       ...Object.keys(stCh)
         .filter((traitKey) => !orderedTraitKeys.includes(traitKey))
-        .sort((x, y) => x.localeCompare(y)),
-    ];
+        .sort((x, y) => x.localeCompare(y))
+    );
 
     let countOfLeftoverTraitKeys =
       orderedTraitKeys.length - Object.keys(stCh).length;
