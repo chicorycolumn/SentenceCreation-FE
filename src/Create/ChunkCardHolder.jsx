@@ -15,6 +15,7 @@ import icons from "../utils/icons.js";
 import $ from "jquery";
 const putUtils = require("../utils/putUtils.js");
 const scUtils = require("../utils/structureChunkUtils.js");
+const fiUtils = require("../utils/formulaItemUtils.js");
 
 const ChunkCardHolder = (props) => {
   const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
@@ -67,7 +68,7 @@ const ChunkCardHolder = (props) => {
       prevFormula = uUtils.copyWithoutReference(prevFormula);
 
       if (!newWords) {
-        // Option 1: Delete this fItem.
+        // Clause 1: Delete this fItem (don't request new stCh from BE)
         let newFormula = prevFormula.filter(
           (formulaItem) => formulaItem.formulaItemId !== formulaItemId
         );
@@ -85,14 +86,19 @@ const ChunkCardHolder = (props) => {
         structureChunk
       );
 
+      let currentChunkId = currentFormulaItem.structureChunk.chunkId.traitValue;
+      currentFormulaItem._previousChunkId = currentChunkId;
+
       if (structureChunk) {
-        // Option 2: Update the stCh.
+        // Clause 2: Update the stCh.
+
         delete currentFormulaItem.structureChunk;
         currentFormulaItem.structureChunk = structureChunk;
       } else {
-        // Option 3: A new stCh will loaded via BE request from guideword.
+        // Clause 3: Delete this stCh (request new stCh from BE using new guideword).
+
         delete currentFormulaItem.structureChunk;
-        delete currentFormulaItem.backedUpStructureChunk; //bug-318
+        delete currentFormulaItem.backedUpStructureChunk;
       }
 
       console.log(
@@ -129,33 +135,31 @@ const ChunkCardHolder = (props) => {
   };
 
   useEffect(() => {
-    if (props.formula.every((fItem) => fItem.structureChunk)) {
-      if (!props.chunkOrders.length) {
-        props.setChunkOrders([
-          {
-            isPrimary: true,
-            isDefault: true, // Beta remove this.
-            order: props.formula
-              .filter((fItem) => !fItem.structureChunk.isGhostChunk)
-              .map((fItem) => fItem.structureChunk.chunkId.traitValue),
-          },
-        ]);
-      } else {
-        // beta should setOrders here also? Or, what is this for?
-        let defaultChunkOrders = props.chunkOrders.filter(
-          (chunkOrder) => chunkOrder.isDefault
-        );
-
-        if (defaultChunkOrders.length) {
-          defaultChunkOrders.forEach((defaultChunkOrder) => {
-            defaultChunkOrder.order = props.formula
-              .filter((fItem) => !fItem.structureChunk.isGhostChunk)
-              .map((fItem) => fItem.structureChunk.chunkId.traitValue);
-          });
-        }
-      }
+    if (
+      !props.chunkOrders.length &&
+      props.formula.every((fItem) => fItem.structureChunk)
+    ) {
+      props.setChunkOrders([
+        {
+          isPrimary: true,
+          order: props.formula
+            .filter((fItem) => !fItem.structureChunk.isGhostChunk)
+            .map((fItem) => fItem.structureChunk.chunkId.traitValue),
+        },
+      ]);
     }
   }, [props.formula, props.chunkOrders]);
+
+  useEffect(() => {
+    if (
+      props.chunkOrders.length &&
+      props.formula.every((fItem) => fItem.structureChunk)
+    ) {
+      props.setChunkOrders((prev) =>
+        fiUtils.updateChunkOrders(prev, props.formula)
+      );
+    }
+  }, [props.formula]);
 
   useEffect(() => {
     if (!elementsToDrawLinesBetween.length) {
