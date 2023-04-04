@@ -198,7 +198,7 @@ const ChunkCardHolder = (props) => {
           Question sentence: {props.chosenFormulaID}
         </p>
         <div className={styles.buttonSubholder}>
-          <button
+          {/* <button
             alt="Question mark"
             className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
@@ -208,7 +208,7 @@ const ChunkCardHolder = (props) => {
           >
             ?
             <Tooltip text="Dev get info" />
-          </button>
+          </button> */}
           <button
             alt="Alternate arrows icon"
             className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}

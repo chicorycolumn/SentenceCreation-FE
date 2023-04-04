@@ -6,10 +6,9 @@ import ListPopup from "./Cogs/ListPopup.jsx";
 import { LanguageContextProvider } from "./context/LanguageContext.js";
 import { fetchFormula, fetchFormulaIds } from "./utils/putUtils.js";
 import $ from "jquery";
-import {
-  copyWithoutReference,
-  getRandomNumberString,
-} from "./utils/universalUtils.js";
+import gstyles from "./css/Global.module.css";
+import styles from "./css/Create.module.css";
+const uUtils = require("./utils/universalUtils.js");
 
 const Create = () => {
   const [lang1, setLang1] = useState("POL");
@@ -25,14 +24,40 @@ const Create = () => {
   const [shouldFetchFormula, setShouldFetchFormula] = useState();
   const [fetchedFormulaIds, setFetchedFormulaIds] = useState([]);
 
+  const onClickFetchFormulas = (e) => {
+    e.preventDefault();
+
+    fetchFormulaIds(lang1, lang2, beEnv).then((data) => {
+      console.log(
+        "\nHey look I got this data back from fetchFormulaIds",
+        data,
+        "\n"
+      );
+
+      let formattedData = {
+        title: "Formulas",
+        headers: ["Formula ID", "Guidewords", "Symbol"],
+        rows: data.formulaIds,
+        rowCallback: (row) => {
+          let formulaID = row[0];
+          setChosenFormulaID(formulaID);
+          setShouldFetchFormula(true);
+          setShowFormulasPopup();
+        },
+      };
+
+      setFetchedFormulaIds(formattedData);
+      setShowFormulasPopup(true);
+    });
+  };
+
   useEffect(() => {
     if (chosenFormulaID && shouldFetchFormula) {
       fetchFormula(chosenFormulaID, lang2).then((data) => {
         data.questionSentenceFormula.sentenceStructure.forEach(
           (sentenceStructureItem) => {
-            sentenceStructureItem.backedUpStructureChunk = copyWithoutReference(
-              sentenceStructureItem.structureChunk
-            );
+            sentenceStructureItem.backedUpStructureChunk =
+              uUtils.copyWithoutReference(sentenceStructureItem.structureChunk);
           }
         );
 
@@ -45,44 +70,42 @@ const Create = () => {
 
   return (
     <LanguageContextProvider value={`${lang1}-${lang2}-${beEnv}`}>
-      <div>
-        <h1>Create new sentences</h1>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            console.log(formula);
-          }}
-        >
-          see formula
-        </button>
-        <LanguagesForm
-          setLang1={(newValue) => {
-            setLang1((prev) => {
-              if (lang2 === newValue) {
-                $(`#lang2_${prev}_label`).click();
-              }
-              return newValue;
-            });
-          }}
-          setLang2={(newValue) => {
-            setLang2((prev) => {
-              if (lang1 === newValue) {
-                $(`#lang1_${prev}_label`).click();
-              }
-              return newValue;
-            });
-          }}
-          setBeEnv={setBeEnv}
-        />
-        <FormulaForm
-          setFormula={(formulaItemsArr) => {
-            setFormula(formulaItemsArr);
-            setShouldFetchFormula();
-            setChunkOrders([]);
-            setChosenFormulaID(`${lang1}-XX-${getRandomNumberString(10)}`);
-            setFormulaWasLoaded(0);
-          }}
-        />
+      <div className={styles.mainDivCreate}>
+        <h1 className={gstyles.heading1}>Create new sentences</h1>
+        <div className={styles.horizontalHolder}>
+          <FormulaForm
+            setFormula={(formulaItemsArr) => {
+              setFormula(formulaItemsArr);
+              setShouldFetchFormula();
+              setChunkOrders([]);
+              setChosenFormulaID(
+                `${lang1}-XX-${uUtils.getRandomNumberString(10)}`
+              );
+              setFormulaWasLoaded(0);
+            }}
+            onClickFetchFormulas={onClickFetchFormulas}
+          />
+          <LanguagesForm
+            setLang1={(newValue) => {
+              setLang1((prev) => {
+                if (lang2 === newValue) {
+                  $(`#lang2_${prev}_label`).click();
+                }
+                return newValue;
+              });
+            }}
+            setLang2={(newValue) => {
+              setLang2((prev) => {
+                if (lang1 === newValue) {
+                  $(`#lang1_${prev}_label`).click();
+                }
+                return newValue;
+              });
+            }}
+            setBeEnv={setBeEnv}
+          />
+        </div>
+
         {showFormulasPopup && (
           <ListPopup
             exit={() => {
@@ -93,36 +116,6 @@ const Create = () => {
             wide={true}
           />
         )}
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-
-            fetchFormulaIds(lang1, lang2, beEnv).then((data) => {
-              console.log(
-                "\nHey look I got this data back from fetchFormulaIds",
-                data,
-                "\n"
-              );
-
-              let formattedData = {
-                title: "Formulas",
-                headers: ["Formula ID", "Guidewords", "Symbol"],
-                rows: data.formulaIds,
-                rowCallback: (row) => {
-                  let formulaID = row[0];
-                  setChosenFormulaID(formulaID);
-                  setShouldFetchFormula(true);
-                  setShowFormulasPopup();
-                },
-              };
-
-              setFetchedFormulaIds(formattedData);
-              setShowFormulasPopup(true);
-            });
-          }}
-        >
-          Load a formula
-        </button>
 
         <ChunkCardHolder
           formula={formula}

@@ -492,3 +492,9 @@
   -ms-user-select: none !important; /* IE 10 and IE 11 */
   user-select: none !important; /* Standard syntax */
 }
+
+.heading1 {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-size: 20px;
+}

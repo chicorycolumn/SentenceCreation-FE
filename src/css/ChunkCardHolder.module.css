@@ -7,11 +7,10 @@
 }
 
 .cardHolderContainer {
-  margin-top: 100px;
+  margin-top: 15px;
 }
 
 .buttonHolder {
-  /* border: black solid 2px; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -24,6 +23,7 @@
 
 .buttonHolderTitle {
   margin: 0px;
+  margin-bottom: 7.5px;
   width: 600px;
   text-align: center;
 }
