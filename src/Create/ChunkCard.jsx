@@ -32,9 +32,6 @@ const ChunkCard = (props) => {
   const [shouldRetryFetch, setShouldRetryFetch] = useState(0);
   const [promptData, setPromptData] = useState();
 
-  const [meaninglessCounterTraitBox, setMeaninglessCounterTraitBox] =
-    useState(0);
-
   const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
     useContext(LanguageContext)
   );
@@ -724,9 +721,11 @@ const ChunkCard = (props) => {
                     stemFoundForFlowerBrace={props.stemFoundForFlowerBrace}
                     setHighlightedCard={props.setHighlightedCard}
                     setPopup={props.setPopup}
-                    meaninglessCounterTraitBox={meaninglessCounterTraitBox}
+                    meaninglessCounterTraitBox={
+                      props.meaninglessCounterTraitBox
+                    }
                     setMeaninglessCounterTraitBox={
-                      setMeaninglessCounterTraitBox
+                      props.setMeaninglessCounterTraitBox
                     }
                     disabled={idUtils.isTagTrait(traitKey) && hasSpecificId}
                   />

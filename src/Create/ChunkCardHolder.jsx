@@ -10,7 +10,7 @@ import gstyles from "../css/Global.module.css";
 import LineHolder from "../Cogs/LineHolder";
 import uUtils from "../utils/universalUtils.js";
 import diUtils from "../utils/displayUtils.js";
-import idUtils from "../utils/identityUtils.js";
+import idUtils, { agreementTraits } from "../utils/identityUtils.js";
 import icons from "../utils/icons.js";
 import $ from "jquery";
 const putUtils = require("../utils/putUtils.js");
@@ -33,6 +33,8 @@ const ChunkCardHolder = (props) => {
   const [showAllTraitBoxes, setShowAllTraitBoxes] = useState(false);
   const [showChunkOrdersPopup, setShowChunkOrdersPopup] = useState();
   const [highlightedCard, setHighlightedCard] = useState();
+  const [meaninglessCounterTraitBox, setMeaninglessCounterTraitBox] =
+    useState(0);
 
   const editLemmaOfThisFormulaItem = (
     formulaItemId,
@@ -50,14 +52,14 @@ const ChunkCardHolder = (props) => {
     });
 
     function updateFlowers(newFormula, chunkId, newChunkId) {
-      newFormula.forEach((stChObj) => {
-        if (stChObj.structureChunk) {
-          Object.keys(stChObj.structureChunk).forEach((traitKey) => {
+      newFormula.forEach((fItem) => {
+        if (fItem.structureChunk) {
+          Object.keys(fItem.structureChunk).forEach((traitKey) => {
             if (
               idUtils.agreementTraits.includes(traitKey) &&
-              stChObj.structureChunk[traitKey].traitValue === chunkId
+              fItem.structureChunk[traitKey].traitValue === chunkId
             ) {
-              stChObj.structureChunk[traitKey].traitValue = newChunkId;
+              fItem.structureChunk[traitKey].traitValue = newChunkId;
             }
           });
         }
@@ -68,7 +70,7 @@ const ChunkCardHolder = (props) => {
       prevFormula = uUtils.copyWithoutReference(prevFormula);
 
       if (!newWords) {
-        // Clause 1: Delete this fItem (don't request new stCh from BE)
+        // Clause 1: Delete this fItem (don't request new stCh from BE).
         let newFormula = prevFormula.filter(
           (formulaItem) => formulaItem.formulaItemId !== formulaItemId
         );
@@ -90,12 +92,13 @@ const ChunkCardHolder = (props) => {
       currentFormulaItem._previousChunkId = currentChunkId;
 
       if (structureChunk) {
-        // Clause 2: Update the stCh.
+        // Clause 2: Update stCh.
 
         delete currentFormulaItem.structureChunk;
         currentFormulaItem.structureChunk = structureChunk;
+        updateFlowers(prevFormula, currentChunkId, structureChunk.chunkId);
       } else {
-        // Clause 3: Delete this stCh (request new stCh from BE using new guideword).
+        // Clause 3: Keep fItem but delete its stCh (request new stCh from BE using new guideword).
 
         delete currentFormulaItem.structureChunk;
         delete currentFormulaItem.backedUpStructureChunk;
@@ -107,11 +110,13 @@ const ChunkCardHolder = (props) => {
         structureChunk
       );
 
-      updateFlowers(prevFormula, chunkId, null);
       console.log("NEW formula is:", prevFormula);
       return prevFormula;
     });
     setMeaninglessCounter((prev) => prev + 1);
+    setTimeout(() => {
+      setMeaninglessCounterTraitBox((prev) => prev + 1);
+    }, 100);
   };
 
   const checkForStChsWithNoLObjs = () => {
@@ -382,7 +387,7 @@ const ChunkCardHolder = (props) => {
                 formula={props.formula}
                 setStructureChunkOnFormula={(newStCh) => {
                   props.setFormula((prevFormula) => {
-                    return prevFormula.map((formulaItem) => {
+                    let newFormula = prevFormula.map((formulaItem) => {
                       if (formulaItem.formulaItemId === formulaItemId) {
                         formulaItem.structureChunk = newStCh;
 
@@ -400,6 +405,32 @@ const ChunkCardHolder = (props) => {
                       }
                       return formulaItem;
                     });
+
+                    let replacedChunkIds = newFormula
+                      .filter((fItem) => fItem._previousChunkId)
+                      .map((fItem) => {
+                        return {
+                          old: fItem._previousChunkId,
+                          new: fItem.structureChunk.chunkId.traitValue,
+                        };
+                      });
+
+                    replacedChunkIds.forEach((replacedChunkId) => {
+                      newFormula.forEach((fItem) => {
+                        agreementTraits.forEach((agreementTrait) => {
+                          if (
+                            fItem.structureChunk[agreementTrait] &&
+                            fItem.structureChunk[agreementTrait].traitValue ===
+                              replacedChunkId.old
+                          ) {
+                            fItem.structureChunk[agreementTrait].traitValue =
+                              replacedChunkId.new;
+                          }
+                        });
+                      });
+                    });
+
+                    return newFormula;
                   });
                 }}
                 backUpStCh={(newStCh) => {
@@ -435,6 +466,8 @@ const ChunkCardHolder = (props) => {
                 highlightedCard={highlightedCard}
                 setHighlightedCard={setHighlightedCard}
                 formulaWasLoaded={props.formulaWasLoaded}
+                meaninglessCounterTraitBox={meaninglessCounterTraitBox}
+                setMeaninglessCounterTraitBox={setMeaninglessCounterTraitBox}
               />
               {index === finalIndex ? (
                 <AddChunkButton
