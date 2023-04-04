@@ -1,0 +1,36 @@
+.navbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.title {
+  margin: 0px 15px;
+}
+
+.navEl {
+  height: 100%;
+  border: fuchsia solid 1.5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.navbarItem {
+  height: 100%;
+  min-width: 75px;
+  width: fit-content;
+  padding: 0px 5px;
+  border: black solid 1px;
+  text-align: center;
+  background-color: yellow;
+}
+
+.navbarItem:hover {
+  background-color: rgb(201, 201, 0);
+}
+
+.highlighted {
+  background-color: rgb(201, 201, 0);
+}
