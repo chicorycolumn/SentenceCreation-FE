@@ -13,7 +13,7 @@ const ChunkOrdersPopup = (props) => {
 
   const getLemmaFromFormula = (chunkId) => {
     return props.formula.filter(
-      (obj) => obj.structureChunk.chunkId.traitValue === chunkId
+      (fItem) => fItem.structureChunk.chunkId.traitValue === chunkId
     )[0].word;
   };
 
@@ -34,8 +34,8 @@ const ChunkOrdersPopup = (props) => {
         let indexOfExistingOrder;
 
         if (
-          props.chunkOrders.filter((obj, index) => {
-            let chunkOrder = obj.order;
+          props.chunkOrders.filter((orderObject, index) => {
+            let chunkOrder = orderObject.order;
             if (stringifyChunkOrder(chunkOrder) === stringifiedOrderBuilt) {
               indexOfExistingOrder = index;
               return true;
@@ -101,17 +101,22 @@ const ChunkOrdersPopup = (props) => {
         </div>
 
         <div className={styles.buttonHolder}>
-          {props.formula.map((obj) => {
-            let chunkId = obj.structureChunk.chunkId.traitValue;
-            let lemma = obj.word;
+          {props.formula.map((fItem) => {
+            let chunkId = fItem.structureChunk.chunkId.traitValue;
+            let lemma = fItem.word;
+            let chunkIsUnused =
+              !fItem.structureChunk.isGhostChunk &&
+              !props.chunkOrders.some((orderObj) =>
+                orderObj.order.includes(fItem.structureChunk.chunkId.traitValue)
+              );
 
             return (
               <button
                 key={chunkId}
-                disabled={obj.structureChunk.isGhostChunk}
+                disabled={fItem.structureChunk.isGhostChunk}
                 className={`${styles.chunkButton} ${
-                  highlightedButton === chunkId && styles.highlightedButton
-                }`}
+                  chunkIsUnused && styles.chunkButtonBad
+                } ${highlightedButton === chunkId && styles.highlightedButton}`}
                 onClick={() => {
                   setOrderBuilt((prev) => [...prev, chunkId]);
                 }}
@@ -151,6 +156,9 @@ const ChunkOrdersPopup = (props) => {
                   }
                 }}
               >
+                {chunkIsUnused && (
+                  <p className={`${gstyles.floatJustAbove}`}>unused</p>
+                )}
                 <p className={styles.buttonTopHalf}>{lemma}</p>
                 <p className={styles.buttonBottomHalf}>{chunkId}</p>
               </button>
@@ -206,8 +214,8 @@ const ChunkOrdersPopup = (props) => {
 
         <div className={`${pstyles.bottomHolder} ${styles.bottomHolder}`}>
           <ul>
-            {props.chunkOrders.map((obj, index) => {
-              let { isPrimary, order } = obj;
+            {props.chunkOrders.map((orderObj, index) => {
+              let { isPrimary, order } = orderObj;
               return (
                 <li className={styles.listitem} key={`chunkOrder-${index}`}>
                   <span className={styles.indexSpan}>{index + 1}</span>
@@ -219,11 +227,11 @@ const ChunkOrdersPopup = (props) => {
                       setMeaninglessCounter((prev) => prev + 1);
                       setTimeout(() => {
                         props.setChunkOrders((prev) => {
-                          let newArr = prev.map((obj, i) => {
+                          let newArr = prev.map((orderObj, i) => {
                             if (i === index) {
-                              obj.isPrimary = !prev[index].isPrimary;
+                              orderObj.isPrimary = !prev[index].isPrimary;
                             }
-                            return obj;
+                            return orderObj;
                           });
                           return newArr;
                         });
