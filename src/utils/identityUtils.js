@@ -85,13 +85,13 @@ exports.agreementTraits = [
   // "connectedTo",
 ];
 
-exports.getBadChunks = (formula) => {
+exports.getTaglessChunks = (formula) => {
   return formula
     .map((el) => el.structureChunk)
-    .filter((stCh) => idUtils.isBadChunk(stCh));
+    .filter((stCh) => idUtils.isTaglessChunk(stCh));
 };
 
-exports.isBadChunk = (stCh) => {
+exports.isTaglessChunk = (stCh) => {
   return (
     idUtils.wordtypesWhichMustHavePopulatedTags.includes(
       idUtils.getWordtypeEnCh(stCh)

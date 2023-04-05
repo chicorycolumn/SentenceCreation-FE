@@ -88,7 +88,9 @@ const ChunkCardHolder = (props) => {
         structureChunk
       );
 
-      let currentChunkId = currentFormulaItem.structureChunk.chunkId.traitValue;
+      let currentChunkId = currentFormulaItem.structureChunk
+        ? currentFormulaItem.structureChunk.chunkId.traitValue
+        : null;
       currentFormulaItem._previousChunkId = currentChunkId;
 
       if (structureChunk) {
@@ -131,7 +133,7 @@ const ChunkCardHolder = (props) => {
 
     if (indexesOfStChsWithNoLobjs.length) {
       alert(
-        `Sorry, chunk(s) number ${indexesOfStChsWithNoLobjs
+        `I cannot do this, chunk(s) number ${indexesOfStChsWithNoLobjs
           .map((i) => i + 1)
           .join(", ")} are null.`
       );
@@ -229,17 +231,17 @@ const ChunkCardHolder = (props) => {
             onClick={(e) => {
               e.target.blur();
 
-              let badChunks = idUtils.getBadChunks(props.formula);
-              if (badChunks.length) {
-                alert(
-                  `Cannot query whole sentence because no tags are specified on chunk "${badChunks
-                    .map((badCh) => badCh.chunkId.traitValue)
-                    .join('","')}".`
-                );
+              if (checkForStChsWithNoLObjs()) {
                 return;
               }
 
-              if (checkForStChsWithNoLObjs()) {
+              let taglessChunks = idUtils.getTaglessChunks(props.formula);
+              if (taglessChunks.length) {
+                alert(
+                  `Cannot query whole sentence because no tags are specified on chunk "${taglessChunks
+                    .map((badCh) => badCh.chunkId.traitValue)
+                    .join('","')}".`
+                );
                 return;
               }
 

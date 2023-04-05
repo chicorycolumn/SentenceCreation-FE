@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import styles from "../css/Navbar.module.css";
 import { Link } from "react-router-dom";
 
@@ -32,14 +32,15 @@ const Navbar = () => {
 
   return (
     <div className={styles.navbar}>
-      {navbarInfos.map((info) => {
+      {navbarInfos.map((info, index) => {
         let { title, items } = info;
         return (
-          <>
+          <Fragment key={`${index}-${info}`}>
             {title && <p className={styles.title}>{title}</p>}
             <nav className={styles.navEl}>
               {items.map((item) => (
                 <Link
+                  key={`${item.text}-${item.link}`}
                   to={item.link}
                   onClick={() => {
                     setMeaninglessBoolean((prev) => !prev);
@@ -54,7 +55,7 @@ const Navbar = () => {
                 </Link>
               ))}
             </nav>
-          </>
+          </Fragment>
         );
       })}
     </div>

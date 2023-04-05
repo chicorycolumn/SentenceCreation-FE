@@ -448,7 +448,7 @@ class TraitBox extends Component {
           } 
           ${
             idUtils.isTagTrait(traitKey) &&
-            idUtils.isBadChunk(structureChunk) &&
+            idUtils.isTaglessChunk(structureChunk) &&
             styles.badBox
           } 
           ${this.props.traitKeysGroup === 2 && gstyles.oddEdges}
