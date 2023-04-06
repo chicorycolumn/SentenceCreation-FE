@@ -45,13 +45,14 @@ const FormulaForm = (props) => {
           placeholder="Enter example sentence"
         ></input>
         <button
+          alt="Right arrow go arrow icon"
           type="submit"
           onClick={(e) => {
             e.preventDefault();
             cardIt(lang1);
           }}
         >
-          Card it
+          &#10157;
         </button>
       </form>
       <p>Prefix a word with "*" to make it a fixed chunk</p>
