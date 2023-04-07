@@ -97,15 +97,15 @@ const ChunkCardHolder = (props) => {
   };
 
   useEffect(() => {
-    if (props.formula.every((obj) => obj.structureChunk)) {
+    if (props.formula.every((fItem) => fItem.structureChunk)) {
       if (!chunkOrders.length) {
         setChunkOrders([
           {
             isPrimary: true,
             isDefault: true,
             order: props.formula
-              .filter((obj) => !obj.structureChunk.isGhostChunk)
-              .map((obj) => obj.structureChunk.chunkId.traitValue),
+              .filter((fItem) => !fItem.structureChunk.isGhostChunk)
+              .map((fItem) => fItem.structureChunk.chunkId.traitValue),
           },
         ]);
       } else {
@@ -116,8 +116,8 @@ const ChunkCardHolder = (props) => {
         if (defaultChunkOrders.length) {
           defaultChunkOrders.forEach((defaultChunkOrder) => {
             defaultChunkOrder.order = props.formula
-              .filter((obj) => !obj.structureChunk.isGhostChunk)
-              .map((obj) => obj.structureChunk.chunkId.traitValue);
+              .filter((fItem) => !fItem.structureChunk.isGhostChunk)
+              .map((fItem) => fItem.structureChunk.chunkId.traitValue);
           });
         }
       }

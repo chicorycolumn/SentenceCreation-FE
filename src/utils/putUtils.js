@@ -38,12 +38,12 @@ export const fetchSentence = (lang1, rawChunks, orders) => {
 
   if (orders) {
     sentenceFormula.primaryOrders = orders
-      .filter((obj) => obj.isPrimary)
-      .map((obj) => obj.order);
+      .filter((orderObj) => orderObj.isPrimary)
+      .map((orderObj) => orderObj.order);
 
     sentenceFormula.additionalOrders = orders
-      .filter((obj) => !obj.isPrimary)
-      .map((obj) => obj.order);
+      .filter((orderObj) => !orderObj.isPrimary)
+      .map((orderObj) => orderObj.order);
   }
 
   console.log(""); //devlogging
