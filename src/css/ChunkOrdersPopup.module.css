@@ -33,6 +33,14 @@
   padding: 0px;
 }
 
+.chunkButtonBad {
+  border: crimson solid 2px;
+}
+
+.chunkButton:hover {
+  background-color: rgb(238, 208, 168);
+}
+
 .chunkButton:active {
   background-color: rgb(193, 121, 28);
 }

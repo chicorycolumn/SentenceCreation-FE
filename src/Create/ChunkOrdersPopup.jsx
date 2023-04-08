@@ -106,14 +106,18 @@ const ChunkOrdersPopup = (props) => {
         <div className={styles.buttonHolder}>
           {props.formula.map((fItem) => {
             let chunkId = fItem.structureChunk.chunkId.traitValue;
-
+            let chunkIsUnused =
+              !fItem.structureChunk.isGhostChunk &&
+              !props.chunkOrders.some((orderObj) =>
+                orderObj.order.includes(fItem.structureChunk.chunkId.traitValue)
+              );
             return (
               <button
                 key={chunkId}
                 disabled={fItem.structureChunk.isGhostChunk}
                 className={`${styles.chunkButton} ${
-                  highlightedButton === chunkId && styles.highlightedButton
-                }`}
+                  chunkIsUnused && styles.chunkButtonBad
+                } ${highlightedButton === chunkId && styles.highlightedButton}`}
                 onClick={() => {
                   setOrderBuilt((prev) => [...prev, chunkId]);
                 }}
@@ -153,6 +157,9 @@ const ChunkOrdersPopup = (props) => {
                   }
                 }}
               >
+                {chunkIsUnused && (
+                  <p className={`${gstyles.floatJustAbove}`}>unused</p>
+                )}
                 <p className={styles.buttonTopHalf}>{fItem.guideword}</p>
                 <p className={styles.buttonBottomHalf}>{chunkId}</p>
               </button>

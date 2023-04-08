@@ -56,6 +56,7 @@ const FormulaForm = (props) => {
           value={formulaInput}
         ></input>
         <button
+          alt="Right arrow go arrow icon"
           className={styles.button1}
           type="submit"
           onClick={(e) => {
