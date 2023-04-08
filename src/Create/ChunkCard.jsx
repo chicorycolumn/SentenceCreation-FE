@@ -36,11 +36,20 @@ const ChunkCard = (props) => {
     useContext(LanguageContext)
   );
 
-  const nudgeBooleanTraitRefresh = () => {
+  const refreshTraitBoxInputs = (traitKeysGroup) => {
+    if (![1, 2].includes(traitKeysGroup)) {
+      return;
+    }
+
+    let setShowTraitKeys =
+      traitKeysGroup === 1
+        ? setShowTraitKeysGroupOne
+        : setShowTraitKeysGroupTwo;
+
     setTimeout(() => {
-      setShowTraitKeysGroupTwo(false);
+      setShowTraitKeys(false);
       setTimeout(() => {
-        setShowTraitKeysGroupTwo(true);
+        setShowTraitKeys(true);
       }, 50);
     }, 50);
   };
@@ -535,7 +544,7 @@ const ChunkCard = (props) => {
               }
 
               modifyStructureChunkOnThisFormulaItem("Person button", stCh);
-              nudgeBooleanTraitRefresh();
+              refreshTraitBoxInputs(2);
             }}
           >
             {structureChunk.booleanTraits &&
@@ -728,6 +737,7 @@ const ChunkCard = (props) => {
                       props.setMeaninglessCounterTraitBox
                     }
                     disabled={idUtils.isTagTrait(traitKey) && hasSpecificId}
+                    refreshTraitBoxInputs={refreshTraitBoxInputs}
                   />
                 )
               );
@@ -762,6 +772,7 @@ const ChunkCard = (props) => {
                     backedUpStructureChunk={props.backedUpStructureChunk}
                     setHighlightedCard={props.setHighlightedCard}
                     setPopup={props.setPopup}
+                    refreshTraitBoxInputs={refreshTraitBoxInputs}
                   />
                 )
             )}

@@ -338,21 +338,24 @@ class TraitBox extends Component {
     const traitBoxID = `${this.props.chunkCardKey}-${traitKey}_maindiv`;
     const wipeButtonId = `${this.props.chunkCardKey}-${traitKey}_wipeButton`;
 
-    if (
-      this.state.isFlowerSearchingForStem &&
-      this.props.flowerSearchingForStemBrace[0] === this.props.chunkId &&
-      this.props.stemFoundForFlowerBrace[0]
-    ) {
-      let stemFound = this.props.stemFoundForFlowerBrace[0];
-      this.props.flowerSearchingForStemBrace[1](null);
-      this.props.stemFoundForFlowerBrace[1](null);
-      this.setState({
-        traitValueInputString: stemFound,
-        isFlowerSearchingForStem: false,
-      });
-      setTimeout(() => {
-        checkAndSetTraitValue();
-      }, 50);
+    if (this.state.isFlowerSearchingForStem) {
+      if (this.props.flowerSearchingForStemBrace[0] !== this.props.chunkId) {
+        this.setState((prevState) => {
+          prevState.isFlowerSearchingForStem = false;
+          return prevState;
+        });
+      } else if (this.props.stemFoundForFlowerBrace[0]) {
+        let stemFound = this.props.stemFoundForFlowerBrace[0];
+        this.props.flowerSearchingForStemBrace[1](null);
+        this.props.stemFoundForFlowerBrace[1](null);
+        this.setState({
+          traitValueInputString: stemFound,
+          isFlowerSearchingForStem: false,
+        });
+        setTimeout(() => {
+          checkAndSetTraitValue();
+        }, 50);
+      }
     }
 
     const isClickableFlowerstem = (propsObject) => {
@@ -455,8 +458,64 @@ class TraitBox extends Component {
           `}
           onClick={() => {
             if (isClickableFlowerstem(this.props)) {
-              this.props.stemFoundForFlowerBrace[1](this.props.chunkId);
-              this.setState({ isExtraHighlighted: false });
+              const setStem = () => {
+                // Prevent A agree with B and B agree with A.
+                let agreementTraitsToBlank = [];
+                idUtils.agreementTraits.forEach((agreementTrait) => {
+                  if (
+                    this.props.structureChunk[agreementTrait] &&
+                    this.props.structureChunk[agreementTrait].traitValue &&
+                    this.props.structureChunk[
+                      agreementTrait
+                    ].traitValue.includes(
+                      this.props.flowerSearchingForStemBrace[0]
+                    )
+                  ) {
+                    agreementTraitsToBlank.push(agreementTrait);
+                  }
+                });
+                if (agreementTraitsToBlank.length) {
+                  let newStCh = uUtils.copyWithoutReference(
+                    this.props.structureChunk
+                  );
+                  agreementTraitsToBlank.forEach((agreementTraitToBlank) => {
+                    newStCh[agreementTraitToBlank].traitValue = [];
+                  });
+                  this.props.modifyStructureChunkOnThisFormulaItem(
+                    "Prevent circular agreeWith",
+                    newStCh
+                  );
+                  this.props.refreshTraitBoxInputs(1);
+                }
+
+                this.props.stemFoundForFlowerBrace[1](this.props.chunkId);
+                this.setState({ isExtraHighlighted: false });
+              };
+              const cancelStem = () => {
+                this.props.flowerSearchingForStemBrace[1]();
+                this.setState({ isExtraHighlighted: false });
+              };
+
+              if (
+                idUtils.getWordtypeEnCh(this.props.structureChunk) === "pro" &&
+                idUtils.getWordtypeEnCh({
+                  chunkId: {
+                    traitValue: this.props.flowerSearchingForStemBrace[0],
+                  },
+                }) === "npe"
+              ) {
+                if (
+                  window.confirm(
+                    'Please click CANCEL.\n\nYou should do it the other way around.\n\nYou selected a nounPerson chunk to agree with a pronoun chunk.\n\neg "She is a woman." you should make "she" agree with "woman", not "woman" agree with "she".\n\nIf you want to ignore my advice, click OK, but you should click CANCEL.'
+                  )
+                ) {
+                  setStem();
+                } else {
+                  cancelStem();
+                }
+              } else {
+                setStem();
+              }
             }
           }}
           onMouseEnter={() => {

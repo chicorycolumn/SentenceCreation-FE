@@ -10,7 +10,11 @@ import gstyles from "../css/Global.module.css";
 import LineHolder from "../Cogs/LineHolder";
 import uUtils from "../utils/universalUtils.js";
 import diUtils from "../utils/displayUtils.js";
-import idUtils, { agreementTraits } from "../utils/identityUtils.js";
+import uiUtils from "../utils/userInputUtils.js";
+import idUtils, {
+  agreementTraits,
+  getWordtypeEnCh,
+} from "../utils/identityUtils.js";
 import icons from "../utils/icons.js";
 import $ from "jquery";
 const putUtils = require("../utils/putUtils.js");
@@ -121,26 +125,6 @@ const ChunkCardHolder = (props) => {
     }, 100);
   };
 
-  const checkForStChsWithNoLObjs = () => {
-    let sentenceStructure = props.formula.map((el) => el.structureChunk);
-
-    let indexesOfStChsWithNoLobjs = sentenceStructure
-      .map((el, index) => {
-        return { el, index };
-      })
-      .filter((obj) => !obj.el)
-      .map((obj) => obj.index);
-
-    if (indexesOfStChsWithNoLobjs.length) {
-      alert(
-        `I cannot do this, chunk(s) number ${indexesOfStChsWithNoLobjs
-          .map((i) => i + 1)
-          .join(", ")} are null.`
-      );
-      return true;
-    }
-  };
-
   useEffect(() => {
     if (
       !props.chunkOrders.length &&
@@ -200,23 +184,12 @@ const ChunkCardHolder = (props) => {
           Question sentence: {props.chosenFormulaID}
         </p>
         <div className={styles.buttonSubholder}>
-          {/* <button
-            alt="Question mark"
-            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
-            onClick={(e) => {
-              console.log("hello");
-              console.log({ chunkOrders: props.chunkOrders });
-            }}
-          >
-            ?
-            <Tooltip text="Dev get info" />
-          </button> */}
           <button
             alt="Alternate arrows icon"
             className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
               e.target.blur();
-              if (checkForStChsWithNoLObjs()) {
+              if (uiUtils.checkForStChsWithNoLObjs(props.formula)) {
                 return;
               }
               setShowChunkOrdersPopup(true);
@@ -231,17 +204,7 @@ const ChunkCardHolder = (props) => {
             onClick={(e) => {
               e.target.blur();
 
-              if (checkForStChsWithNoLObjs()) {
-                return;
-              }
-
-              let taglessChunks = idUtils.getTaglessChunks(props.formula);
-              if (taglessChunks.length) {
-                alert(
-                  `Cannot query whole sentence because no tags are specified on chunk "${taglessChunks
-                    .map((badCh) => badCh.chunkId.traitValue)
-                    .join('","')}".`
-                );
+              if (uiUtils.validateFormulaToSend(props.formula)) {
                 return;
               }
 
@@ -359,7 +322,7 @@ const ChunkCardHolder = (props) => {
             onClick={(e) => {
               e.target.blur();
 
-              if (checkForStChsWithNoLObjs()) {
+              if (uiUtils.checkForStChsWithNoLObjs(props.formula)) {
                 return;
               }
 
