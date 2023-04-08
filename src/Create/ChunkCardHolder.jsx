@@ -186,7 +186,7 @@ const ChunkCardHolder = (props) => {
         <div className={styles.buttonSubholder}>
           <button
             alt="Alternate arrows icon"
-            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
               e.target.blur();
               if (uiUtils.checkForStChsWithNoLObjs(props.formula)) {
@@ -200,7 +200,7 @@ const ChunkCardHolder = (props) => {
           </button>
           <button
             alt="Star icon"
-            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
               e.target.blur();
 
@@ -208,10 +208,7 @@ const ChunkCardHolder = (props) => {
                 return;
               }
 
-              let formulaToSend = {
-                sentenceStructure: props.formula.map((el) => el.structureChunk),
-                orders: props.chunkOrders,
-              };
+              let formulaToSend = putUtils.getFormulaToSend(props);
 
               putUtils.fetchSentence(lang1, formulaToSend).then(
                 (data) => {
@@ -245,8 +242,54 @@ const ChunkCardHolder = (props) => {
             <Tooltip text="Query sentence" />
           </button>
           <button
+            alt="Save icon"
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            onClick={(e) => {
+              e.target.blur();
+
+              if (uiUtils.validateFormulaToSend(props.formula)) {
+                return;
+              }
+
+              let formulaToSend = putUtils.getFormulaToSend(props);
+
+              putUtils.fetchSentence(lang1, formulaToSend).then(
+                (data) => {
+                  let { payload, messages } = data;
+
+                  if (messages) {
+                    alert(
+                      Object.keys(messages).map((key) => {
+                        let val = messages[key];
+                        return `${key}:       ${val}`;
+                      })
+                    );
+                    return;
+                  }
+
+                  if (payload.length) {
+                    alert(
+                      "Okay, I queried sentences for your formula, and we do get sentences created. So now let's save your formula. I'm console logging your formula now. Next we need to send this to BE and save it."
+                    );
+                    console.log("Let's save this formula:", formulaToSend);
+                  } else {
+                    alert(
+                      "Sorry, no sentences were created for your formula when I queried it just now, so I will not save your formula on BE."
+                    );
+                  }
+                },
+                (e) => {
+                  console.log("ERROR 3051:", e);
+                }
+              );
+            }}
+          >
+            &#9112;
+            <Tooltip text="Save formula" />
+          </button>
+          <button
             alt="Connection icon"
-            className={`${gstyles.cardButton1} ${gstyles.cardButton1_inactive} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.cardButton_inactive} ${gstyles.tooltipHolderDelayed}`}
             onMouseEnter={(e) => {
               e.target.blur();
               if (linesAreDrawn) {
@@ -281,7 +324,7 @@ const ChunkCardHolder = (props) => {
           </button>
           <button
             alt="Triangle icon"
-            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onMouseEnter={() => {
               console.log("showAllTraitBoxes", showAllTraitBoxes);
             }}
@@ -318,13 +361,9 @@ const ChunkCardHolder = (props) => {
           </button>
           <button
             alt="Snowflake icon"
-            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
               e.target.blur();
-
-              if (uiUtils.checkForStChsWithNoLObjs(props.formula)) {
-                return;
-              }
 
               let formulaToSend = {
                 sentenceStructure: props.formula.map((el) => el.structureChunk),

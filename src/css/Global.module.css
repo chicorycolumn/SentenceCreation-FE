@@ -388,6 +388,10 @@
   font-size: 18px;
 }
 
+.cardButtonWidthMedium {
+  width: 45px;
+}
+
 .cardButton1:hover {
   color: darkblue;
 }
@@ -397,7 +401,7 @@
   color: lightcyan;
 }
 
-.cardButton1_inactive:active {
+.cardButton_inactive:active {
   color: darkblue !important;
   background-color: lightcyan !important;
 }

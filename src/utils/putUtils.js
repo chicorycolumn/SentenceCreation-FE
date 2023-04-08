@@ -4,6 +4,14 @@ const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
+export const getFormulaToSend = (props) => {
+  return {
+    sentenceFormulaId: props.chosenFormulaID,
+    sentenceStructure: props.formula.map((el) => el.structureChunk),
+    orders: props.chunkOrders,
+  };
+};
+
 export const fetchFormulaIds = (lang1, lang2, env) => {
   return axios
     .get(
