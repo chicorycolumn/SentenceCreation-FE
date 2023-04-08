@@ -35,7 +35,10 @@ const ChunkCard = (props) => {
   const lang1 = useContext(LanguageContext);
 
   const modifyStructureChunkOnThisFormulaItem = (newStCh) => {
-    console.log("modifyStructureChunkOnThisFormulaItem()", newStCh.lemma);
+    console.log(
+      "modifyStructureChunkOnThisFormulaItem()",
+      consol.log1(newStCh)
+    );
     console.log("props.formulaItemId", props.formulaItemId);
 
     setStructureChunk(newStCh);

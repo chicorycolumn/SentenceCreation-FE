@@ -20,3 +20,7 @@ exports.logChunkCard = (props, stCh) => {
   console.log("backedUpStructureChunk:", props.backedUpStructureChunk);
   console.log("");
 };
+
+exports.log1 = (stCh) => {
+  return `${stCh.lemma}`;
+};
