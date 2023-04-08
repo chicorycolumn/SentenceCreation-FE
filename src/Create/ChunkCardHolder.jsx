@@ -353,6 +353,61 @@ const ChunkCardHolder = (props) => {
               : icons.downBlackTriangle}
             <Tooltip text="Show or hide trait boxes" />
           </button>
+          <button
+            alt="Snowflake icon"
+            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+            onClick={(e) => {
+              e.target.blur();
+
+              if (checkForStChsWithNoLObjs()) {
+                return;
+              }
+
+              let formulaToSend = {
+                sentenceStructure: props.formula.map((el) => el.structureChunk),
+                orders: props.chunkOrders,
+              };
+
+              formulaToSend.sentenceStructure.forEach((stCh) => {
+                if (stCh.andTags) {
+                  stCh.andTags.traitValue = [];
+                }
+                if (stCh.specificId) {
+                  stCh.andTags.specificId = [];
+                }
+              });
+
+              putUtils.fetchSentence(lang1, formulaToSend).then(
+                (data) => {
+                  let { payload, messages } = data;
+
+                  if (messages) {
+                    alert(
+                      Object.keys(messages).map((key) => {
+                        let val = messages[key];
+                        return `${key}:       ${val}`;
+                      })
+                    );
+                    return;
+                  }
+
+                  setListPopupData({
+                    title: `${payload.length} sentence${
+                      payload.length > 1 ? "s" : ""
+                    } from traits you specified`,
+                    headers: ["sentence"],
+                    rows: payload.map((el) => [el]),
+                  });
+                },
+                (e) => {
+                  console.log("ERROR 0302:", e);
+                }
+              );
+            }}
+          >
+            &#10053;
+            <Tooltip text="Dev test button" />
+          </button>
         </div>
       </div>
       <div className={styles.cardHolder} key={meaninglessCounter}>

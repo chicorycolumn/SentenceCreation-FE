@@ -8,6 +8,7 @@ import Tooltip from "../Cogs/Tooltip.jsx";
 
 const FormulaForm = (props) => {
   const [formulaInput, setFormulaInput] = useState(
+    // "on jest cebula on jest cebula"
     "kobieta jest *bardzo czerwona"
     // "on jest"
   );
