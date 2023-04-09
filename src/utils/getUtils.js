@@ -1,5 +1,6 @@
 import axios from "axios";
 import idUtils from "./identityUtils.js";
+import bfUtils from "./backendifyFrontendifyUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
@@ -7,17 +8,9 @@ const baseUrl = "http://localhost:9090/api";
 export const frontendOnlyTraits = ["booleanTraits", "isGhostChunk"];
 
 export const backendifyFormula = (formula) => {
-  // Backendify-1: Orders
-  if (formula.orders) {
-    formula.primaryOrders = formula.orders
-      .filter((obj) => obj.isPrimary)
-      .map((obj) => obj.order);
-
-    formula.additionalOrders = formula.orders
-      .filter((obj) => !obj.isPrimary)
-      .map((obj) => obj.order);
-
-    delete formula.orders;
+  // Backendify-1: Orders (if not already done)
+  if (Array.isArray(formula.orders)) {
+    formula.orders = bfUtils.backendifyOrders(formula.orders);
   }
 
   formula.sentenceStructure = formula.sentenceStructure.map((enCh) => {

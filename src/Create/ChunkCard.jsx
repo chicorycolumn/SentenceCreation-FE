@@ -354,7 +354,10 @@ const ChunkCard = (props) => {
                 e.target.blur();
                 props.setHighlightedCard(chunkId);
 
-                let formulaToSend = { sentenceStructure: [structureChunk] };
+                let formulaToSend = {
+                  sentenceStructure: [structureChunk],
+                  orders: {},
+                };
 
                 putUtils.fetchSentence(lang1, formulaToSend).then(
                   (data) => {

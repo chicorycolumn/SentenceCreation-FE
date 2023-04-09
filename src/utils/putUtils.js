@@ -1,5 +1,6 @@
 import axios from "axios";
 import { backendifyFormula } from "./getUtils.js";
+import bfUtils from "./backendifyFrontendifyUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
@@ -8,7 +9,7 @@ export const getFormulaToSend = (props) => {
   return {
     sentenceFormulaId: props.chosenFormulaID,
     sentenceStructure: props.formula.map((el) => el.structureChunk),
-    orders: props.chunkOrders,
+    orders: bfUtils.backendifyOrders(props.chunkOrders), // Backendify-1: Orders
   };
 };
 
@@ -53,9 +54,12 @@ export const fetchSentence = (lang1, sentenceFormula) => {
   }
 
   let requestingSingleWordOnly =
-    (!sentenceFormula.primaryOrders || !sentenceFormula.primaryOrders.length) &&
-    (!sentenceFormula.additionalOrders ||
-      !sentenceFormula.additionalOrders.length);
+    !sentenceFormula.orders ||
+    !Object.keys(sentenceFormula.orders).length ||
+    ((!sentenceFormula.orders.primary ||
+      !sentenceFormula.orders.primary.length) &&
+      (!sentenceFormula.orders.additional ||
+        !sentenceFormula.orders.additional.length));
 
   let body = {
     questionLanguage: lang1,

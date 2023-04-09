@@ -365,10 +365,7 @@ const ChunkCardHolder = (props) => {
             onClick={(e) => {
               e.target.blur();
 
-              let formulaToSend = {
-                sentenceStructure: props.formula.map((el) => el.structureChunk),
-                orders: props.chunkOrders,
-              };
+              let formulaToSend = putUtils.getFormulaToSend(props);
 
               formulaToSend.sentenceStructure.forEach((stCh) => {
                 if (stCh.andTags) {
