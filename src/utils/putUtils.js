@@ -34,14 +34,15 @@ export const fetchSentence = (lang1, rawChunks, orders) => {
 
   let sentenceFormula = {
     sentenceStructure: processedChunks,
+    orders: {},
   };
 
   if (orders) {
-    sentenceFormula.primaryOrders = orders
+    sentenceFormula.orders.primary = orders
       .filter((orderObj) => orderObj.isPrimary)
       .map((orderObj) => orderObj.order);
 
-    sentenceFormula.additionalOrders = orders
+    sentenceFormula.orders.additional = orders
       .filter((orderObj) => !orderObj.isPrimary)
       .map((orderObj) => orderObj.order);
   }
