@@ -8,6 +8,7 @@ import { fetchFormula, fetchFormulaIds } from "./utils/putUtils.js";
 import $ from "jquery";
 import gstyles from "./css/Global.module.css";
 import styles from "./css/Create.module.css";
+import idUtils from "./utils/identityUtils.js";
 const uUtils = require("./utils/universalUtils.js");
 
 const Create = () => {
@@ -22,11 +23,9 @@ const Create = () => {
   const [showFormulasPopup, setShowFormulasPopup] = useState();
   const [chosenFormulaID, setChosenFormulaID] = useState();
   const [shouldFetchFormula, setShouldFetchFormula] = useState();
-  const [fetchedFormulaIds, setFetchedFormulaIds] = useState([]);
+  const [fetchedFormulaIds, setFetchedFormulaIds] = useState();
 
-  const onClickFetchFormulas = (e) => {
-    e.preventDefault();
-
+  const fetchAndSetFormulaIds = (lang1, lang2, beEnv, callback) => {
     fetchFormulaIds(lang1, lang2, beEnv).then((data) => {
       console.log(
         "\nHey look I got this data back from fetchFormulaIds",
@@ -36,7 +35,7 @@ const Create = () => {
 
       let formattedData = {
         title: "Formulas",
-        headers: ["Formula ID", "Guidewords", "Symbol"],
+        headers: ["Formula ID", "Guidewords", "Symbol", "Equivalents"],
         rows: data.formulaIds,
         rowCallback: (row) => {
           let formulaID = row[0];
@@ -47,8 +46,17 @@ const Create = () => {
       };
 
       setFetchedFormulaIds(formattedData);
-      setShowFormulasPopup(true);
+      if (callback) {
+        callback(formattedData);
+      } else {
+        setShowFormulasPopup(true);
+      }
     });
+  };
+
+  const onClickFetchFormulas = (e) => {
+    e.preventDefault();
+    fetchAndSetFormulaIds(lang1, lang2, beEnv);
   };
 
   useEffect(() => {
@@ -75,13 +83,24 @@ const Create = () => {
         <div className={styles.horizontalHolder}>
           <FormulaForm
             setFormula={(formulaItemsArr) => {
-              setFormula(formulaItemsArr);
-              setShouldFetchFormula();
-              setChunkOrders([]);
-              setChosenFormulaID(
-                `${lang1}-XX-${uUtils.getRandomNumberString(10)}`
-              );
-              setFormulaWasLoaded(0);
+              let callback = (existingIdsData) => {
+                let uniqueId = idUtils.getNewSentenceFormulaId(
+                  existingIdsData,
+                  lang1
+                );
+
+                setFormula(formulaItemsArr);
+                setShouldFetchFormula();
+                setChunkOrders([]);
+                setChosenFormulaID(uniqueId);
+                setFormulaWasLoaded(0);
+              };
+
+              if (!fetchedFormulaIds) {
+                fetchAndSetFormulaIds(lang1, lang2, beEnv, callback);
+              } else {
+                callback(fetchedFormulaIds);
+              }
             }}
             onClickFetchFormulas={onClickFetchFormulas}
           />
@@ -123,8 +142,10 @@ const Create = () => {
           setChunkOrders={setChunkOrders}
           setFormula={setFormula}
           chosenFormulaID={chosenFormulaID}
+          setChosenFormulaID={setChosenFormulaID}
           batch={"QuestionBatch"}
           formulaWasLoaded={formulaWasLoaded}
+          fetchedFormulaIds={fetchedFormulaIds}
         />
       </div>
     </LanguageContextProvider>

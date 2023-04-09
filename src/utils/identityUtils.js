@@ -107,3 +107,45 @@ exports.getLangsAndEnv = (str) => {
   const beEnv = split[2];
   return { lang1, lang2, beEnv };
 };
+
+exports.formulaIdNotUnique = (fetchedFormulaIds, sentenceFormulaId) => {
+  return fetchedFormulaIds.rows.map((x) => x[0]).includes(sentenceFormulaId);
+};
+
+exports.getNewSentenceFormulaId = (
+  existingIdsData,
+  lang1,
+  existingSentenceFormulaId
+) => {
+  const existingIds = existingIdsData.rows.map((x) => x[0]);
+  let n = 1;
+
+  if (existingSentenceFormulaId) {
+    let letters = "_abcdefghijklmnopqrstuvwxyz";
+    if (/[a-z]/.test(existingSentenceFormulaId.slice(-1))) {
+      existingSentenceFormulaId = existingSentenceFormulaId.slice(
+        0,
+        existingSentenceFormulaId.length - 1
+      );
+    }
+
+    while (n < 1000) {
+      let putativeId = `${existingSentenceFormulaId}${letters[n]}`;
+      if (!existingIds.includes(putativeId)) {
+        return putativeId;
+      } else {
+        n += 1;
+      }
+    }
+  } else {
+    while (n < 1000) {
+      let num = `000${n}`.slice(-3);
+      let putativeId = `${lang1}-${num}`;
+      if (!existingIds.includes(putativeId)) {
+        return putativeId;
+      } else {
+        n += 1;
+      }
+    }
+  }
+};

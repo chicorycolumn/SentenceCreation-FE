@@ -13,6 +13,7 @@ import diUtils from "../utils/displayUtils.js";
 import uiUtils from "../utils/userInputUtils.js";
 import idUtils, {
   agreementTraits,
+  getNewSentenceFormulaId,
   getWordtypeEnCh,
 } from "../utils/identityUtils.js";
 import icons from "../utils/icons.js";
@@ -158,6 +159,10 @@ const ChunkCardHolder = (props) => {
     }
   }, [elementsToDrawLinesBetween]);
 
+  let idNotUnique =
+    props.fetchedFormulaIds &&
+    idUtils.formulaIdNotUnique(props.fetchedFormulaIds, props.chosenFormulaID);
+
   return (
     <div className={styles.cardHolderContainer}>
       {listPopupData && (
@@ -180,8 +185,14 @@ const ChunkCardHolder = (props) => {
         />
       )}
       <div className={styles.buttonHolder}>
-        <p className={styles.buttonHolderTitle}>
-          Question sentence: {props.chosenFormulaID}
+        <p
+          className={`${gstyles.tooltipHolderDelayed} ${styles.buttonHolderTitle} `}
+        >
+          {idNotUnique && (
+            <Tooltip text="Formula ID not unique. You will be overwriting this formula. Click Snowflake or Save Formula if you want to change." />
+          )}
+          Question sentence:{" "}
+          {props.chosenFormulaID + `${idNotUnique ? "☜" : ""}`}
         </p>
         <div className={styles.buttonSubholder}>
           <button
@@ -252,6 +263,24 @@ const ChunkCardHolder = (props) => {
               }
 
               let formulaToSend = putUtils.getFormulaToSend(props);
+
+              if (
+                props.fetchedFormulaIds &&
+                idUtils.formulaIdNotUnique(
+                  props.fetchedFormulaIds,
+                  formulaToSend.sentenceFormulaId
+                ) &&
+                window.confirm(
+                  "Overwrite existing formula (CANCEL) or create sibling formula (OK)? If you want this formula to have a brand new ID "
+                )
+              ) {
+                let uniqueId = idUtils.getNewSentenceFormulaId(
+                  props.fetchedFormulaIds,
+                  lang1,
+                  props.chosenFormulaID
+                );
+                formulaToSend.sentenceFormulaId = uniqueId;
+              }
 
               putUtils.fetchSentence(lang1, formulaToSend).then(
                 (data) => {
@@ -365,47 +394,66 @@ const ChunkCardHolder = (props) => {
             onClick={(e) => {
               e.target.blur();
 
-              let formulaToSend = putUtils.getFormulaToSend(props);
-
-              formulaToSend.sentenceStructure.forEach((stCh) => {
-                if (stCh.andTags) {
-                  stCh.andTags.traitValue = [];
-                }
-                if (stCh.specificId) {
-                  stCh.andTags.specificId = [];
-                }
-              });
-
-              putUtils.fetchSentence(lang1, formulaToSend).then(
-                (data) => {
-                  let { payload, messages } = data;
-
-                  if (messages) {
-                    alert(
-                      Object.keys(messages).map((key) => {
-                        let val = messages[key];
-                        return `${key}:       ${val}`;
-                      })
-                    );
-                    return;
-                  }
-
-                  setListPopupData({
-                    title: `${payload.length} sentence${
-                      payload.length > 1 ? "s" : ""
-                    } from traits you specified`,
-                    headers: ["sentence"],
-                    rows: payload.map((el) => [el]),
-                  });
-                },
-                (e) => {
-                  console.log("ERROR 0302:", e);
-                }
+              let response = window.prompt(
+                "Extra options:\n\nType letter to activate.\n\na - Change current formula ID\n\nb - Log props.\n\nc - Send deliberately awry formula to check that BE doesn't spend too long on too-unspecified formulas."
               );
+              if (response === "a") {
+                let newId = getNewSentenceFormulaId(
+                  props.fetchedFormulaIds,
+                  lang1
+                );
+
+                if (newId !== props.chosenFormulaID) {
+                  props.setChosenFormulaID(newId);
+                  alert("Have changed to unique formula ID.");
+                } else {
+                  alert("Formula ID already unique.");
+                }
+              } else if (response === "b") {
+                console.log(props);
+              } else if (response === "c") {
+                let formulaToSend = putUtils.getFormulaToSend(props);
+
+                formulaToSend.sentenceStructure.forEach((stCh) => {
+                  if (stCh.andTags) {
+                    stCh.andTags.traitValue = [];
+                  }
+                  if (stCh.specificId) {
+                    stCh.andTags.specificId = [];
+                  }
+                });
+
+                putUtils.fetchSentence(lang1, formulaToSend).then(
+                  (data) => {
+                    let { payload, messages } = data;
+
+                    if (messages) {
+                      alert(
+                        Object.keys(messages).map((key) => {
+                          let val = messages[key];
+                          return `${key}:       ${val}`;
+                        })
+                      );
+                      return;
+                    }
+
+                    setListPopupData({
+                      title: `${payload.length} sentence${
+                        payload.length > 1 ? "s" : ""
+                      } from traits you specified`,
+                      headers: ["sentence"],
+                      rows: payload.map((el) => [el]),
+                    });
+                  },
+                  (e) => {
+                    console.log("ERROR 0302:", e);
+                  }
+                );
+              }
             }}
           >
             &#10053;
-            <Tooltip text="Dev test button" />
+            <Tooltip text="Extra options" />
           </button>
         </div>
       </div>

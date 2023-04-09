@@ -4,6 +4,10 @@ import gstyles from "../css/Global.module.css";
 import uUtils from "../utils/universalUtils.js";
 import $ from "jquery";
 
+const stringifyIt = (item) => {
+  return item ? item.toString() : "";
+};
+
 const ListPopup = (props) => {
   const [headersWhichAreSortedDescending, setHeadersWhichAreSortedDescending] =
     useState([]);
@@ -59,11 +63,14 @@ const ListPopup = (props) => {
                         if (props.setData) {
                           props.setData((prev) => {
                             prev.rows = prev.rows.sort((x, y) => {
+                              let xItem = stringifyIt(x[hIndex]);
+                              let yItem = stringifyIt(y[hIndex]);
+
                               return headersWhichAreSortedDescending.includes(
                                 header
                               )
-                                ? x[hIndex].localeCompare(y[hIndex])
-                                : y[hIndex].localeCompare(x[hIndex]);
+                                ? xItem.localeCompare(yItem)
+                                : yItem.localeCompare(xItem);
                             });
                             return prev;
                           });
@@ -98,7 +105,9 @@ const ListPopup = (props) => {
                   >
                     <td>{rIndex + 1}</td>
                     {el.map((item, dIndex) => (
-                      <td key={`${props.data.title}-td-${dIndex}`}>{item}</td>
+                      <td key={`${props.data.title}-td-${dIndex}`}>
+                        {stringifyIt(item)}
+                      </td>
                     ))}
                   </tr>
                 ))}
