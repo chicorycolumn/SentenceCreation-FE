@@ -271,7 +271,7 @@ const ChunkCardHolder = (props) => {
                   formulaToSend.sentenceFormulaId
                 ) &&
                 window.confirm(
-                  "Overwrite existing formula (CANCEL) or create sibling formula (OK)? If you want this formula to have a brand new ID "
+                  "Overwrite existing formula (CANCEL) or create sibling formula (OK)? Otherwise if you want this formula to have a new and unrelated ID, click Snowflake for extra options."
                 )
               ) {
                 let uniqueId = idUtils.getNewSentenceFormulaId(
@@ -301,6 +301,10 @@ const ChunkCardHolder = (props) => {
                       "Okay, I queried sentences for your formula, and we do get sentences created. So now let's save your formula. I'm console logging your formula now. Next we need to send this to BE and save it."
                     );
                     console.log("Let's save this formula:", formulaToSend);
+                    props.setDevSavedFormulas((prev) => [
+                      ...prev,
+                      formulaToSend,
+                    ]);
                   } else {
                     alert(
                       "Sorry, no sentences were created for your formula when I queried it just now, so I will not save your formula on BE."

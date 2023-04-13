@@ -35,7 +35,7 @@ const LanguagesForm = (props) => {
         </button>
         <button
           onClick={() => {
-            console.log("2"); //devlogging
+            console.log(props.devSavedFormulas); //devlogging
           }}
         >
           ł2

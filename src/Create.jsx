@@ -24,6 +24,7 @@ const Create = () => {
   const [chosenFormulaID, setChosenFormulaID] = useState();
   const [shouldFetchFormula, setShouldFetchFormula] = useState();
   const [fetchedFormulaIds, setFetchedFormulaIds] = useState();
+  const [devSavedFormulas, setDevSavedFormulas] = useState([]);
 
   const fetchAndSetFormulaIds = (lang1, lang2, beEnv, callback) => {
     fetchFormulaIds(lang1, lang2, beEnv).then((data) => {
@@ -36,7 +37,11 @@ const Create = () => {
       let formattedData = {
         title: "Formulas",
         headers: ["Formula ID", "Guidewords", "Symbol", "Equivalents"],
-        rows: data.formulaIds,
+        rows: data.formulaIds.sort((x, y) => {
+          let xItem = x[0];
+          let yItem = y[0];
+          return xItem.localeCompare(yItem);
+        }),
         rowCallback: (row) => {
           let formulaID = row[0];
           setChosenFormulaID(formulaID);
@@ -122,6 +127,7 @@ const Create = () => {
               });
             }}
             setBeEnv={setBeEnv}
+            devSavedFormulas={devSavedFormulas}
           />
         </div>
 
@@ -146,6 +152,7 @@ const Create = () => {
           batch={"QuestionBatch"}
           formulaWasLoaded={formulaWasLoaded}
           fetchedFormulaIds={fetchedFormulaIds}
+          setDevSavedFormulas={setDevSavedFormulas}
         />
       </div>
     </LanguageContextProvider>
