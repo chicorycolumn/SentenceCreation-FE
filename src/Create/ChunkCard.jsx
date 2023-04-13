@@ -139,7 +139,7 @@ const ChunkCard = (props) => {
     console.log("Begin useEffect 952");
     if (props.structureChunk) {
       if (!isFixedChunk(props.structureChunk) && !props.structureChunk.lObjId) {
-        throw 750;
+        throw "750 " + props.structureChunk.chunkId.traitValue;
         console.log(
           `Just adding lobjid to existing chunk "${consol.log1(
             props
