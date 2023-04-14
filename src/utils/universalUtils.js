@@ -395,3 +395,7 @@ exports.getRandomNumberString = (len) => {
     .toString()
     .slice(2, len + 2);
 };
+
+exports.stringify = (item) => {
+  return item ? item.toString() : "";
+};

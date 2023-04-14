@@ -84,8 +84,7 @@ const ChunkCard = (props) => {
     guideword = scUtils.improveGuideword(guideword, stCh);
 
     if (!stCh.chunkId.traitValue) {
-      diUtils.addChunkId(stCh, props.chunkCardIndex, guideword, formula);
-      console.log(label, "Added chunkId", stCh.chunkId.traitValue);
+      diUtils.addChunkId(stCh, props.chunkCardIndex, guideword, formula, label);
     }
     modifyStructureChunkOnThisFormulaItem(
       "formatAndSetStructureChunk",
@@ -113,7 +112,7 @@ const ChunkCard = (props) => {
 
   useEffect(() => {
     if (chosenId) {
-      console.log("Begin useEffect 828");
+      console.log("Begin useEffect CC1");
       setPromptData();
       let matches = fetchedEnChsByLemma.filter(
         (enCh) => enCh.lObjId === chosenId
@@ -136,28 +135,17 @@ const ChunkCard = (props) => {
   }, [chosenId]);
 
   useEffect(() => {
-    console.log("Begin useEffect 952");
+    console.log("Begin useEffect CC2");
     if (props.structureChunk) {
       if (!isFixedChunk(props.structureChunk) && !props.structureChunk.lObjId) {
-        throw "750 " + props.structureChunk.chunkId.traitValue;
         console.log(
-          `Just adding lobjid to existing chunk "${consol.log1(
-            props
-          )}", useEffect 952., `,
-          structureChunk
-        );
-        scUtils.addLObjIdToChunk(
-          structureChunk,
-          lang1,
-          props.guideword,
-          (newWords, chunkId, structureChunk) => {
-            props.editLemma(newWords, chunkId, structureChunk);
-          }
+          "NOTE 750 Didn't expect to ever reach this clause. " +
+            props.structureChunk.chunkId.traitValue
         );
       }
 
       console.log(
-        `Already did "${consol.log1(props)}", halting useEffect 952.`
+        `Already did "${consol.log1(props)}", halting useEffect CC2.`
       );
       return;
     }
@@ -170,11 +158,10 @@ const ChunkCard = (props) => {
       );
 
       modifyStructureChunkOnThisFormulaItem(
-        "createFixedChunk useEffect 952",
+        "createFixedChunk useEffect CC2",
         stCh,
         true
       );
-      // props.editLemma(props.guideword.slice(1), stCh.chunkId.traitValue, stCh);
       return;
     }
 
@@ -184,7 +171,7 @@ const ChunkCard = (props) => {
         chosenEnCh,
         props.formula,
         props.guideword,
-        "fetchedEnChsByLemma.length===1 useEffect 952"
+        "fetchedEnChsByLemma.length===1 useEffect CC2"
       );
       setFetchedEnChsByLemma([]);
       return;
@@ -236,11 +223,11 @@ const ChunkCard = (props) => {
             setNoEnChsFetched(!fetchedEnChs.length);
           },
           (e) => {
-            console.log("ERROR 0370:", e);
+            console.log("ERROR 0570:", e);
           }
         )
         .catch((e) => {
-          console.log("ERROR 9071", e);
+          console.log("ERROR 9171", e);
         });
     }
   }, [lang1, props.guideword, shouldRetryFetch]);
@@ -255,7 +242,7 @@ const ChunkCard = (props) => {
     } else if (props.backedUpStructureChunk) {
       // Restore stCh from backup. (unrelated to above clause)
       modifyStructureChunkOnThisFormulaItem(
-        "chunkCard's useEffect 300",
+        "useEffect CC4",
         uUtils.copyWithoutReference(props.backedUpStructureChunk)
       );
     }
@@ -316,9 +303,7 @@ const ChunkCard = (props) => {
                     )}" a fixed chunk? You'd better be sure this is an actual word and not one you mistyped.`
                   )
                 ) {
-                  props.editLemma({
-                    guideword: "*" + props.guideword,
-                  });
+                  props.editLemma("*" + props.guideword);
                 }
               }}
             >
@@ -466,11 +451,12 @@ const ChunkCard = (props) => {
           onClick={(e) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
-            let newWords = uiUtils.promptGuideword();
 
-            if (newWords) {
-              props.editLemma(newWords, chunkId);
+            let newGuideword = uiUtils.promptGuideword();
+            if (newGuideword) {
+              props.editLemma(newGuideword, chunkId);
             }
+
             props.setHighlightedCard();
           }}
         >
@@ -594,12 +580,7 @@ const ChunkCard = (props) => {
                     );
                   } else {
                     //Unless it's pronombre in which case not allowed to have no specificIds.
-                    scUtils.addSpecificId(
-                      newStCh,
-                      traitsAffectedBySpecificId,
-                      lang1,
-                      props.guideword
-                    );
+                    scUtils.addSpecificId(newStCh, traitsAffectedBySpecificId);
                   }
                 } else {
                   //Second click - Upgrade specificIds with ^caret.
@@ -608,12 +589,7 @@ const ChunkCard = (props) => {
                 }
               } else {
                 //First click - Add specificIds.
-                scUtils.addSpecificId(
-                  newStCh,
-                  traitsAffectedBySpecificId,
-                  lang1,
-                  props.guideword
-                );
+                scUtils.addSpecificId(newStCh, traitsAffectedBySpecificId);
               }
 
               modifyStructureChunkOnThisFormulaItem(

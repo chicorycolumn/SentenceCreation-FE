@@ -27,7 +27,3 @@ exports.logChunkCard = (props, stCh) => {
 exports.log1 = (stCh) => {
   return `${stCh.guideword}`;
 };
-
-exports.log1 = (stCh) => {
-  return `${stCh.lemma}`;
-};

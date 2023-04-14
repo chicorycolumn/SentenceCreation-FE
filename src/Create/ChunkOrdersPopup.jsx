@@ -12,12 +12,10 @@ const ChunkOrdersPopup = (props) => {
   const [highlightedButton, setHighlightedButton] = useState();
 
   const getGuidewordFromFormula = (chunkId) => {
-    let x = props.formula.filter(
+    let formulaItem = props.formula.find(
       (fItem) => fItem.structureChunk.chunkId.traitValue === chunkId
-    )[0];
-    return {
-      guideword: x.guideword,
-    };
+    );
+    return formulaItem.guideword;
   };
 
   const stringifyChunkOrder = (chunkOrder) => {
@@ -187,7 +185,7 @@ const ChunkOrdersPopup = (props) => {
                     );
                   }}
                 >
-                  {getGuidewordFromFormula(chunkId).guideword}
+                  {getGuidewordFromFormula(chunkId)}
                 </button>
               );
             })}
@@ -273,7 +271,7 @@ const ChunkOrdersPopup = (props) => {
                         !isPrimary && gstyles.translucent2
                       }`}
                     >
-                      {getGuidewordFromFormula(chunkId).guideword}
+                      {getGuidewordFromFormula(chunkId)}
                     </span>
                   ))}
                 </li>

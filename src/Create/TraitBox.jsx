@@ -7,6 +7,7 @@ import $ from "jquery";
 import diUtils from "../utils/displayUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 const idUtils = require("../utils/identityUtils.js");
+const uiUtils = require("../utils/userInputUtils.js");
 const scUtils = require("../utils/structureChunkUtils.js");
 const consol = require("../utils/loggingUtils.js");
 const helpTexts = require("../utils/helpTexts.js");
@@ -340,10 +341,7 @@ class TraitBox extends Component {
 
     if (this.state.isFlowerSearchingForStem) {
       if (this.props.flowerSearchingForStemBrace[0] !== this.props.chunkId) {
-        this.setState((prevState) => {
-          prevState.isFlowerSearchingForStem = false;
-          return prevState;
-        });
+        this.setState({ isFlowerSearchingForStem: false });
       } else if (this.props.stemFoundForFlowerBrace[0]) {
         let stemFound = this.props.stemFoundForFlowerBrace[0];
         this.props.flowerSearchingForStemBrace[1](null);
@@ -451,51 +449,13 @@ class TraitBox extends Component {
           } 
           ${
             idUtils.isTagTrait(traitKey) &&
-            idUtils.isTaglessChunk(structureChunk) &&
+            uiUtils.isTaglessChunk(structureChunk) &&
             styles.badBox
           } 
           ${this.props.traitKeysGroup === 2 && gstyles.oddEdges}
           `}
           onClick={() => {
             if (isClickableFlowerstem(this.props)) {
-              const setStem = () => {
-                // Prevent A agree with B and B agree with A.
-                let agreementTraitsToBlank = [];
-                idUtils.agreementTraits.forEach((agreementTrait) => {
-                  if (
-                    this.props.structureChunk[agreementTrait] &&
-                    this.props.structureChunk[agreementTrait].traitValue &&
-                    this.props.structureChunk[
-                      agreementTrait
-                    ].traitValue.includes(
-                      this.props.flowerSearchingForStemBrace[0]
-                    )
-                  ) {
-                    agreementTraitsToBlank.push(agreementTrait);
-                  }
-                });
-                if (agreementTraitsToBlank.length) {
-                  let newStCh = uUtils.copyWithoutReference(
-                    this.props.structureChunk
-                  );
-                  agreementTraitsToBlank.forEach((agreementTraitToBlank) => {
-                    newStCh[agreementTraitToBlank].traitValue = [];
-                  });
-                  this.props.modifyStructureChunkOnThisFormulaItem(
-                    "Prevent circular agreeWith",
-                    newStCh
-                  );
-                  this.props.refreshTraitBoxInputs(1);
-                }
-
-                this.props.stemFoundForFlowerBrace[1](this.props.chunkId);
-                this.setState({ isExtraHighlighted: false });
-              };
-              const cancelStem = () => {
-                this.props.flowerSearchingForStemBrace[1]();
-                this.setState({ isExtraHighlighted: false });
-              };
-
               if (
                 idUtils.getWordtypeEnCh(this.props.structureChunk) === "pro" &&
                 idUtils.getWordtypeEnCh({
@@ -509,12 +469,12 @@ class TraitBox extends Component {
                     'Please click CANCEL.\n\nYou should do it the other way around.\n\nYou selected a nounPerson chunk to agree with a pronoun chunk.\n\neg "She is a woman." you should make "she" agree with "woman", not "woman" agree with "she".\n\nIf you want to ignore my advice, click OK, but you should click CANCEL.'
                   )
                 ) {
-                  setStem();
+                  diUtils.setStem(this.props, this.setState);
                 } else {
-                  cancelStem();
+                  diUtils.cancelStem(this.props, this.setState);
                 }
               } else {
-                setStem();
+                diUtils.setStem(this.props, this.setState);
               }
             }
           }}

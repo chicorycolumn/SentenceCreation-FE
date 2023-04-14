@@ -5,7 +5,7 @@ const uUtils = require("./universalUtils.js");
 const idUtils = require("./identityUtils.js");
 
 const diUtils = {
-  addChunkId: (stCh, chunkCardIndex, guideword, formula) => {
+  addChunkId: (stCh, chunkCardIndex, guideword, formula, label) => {
     let existingChunkIds = [];
     if (formula) {
       existingChunkIds = formula
@@ -59,6 +59,7 @@ const diUtils = {
     }
 
     stCh.chunkId.traitValue = chunkId;
+    console.log(label, "Added chunkId", stCh.chunkId.traitValue);
   },
 
   traitsNotToDisplayInOwnBox: ["orTags", "id", "guideword", "lObjId"],
@@ -320,6 +321,41 @@ const diUtils = {
         structureChunk[traitKey] &&
         !uUtils.isEmpty(structureChunk[traitKey].traitValue)
     );
+  },
+
+  setStem: (props, setState) => {
+    // Prevent A agree with B and B agree with A.
+    let agreementTraitsToBlank = [];
+    idUtils.agreementTraits.forEach((agreementTrait) => {
+      if (
+        props.structureChunk[agreementTrait] &&
+        props.structureChunk[agreementTrait].traitValue &&
+        props.structureChunk[agreementTrait].traitValue.includes(
+          props.flowerSearchingForStemBrace[0]
+        )
+      ) {
+        agreementTraitsToBlank.push(agreementTrait);
+      }
+    });
+    if (agreementTraitsToBlank.length) {
+      let newStCh = uUtils.copyWithoutReference(props.structureChunk);
+      agreementTraitsToBlank.forEach((agreementTraitToBlank) => {
+        newStCh[agreementTraitToBlank].traitValue = [];
+      });
+      props.modifyStructureChunkOnThisFormulaItem(
+        "Prevent circular agreeWith",
+        newStCh
+      );
+      props.refreshTraitBoxInputs(1);
+    }
+
+    props.stemFoundForFlowerBrace[1](props.chunkId);
+    setState({ isExtraHighlighted: false });
+  },
+
+  cancelStem: (props, setState) => {
+    props.flowerSearchingForStemBrace[1]();
+    setState({ isExtraHighlighted: false });
   },
 };
 

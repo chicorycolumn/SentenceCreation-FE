@@ -10,11 +10,10 @@ const AddChunkButton = (props) => {
       alt="Plus icon"
       className={styles.plusButton}
       onClick={() => {
-        let newWords = uiUtils.promptGuideword();
-        if (!newWords) {
+        let guideword = uiUtils.promptGuideword();
+        if (!guideword) {
           return;
         }
-        let { guideword } = newWords;
 
         props.setFormula((prevFormula) => {
           let newFormulaItem = {

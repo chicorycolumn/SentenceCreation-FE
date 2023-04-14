@@ -44,14 +44,14 @@ const ChunkCardHolder = (props) => {
   const editLemmaOfThisFormulaItem = (
     formulaItemId,
     index,
-    newWords,
+    newGuideword,
     chunkId,
     structureChunk
   ) => {
     console.log("editLemmaOfThisFormulaItem START", {
       formulaItemId,
       index,
-      newWords,
+      newGuideword,
       chunkId,
       structureChunk,
     });
@@ -74,7 +74,7 @@ const ChunkCardHolder = (props) => {
     props.setFormula((prevFormula) => {
       prevFormula = uUtils.copyWithoutReference(prevFormula);
 
-      if (!newWords) {
+      if (!newGuideword) {
         // Clause 1: Delete this fItem (don't request new stCh from BE).
         let newFormula = prevFormula.filter(
           (formulaItem) => formulaItem.formulaItemId !== formulaItemId
@@ -89,7 +89,7 @@ const ChunkCardHolder = (props) => {
 
       delete currentFormulaItem.guideword;
       currentFormulaItem.guideword = scUtils.improveGuideword(
-        newWords.guideword,
+        newGuideword,
         structureChunk
       );
 
@@ -113,7 +113,7 @@ const ChunkCardHolder = (props) => {
 
       console.log(
         "Setting currentFormulaItem.structureChunk to",
-        newWords,
+        newGuideword,
         structureChunk
       );
 
@@ -192,7 +192,7 @@ const ChunkCardHolder = (props) => {
             <Tooltip text="Formula ID not unique. You will be overwriting this formula. Click Snowflake or Save Formula if you want to change." />
           )}
           Question sentence:{" "}
-          {props.chosenFormulaID + `${idNotUnique ? "☜" : ""}`}
+          {props.chosenFormulaID + `${idNotUnique ? "⚠" : ""}`}
         </p>
         <div className={styles.buttonSubholder}>
           <button
@@ -214,38 +214,20 @@ const ChunkCardHolder = (props) => {
             className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
               e.target.blur();
+              let fxnId = "fetchSentence1:Star";
 
-              if (uiUtils.validateFormulaToSend(props.formula)) {
+              let formulaToSend = putUtils.getFormulaToSend(props);
+              if (!formulaToSend) {
+                console.log(fxnId + " Formula failed validation.");
                 return;
               }
 
-              let formulaToSend = putUtils.getFormulaToSend(props);
-
-              putUtils.fetchSentence(lang1, formulaToSend).then(
-                (data) => {
-                  let { payload, messages } = data;
-
-                  if (messages) {
-                    alert(
-                      Object.keys(messages).map((key) => {
-                        let val = messages[key];
-                        return `${key}:       ${val}`;
-                      })
-                    );
-                    return;
-                  }
-
-                  setListPopupData({
-                    title: `${payload.length} sentence${
-                      payload.length > 1 ? "s" : ""
-                    } from traits you specified`,
-                    headers: ["sentence"],
-                    rows: payload.map((el) => [el]),
-                  });
-                },
-                (e) => {
-                  console.log("ERROR 0302:", e);
-                }
+              putUtils._fetchSentence(
+                lang1,
+                formulaToSend,
+                fxnId,
+                null,
+                setListPopupData
               );
             }}
           >
@@ -257,63 +239,40 @@ const ChunkCardHolder = (props) => {
             className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
               e.target.blur();
+              let fxnId = "fetchSentence2:Save";
 
-              if (uiUtils.validateFormulaToSend(props.formula)) {
+              let formulaToSend = putUtils.getFormulaToSend(props);
+              if (!formulaToSend) {
+                console.log(fxnId + " Formula failed validation.");
                 return;
               }
 
-              let formulaToSend = putUtils.getFormulaToSend(props);
+              idUtils.checkFormulaIdUniqueAndModify(
+                lang1,
+                props.fetchedFormulaIds,
+                formulaToSend,
+                props.chosenFormulaID
+              );
 
-              if (
-                props.fetchedFormulaIds &&
-                idUtils.formulaIdNotUnique(
-                  props.fetchedFormulaIds,
-                  formulaToSend.sentenceFormulaId
-                ) &&
-                window.confirm(
-                  "Overwrite existing formula (CANCEL) or create sibling formula (OK)? Otherwise if you want this formula to have a new and unrelated ID, click Snowflake for extra options."
-                )
-              ) {
-                let uniqueId = idUtils.getNewSentenceFormulaId(
-                  props.fetchedFormulaIds,
-                  lang1,
-                  props.chosenFormulaID
-                );
-                formulaToSend.sentenceFormulaId = uniqueId;
-              }
-
-              putUtils.fetchSentence(lang1, formulaToSend).then(
-                (data) => {
-                  let { payload, messages } = data;
-
-                  if (messages) {
-                    alert(
-                      Object.keys(messages).map((key) => {
-                        let val = messages[key];
-                        return `${key}:       ${val}`;
-                      })
-                    );
-                    return;
-                  }
-
-                  if (payload.length) {
-                    alert(
-                      "Okay, I queried sentences for your formula, and we do get sentences created. So now let's save your formula. I'm console logging your formula now. Next we need to send this to BE and save it."
-                    );
-                    console.log("Let's save this formula:", formulaToSend);
-                    props.setDevSavedFormulas((prev) => [
-                      ...prev,
-                      formulaToSend,
-                    ]);
-                  } else {
-                    alert(
-                      "Sorry, no sentences were created for your formula when I queried it just now, so I will not save your formula on BE."
-                    );
-                  }
-                },
-                (e) => {
-                  console.log("ERROR 3051:", e);
+              const callbackSaveFormula = (payload, formulaToSend) => {
+                if (payload.length) {
+                  alert(
+                    "Okay, I queried sentences for your formula, and we do get sentences created. So now let's save your formula. I'm console logging your formula now. Next we need to send this to BE and save it."
+                  );
+                  console.log("Let's save this formula:", formulaToSend);
+                  props.setDevSavedFormulas((prev) => [...prev, formulaToSend]);
+                } else {
+                  alert(
+                    "Sorry, no sentences were created for your formula when I queried it just now, so I will not save your formula on BE."
+                  );
                 }
+              };
+
+              putUtils._fetchSentence(
+                lang1,
+                formulaToSend,
+                fxnId,
+                callbackSaveFormula
               );
             }}
           >
@@ -409,49 +368,36 @@ const ChunkCardHolder = (props) => {
 
                 if (newId !== props.chosenFormulaID) {
                   props.setChosenFormulaID(newId);
-                  alert("Have changed to unique formula ID.");
+                  alert("Now changing formula ID to be unique.");
                 } else {
-                  alert("Formula ID already unique.");
+                  alert("Formula ID already unique. Will not change it.");
                 }
               } else if (response === "b") {
                 console.log(props);
               } else if (response === "c") {
+                let fxnId = "fetchSentence3:Snowflake";
+
                 let formulaToSend = putUtils.getFormulaToSend(props);
+                if (!formulaToSend) {
+                  console.log(fxnId + " Formula failed validation.");
+                  return;
+                }
 
                 formulaToSend.sentenceStructure.forEach((stCh) => {
                   if (stCh.andTags) {
                     stCh.andTags.traitValue = [];
                   }
-                  if (stCh.specificId) {
-                    stCh.andTags.specificId = [];
+                  if (stCh.specificIds) {
+                    stCh.specificIds.traitValue = [];
                   }
                 });
 
-                putUtils.fetchSentence(lang1, formulaToSend).then(
-                  (data) => {
-                    let { payload, messages } = data;
-
-                    if (messages) {
-                      alert(
-                        Object.keys(messages).map((key) => {
-                          let val = messages[key];
-                          return `${key}:       ${val}`;
-                        })
-                      );
-                      return;
-                    }
-
-                    setListPopupData({
-                      title: `${payload.length} sentence${
-                        payload.length > 1 ? "s" : ""
-                      } from traits you specified`,
-                      headers: ["sentence"],
-                      rows: payload.map((el) => [el]),
-                    });
-                  },
-                  (e) => {
-                    console.log("ERROR 0302:", e);
-                  }
+                putUtils._fetchSentence(
+                  lang1,
+                  formulaToSend,
+                  fxnId,
+                  null,
+                  setListPopupData
                 );
               }
             }}
@@ -561,11 +507,11 @@ const ChunkCardHolder = (props) => {
                   stemFoundForFlower,
                   setStemFoundForFlower,
                 ]}
-                editLemma={(newWords, chunkId, stCh) => {
+                editLemma={(newGuideword, chunkId, stCh) => {
                   editLemmaOfThisFormulaItem(
                     formulaItemId,
                     index,
-                    newWords,
+                    newGuideword,
                     chunkId,
                     stCh
                   );

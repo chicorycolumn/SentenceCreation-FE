@@ -24,20 +24,11 @@ exports.improveGuideword = (guideword, structureChunk) => {
 exports.addSpecificId = (
   stCh,
   traitsAffectedBySpecificId,
-  lang,
-  guideword,
-  editLemmaCallback,
   editFormulaCallback
 ) => {
   if (getWordtypeEnCh(stCh) === "fix") {
     return;
   }
-
-  if (!stCh.lObjId) {
-    throw 754;
-    scUtils.addLObjIdToChunk(stCh, lang, guideword, editLemmaCallback);
-  }
-
   if (!stCh.lObjId) {
     return;
   }
@@ -73,6 +64,21 @@ exports.upgradeSpecificId = (stCh, originalStCh) => {
   );
 };
 
+exports.setNewTraitValue = (stCh, traitKey, newTraitValue) => {
+  if (newTraitValue) {
+    stCh[traitKey].traitValue = newTraitValue;
+  } else {
+    let expectedType = stCh[traitKey].expectedTypeOnStCh;
+
+    if (expectedType === "array") {
+      stCh[traitKey].traitValue = [];
+    } else {
+      delete stCh[traitKey].traitValue;
+    }
+  }
+};
+
+//Unused.
 exports.addLObjIdToChunk = (newStCh, lang1, guideword, editLemmaCallback) => {
   if (getWordtypeEnCh(newStCh) === "fix") {
     return;
@@ -80,7 +86,6 @@ exports.addLObjIdToChunk = (newStCh, lang1, guideword, editLemmaCallback) => {
   console.log("START addLObjIdToChunk", newStCh.chunkId.traitValue);
 
   if (guideword) {
-    throw 751;
     console.log("CLAUSE1 addLObjIdToChunk", guideword);
     getUtils
       .fetchEnChsByLemma(lang1, guideword)
@@ -102,14 +107,13 @@ exports.addLObjIdToChunk = (newStCh, lang1, guideword, editLemmaCallback) => {
           }
         },
         (e) => {
-          console.log("ERROR 0371:", e);
+          console.log("ERROR 0431:", e);
         }
       )
       .catch((e) => {
-        console.log("ERROR 9072", e);
+        console.log("ERROR 0432", e);
       });
   } else {
-    throw 752;
     console.log("CLAUSE2 addLObjIdToChunk");
     let formula = { sentenceStructure: [newStCh] };
     putUtils.fetchSentence(lang1, formula).then(
@@ -146,22 +150,8 @@ exports.addLObjIdToChunk = (newStCh, lang1, guideword, editLemmaCallback) => {
         }
       },
       (e) => {
-        console.log("ERROR 0302:", e);
+        console.log("ERROR 0433:", e);
       }
     );
-  }
-};
-
-exports.setNewTraitValue = (stCh, traitKey, newTraitValue) => {
-  if (newTraitValue) {
-    stCh[traitKey].traitValue = newTraitValue;
-  } else {
-    let expectedType = stCh[traitKey].expectedTypeOnStCh;
-
-    if (expectedType === "array") {
-      stCh[traitKey].traitValue = [];
-    } else {
-      delete stCh[traitKey].traitValue;
-    }
   }
 };

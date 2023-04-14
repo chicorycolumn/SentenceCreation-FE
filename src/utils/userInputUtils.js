@@ -1,16 +1,25 @@
 const idUtils = require("./identityUtils");
+const uUtils = require("./universalUtils");
 
 exports.promptGuideword = () => {
-  let info = prompt("Enter new guideword.");
-  if (info) {
-    return { guideword: info };
-  }
+  return prompt("Enter new guideword.");
+};
+
+exports.isTaglessChunk = (stCh) => {
+  return (
+    idUtils.wordtypesWhichMustHavePopulatedTags.includes(
+      idUtils.getWordtypeEnCh(stCh)
+    ) &&
+    uUtils.isEmpty(stCh.specificIds.traitValue) &&
+    uUtils.isEmpty(stCh.andTags.traitValue) &&
+    uUtils.isEmpty(stCh.orTags.traitValue)
+  );
 };
 
 exports.getTaglessChunks = (formula) => {
   return formula
     .map((el) => el.structureChunk)
-    .filter((stCh) => idUtils.isTaglessChunk(stCh));
+    .filter((stCh) => exports.isTaglessChunk(stCh));
 };
 
 exports.checkForStChsWithNoLObjs = (formula) => {

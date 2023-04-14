@@ -85,17 +85,6 @@ exports.agreementTraits = [
   // "connectedTo",
 ];
 
-exports.isTaglessChunk = (stCh) => {
-  return (
-    idUtils.wordtypesWhichMustHavePopulatedTags.includes(
-      idUtils.getWordtypeEnCh(stCh)
-    ) &&
-    uUtils.isEmpty(stCh.specificIds.traitValue) &&
-    uUtils.isEmpty(stCh.andTags.traitValue) &&
-    uUtils.isEmpty(stCh.orTags.traitValue)
-  );
-};
-
 exports.getWordtypeEnCh = (enCh) => {
   return enCh.chunkId.traitValue.split("-")[0];
 };
@@ -147,5 +136,30 @@ exports.getNewSentenceFormulaId = (
         n += 1;
       }
     }
+  }
+};
+
+exports.checkFormulaIdUniqueAndModify = (
+  lang1,
+  fetchedFormulaIds,
+  formulaToSend,
+  chosenFormulaID
+) => {
+  if (
+    fetchedFormulaIds &&
+    idUtils.formulaIdNotUnique(
+      fetchedFormulaIds,
+      formulaToSend.sentenceFormulaId
+    ) &&
+    window.confirm(
+      "Overwrite existing formula (CANCEL) or create sibling formula (OK)? Otherwise if you want this formula to have a new and unrelated ID, click Snowflake for extra options."
+    )
+  ) {
+    let uniqueId = idUtils.getNewSentenceFormulaId(
+      fetchedFormulaIds,
+      lang1,
+      chosenFormulaID
+    );
+    formulaToSend.sentenceFormulaId = uniqueId;
   }
 };
