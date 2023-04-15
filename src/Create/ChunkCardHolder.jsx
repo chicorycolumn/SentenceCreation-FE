@@ -10,13 +10,22 @@ import gstyles from "../css/Global.module.css";
 import LineHolder from "../Cogs/LineHolder";
 import uUtils from "../utils/universalUtils.js";
 import diUtils from "../utils/displayUtils.js";
-import idUtils from "../utils/identityUtils.js";
+import uiUtils from "../utils/userInputUtils.js";
+import idUtils, {
+  agreementTraits,
+  getNewSentenceFormulaId,
+  getWordtypeEnCh,
+} from "../utils/identityUtils.js";
 import icons from "../utils/icons.js";
 import $ from "jquery";
 const putUtils = require("../utils/putUtils.js");
+const scUtils = require("../utils/structureChunkUtils.js");
+const fiUtils = require("../utils/formulaItemUtils.js");
 
 const ChunkCardHolder = (props) => {
-  const lang1 = useContext(LanguageContext);
+  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
+    useContext(LanguageContext)
+  );
   const [elementsToDrawLinesBetween, setElementsToDrawLinesBetween] = useState(
     []
   );
@@ -26,28 +35,36 @@ const ChunkCardHolder = (props) => {
   const [stemFoundForFlower, setStemFoundForFlower] = useState();
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const [listPopupData, setListPopupData] = useState();
-  const [chunkOrders, setChunkOrders] = useState([]);
   const [showAllTraitBoxes, setShowAllTraitBoxes] = useState(false);
-
   const [showChunkOrdersPopup, setShowChunkOrdersPopup] = useState();
   const [highlightedCard, setHighlightedCard] = useState();
+  const [meaninglessCounterTraitBox, setMeaninglessCounterTraitBox] =
+    useState(0);
 
   const editLemmaOfThisFormulaItem = (
     formulaItemId,
     index,
-    newLemma,
+    newGuideword,
     chunkId,
     structureChunk
   ) => {
+    console.log("editLemmaOfThisFormulaItem START", {
+      formulaItemId,
+      index,
+      newGuideword,
+      chunkId,
+      structureChunk,
+    });
+
     function updateFlowers(newFormula, chunkId, newChunkId) {
-      newFormula.forEach((stChObj) => {
-        if (stChObj.structureChunk) {
-          Object.keys(stChObj.structureChunk).forEach((traitKey) => {
+      newFormula.forEach((fItem) => {
+        if (fItem.structureChunk) {
+          Object.keys(fItem.structureChunk).forEach((traitKey) => {
             if (
               idUtils.agreementTraits.includes(traitKey) &&
-              stChObj.structureChunk[traitKey].traitValue === chunkId
+              fItem.structureChunk[traitKey].traitValue === chunkId
             ) {
-              stChObj.structureChunk[traitKey].traitValue = newChunkId;
+              fItem.structureChunk[traitKey].traitValue = newChunkId;
             }
           });
         }
@@ -55,7 +72,10 @@ const ChunkCardHolder = (props) => {
     }
 
     props.setFormula((prevFormula) => {
-      if (!newLemma) {
+      prevFormula = uUtils.copyWithoutReference(prevFormula);
+
+      if (!newGuideword) {
+        // Clause 1: Delete this fItem (don't request new stCh from BE).
         let newFormula = prevFormula.filter(
           (formulaItem) => formulaItem.formulaItemId !== formulaItemId
         );
@@ -67,68 +87,81 @@ const ChunkCardHolder = (props) => {
         (formulaItem) => formulaItem.formulaItemId === formulaItemId
       );
 
-      currentFormulaItem.word = newLemma;
-      currentFormulaItem.structureChunk = structureChunk;
+      delete currentFormulaItem.guideword;
+      currentFormulaItem.guideword = scUtils.improveGuideword(
+        newGuideword,
+        structureChunk
+      );
 
-      updateFlowers(prevFormula, chunkId, null);
+      let currentChunkId = currentFormulaItem.structureChunk
+        ? currentFormulaItem.structureChunk.chunkId.traitValue
+        : null;
+      currentFormulaItem._previousChunkId = currentChunkId;
+
+      if (structureChunk) {
+        // Clause 2: Update stCh.
+
+        delete currentFormulaItem.structureChunk;
+        currentFormulaItem.structureChunk = structureChunk;
+        updateFlowers(prevFormula, currentChunkId, structureChunk.chunkId);
+      } else {
+        // Clause 3: Keep fItem but delete its stCh (request new stCh from BE using new guideword).
+
+        delete currentFormulaItem.structureChunk;
+        delete currentFormulaItem.backedUpStructureChunk;
+      }
+
+      console.log(
+        "Setting currentFormulaItem.structureChunk to",
+        newGuideword,
+        structureChunk
+      );
+
+      console.log("NEW formula is:", prevFormula);
       return prevFormula;
     });
     setMeaninglessCounter((prev) => prev + 1);
-  };
-
-  const checkForStChsWithNoLObjs = () => {
-    let sentenceStructure = props.formula.map((el) => el.structureChunk);
-
-    let indexesOfStChsWithNoLobjs = sentenceStructure
-      .map((el, index) => {
-        return { el, index };
-      })
-      .filter((obj) => !obj.el)
-      .map((obj) => obj.index);
-
-    if (indexesOfStChsWithNoLobjs.length) {
-      alert(
-        `Sorry, chunk(s) number ${indexesOfStChsWithNoLobjs
-          .map((i) => i + 1)
-          .join(", ")} are null.`
-      );
-      return true;
-    }
+    setTimeout(() => {
+      setMeaninglessCounterTraitBox((prev) => prev + 1);
+    }, 100);
   };
 
   useEffect(() => {
-    if (props.formula.every((fItem) => fItem.structureChunk)) {
-      if (!chunkOrders.length) {
-        setChunkOrders([
-          {
-            isPrimary: true,
-            isDefault: true,
-            order: props.formula
-              .filter((fItem) => !fItem.structureChunk.isGhostChunk)
-              .map((fItem) => fItem.structureChunk.chunkId.traitValue),
-          },
-        ]);
-      } else {
-        let defaultChunkOrders = chunkOrders.filter(
-          (chunkOrder) => chunkOrder.isDefault
-        );
-
-        if (defaultChunkOrders.length) {
-          defaultChunkOrders.forEach((defaultChunkOrder) => {
-            defaultChunkOrder.order = props.formula
-              .filter((fItem) => !fItem.structureChunk.isGhostChunk)
-              .map((fItem) => fItem.structureChunk.chunkId.traitValue);
-          });
-        }
-      }
+    if (
+      !props.chunkOrders.length &&
+      props.formula.every((fItem) => fItem.structureChunk)
+    ) {
+      props.setChunkOrders([
+        {
+          isPrimary: true,
+          order: props.formula
+            .filter((fItem) => !fItem.structureChunk.isGhostChunk)
+            .map((fItem) => fItem.structureChunk.chunkId.traitValue),
+        },
+      ]);
     }
-  }, [props.formula, chunkOrders]);
+  }, [props.formula, props.chunkOrders]);
+
+  useEffect(() => {
+    if (
+      props.chunkOrders.length &&
+      props.formula.every((fItem) => fItem.structureChunk)
+    ) {
+      props.setChunkOrders((prev) =>
+        fiUtils.updateChunkOrders(prev, props.formula)
+      );
+    }
+  }, [props.formula]);
 
   useEffect(() => {
     if (!elementsToDrawLinesBetween.length) {
       setDrawnLinesAsBold(false);
     }
   }, [elementsToDrawLinesBetween]);
+
+  let idNotUnique =
+    props.fetchedFormulaIds &&
+    idUtils.formulaIdNotUnique(props.fetchedFormulaIds, props.chosenFormulaID);
 
   return (
     <div className={styles.cardHolderContainer}>
@@ -146,88 +179,109 @@ const ChunkCardHolder = (props) => {
           exit={() => {
             setShowChunkOrdersPopup(false);
           }}
-          chunkOrders={chunkOrders}
-          setChunkOrders={setChunkOrders}
+          chunkOrders={props.chunkOrders}
+          setChunkOrders={props.setChunkOrders}
           formula={props.formula}
         />
       )}
       <div className={styles.buttonHolder}>
-        <p className={styles.buttonHolderTitle}>Question sentence</p>
+        <p
+          className={`${gstyles.tooltipHolderDelayed} ${styles.buttonHolderTitle} `}
+        >
+          {idNotUnique && (
+            <Tooltip text="Formula ID not unique. You will be overwriting this formula. Click Snowflake or Save Formula if you want to change." />
+          )}
+          Question sentence:{" "}
+          {props.chosenFormulaID + `${idNotUnique ? "⚠" : ""}`}
+        </p>
         <div className={styles.buttonSubholder}>
           <button
-            alt="Three dots icon"
-            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+            alt="Alternate arrows icon"
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
               e.target.blur();
-              if (checkForStChsWithNoLObjs()) {
+              if (uiUtils.checkForStChsWithNoLObjs(props.formula)) {
                 return;
               }
               setShowChunkOrdersPopup(true);
             }}
           >
-            &#11819;
+            &#10562;
             <Tooltip text="Set orders" />
           </button>
           <button
             alt="Star icon"
-            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
               e.target.blur();
+              let fxnId = "fetchSentence1:Star";
 
-              let badChunks = idUtils.getBadChunks(props.formula);
-              if (badChunks.length) {
-                alert(
-                  `Cannot query whole sentence because no tags are specified on chunk "${badChunks
-                    .map((badCh) => badCh.chunkId.traitValue)
-                    .join('","')}".`
-                );
+              let formulaToSend = putUtils.getFormulaToSend(props);
+              if (!formulaToSend) {
+                console.log(fxnId + " Formula failed validation.");
                 return;
               }
 
-              if (checkForStChsWithNoLObjs()) {
-                return;
-              }
-
-              let sentenceStructure = props.formula.map(
-                (el) => el.structureChunk
+              putUtils._fetchSentence(
+                lang1,
+                formulaToSend,
+                fxnId,
+                null,
+                setListPopupData
               );
-
-              putUtils
-                .fetchSentence(lang1, sentenceStructure, chunkOrders)
-                .then(
-                  (data) => {
-                    let { payload, messages } = data;
-
-                    if (messages) {
-                      alert(
-                        Object.keys(messages).map((key) => {
-                          let val = messages[key];
-                          return `${key}:       ${val}`;
-                        })
-                      );
-                      return;
-                    }
-
-                    setListPopupData({
-                      title: `${payload.length} sentence${
-                        payload.length > 1 ? "s" : ""
-                      } from traits you specified`,
-                      headers: ["sentence"],
-                      rows: payload.map((el) => [el]),
-                    });
-                  },
-                  (e) => {
-                    console.log("ERROR 0302:", e);
-                  }
-                );
             }}
           >
             &#9733;
             <Tooltip text="Query sentence" />
           </button>
           <button
+            alt="Save icon"
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            onClick={(e) => {
+              e.target.blur();
+              let fxnId = "fetchSentence2:Save";
+
+              let formulaToSend = putUtils.getFormulaToSend(props);
+              if (!formulaToSend) {
+                console.log(fxnId + " Formula failed validation.");
+                return;
+              }
+
+              idUtils.checkFormulaIdUniqueAndModify(
+                lang1,
+                props.fetchedFormulaIds,
+                formulaToSend,
+                props.chosenFormulaID
+              );
+
+              const callbackSaveFormula = (payload, formulaToSend) => {
+                if (payload.length) {
+                  alert(
+                    "Okay, I queried sentences for your formula, and we do get sentences created. So now let's save your formula. I'm console logging your formula now. Next we need to send this to BE and save it."
+                  );
+                  console.log("Let's save this formula:", formulaToSend);
+                  props.setDevSavedFormulas((prev) => [...prev, formulaToSend]);
+                } else {
+                  alert(
+                    "Sorry, no sentences were created for your formula when I queried it just now, so I will not save your formula on BE."
+                  );
+                }
+              };
+
+              putUtils._fetchSentence(
+                lang1,
+                formulaToSend,
+                fxnId,
+                callbackSaveFormula
+              );
+            }}
+          >
+            &#9112;
+            <Tooltip text="Save formula" />
+          </button>
+          <button
             alt="Connection icon"
-            className={`${gstyles.cardButton1} ${gstyles.cardButton1_inactive} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.cardButton_inactive} ${gstyles.tooltipHolderDelayed}`}
             onMouseEnter={(e) => {
               e.target.blur();
               if (linesAreDrawn) {
@@ -262,7 +316,7 @@ const ChunkCardHolder = (props) => {
           </button>
           <button
             alt="Triangle icon"
-            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onMouseEnter={() => {
               console.log("showAllTraitBoxes", showAllTraitBoxes);
             }}
@@ -297,14 +351,75 @@ const ChunkCardHolder = (props) => {
               : icons.downBlackTriangle}
             <Tooltip text="Show or hide trait boxes" />
           </button>
+          <button
+            alt="Snowflake icon"
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            onClick={(e) => {
+              e.target.blur();
+
+              let response = window.prompt(
+                "Extra options:\n\nType letter to activate.\n\na - Change current formula ID\n\nb - Log props.\n\nc - Send deliberately awry formula to check that BE doesn't spend too long on too-unspecified formulas."
+              );
+              if (response === "a") {
+                let newId = getNewSentenceFormulaId(
+                  props.fetchedFormulaIds,
+                  lang1
+                );
+
+                if (newId !== props.chosenFormulaID) {
+                  props.setChosenFormulaID(newId);
+                  alert("Now changing formula ID to be unique.");
+                } else {
+                  alert("Formula ID already unique. Will not change it.");
+                }
+              } else if (response === "b") {
+                console.log(props);
+              } else if (response === "c") {
+                let fxnId = "fetchSentence3:Snowflake";
+
+                let formulaToSend = putUtils.getFormulaToSend(props);
+                if (!formulaToSend) {
+                  console.log(fxnId + " Formula failed validation.");
+                  return;
+                }
+
+                formulaToSend.sentenceStructure.forEach((stCh) => {
+                  if (stCh.andTags) {
+                    stCh.andTags.traitValue = [];
+                  }
+                  if (stCh.specificIds) {
+                    stCh.specificIds.traitValue = [];
+                  }
+                });
+
+                putUtils._fetchSentence(
+                  lang1,
+                  formulaToSend,
+                  fxnId,
+                  null,
+                  setListPopupData
+                );
+              }
+            }}
+          >
+            &#10053;
+            <Tooltip text="Extra options" />
+          </button>
         </div>
       </div>
       <div className={styles.cardHolder} key={meaninglessCounter}>
-        <LineHolder elementsToDrawLineBetween={[]} />
-        {/* Unused LineHolder for flexbox spacing. */}
+        <LineHolder
+          elementsToDrawLineBetween={[]}
+          id="Unused LineHolder for flexbox spacing."
+        />
+
         {props.formula.map((formulaItem, index) => {
-          let { word, structureChunk, backedUpStructureChunk, formulaItemId } =
-            formulaItem;
+          let {
+            guideword,
+            structureChunk,
+            backedUpStructureChunk,
+            formulaItemId,
+          } = formulaItem;
 
           let finalIndex = props.formula.length - 1;
 
@@ -316,15 +431,73 @@ const ChunkCardHolder = (props) => {
               />
               <ChunkCard
                 formulaItemId={formulaItemId}
-                key={`${formulaItemId}-${word}`}
+                key={`${formulaItemId}-${guideword}`}
                 batch={props.batch}
-                chunkCardKey={`${formulaItemId}-${word}`}
-                word={word}
+                chunkCardKey={`${formulaItemId}-${guideword}`}
+                guideword={guideword}
                 structureChunk={structureChunk}
                 backedUpStructureChunk={backedUpStructureChunk}
                 chunkCardIndex={index}
                 formula={props.formula}
-                setFormula={props.setFormula}
+                setStructureChunkOnFormula={(newStCh) => {
+                  props.setFormula((prevFormula) => {
+                    let newFormula = prevFormula.map((formulaItem) => {
+                      if (formulaItem.formulaItemId === formulaItemId) {
+                        formulaItem.structureChunk = newStCh;
+
+                        let bodgeTransfers = ["guideword"];
+                        bodgeTransfers.forEach((bodgeTransferKey) => {
+                          if (
+                            newStCh[bodgeTransferKey] &&
+                            newStCh[bodgeTransferKey].traitValue
+                          ) {
+                            formulaItem[bodgeTransferKey] =
+                              newStCh[bodgeTransferKey].traitValue;
+                            delete newStCh[bodgeTransferKey];
+                          }
+                        });
+                      }
+                      return formulaItem;
+                    });
+
+                    let replacedChunkIds = newFormula
+                      .filter((fItem) => fItem._previousChunkId)
+                      .map((fItem) => {
+                        return {
+                          old: fItem._previousChunkId,
+                          new: fItem.structureChunk.chunkId.traitValue,
+                        };
+                      });
+
+                    replacedChunkIds.forEach((replacedChunkId) => {
+                      newFormula.forEach((fItem) => {
+                        agreementTraits.forEach((agreementTrait) => {
+                          if (
+                            fItem.structureChunk[agreementTrait] &&
+                            fItem.structureChunk[agreementTrait].traitValue ===
+                              replacedChunkId.old
+                          ) {
+                            fItem.structureChunk[agreementTrait].traitValue =
+                              replacedChunkId.new;
+                          }
+                        });
+                      });
+                    });
+
+                    return newFormula;
+                  });
+                }}
+                backUpStCh={(newStCh) => {
+                  props.setFormula((prevFormula) => {
+                    return prevFormula.map((formulaItem) => {
+                      if (formulaItem.formulaItemId === formulaItemId) {
+                        formulaItem.backedUpStructureChunk =
+                          uUtils.copyWithoutReference(newStCh);
+                      }
+                      return formulaItem;
+                    });
+                  });
+                }}
                 setElementsToDrawLinesBetween={setElementsToDrawLinesBetween}
                 flowerSearchingForStemBrace={[
                   flowerSearchingForStem,
@@ -334,11 +507,11 @@ const ChunkCardHolder = (props) => {
                   stemFoundForFlower,
                   setStemFoundForFlower,
                 ]}
-                editLemma={(newLemma, chunkId, stCh) => {
+                editLemma={(newGuideword, chunkId, stCh) => {
                   editLemmaOfThisFormulaItem(
                     formulaItemId,
                     index,
-                    newLemma,
+                    newGuideword,
                     chunkId,
                     stCh
                   );
@@ -346,6 +519,9 @@ const ChunkCardHolder = (props) => {
                 setPopup={setListPopupData}
                 highlightedCard={highlightedCard}
                 setHighlightedCard={setHighlightedCard}
+                formulaWasLoaded={props.formulaWasLoaded}
+                meaninglessCounterTraitBox={meaninglessCounterTraitBox}
+                setMeaninglessCounterTraitBox={setMeaninglessCounterTraitBox}
               />
               {index === finalIndex ? (
                 <AddChunkButton

@@ -15,9 +15,11 @@ const LemmasTable = (props) => {
       </thead>
 
       <tbody>
-        {props.wordtypeInFocus &&
-          Object.keys(props.fetchedLObjs).includes(props.wordtypeInFocus) &&
-          props.fetchedLObjs[props.wordtypeInFocus]
+        {props.focusedWordtype &&
+          Object.keys(props.fetchedWordsByWordtype).includes(
+            props.focusedWordtype
+          ) &&
+          props.fetchedWordsByWordtype[props.focusedWordtype]
             .sort((x, y) => x.id.localeCompare(y.id))
             .map((lObj) => (
               <tr key={`${lObj.id}`}>

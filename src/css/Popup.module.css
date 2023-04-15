@@ -13,6 +13,10 @@
   z-index: 8;
 }
 
+.mainboxWide {
+  width: 900px !important;
+}
+
 .mainboxFit {
   padding-top: 20px;
   padding-bottom: 20px;
@@ -90,4 +94,19 @@
 
 .message {
   font-size: 16px;
+}
+
+.listHeaderHoverable:hover {
+  background-color: white !important;
+}
+
+.hoverableRow:hover {
+  background-color: rgb(193, 193, 193) !important;
+}
+
+th,
+td {
+  padding-left: 5px;
+  padding-right: 5px;
+  border-left: rgba(0, 0, 0, 0.5) solid 0.5px;
 }

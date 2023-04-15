@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "./css/Play.module.css";
 import LineHolder from "./Cogs/LineHolder";
+import gstyles from "./css/Global.module.css";
 
 const Play = () => {
   const [elementsToDrawLineBetween, setElementsToDrawLineBetween] = useState(
@@ -8,7 +9,7 @@ const Play = () => {
   );
   return (
     <div>
-      <h1>Welcome, Player!</h1>
+      <h1 className={gstyles.heading1}>Welcome, Player!</h1>
       <h2>Begin game?</h2>
       <h1
         onClick={() => {

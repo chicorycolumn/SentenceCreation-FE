@@ -1,10 +1,6 @@
 const uUtils = require("./universalUtils.js");
 const idUtils = require("./identityUtils.js");
 
-exports.createFormulaItemId = () => {
-  return Math.random().toString().slice(2, 12);
-};
-
 exports.traitKeyRegulators = [
   {
     name: "formulaImportantTraitKeys",
@@ -46,8 +42,10 @@ exports.isFixedChunk = (stCh) => {
   return stCh.chunkId.traitValue.split("-")[0] === "fix";
 };
 
-exports.createFixedChunk = (word, index, formula) => {
-  word = word.slice(1);
+exports.createFixedChunk = (guideword, index, formula) => {
+  if (guideword[0] === "*") {
+    guideword = guideword.slice(1);
+  }
 
   let existingNumbers = formula
     .filter((formulaItem) => formulaItem.structureChunk)
@@ -62,13 +60,12 @@ exports.createFixedChunk = (word, index, formula) => {
     newNumber = index.toString() + Math.random().toString().slice(2, 6);
   }
 
-  let chunkId = `fix-${newNumber}-${word}`;
+  let chunkId = `fix-${newNumber}-${guideword}`;
 
   return {
     chunkId: { traitValue: chunkId },
-    chunkValue: { traitValue: word },
-    wordtype: "fix",
-    lemma: word,
+    chunkValue: { traitValue: guideword },
+    guideword: { traitValue: guideword }, // Will be transferred to formulaItem by bodge.
   };
 };
 
@@ -79,7 +76,7 @@ exports.isTagTrait = (traitKey) => {
 };
 
 exports.isChunkId = (traitKey) => {
-  return ["chunkId"].includes(traitKey);
+  return traitKey === "chunkId";
 };
 
 exports.agreementTraits = [
@@ -88,22 +85,81 @@ exports.agreementTraits = [
   // "connectedTo",
 ];
 
-exports.renamedTraitKeys = {
-  // postHocAgreeWithPrimary: "agreeWith",
-  // postHocAgreeWithSecondary: "agreeWith2",
+exports.getWordtypeEnCh = (enCh) => {
+  return enCh.chunkId.traitValue.split("-")[0];
 };
 
-exports.getBadChunks = (formula) => {
-  return formula
-    .map((el) => el.structureChunk)
-    .filter((stCh) => idUtils.isBadChunk(stCh));
+exports.getLangsAndEnv = (str) => {
+  let split = str.split("-");
+  const lang1 = split[0];
+  const lang2 = split[1];
+  const beEnv = split[2];
+  return { lang1, lang2, beEnv };
 };
 
-exports.isBadChunk = (stCh) => {
-  return (
-    idUtils.wordtypesWhichMustHavePopulatedTags.includes(stCh.wordtype) &&
-    uUtils.isEmpty(stCh.specificIds.traitValue) &&
-    uUtils.isEmpty(stCh.andTags.traitValue) &&
-    uUtils.isEmpty(stCh.orTags.traitValue)
-  );
+exports.formulaIdNotUnique = (fetchedFormulaIds, sentenceFormulaId) => {
+  return fetchedFormulaIds.rows.map((x) => x[0]).includes(sentenceFormulaId);
+};
+
+exports.getNewSentenceFormulaId = (
+  existingIdsData,
+  lang1,
+  existingSentenceFormulaId
+) => {
+  const existingIds = existingIdsData.rows.map((x) => x[0]);
+  let n = 1;
+
+  if (existingSentenceFormulaId) {
+    let letters = "_abcdefghijklmnopqrstuvwxyz";
+    if (/[a-z]/.test(existingSentenceFormulaId.slice(-1))) {
+      existingSentenceFormulaId = existingSentenceFormulaId.slice(
+        0,
+        existingSentenceFormulaId.length - 1
+      );
+    }
+
+    while (n < 1000) {
+      let putativeId = `${existingSentenceFormulaId}${letters[n]}`;
+      if (!existingIds.includes(putativeId)) {
+        return putativeId;
+      } else {
+        n += 1;
+      }
+    }
+  } else {
+    while (n < 1000) {
+      let num = `000${n}`.slice(-3);
+      let putativeId = `${lang1}-${num}`;
+      if (!existingIds.includes(putativeId)) {
+        return putativeId;
+      } else {
+        n += 1;
+      }
+    }
+  }
+};
+
+exports.checkFormulaIdUniqueAndModify = (
+  lang1,
+  fetchedFormulaIds,
+  formulaToSend,
+  chosenFormulaID
+) => {
+  if (
+    fetchedFormulaIds &&
+    idUtils.formulaIdNotUnique(
+      fetchedFormulaIds,
+      formulaToSend.sentenceFormulaId
+    ) &&
+    window.confirm(
+      "Overwrite existing formula (CANCEL) or create sibling formula (OK)? Otherwise if you want this formula to have a new and unrelated ID, click Snowflake for extra options."
+    )
+  ) {
+    let uniqueId = idUtils.getNewSentenceFormulaId(
+      fetchedFormulaIds,
+      lang1,
+      chosenFormulaID
+    );
+    formulaToSend.sentenceFormulaId = uniqueId;
+  }
 };

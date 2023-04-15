@@ -1,51 +1,63 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import LanguageContext from "../context/LanguageContext.js";
-import { createFormulaItemId } from "../utils/identityUtils.js";
+import idUtils from "../utils/identityUtils.js";
+import { getRandomNumberString } from "../utils/universalUtils.js";
+import styles from "../css/FormulaForm.module.css";
+import gstyles from "../css/Global.module.css";
+import Tooltip from "../Cogs/Tooltip.jsx";
 
 const FormulaForm = (props) => {
   const [formulaInput, setFormulaInput] = useState(
+    // "on jest cebula on jest cebula"
     "kobieta jest *bardzo czerwona"
+    // "on jest niebieskim chłopcem"
   );
-  const [savedFormulaInput, setSavedFormulaInput] = useState();
 
   const cardIt = (lang, input) => {
-    let formula = formulaInput || input;
-    console.log("CARD IT!", lang, formula);
     if (!lang) {
+      alert("No language specified.");
       return;
     }
 
+    let formula = formulaInput || input;
+    console.log("CARD IT!", lang, formula);
+
     if (formula) {
-      setSavedFormulaInput(formula);
-      let formulaItemsArr = formula.split(" ").map((word) => {
+      let formulaItemsArr = formula.split(" ").map((guideword) => {
         return {
-          word,
+          guideword,
           structureChunk: null,
-          formulaItemId: createFormulaItemId(),
+          formulaItemId: getRandomNumberString(10),
         };
       });
       props.setFormula(formulaItemsArr);
     }
   };
 
-  const lang1 = useContext(LanguageContext);
-
-  useEffect(() => {
-    cardIt(lang1, savedFormulaInput);
-  }, [lang1]);
+  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
+    useContext(LanguageContext)
+  );
 
   return (
-    <div>
-      <h3>FormulaForm</h3>
-      <form>
+    <div className={styles.formHolder}>
+      <h4 className={styles.title}>New sentence</h4>
+      <form className={`${styles.form} ${gstyles.tooltipHolderDelayed}`}>
+        <Tooltip
+          text="Prefix with an asterisk to make a fixed chunk, eg 'my name is *Jen'"
+          number={4}
+        />
         <input
+          rows={2}
+          className={styles.input}
           onChange={(e) => {
             setFormulaInput(e.target.value);
           }}
           placeholder="Enter example sentence"
+          value={formulaInput}
         ></input>
         <button
           alt="Right arrow go arrow icon"
+          className={styles.button1}
           type="submit"
           onClick={(e) => {
             e.preventDefault();
@@ -55,7 +67,12 @@ const FormulaForm = (props) => {
           &#10157;
         </button>
       </form>
-      <p>Prefix a word with "*" to make it a fixed chunk</p>
+
+      <div className={styles.button2Holder}>
+        <button className={styles.button2} onClick={props.onClickFetchFormulas}>
+          or select existing formula
+        </button>
+      </div>
     </div>
   );
 };

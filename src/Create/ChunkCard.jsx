@@ -7,179 +7,263 @@ import Prompt from "../Cogs/Prompt.jsx";
 import styles from "../css/ChunkCard.module.css";
 import gstyles from "../css/Global.module.css";
 import diUtils from "../utils/displayUtils.js";
-import idUtils from "../utils/identityUtils.js";
+import idUtils, {
+  getWordtypeEnCh,
+  isFixedChunk,
+} from "../utils/identityUtils.js";
 const putUtils = require("../utils/putUtils.js");
 const getUtils = require("../utils/getUtils.js");
 const uUtils = require("../utils/universalUtils.js");
 const consol = require("../utils/loggingUtils.js");
+const scUtils = require("../utils/structureChunkUtils.js");
+const uiUtils = require("../utils/userInputUtils.js");
 
 const ChunkCard = (props) => {
-  const [lObjs, setLObjs] = useState([]);
-  const [noLObjsFetched, setNoLObjsFetched] = useState();
+  const [fetchedEnChsByLemma, setFetchedEnChsByLemma] = useState([]);
+  const [noEnChsFetched, setNoEnChsFetched] = useState();
   const [chosenId, setChosenId] = useState();
-  const [structureChunk, setStructureChunk] = useState(props.structureChunk);
   const [showTraitKeysGroupOne, setShowTraitKeysGroupOne] = useState(true);
   const [showTraitKeysGroupTwo, setShowTraitKeysGroupTwo] = useState();
 
   const [traitKeysGroup1, setTraitKeysGroup1] = useState([]);
   const [traitKeysGroup2, setTraitKeysGroup2] = useState([]);
-  const [wordtype, setWordtype] = useState();
   const [chunkId, setChunkId] = useState();
 
   const [shouldRetryFetch, setShouldRetryFetch] = useState(0);
   const [promptData, setPromptData] = useState();
 
-  const [meaninglessCounterTraitBox, setMeaninglessCounterTraitBox] =
-    useState(0);
+  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
+    useContext(LanguageContext)
+  );
 
-  const lang1 = useContext(LanguageContext);
+  const refreshTraitBoxInputs = (traitKeysGroup) => {
+    if (![1, 2].includes(traitKeysGroup)) {
+      return;
+    }
 
-  const modifyStructureChunkOnThisFormulaItem = (newStCh) => {
+    let setShowTraitKeys =
+      traitKeysGroup === 1
+        ? setShowTraitKeysGroupOne
+        : setShowTraitKeysGroupTwo;
+
+    setTimeout(() => {
+      setShowTraitKeys(false);
+      setTimeout(() => {
+        setShowTraitKeys(true);
+      }, 50);
+    }, 50);
+  };
+
+  const modifyStructureChunkOnThisFormulaItem = (
+    label,
+    newStCh,
+    shouldBackUp
+  ) => {
     console.log(
-      "modifyStructureChunkOnThisFormulaItem()",
-      consol.log1(newStCh)
+      `START modifyStructureChunkOnThisFormulaItem from "${label}" with args:`,
+      { newStCh, shouldBackUp }
     );
-    console.log("props.formulaItemId", props.formulaItemId);
 
-    setStructureChunk(newStCh);
-    props.setFormula((prevFormula) => {
-      return prevFormula.map((formulaItem) => {
-        if (formulaItem.formulaItemId === props.formulaItemId) {
-          formulaItem.structureChunk = newStCh;
-        }
-        return formulaItem;
-      });
-    });
+    if (shouldBackUp) {
+      if (!newStCh) {
+        throw "Woah there";
+      }
+      props.backUpStCh(newStCh);
+    }
+
+    props.setStructureChunkOnFormula(newStCh);
   };
 
-  const setBackedUpStructureChunkAndFormula = (buStCh) => {
-    props.setFormula((prevFormula) => {
-      return prevFormula.map((formulaItem) => {
-        if (formulaItem.formulaItemId === props.formulaItemId) {
-          formulaItem.backedUpStructureChunk = buStCh;
-        }
-        return formulaItem;
-      });
+  const formatAndSetStructureChunk = (stCh, formula, guideword, label) => {
+    console.log(`START formatAndSetStructureChunk from "${label}" with args:`, {
+      stCh,
+      formula,
+      guideword,
     });
-  };
 
-  const formatAndSetStructureChunk = (stCh, formula) => {
-    stCh = getUtils.frontendifyStructureChunk(stCh);
-    diUtils.addChunkId(stCh, props.chunkCardIndex, formula);
-    modifyStructureChunkOnThisFormulaItem(stCh);
-    setBackedUpStructureChunkAndFormula(uUtils.copyWithoutReference(stCh));
+    guideword = scUtils.improveGuideword(guideword, stCh);
+
+    if (!stCh.chunkId.traitValue) {
+      diUtils.addChunkId(stCh, props.chunkCardIndex, guideword, formula, label);
+    }
+    modifyStructureChunkOnThisFormulaItem(
+      "formatAndSetStructureChunk",
+      stCh,
+      true
+    );
   };
 
   const regulateTraitKey = (tKey, regulationGroup) => {
-    let regulatedTraitKeys = structureChunk[regulationGroup].traitValue.slice();
+    let regulatedTraitKeys =
+      props.structureChunk[regulationGroup].traitValue.slice();
     if (regulatedTraitKeys.includes(tKey)) {
       regulatedTraitKeys = regulatedTraitKeys.filter((tk) => tk !== tKey);
     } else if (!regulatedTraitKeys.includes(tKey)) {
       regulatedTraitKeys.push(tKey);
     }
 
-    structureChunk[regulationGroup].traitValue = regulatedTraitKeys;
+    props.structureChunk[regulationGroup].traitValue = regulatedTraitKeys;
 
-    modifyStructureChunkOnThisFormulaItem(structureChunk);
+    modifyStructureChunkOnThisFormulaItem(
+      "regulateTraitKey",
+      props.structureChunk
+    );
   };
 
   useEffect(() => {
     if (chosenId) {
+      console.log("Begin useEffect CC1");
       setPromptData();
-      let matchingStChs = lObjs.filter((lObj) => lObj.id === chosenId);
-      if (matchingStChs.length === 1) {
-        formatAndSetStructureChunk(matchingStChs[0], props.formula);
+      let matches = fetchedEnChsByLemma.filter(
+        (enCh) => enCh.lObjId === chosenId
+      );
+      if (matches.length === 1) {
+        formatAndSetStructureChunk(
+          matches[0],
+          props.formula,
+          props.guideword,
+          "chosenId useEffect"
+        );
+        setFetchedEnChsByLemma([]);
+        setChosenId();
       } else {
-        console.log("3311 NO" + matchingStChs.map((x) => x.id));
+        alert(
+          `There are ${matches.length} matches for "${chosenId}". I expected 1 so unsure how to proceed.`
+        );
       }
     }
   }, [chosenId]);
 
   useEffect(() => {
-    let fetchedLObjs = lObjs;
+    console.log("Begin useEffect CC2");
+    if (props.structureChunk) {
+      if (!isFixedChunk(props.structureChunk) && !props.structureChunk.lObjId) {
+        console.log(
+          "NOTE 750 Didn't expect to ever reach this clause. " +
+            props.structureChunk.chunkId.traitValue
+        );
+      }
 
-    if (structureChunk) {
-      console.log(`Already did "${props.word}".`);
+      console.log(
+        `Already did "${consol.log1(props)}", halting useEffect CC2.`
+      );
       return;
     }
 
-    if (props.word[0] === "*") {
+    if (props.guideword[0] === "*") {
       let stCh = idUtils.createFixedChunk(
-        props.word,
+        props.guideword,
         props.chunkCardIndex,
         props.formula
       );
 
-      modifyStructureChunkOnThisFormulaItem(stCh);
-      setBackedUpStructureChunkAndFormula(uUtils.copyWithoutReference(stCh));
-      props.editLemma(props.word.slice(1), stCh.chunkId.traitValue, stCh);
+      modifyStructureChunkOnThisFormulaItem(
+        "createFixedChunk useEffect CC2",
+        stCh,
+        true
+      );
       return;
     }
 
-    if (fetchedLObjs && fetchedLObjs.length) {
-      let stCh = fetchedLObjs[0];
-      if (fetchedLObjs.length > 1) {
-        if (!chosenId) {
-          let title = `"${props.word}"`;
-          let message = `Which of these ${fetchedLObjs.length} are you after?`;
-
-          let options = fetchedLObjs.map((lObj) => {
-            let extraInfo = lObj.andTags.traitValue.slice();
-            if (lObj.allohomInfo) {
-              extraInfo.unshift(
-                lObj.allohomInfo.text + " " + lObj.allohomInfo.emoji
-              );
-            }
-
-            return {
-              text: lObj.id,
-              color: gstyles[lObj.id.split("-")[1]],
-              extraInfo,
-              callback: () => {
-                setChosenId(lObj.id);
-              },
-            };
-          });
-
-          setPromptData({ message, options, title });
-          return;
-        }
-      } else {
-        formatAndSetStructureChunk(stCh, props.formula);
-      }
+    if (fetchedEnChsByLemma.length === 1) {
+      let chosenEnCh = fetchedEnChsByLemma[0];
+      formatAndSetStructureChunk(
+        chosenEnCh,
+        props.formula,
+        props.guideword,
+        "fetchedEnChsByLemma.length===1 useEffect CC2"
+      );
+      setFetchedEnChsByLemma([]);
+      return;
     }
-  }, [lObjs, props.word, structureChunk, props.formula, chosenId]);
+
+    if (fetchedEnChsByLemma.length > 1 && !chosenId) {
+      let title = `"${consol.log1(props)}"`;
+      let message = `Which of these ${fetchedEnChsByLemma.length} are you after?`;
+
+      let options = fetchedEnChsByLemma.map((enCh) => {
+        let extraInfo = enCh.andTags.traitValue.slice();
+        if (enCh._info.allohomInfo) {
+          extraInfo.unshift(
+            enCh._info.allohomInfo.text + " " + enCh._info.allohomInfo.emoji
+          );
+        }
+
+        return {
+          text: enCh.lObjId,
+          color: gstyles[enCh.lObjId.split("-")[1]],
+          extraInfo,
+          callback: () => {
+            setChosenId(enCh.lObjId);
+          },
+        };
+      });
+
+      setPromptData({ message, options, title });
+      return;
+    }
+  }, [
+    fetchedEnChsByLemma,
+    props.guideword,
+    props.structureChunk,
+    props.formula,
+    chosenId,
+  ]);
 
   useEffect(() => {
-    if (lang1 && (!structureChunk || !idUtils.isFixedChunk(structureChunk))) {
+    if (lang1 && !props.structureChunk) {
       getUtils
-        .fetchLObjsByLemma(lang1, props.word)
+        .fetchEnChsByLemma(lang1, props.guideword)
         .then(
-          (fetchedLObjs) => {
-            console.log(`"${props.word}" got ${fetchedLObjs.length} lObjs.`);
-            setLObjs(fetchedLObjs);
-            setNoLObjsFetched(!fetchedLObjs.length);
+          (fetchedEnChs) => {
+            console.log(
+              `"${consol.log1(props)}" got ${fetchedEnChs.length} fetchedEnChs.`
+            );
+            setFetchedEnChsByLemma(fetchedEnChs);
+            setNoEnChsFetched(!fetchedEnChs.length);
           },
           (e) => {
-            console.log("ERROR 0370:", e);
+            console.log("ERROR 0570:", e);
           }
         )
         .catch((e) => {
-          console.log("ERROR 9071", e);
+          console.log("ERROR 9171", e);
         });
     }
-  }, [lang1, props.word, shouldRetryFetch]);
+  }, [lang1, props.guideword, shouldRetryFetch]);
 
   useEffect(() => {
-    if (structureChunk) {
-      let { orderedTraitKeysGroup1, orderedTraitKeysGroup2, wordtypeFromStCh } =
-        diUtils.orderTraitKeys(structureChunk);
+    if (props.structureChunk) {
+      let { orderedTraitKeysGroup1, orderedTraitKeysGroup2 } =
+        diUtils.orderTraitKeys(props.structureChunk);
       setTraitKeysGroup1(orderedTraitKeysGroup1);
       setTraitKeysGroup2(orderedTraitKeysGroup2);
-      setWordtype(wordtypeFromStCh);
-      setChunkId(structureChunk.chunkId.traitValue);
+      setChunkId(props.structureChunk.chunkId.traitValue);
+    } else if (props.backedUpStructureChunk) {
+      // Restore stCh from backup. (unrelated to above clause)
+      modifyStructureChunkOnThisFormulaItem(
+        "useEffect CC4",
+        uUtils.copyWithoutReference(props.backedUpStructureChunk)
+      );
     }
-  }, [structureChunk]);
+  }, [props.structureChunk]);
+
+  useEffect(() => {
+    if (traitKeysGroup2.length) {
+      setTimeout(() => {
+        if (
+          diUtils.doTraitKeysHoldSomeValues(
+            traitKeysGroup2,
+            props.structureChunk
+          )
+        ) {
+          setShowTraitKeysGroupTwo(true);
+        }
+      }, 500);
+    }
+  }, [traitKeysGroup2]);
+
+  let { structureChunk } = props;
 
   let isFixedChunkOrNoChunk =
     !structureChunk || idUtils.isFixedChunk(structureChunk);
@@ -187,14 +271,15 @@ const ChunkCard = (props) => {
   let hasSpecificId =
     structureChunk &&
     structureChunk.specificIds &&
+    structureChunk.specificIds.traitValue &&
     structureChunk.specificIds.traitValue.length;
 
   return (
     <div
       className={`${styles.card} 
-      ${noLObjsFetched && styles.shortCard}
-      ${noLObjsFetched && styles.needsAttention}
-      ${wordtype && gstyles[wordtype]} 
+      ${noEnChsFetched && styles.shortCard}
+      ${noEnChsFetched && styles.needsAttention}
+      ${structureChunk && gstyles[idUtils.getWordtypeEnCh(structureChunk)]} 
       ${
         props.highlightedCard &&
         props.highlightedCard !== chunkId &&
@@ -204,7 +289,7 @@ const ChunkCard = (props) => {
     >
       {promptData && <Prompt data={promptData} />}
       <div className={styles.cardButtonsHolder}>
-        {noLObjsFetched ? (
+        {noEnChsFetched ? (
           <>
             <button
               alt="Letter F in circle icon"
@@ -213,10 +298,12 @@ const ChunkCard = (props) => {
                 e.target.blur();
                 if (
                   window.confirm(
-                    `Do you want to make "${props.word}" a fixed chunk? You'd better be sure this is an actual word and not one you mistyped.`
+                    `Do you want to make "${consol.log1(
+                      props
+                    )}" a fixed chunk? You'd better be sure this is an actual word and not one you mistyped.`
                   )
                 ) {
-                  props.editLemma("*" + props.word);
+                  props.editLemma("*" + props.guideword);
                 }
               }}
             >
@@ -229,15 +316,15 @@ const ChunkCard = (props) => {
               onClick={(e) => {
                 e.target.blur();
                 alert(
-                  `Will retry find lemma objects for "${
-                    chunkId || props.word
+                  `Will retry find lobjs for "${
+                    chunkId || consol.log1(props)
                   }".`
                 );
                 setShouldRetryFetch((prev) => prev + 1);
               }}
             >
               &#10515;
-              <Tooltip text="Retry find lemma objects" />
+              <Tooltip text="Retry find lobjs" />
             </button>
           </>
         ) : (
@@ -251,7 +338,13 @@ const ChunkCard = (props) => {
               onClick={(e) => {
                 e.target.blur();
                 props.setHighlightedCard(chunkId);
-                putUtils.fetchSentence(lang1, [structureChunk]).then(
+
+                let formulaToSend = {
+                  sentenceStructure: [structureChunk],
+                  orders: {},
+                };
+
+                putUtils.fetchSentence(lang1, formulaToSend).then(
                   (data) => {
                     let { payload, messages } = data;
 
@@ -267,13 +360,13 @@ const ChunkCard = (props) => {
                     }
 
                     props.setPopup({
-                      title: `${payload.length} lemma${
+                      title: `${payload.length} Lemma${
                         payload.length > 1 ? "s" : ""
                       } for "${chunkId}" with traits you specified`,
-                      headers: ["lemma", "id"],
+                      headers: ["Lemma", "ID"],
                       rows: payload.map((obj) => [
                         obj.selectedWord,
-                        obj.lObjID,
+                        obj.lObjId,
                       ]),
                     });
                   },
@@ -301,7 +394,7 @@ const ChunkCard = (props) => {
                       `Reset all traits (excluding andTags/orTags) on this chunk (${chunkId})?`
                     )
                   ) {
-                    modifyStructureChunkOnThisFormulaItem(null);
+                    modifyStructureChunkOnThisFormulaItem("Reset button", null);
                   }
                   props.setHighlightedCard();
                 }, 0);
@@ -323,7 +416,10 @@ const ChunkCard = (props) => {
               onClick={(e) => {
                 e.target.blur();
                 structureChunk.isGhostChunk = !structureChunk.isGhostChunk;
-                modifyStructureChunkOnThisFormulaItem(structureChunk);
+                modifyStructureChunkOnThisFormulaItem(
+                  "Ghost button",
+                  structureChunk
+                );
               }}
             >
               &#9676;
@@ -355,13 +451,13 @@ const ChunkCard = (props) => {
           onClick={(e) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
-            setTimeout(() => {
-              let newLemma = prompt("Enter new lemma.");
-              if (newLemma) {
-                props.editLemma(newLemma, chunkId);
-              }
-              props.setHighlightedCard();
-            }, 0);
+
+            let newGuideword = uiUtils.promptGuideword();
+            if (newGuideword) {
+              props.editLemma(newGuideword, chunkId);
+            }
+
+            props.setHighlightedCard();
           }}
         >
           &#9998;
@@ -375,7 +471,9 @@ const ChunkCard = (props) => {
             props.setHighlightedCard(chunkId);
             setTimeout(() => {
               if (
-                window.confirm(`Delete this chunk "${chunkId || props.word}"?`)
+                window.confirm(
+                  `Delete this chunk "${chunkId || consol.log1(props)}"?`
+                )
               ) {
                 props.editLemma(null, chunkId);
               }
@@ -402,7 +500,7 @@ const ChunkCard = (props) => {
           ${hasSpecificId && gstyles.bold}          
           `}
         >
-          {props.word}
+          {props.guideword}
         </h1>
       </div>
 
@@ -434,10 +532,8 @@ const ChunkCard = (props) => {
                 stCh.booleanTraits.traitValue.push("isPerson");
               }
 
-              modifyStructureChunkOnThisFormulaItem(stCh);
-              setShowTraitKeysGroupTwo(
-                !structureChunk.booleanTraits.traitValue.includes("isPerson")
-              );
+              modifyStructureChunkOnThisFormulaItem("Person button", stCh);
+              refreshTraitBoxInputs(2);
             }}
           >
             {structureChunk.booleanTraits &&
@@ -452,9 +548,9 @@ const ChunkCard = (props) => {
             />
           </button>
         )}
-        <p className={`${styles.lObjID} ${gstyles.tooltipHolderDelayed}`}>
+        <p className={`${styles.lObjId} ${gstyles.tooltipHolderDelayed}`}>
           {structureChunk && structureChunk.lObjId}
-          <Tooltip text="lemma ID (of an example lemma)" />
+          <Tooltip text="lobj ID (of an example lobj)" />
         </p>
         {structureChunk && !idUtils.isFixedChunk(structureChunk) && (
           <button
@@ -463,39 +559,43 @@ const ChunkCard = (props) => {
             onClick={(e) => {
               e.preventDefault();
 
-              let stCh = uUtils.copyWithoutReference(structureChunk);
+              let newStCh = uUtils.copyWithoutReference(structureChunk);
               let isSecondClick;
 
               let traitsAffectedBySpecificId = ["andTags", "orTags"];
 
               if (
-                stCh.specificIds.traitValue &&
-                stCh.specificIds.traitValue.length
+                newStCh.specificIds.traitValue &&
+                newStCh.specificIds.traitValue.length
               ) {
-                if (stCh.specificIds.traitValue.some((tv) => tv[0] === "^")) {
+                if (
+                  newStCh.specificIds.traitValue.some((tv) => tv[0] === "^")
+                ) {
                   //Third click - remove specificIds.
-                  stCh.specificIds.traitValue = [];
-                  console.log("Resetting", traitsAffectedBySpecificId);
-                  traitsAffectedBySpecificId.forEach((traitKey) => {
-                    stCh[traitKey].traitValue =
-                      props.backedUpStructureChunk[traitKey].traitValue.slice();
-                  });
+                  if (getWordtypeEnCh(newStCh) !== "pro") {
+                    scUtils.removeSpecificId(
+                      newStCh,
+                      traitsAffectedBySpecificId,
+                      props.backedUpStructureChunk
+                    );
+                  } else {
+                    //Unless it's pronombre in which case not allowed to have no specificIds.
+                    scUtils.addSpecificId(newStCh, traitsAffectedBySpecificId);
+                  }
                 } else {
                   //Second click - Upgrade specificIds with ^caret.
                   isSecondClick = true;
-                  stCh.specificIds.traitValue =
-                    structureChunk.specificIds.traitValue.map((tv) => `^${tv}`);
+                  scUtils.upgradeSpecificId(newStCh, structureChunk);
                 }
               } else {
                 //First click - Add specificIds.
-                stCh.specificIds.traitValue = [stCh.lObjId];
-                console.log("Blanking", traitsAffectedBySpecificId);
-                traitsAffectedBySpecificId.forEach((traitKey) => {
-                  stCh[traitKey].traitValue = [];
-                });
+                scUtils.addSpecificId(newStCh, traitsAffectedBySpecificId);
               }
 
-              modifyStructureChunkOnThisFormulaItem(stCh);
+              modifyStructureChunkOnThisFormulaItem(
+                "SpecificID button",
+                newStCh
+              );
 
               if (isSecondClick) {
                 setShowTraitKeysGroupTwo(false);
@@ -524,10 +624,14 @@ const ChunkCard = (props) => {
                   ? structureChunk.specificIds.traitValue.some(
                       (tv) => tv[0] === "^"
                     )
-                    ? "Remove"
+                    ? `${
+                        getWordtypeEnCh(structureChunk) === "pro"
+                          ? "Downgrade"
+                          : "Remove"
+                      }`
                     : "Upgrade"
                   : "Set"
-              } as specific lemma for this chunk`}
+              } as specific lobj for this chunk`}
               number={5}
             />
           </button>
@@ -588,7 +692,7 @@ const ChunkCard = (props) => {
                     traitObject={traitObject}
                     traitObject2={traitObject2}
                     lObjId={structureChunk.lObjId}
-                    word={props.word}
+                    guideword={props.guideword}
                     modifyStructureChunkOnThisFormulaItem={
                       modifyStructureChunkOnThisFormulaItem
                     }
@@ -596,7 +700,6 @@ const ChunkCard = (props) => {
                     traitRegulatorValues={traitRegulatorValues}
                     structureChunk={structureChunk}
                     backedUpStructureChunk={props.backedUpStructureChunk}
-                    wordtype={wordtype}
                     setElementsToDrawLinesBetween={
                       props.setElementsToDrawLinesBetween
                     }
@@ -606,11 +709,14 @@ const ChunkCard = (props) => {
                     stemFoundForFlowerBrace={props.stemFoundForFlowerBrace}
                     setHighlightedCard={props.setHighlightedCard}
                     setPopup={props.setPopup}
-                    meaninglessCounterTraitBox={meaninglessCounterTraitBox}
+                    meaninglessCounterTraitBox={
+                      props.meaninglessCounterTraitBox
+                    }
                     setMeaninglessCounterTraitBox={
-                      setMeaninglessCounterTraitBox
+                      props.setMeaninglessCounterTraitBox
                     }
                     disabled={idUtils.isTagTrait(traitKey) && hasSpecificId}
+                    refreshTraitBoxInputs={refreshTraitBoxInputs}
                   />
                 )
               );
@@ -620,10 +726,9 @@ const ChunkCard = (props) => {
               id={`ToggleShowButton-${props.batch}-Group2-${props.formulaItemId}`}
               setShowTraitKeysGroup={setShowTraitKeysGroupTwo}
               showTraitKeysGroup={showTraitKeysGroupTwo}
-              traitKeysHoldSomeValues={traitKeysGroup2.some(
-                (traitKey) =>
-                  structureChunk[traitKey] &&
-                  !uUtils.isEmpty(structureChunk[traitKey].traitValue)
+              traitKeysHoldSomeValues={diUtils.doTraitKeysHoldSomeValues(
+                traitKeysGroup2,
+                structureChunk
               )}
             />
           )}
@@ -638,7 +743,7 @@ const ChunkCard = (props) => {
                     traitKey={traitKey}
                     chunkCardKey={props.chunkCardKey}
                     traitObject={structureChunk[traitKey]}
-                    word={props.word}
+                    guideword={props.guideword}
                     modifyStructureChunkOnThisFormulaItem={
                       modifyStructureChunkOnThisFormulaItem
                     }
@@ -646,6 +751,7 @@ const ChunkCard = (props) => {
                     backedUpStructureChunk={props.backedUpStructureChunk}
                     setHighlightedCard={props.setHighlightedCard}
                     setPopup={props.setPopup}
+                    refreshTraitBoxInputs={refreshTraitBoxInputs}
                   />
                 )
             )}

@@ -5,7 +5,7 @@ const uUtils = require("./universalUtils.js");
 const idUtils = require("./identityUtils.js");
 
 const diUtils = {
-  addChunkId: (stCh, chunkCardIndex, formula) => {
+  addChunkId: (stCh, chunkCardIndex, guideword, formula, label) => {
     let existingChunkIds = [];
     if (formula) {
       existingChunkIds = formula
@@ -16,48 +16,53 @@ const diUtils = {
         .map((chunkIdObj) => chunkIdObj.traitValue);
     }
 
-    let idSplit = stCh.id.split("-");
+    let idSplit = stCh.lObjId.split("-");
     let chunkIdBase = `${idSplit[1]}-${chunkCardIndex}`;
 
-    const createChunkId = (idSplit, chunkIdBase, appendRandomDigits) => {
+    const createChunkId = (
+      idSplit,
+      chunkIdBase,
+      guideword,
+      appendRandomDigits
+    ) => {
       let randomDigit = Math.random().toString()[2];
       let randomDigits = appendRandomDigits
         ? Math.random().toString().slice(2, 6)
         : "";
 
-      if (stCh.lemma.includes("*")) {
-        return `${chunkIdBase}000${randomDigit}-${stCh.lemma
-          .split("")
-          .filter((char) => char !== "*")
-          .join("")}${randomDigits}`;
+      if (guideword.includes("*")) {
+        return `${chunkIdBase}000${randomDigit}-${guideword}${randomDigits}`;
       } else {
-        return `${chunkIdBase}${idSplit[2]
+        let idNumber = /^\d.+$/.test(idSplit[2])
+          ? idSplit[2]
+          : uUtils.getRandomNumberString(3);
+
+        return `${chunkIdBase}${idNumber
           .split("")
           .reverse()
-          .join("")}${randomDigit}-${stCh.lemma}${randomDigits}`;
+          .join("")}${randomDigit}-${guideword}${randomDigits}`;
       }
     };
 
     let chunkId;
 
     for (let i = 1; i <= 20; i++) {
-      chunkId = createChunkId(idSplit, chunkIdBase);
+      chunkId = createChunkId(idSplit, chunkIdBase, guideword);
       if (!existingChunkIds.includes(chunkId)) {
         break;
       }
       if (i === 20) {
         while (existingChunkIds.includes(chunkId)) {
-          chunkId = createChunkId(idSplit, chunkIdBase, true);
+          chunkId = createChunkId(idSplit, chunkIdBase, guideword, true);
         }
       }
     }
 
     stCh.chunkId.traitValue = chunkId;
-    stCh.lObjId = stCh.id;
-    delete stCh.id;
+    console.log(label, "Added chunkId", stCh.chunkId.traitValue);
   },
 
-  traitsNotToDisplayInOwnBox: ["orTags", "id", "lemma", "lObjId"],
+  traitsNotToDisplayInOwnBox: ["orTags", "id", "guideword", "lObjId"],
 
   connectChunkIdWithItsFlowers: (
     flowerstemID,
@@ -213,11 +218,6 @@ const diUtils = {
     line.style.height = H + "px";
   },
 
-  getLemmaFromChunkId: (chunkId) => {
-    let split = chunkId.split("-");
-    return split[split.length - 1];
-  },
-
   orderTraitKeys: (stCh) => {
     let orderedTraitKeys = [
       "chunkId",
@@ -244,9 +244,14 @@ const diUtils = {
     });
 
     lexicalTraitKeys = lexicalTraitKeys.sort((x, y) => y.localeCompare(x));
-    // booleanTraitKeys = booleanTraitKeys.sort((x, y) => x.localeCompare(y));
 
-    orderedTraitKeys = [...orderedTraitKeys, ...lexicalTraitKeys];
+    if (lexicalTraitKeys.includes("tense")) {
+      // Aesthetically I prefer "tense" traitBox shown at the bottom of group1.
+      lexicalTraitKeys = lexicalTraitKeys.filter((x) => x !== "tense");
+      lexicalTraitKeys.push("tense");
+    }
+
+    orderedTraitKeys.push(...lexicalTraitKeys);
 
     const length = orderedTraitKeys.length;
 
@@ -256,22 +261,23 @@ const diUtils = {
 
     // orderedTraitKeys = [...orderedTraitKeys, ...booleanTraitKeys];
 
-    orderedTraitKeys = [
-      ...orderedTraitKeys,
+    orderedTraitKeys.push(
       ...Object.keys(stCh)
         .filter((traitKey) => !orderedTraitKeys.includes(traitKey))
-        .sort((x, y) => x.localeCompare(y)),
-    ];
+        .sort((x, y) => x.localeCompare(y))
+    );
 
     let countOfLeftoverTraitKeys =
       orderedTraitKeys.length - Object.keys(stCh).length;
 
+    let wordtype = idUtils.getWordtypeEnCh(stCh);
+
     if (
       !idUtils.isFixedChunk(stCh) &&
       countOfLeftoverTraitKeys &&
-      !(countOfLeftoverTraitKeys === 3 && stCh.wordtype !== "pro")
+      !(countOfLeftoverTraitKeys === 3 && wordtype !== "pro")
     ) {
-      throw `gluj: ${stCh.wordtype} orderedTraitKeys.length ${
+      throw `gluj: ${wordtype} orderedTraitKeys.length ${
         orderedTraitKeys.length
       } !== Object.keys(stCh).length ${Object.keys(stCh).length}`;
     }
@@ -279,7 +285,6 @@ const diUtils = {
     orderedTraitKeys = orderedTraitKeys.filter(
       (traitKey) =>
         ![
-          "wordtype",
           ...idUtils.traitKeyRegulators
             .map((tkr) => tkr.name)
             .filter((el) => el),
@@ -289,7 +294,6 @@ const diUtils = {
     return {
       orderedTraitKeysGroup1: orderedTraitKeys.slice(0, length),
       orderedTraitKeysGroup2: orderedTraitKeys.slice(length),
-      wordtypeFromStCh: stCh.wordtype,
     };
   },
 
@@ -309,6 +313,49 @@ const diUtils = {
       .map((element) => element.trim())
       .filter((element) => element);
     return strict && !res.length ? null : res;
+  },
+
+  doTraitKeysHoldSomeValues: (traitKeysGroup, structureChunk) => {
+    return traitKeysGroup.some(
+      (traitKey) =>
+        structureChunk[traitKey] &&
+        !uUtils.isEmpty(structureChunk[traitKey].traitValue)
+    );
+  },
+
+  setStem: (props, setState) => {
+    // Prevent A agree with B and B agree with A.
+    let agreementTraitsToBlank = [];
+    idUtils.agreementTraits.forEach((agreementTrait) => {
+      if (
+        props.structureChunk[agreementTrait] &&
+        props.structureChunk[agreementTrait].traitValue &&
+        props.structureChunk[agreementTrait].traitValue.includes(
+          props.flowerSearchingForStemBrace[0]
+        )
+      ) {
+        agreementTraitsToBlank.push(agreementTrait);
+      }
+    });
+    if (agreementTraitsToBlank.length) {
+      let newStCh = uUtils.copyWithoutReference(props.structureChunk);
+      agreementTraitsToBlank.forEach((agreementTraitToBlank) => {
+        newStCh[agreementTraitToBlank].traitValue = [];
+      });
+      props.modifyStructureChunkOnThisFormulaItem(
+        "Prevent circular agreeWith",
+        newStCh
+      );
+      props.refreshTraitBoxInputs(1);
+    }
+
+    props.stemFoundForFlowerBrace[1](props.chunkId);
+    setState({ isExtraHighlighted: false });
+  },
+
+  cancelStem: (props, setState) => {
+    props.flowerSearchingForStemBrace[1]();
+    setState({ isExtraHighlighted: false });
   },
 };
 

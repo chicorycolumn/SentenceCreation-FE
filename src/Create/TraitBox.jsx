@@ -7,6 +7,7 @@ import $ from "jquery";
 import diUtils from "../utils/displayUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 const idUtils = require("../utils/identityUtils.js");
+const uiUtils = require("../utils/userInputUtils.js");
 const scUtils = require("../utils/structureChunkUtils.js");
 const consol = require("../utils/loggingUtils.js");
 const helpTexts = require("../utils/helpTexts.js");
@@ -140,8 +141,7 @@ class TraitBox extends Component {
       traitKey,
       traitObject,
       traitKey2,
-      word,
-      wordtype,
+      guideword,
       lObjId,
       structureChunk,
     } = this.props;
@@ -182,19 +182,21 @@ class TraitBox extends Component {
     const checkAndSetTraitValue = (secondaryAsWellAsPrimary = false) => {
       console.log(`(${consol.log1(structureChunk)})`, "£checkAndSetTraitValue");
 
-      const innerFunction = (
+      const _checkAndSetTV = (
         traitKeyKey = "traitKey",
         traitValueInputStringKey = "traitValueInputString",
         traitObjectKey = "traitObject"
       ) => {
         const traitKey = this.props[traitKeyKey];
-        console.log(`(${consol.log1(structureChunk)})`, "@...");
-        console.log(
-          `(${consol.log1(structureChunk)})`,
-          `this.state[traitValueInputStringKey]`,
-          this.state[traitValueInputStringKey],
-          typeof this.state[traitValueInputStringKey]
-        );
+
+        console.log("");
+        console.log("@Beginning _checkAndSetTV with args:");
+        console.log({
+          "NEW this.state[traitValueInputStringKey]":
+            this.state[traitValueInputStringKey],
+          "OLD this.props[traitObjectKey].traitValue":
+            this.props[traitObjectKey].traitValue,
+        });
 
         if (
           this.state[traitValueInputStringKey] !==
@@ -275,33 +277,35 @@ class TraitBox extends Component {
 
           scUtils.setNewTraitValue(newStructureChunk, traitKey, newTraitValue);
 
-          if (idUtils.agreementTraits.includes(traitKey)) {
-            let traitsAffectedByAgreementTrait =
-              structureChunk._info.inheritableInflectionKeys;
-            traitsAffectedByAgreementTrait.forEach((tk) => {
-              if (newTraitValue) {
-                scUtils.setNewTraitValue(newStructureChunk, tk, null);
-              } else {
-                newStructureChunk[tk].traitValue = uUtils.copyWithoutReference(
-                  this.props.backedUpStructureChunk[tk].traitValue
-                );
-              }
-            });
+          // // Should we blank other traits when agreeKey value is changed?
+          // if (idUtils.agreementTraits.includes(traitKey)) {
+          //   let traitsAffectedByAgreementTrait =
+          //     structureChunk._info.inheritableInflectionKeys;
+          //   traitsAffectedByAgreementTrait.forEach((tk) => {
+          //     if (newTraitValue) {
+          //       scUtils.setNewTraitValue(newStructureChunk, tk, null);
+          //     } else {
+          //       newStructureChunk[tk].traitValue = uUtils.copyWithoutReference(
+          //         this.props.backedUpStructureChunk[tk].traitValue
+          //       );
+          //     }
+          //   });
+          //   setTimeout(() => {
+          //     this.props.setMeaninglessCounterTraitBox((prev) => prev + 1);
+          //   }, 100);
+          // }
 
-            setTimeout(() => {
-              this.props.setMeaninglessCounterTraitBox((prev) => prev + 1);
-            }, 100);
-          }
-
-          this.props.modifyStructureChunkOnThisFormulaItem(newStructureChunk);
+          this.props.modifyStructureChunkOnThisFormulaItem(
+            "Set new trait value",
+            newStructureChunk
+          );
           console.log(`(${consol.log1(structureChunk)})`, "@2 Changing value.");
-          exitTraitBox();
-          exitTraitBox(false);
+        } else {
+          console.log(
+            `(${consol.log1(structureChunk)})`,
+            "@3 No change to value."
+          );
         }
-        console.log(
-          `(${consol.log1(structureChunk)})`,
-          "@3 No change to value."
-        );
         exitTraitBox();
         exitTraitBox(false);
       };
@@ -312,7 +316,7 @@ class TraitBox extends Component {
         "checkAndSetTraitValue PRIMARY"
       );
       console.log(`(${consol.log1(structureChunk)})`, "###");
-      innerFunction();
+      _checkAndSetTV();
 
       if (secondaryAsWellAsPrimary) {
         console.log(`(${consol.log1(structureChunk)})`, "###");
@@ -321,7 +325,7 @@ class TraitBox extends Component {
           "checkAndSetTraitValue SECONDARY"
         );
         console.log(`(${consol.log1(structureChunk)})`, "###");
-        innerFunction("traitKey2", "traitValueInputString2", "traitObject2");
+        _checkAndSetTV("traitKey2", "traitValueInputString2", "traitObject2");
       }
     };
 
@@ -333,22 +337,23 @@ class TraitBox extends Component {
     };
 
     const traitBoxID = `${this.props.chunkCardKey}-${traitKey}_maindiv`;
+    const wipeButtonId = `${this.props.chunkCardKey}-${traitKey}_wipeButton`;
 
-    if (
-      this.state.isFlowerSearchingForStem &&
-      this.props.flowerSearchingForStemBrace[0] === this.props.chunkId &&
-      this.props.stemFoundForFlowerBrace[0]
-    ) {
-      let stemFound = this.props.stemFoundForFlowerBrace[0];
-      this.props.flowerSearchingForStemBrace[1](null);
-      this.props.stemFoundForFlowerBrace[1](null);
-      this.setState({
-        traitValueInputString: stemFound,
-        isFlowerSearchingForStem: false,
-      });
-      setTimeout(() => {
-        checkAndSetTraitValue();
-      }, 50);
+    if (this.state.isFlowerSearchingForStem) {
+      if (this.props.flowerSearchingForStemBrace[0] !== this.props.chunkId) {
+        this.setState({ isFlowerSearchingForStem: false });
+      } else if (this.props.stemFoundForFlowerBrace[0]) {
+        let stemFound = this.props.stemFoundForFlowerBrace[0];
+        this.props.flowerSearchingForStemBrace[1](null);
+        this.props.stemFoundForFlowerBrace[1](null);
+        this.setState({
+          traitValueInputString: stemFound,
+          isFlowerSearchingForStem: false,
+        });
+        setTimeout(() => {
+          checkAndSetTraitValue();
+        }, 50);
+      }
     }
 
     const isClickableFlowerstem = (propsObject) => {
@@ -374,7 +379,7 @@ class TraitBox extends Component {
       );
       this.setState(() => {
         let newState = {};
-        newState[traitValueInputStringKey] = null;
+        newState[traitValueInputStringKey] = "";
         return newState;
       });
       setTimeout(() => {
@@ -411,8 +416,8 @@ class TraitBox extends Component {
             revertTraitValueInputString={this.revertTraitValueInputString}
             checkAndSetTraitValue={checkAndSetTraitValue}
             exitTraitBox={exitTraitBox}
-            wordtype={wordtype}
-            word={word}
+            wordtype={idUtils.getWordtypeEnCh(structureChunk)}
+            guideword={guideword}
             lObjId={lObjId}
             backedUpTags={this.props.backedUpStructureChunk.andTags.traitValue}
           />
@@ -421,7 +426,7 @@ class TraitBox extends Component {
         <div
           id={traitBoxID}
           key={traitBoxID}
-          className={`${styles.preventSelection} ${styles.traitBox} ${
+          className={`${gstyles.noSelect} ${styles.traitBox} ${
             traitObject.isLexical && styles.lexicalTraitBox
           } ${this.props.disabled && gstyles.borderNone} ${
             idUtils.agreementTraits.includes(traitKey) && styles.traitBoxCircle1
@@ -444,18 +449,38 @@ class TraitBox extends Component {
           } 
           ${
             idUtils.isTagTrait(traitKey) &&
-            idUtils.isBadChunk(structureChunk) &&
+            uiUtils.isTaglessChunk(structureChunk) &&
             styles.badBox
           } 
           ${this.props.traitKeysGroup === 2 && gstyles.oddEdges}
           `}
           onClick={() => {
             if (isClickableFlowerstem(this.props)) {
-              this.props.stemFoundForFlowerBrace[1](this.props.chunkId);
-              this.setState({ isExtraHighlighted: false });
+              if (
+                idUtils.getWordtypeEnCh(this.props.structureChunk) === "pro" &&
+                idUtils.getWordtypeEnCh({
+                  chunkId: {
+                    traitValue: this.props.flowerSearchingForStemBrace[0],
+                  },
+                }) === "npe"
+              ) {
+                if (
+                  window.confirm(
+                    'Please click CANCEL.\n\nYou should do it the other way around.\n\nYou selected a nounPerson chunk to agree with a pronoun chunk.\n\neg "She is a woman." you should make "she" agree with "woman", not "woman" agree with "she".\n\nIf you want to ignore my advice, click OK, but you should click CANCEL.'
+                  )
+                ) {
+                  diUtils.setStem(this.props, this.setState);
+                } else {
+                  diUtils.cancelStem(this.props, this.setState);
+                }
+              } else {
+                diUtils.setStem(this.props, this.setState);
+              }
             }
           }}
           onMouseEnter={() => {
+            console.log("traitObject-->", traitObject);
+
             if (isClickableFlowerstem(this.props)) {
               this.setState({ isExtraHighlighted: true });
             } else if (traitKey === "chunkId") {
@@ -496,7 +521,7 @@ class TraitBox extends Component {
           }}
         >
           {this.state.justCopied && (
-            <div className={gstyles.floatingAlert}>Copied</div>
+            <div className={styles.floatingAlert}>Copied</div>
           )}
 
           {this.props.disabled ? (
@@ -697,7 +722,7 @@ class TraitBox extends Component {
                           idUtils.isTagTrait(traitKey) &&
                           styles.traitValuesInputLarge
                         } 
-                        ${styles.preventSelection} 
+                        ${gstyles.noSelect} 
                         ${
                           [
                             "booleanTraits",
@@ -783,6 +808,7 @@ class TraitBox extends Component {
                         !this.state.isHovered && (
                           <div className={styles.sideButtonHolder}>
                             <button
+                              id={wipeButtonId}
                               alt="Cross icon"
                               className={`
                               ${gstyles.sideButton} 

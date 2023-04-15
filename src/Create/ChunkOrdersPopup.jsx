@@ -11,10 +11,11 @@ const ChunkOrdersPopup = (props) => {
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const [highlightedButton, setHighlightedButton] = useState();
 
-  const getLemmaFromFormula = (chunkId) => {
-    return props.formula.filter(
+  const getGuidewordFromFormula = (chunkId) => {
+    let formulaItem = props.formula.find(
       (fItem) => fItem.structureChunk.chunkId.traitValue === chunkId
-    )[0].word;
+    );
+    return formulaItem.guideword;
   };
 
   const stringifyChunkOrder = (chunkOrder) => {
@@ -34,8 +35,8 @@ const ChunkOrdersPopup = (props) => {
         let indexOfExistingOrder;
 
         if (
-          props.chunkOrders.filter((orderObject, index) => {
-            let chunkOrder = orderObject.order;
+          props.chunkOrders.filter((orderObj, index) => {
+            let chunkOrder = orderObj.order;
             if (stringifyChunkOrder(chunkOrder) === stringifiedOrderBuilt) {
               indexOfExistingOrder = index;
               return true;
@@ -103,13 +104,11 @@ const ChunkOrdersPopup = (props) => {
         <div className={styles.buttonHolder}>
           {props.formula.map((fItem) => {
             let chunkId = fItem.structureChunk.chunkId.traitValue;
-            let lemma = fItem.word;
             let chunkIsUnused =
               !fItem.structureChunk.isGhostChunk &&
               !props.chunkOrders.some((orderObj) =>
                 orderObj.order.includes(fItem.structureChunk.chunkId.traitValue)
               );
-
             return (
               <button
                 key={chunkId}
@@ -159,7 +158,7 @@ const ChunkOrdersPopup = (props) => {
                 {chunkIsUnused && (
                   <p className={`${gstyles.floatJustAbove}`}>unused</p>
                 )}
-                <p className={styles.buttonTopHalf}>{lemma}</p>
+                <p className={styles.buttonTopHalf}>{fItem.guideword}</p>
                 <p className={styles.buttonBottomHalf}>{chunkId}</p>
               </button>
             );
@@ -169,7 +168,6 @@ const ChunkOrdersPopup = (props) => {
         <div className={styles.orderBuilderHolder}>
           <div className={styles.orderBuilder}>
             {orderBuilt.map((chunkId, index) => {
-              let lemma = getLemmaFromFormula(chunkId);
               return (
                 <button
                   key={`orderBuilt-${chunkId}-${index}`}
@@ -187,7 +185,7 @@ const ChunkOrdersPopup = (props) => {
                     );
                   }}
                 >
-                  {lemma}
+                  {getGuidewordFromFormula(chunkId)}
                 </button>
               );
             })}
@@ -273,7 +271,7 @@ const ChunkOrdersPopup = (props) => {
                         !isPrimary && gstyles.translucent2
                       }`}
                     >
-                      {getLemmaFromFormula(chunkId)}
+                      {getGuidewordFromFormula(chunkId)}
                     </span>
                   ))}
                 </li>

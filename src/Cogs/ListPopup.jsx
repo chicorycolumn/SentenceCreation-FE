@@ -1,10 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../css/Popup.module.css";
 import gstyles from "../css/Global.module.css";
 import uUtils from "../utils/universalUtils.js";
 import $ from "jquery";
 
 const ListPopup = (props) => {
+  const [headersWhichAreSortedDescending, setHeadersWhichAreSortedDescending] =
+    useState([]);
+
   const exit = () => {
     $(document).off("keyup");
     props.exit();
@@ -22,7 +25,7 @@ const ListPopup = (props) => {
   return (
     <>
       <div className={gstyles.obscurus} onClick={exit}></div>
-      <div className={`${styles.mainbox}`}>
+      <div className={`${styles.mainbox} ${props.wide && styles.mainboxWide}`}>
         <div className={styles.topHolder}>
           <div className={`${gstyles.sideButton} ${gstyles.invisible}`}></div>
           <h1 className={styles.title}>{props.data.title}</h1>
@@ -45,7 +48,37 @@ const ListPopup = (props) => {
                 <tr>
                   <th>#</th>
                   {props.data.headers.map((header, hIndex) => (
-                    <th key={`${props.data.title.slice(0, 10)}-th-${hIndex}`}>
+                    <th
+                      key={`${props.data.title.slice(0, 10)}-th-${hIndex}`}
+                      className={`${styles.listHeader} ${
+                        props.setData && styles.listHeaderHoverable
+                      } ${gstyles.noSelect}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+
+                        if (props.setData) {
+                          props.setData((prev) => {
+                            prev.rows = prev.rows.sort((x, y) => {
+                              let xItem = uUtils.stringify(x[hIndex]);
+                              let yItem = uUtils.stringify(y[hIndex]);
+
+                              return headersWhichAreSortedDescending.includes(
+                                header
+                              )
+                                ? xItem.localeCompare(yItem)
+                                : yItem.localeCompare(xItem);
+                            });
+                            return prev;
+                          });
+
+                          setHeadersWhichAreSortedDescending((prev) => {
+                            return prev.includes(header)
+                              ? prev.filter((x) => x !== header)
+                              : [...prev, header];
+                          });
+                        }
+                      }}
+                    >
                       {header}
                     </th>
                   ))}
@@ -55,12 +88,22 @@ const ListPopup = (props) => {
               <tbody>
                 {props.data.rows.map((el, rIndex) => (
                   <tr
-                    className={styles.tablerow}
+                    className={`${styles.tablerow} ${
+                      props.data.rowCallback && styles.hoverableRow
+                    }`}
                     key={`${props.data.title}-tr-${rIndex}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (props.data.rowCallback) {
+                        props.data.rowCallback(el);
+                      }
+                    }}
                   >
                     <td>{rIndex + 1}</td>
                     {el.map((item, dIndex) => (
-                      <td key={`${props.data.title}-td-${dIndex}`}>{item}</td>
+                      <td key={`${props.data.title}-td-${dIndex}`}>
+                        {uUtils.stringify(item)}
+                      </td>
                     ))}
                   </tr>
                 ))}
