@@ -1,11 +1,11 @@
 import React from "react";
 import styles from "../css/LineHolder.module.css";
-import diUtils from "../utils/displayUtils";
+import flUtils from "../utils/flowerUtils";
 
 const LineHolder = (props) => {
   return (
     <div id="lineHolder" className={styles.lineHolder}>
-      {diUtils
+      {flUtils
         .multiplyOutStemAndFlowers(props.elementsToDrawLineBetween)
         .map((elementIDs) => {
           let el1ID = elementIDs[0];
@@ -13,7 +13,7 @@ const LineHolder = (props) => {
           let lineID = `${el1ID}-${el2ID}-connectingLine`;
 
           setTimeout(() => {
-            diUtils.drawLineBetweenElements(el1ID, el2ID, lineID);
+            flUtils.drawLineBetweenElements(el1ID, el2ID, lineID);
           }, 1);
 
           return (

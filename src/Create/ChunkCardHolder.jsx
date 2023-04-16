@@ -9,7 +9,7 @@ import styles from "../css/ChunkCardHolder.module.css";
 import gstyles from "../css/Global.module.css";
 import LineHolder from "../Cogs/LineHolder";
 import uUtils from "../utils/universalUtils.js";
-import diUtils from "../utils/displayUtils.js";
+import flUtils from "../utils/flowerUtils.js";
 import uiUtils from "../utils/userInputUtils.js";
 import idUtils, {
   agreementTraits,
@@ -291,7 +291,7 @@ const ChunkCardHolder = (props) => {
               $("*[id*=traitTitleHolder-chunkId]").each(function () {
                 let id = $(this).parent()[0].id;
                 let value = $(this).parent().find("textarea")[0].value;
-                diUtils.connectChunkIdWithItsFlowers(id, value, [
+                flUtils.connectChunkIdWithItsFlowers(id, value, [
                   setElementsToDrawLinesBetween,
                   setDrawnLinesAsBold,
                 ]);
@@ -302,7 +302,7 @@ const ChunkCardHolder = (props) => {
               $("*[id*=traitTitleHolder-chunkId]").each(function () {
                 let id = $(this).parent()[0].id;
                 let value = $(this).parent().find("textarea")[0].value;
-                diUtils.connectChunkIdWithItsFlowers(
+                flUtils.connectChunkIdWithItsFlowers(
                   id,
                   value,
                   [setElementsToDrawLinesBetween],

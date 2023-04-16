@@ -5,6 +5,7 @@ import styles from "../css/TraitBox.module.css";
 import gstyles from "../css/Global.module.css";
 import $ from "jquery";
 import diUtils from "../utils/displayUtils.js";
+import flUtils from "../utils/flowerUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 const idUtils = require("../utils/identityUtils.js");
 const uiUtils = require("../utils/userInputUtils.js");
@@ -370,7 +371,7 @@ class TraitBox extends Component {
       traitValueInputStringKey,
       isSecondary
     ) => {
-      diUtils.connectChunkIdWithItsFlowers(
+      flUtils.connectChunkIdWithItsFlowers(
         traitBoxID,
         this.state.traitValueInputString,
         [this.props.setElementsToDrawLinesBetween],
@@ -469,12 +470,12 @@ class TraitBox extends Component {
                     'Please click CANCEL.\n\nYou should do it the other way around.\n\nYou selected a nounPerson chunk to agree with a pronoun chunk.\n\neg "She is a woman." you should make "she" agree with "woman", not "woman" agree with "she".\n\nIf you want to ignore my advice, click OK, but you should click CANCEL.'
                   )
                 ) {
-                  diUtils.setStem(this.props, this.setState);
+                  flUtils.setStem(this.props, this.setState);
                 } else {
-                  diUtils.cancelStem(this.props, this.setState);
+                  flUtils.cancelStem(this.props, this.setState);
                 }
               } else {
-                diUtils.setStem(this.props, this.setState);
+                flUtils.setStem(this.props, this.setState);
               }
             }
           }}
@@ -484,13 +485,13 @@ class TraitBox extends Component {
             if (isClickableFlowerstem(this.props)) {
               this.setState({ isExtraHighlighted: true });
             } else if (traitKey === "chunkId") {
-              diUtils.connectChunkIdWithItsFlowers(
+              flUtils.connectChunkIdWithItsFlowers(
                 traitBoxID,
                 this.state.traitValueInputString,
                 [this.props.setElementsToDrawLinesBetween]
               );
             } else if (idUtils.agreementTraits.includes(traitKey)) {
-              diUtils.connectChunkIdWithItsFlowers(
+              flUtils.connectChunkIdWithItsFlowers(
                 traitBoxID,
                 this.state.traitValueInputString,
                 [this.props.setElementsToDrawLinesBetween],
@@ -502,14 +503,14 @@ class TraitBox extends Component {
           onMouseLeave={() => {
             if (traitKey === "chunkId") {
               this.setState({ isExtraHighlighted: false });
-              diUtils.connectChunkIdWithItsFlowers(
+              flUtils.connectChunkIdWithItsFlowers(
                 traitBoxID,
                 this.state.traitValueInputString,
                 [this.props.setElementsToDrawLinesBetween],
                 true
               );
             } else if (idUtils.agreementTraits.includes(traitKey)) {
-              diUtils.connectChunkIdWithItsFlowers(
+              flUtils.connectChunkIdWithItsFlowers(
                 traitBoxID,
                 this.state.traitValueInputString,
                 [this.props.setElementsToDrawLinesBetween],
