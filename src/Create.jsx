@@ -36,7 +36,7 @@ const Create = () => {
 
       let formattedData = {
         title: "Formulas",
-        headers: ["Formula ID", "Guidewords", "Symbol", "Equivalents"],
+        headers: ["Formula ID", "Guidewords", "Equivalents"],
         rows: data.formulaIds.sort((x, y) => {
           let xItem = x[0];
           let yItem = y[0];
