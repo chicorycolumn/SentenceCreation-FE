@@ -479,6 +479,10 @@
   font-weight: 580 !important;
 }
 
+.strikethrough {
+  text-decoration: line-through;
+}
+
 .yellow {
   color: yellow !important;
 }

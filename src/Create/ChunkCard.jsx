@@ -31,6 +31,7 @@ const ChunkCard = (props) => {
 
   const [shouldRetryFetch, setShouldRetryFetch] = useState(0);
   const [promptData, setPromptData] = useState();
+  const [chunkCardInfo, setChunkCardInfo] = useState([]);
 
   const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
     useContext(LanguageContext)
@@ -233,14 +234,20 @@ const ChunkCard = (props) => {
   }, [lang1, props.guideword, shouldRetryFetch]);
 
   useEffect(() => {
+    // Each of these logic blocks is unrelated.
+
     if (props.structureChunk) {
+      // A. Set trait key groups.
       let { orderedTraitKeysGroup1, orderedTraitKeysGroup2 } =
         diUtils.orderTraitKeys(props.structureChunk);
       setTraitKeysGroup1(orderedTraitKeysGroup1);
       setTraitKeysGroup2(orderedTraitKeysGroup2);
       setChunkId(props.structureChunk.chunkId.traitValue);
+
+      // B. Set chunk card info.
+      scUtils.getChunkCardInfo(structureChunk, setChunkCardInfo);
     } else if (props.backedUpStructureChunk) {
-      // Restore stCh from backup. (unrelated to above clause)
+      // C. Restore stCh from backup.
       modifyStructureChunkOnThisFormulaItem(
         "useEffect CC4",
         uUtils.copyWithoutReference(props.backedUpStructureChunk)
@@ -486,9 +493,27 @@ const ChunkCard = (props) => {
         </button>
       </div>
       <div className={styles.lemmaHolder}>
+        <div
+          className={`${styles.chunkCardInfo} ${
+            !chunkCardInfo.length && gstyles.invisible
+          }`}
+        >
+          {chunkCardInfo.map((chunkCardInfoObj) => (
+            <p
+              className={`${styles.chunkCardInfoObj} ${
+                chunkCardInfoObj.inactive && gstyles.strikethrough
+              }`}
+            >
+              {chunkCardInfoObj.title}
+            </p>
+          ))}
+        </div>
         <h1
           onClick={() => {
             consol.logChunkCard(props, structureChunk); //devlogging
+
+            console.log("chunkCardInfo");
+            chunkCardInfo.forEach((x) => console.log(x));
           }}
           className={`
           ${styles.lemma} 

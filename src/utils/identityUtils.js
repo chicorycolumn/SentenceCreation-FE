@@ -1,6 +1,10 @@
 const uUtils = require("./universalUtils.js");
 const idUtils = require("./identityUtils.js");
 
+exports.isStative = (lObj) => {
+  return lObj.id && lObj.id.split("-").slice(-1)[0].includes("ß");
+};
+
 exports.traitKeyRegulators = [
   {
     name: "formulaImportantTraitKeys",

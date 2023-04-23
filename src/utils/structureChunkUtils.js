@@ -1,8 +1,37 @@
 const getUtils = require("./getUtils.js");
-const { getWordtypeEnCh, isFixedChunk } = require("./identityUtils.js");
+const {
+  getWordtypeEnCh,
+  isFixedChunk,
+  isStative,
+} = require("./identityUtils.js");
 const putUtils = require("./putUtils.js");
 const scUtils = require("./structureChunkUtils.js");
 const { getRandomNumberString } = require("./universalUtils.js");
+
+exports.getChunkCardInfo = (stCh, setChunkCardInfo) => {
+  setChunkCardInfo((prev) => {
+    let info = [];
+    if (stCh.booleanTraits) {
+      if (isStative({ id: stCh.lObjId })) {
+        if (stCh.booleanTraits.traitValue.includes("stativeOverrideFalse")) {
+          info.push({ title: "STATIVE", inactive: true });
+        } else {
+          info.push({ title: "STATIVE" });
+        }
+      } else if (
+        stCh.booleanTraits.traitValue.includes("stativeOverrideTrue")
+      ) {
+        info.push({ title: "STATIVE" });
+      }
+
+      if (stCh.booleanTraits.traitValue.includes("negative")) {
+        info.push({ title: "NEG" });
+      }
+    }
+
+    return info;
+  });
+};
 
 exports.improveGuideword = (guideword, structureChunk) => {
   if (!guideword || /^\d+$/.test(guideword)) {
