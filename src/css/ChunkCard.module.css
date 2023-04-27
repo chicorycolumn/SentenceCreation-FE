@@ -27,7 +27,7 @@
   margin: 0px;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
   height: 18px;
 }
 
