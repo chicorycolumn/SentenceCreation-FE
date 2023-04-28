@@ -147,8 +147,8 @@ exports.checkFormulaIdUniqueAndModify = (
   if (
     fetchedFormulaIds &&
     idUtils.formulaIdNotUnique(fetchedFormulaIds, formula.sentenceFormulaId) &&
-    window.confirm(
-      "Overwrite existing formula (CANCEL) or create sibling formula (OK)? Otherwise if you want this formula to have a new and unrelated ID, click Snowflake for extra options."
+    !window.confirm(
+      "Overwrite existing formula (OK) or create sibling formula (CANCEL)? Otherwise if you want this formula to have a new and unrelated ID, click Snowflake for extra options."
     )
   ) {
     let uniqueId = idUtils.getNewFormulaId(
