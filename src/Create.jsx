@@ -17,7 +17,7 @@ const Create = () => {
   const [beEnv, setBeEnv] = useState("ref");
   const [isLoading, setIsLoading] = useState();
   const [error, setError] = useState(null);
-  const [formulaWasLoaded, setFormulaWasLoaded] = useState(0);
+  const [formulaWasLoadedFromBE, setFormulaWasLoadedFromBE] = useState(0);
   const [formula, setFormula] = useState([]);
   const [chunkOrders, setChunkOrders] = useState([]);
   const [showFormulasPopup, setShowFormulasPopup] = useState();
@@ -76,7 +76,7 @@ const Create = () => {
 
         setFormula(data.questionSentenceFormula.sentenceStructure);
         setChunkOrders(data.questionSentenceFormula.orders);
-        setFormulaWasLoaded((prev) => prev + 1);
+        setFormulaWasLoadedFromBE((prev) => prev + 1);
       });
     }
   }, [chosenFormulaID, shouldFetchFormula]);
@@ -98,7 +98,7 @@ const Create = () => {
                 setShouldFetchFormula();
                 setChunkOrders([]);
                 setChosenFormulaID(uniqueId);
-                setFormulaWasLoaded(0);
+                setFormulaWasLoadedFromBE(0);
               };
 
               if (!fetchedFormulaIds) {
@@ -150,7 +150,7 @@ const Create = () => {
           chosenFormulaID={chosenFormulaID}
           setChosenFormulaID={setChosenFormulaID}
           batch={"QuestionBatch"}
-          formulaWasLoaded={formulaWasLoaded}
+          formulaWasLoadedFromBE={formulaWasLoadedFromBE}
           fetchedFormulaIds={fetchedFormulaIds}
           setDevSavedFormulas={setDevSavedFormulas}
         />

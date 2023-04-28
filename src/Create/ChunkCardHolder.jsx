@@ -519,7 +519,7 @@ const ChunkCardHolder = (props) => {
                 setPopup={setListPopupData}
                 highlightedCard={highlightedCard}
                 setHighlightedCard={setHighlightedCard}
-                formulaWasLoaded={props.formulaWasLoaded}
+                formulaWasLoadedFromBE={props.formulaWasLoadedFromBE}
                 meaninglessCounterTraitBox={meaninglessCounterTraitBox}
                 setMeaninglessCounterTraitBox={setMeaninglessCounterTraitBox}
               />
