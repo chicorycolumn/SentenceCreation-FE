@@ -6,14 +6,14 @@ const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
-export const getFormulaToSend = (props) => {
-  if (uiUtils.validateFormulaToSend(props.formula)) {
+export const getFormula = (props) => {
+  if (uiUtils.validateFemulaToSend(props.femula)) {
     return;
   }
 
   return {
-    sentenceFormulaId: props.chosenFormulaID,
-    sentenceStructure: props.formula.map((el) => el.structureChunk),
+    sentenceFormulaId: props.chosenFormulaId,
+    sentenceStructure: props.femula.map((el) => el.structureChunk),
     orders: bfUtils.backendifyOrders(props.chunkOrders), // Backendify-1: Orders
   };
 };
@@ -33,16 +33,16 @@ export const fetchFormulaIds = (lang1, lang2, env) => {
     .catch((e) => console.log("ERROR 7070", e));
 };
 
-export const fetchFormula = (sentenceFormulaId, answerLanguage) => {
-  console.log("START fetchFormula", { sentenceFormulaId, answerLanguage });
+export const fetchFemula = (formulaId, answerLanguage) => {
+  console.log("START fetchFemula", { formulaId, answerLanguage });
 
   return axios
     .get(
-      `${baseUrl}/educator/formulas?id=${sentenceFormulaId}&lang=${answerLanguage}`
+      `${baseUrl}/educator/formulas?id=${formulaId}&lang=${answerLanguage}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
-      console.log("END fetchFormula GOT:", res.data); //devlogging
+      console.log("END fetchFemula GOT:", res.data); //devlogging
       console.log("");
       console.log("");
 
@@ -53,12 +53,12 @@ export const fetchFormula = (sentenceFormulaId, answerLanguage) => {
 
 export const _fetchSentence = (
   lang1,
-  formulaToSend,
+  formula,
   label,
   callback,
   setListPopupData
 ) => {
-  fetchSentence(lang1, formulaToSend).then(
+  fetchSentence(lang1, formula).then(
     (data) => {
       let { payload, messages } = data;
 
@@ -72,7 +72,7 @@ export const _fetchSentence = (
         return;
       }
       if (callback) {
-        callback(payload, formulaToSend);
+        callback(payload, formula);
       } else {
         setListPopupData({
           title: `${payload.length} sentence${
@@ -89,24 +89,22 @@ export const _fetchSentence = (
   );
 };
 
-export const fetchSentence = (lang1, sentenceFormula) => {
-  backendifyFormula(sentenceFormula);
+export const fetchSentence = (lang1, formula) => {
+  backendifyFormula(formula);
 
-  if (!sentenceFormula.sentenceStructure.length) {
+  if (!formula.sentenceStructure.length) {
     return;
   }
 
   let requestingSingleWordOnly =
-    !sentenceFormula.orders ||
-    !Object.keys(sentenceFormula.orders).length ||
-    ((!sentenceFormula.orders.primary ||
-      !sentenceFormula.orders.primary.length) &&
-      (!sentenceFormula.orders.additional ||
-        !sentenceFormula.orders.additional.length));
+    !formula.orders ||
+    !Object.keys(formula.orders).length ||
+    ((!formula.orders.primary || !formula.orders.primary.length) &&
+      (!formula.orders.additional || !formula.orders.additional.length));
 
   let body = {
     questionLanguage: lang1,
-    sentenceFormula,
+    sentenceFormula: formula,
     requestingSingleWordOnly,
   };
 

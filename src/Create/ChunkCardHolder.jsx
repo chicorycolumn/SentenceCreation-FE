@@ -13,14 +13,13 @@ import flUtils from "../utils/flowerUtils.js";
 import uiUtils from "../utils/userInputUtils.js";
 import idUtils, {
   agreementTraits,
-  getNewSentenceFormulaId,
-  getWordtypeEnCh,
+  getNewFormulaId,
 } from "../utils/identityUtils.js";
 import icons from "../utils/icons.js";
 import $ from "jquery";
 const putUtils = require("../utils/putUtils.js");
 const scUtils = require("../utils/structureChunkUtils.js");
-const fiUtils = require("../utils/formulaItemUtils.js");
+const fiUtils = require("../utils/femulaItemUtils.js");
 
 const ChunkCardHolder = (props) => {
   const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
@@ -41,23 +40,23 @@ const ChunkCardHolder = (props) => {
   const [meaninglessCounterTraitBox, setMeaninglessCounterTraitBox] =
     useState(0);
 
-  const editLemmaOfThisFormulaItem = (
-    formulaItemId,
+  const editLemmaOfThisFemulaItem = (
+    femulaItemId,
     index,
     newGuideword,
     chunkId,
     structureChunk
   ) => {
-    console.log("editLemmaOfThisFormulaItem START", {
-      formulaItemId,
+    console.log("editLemmaOfThisFemulaItem START", {
+      femulaItemId,
       index,
       newGuideword,
       chunkId,
       structureChunk,
     });
 
-    function updateFlowers(newFormula, chunkId, newChunkId) {
-      newFormula.forEach((fItem) => {
+    function updateFlowers(newFemula, chunkId, newChunkId) {
+      newFemula.forEach((fItem) => {
         if (fItem.structureChunk) {
           Object.keys(fItem.structureChunk).forEach((traitKey) => {
             if (
@@ -71,54 +70,54 @@ const ChunkCardHolder = (props) => {
       });
     }
 
-    props.setFormula((prevFormula) => {
-      prevFormula = uUtils.copyWithoutReference(prevFormula);
+    props.setFemula((prevFemula) => {
+      prevFemula = uUtils.copyWithoutReference(prevFemula);
 
       if (!newGuideword) {
         // Clause 1: Delete this fItem (don't request new stCh from BE).
-        let newFormula = prevFormula.filter(
-          (formulaItem) => formulaItem.formulaItemId !== formulaItemId
+        let newFemula = prevFemula.filter(
+          (femulaItem) => femulaItem.femulaItemId !== femulaItemId
         );
-        updateFlowers(newFormula, chunkId, null);
-        return newFormula;
+        updateFlowers(newFemula, chunkId, null);
+        return newFemula;
       }
 
-      let currentFormulaItem = prevFormula.find(
-        (formulaItem) => formulaItem.formulaItemId === formulaItemId
+      let currentFemulaItem = prevFemula.find(
+        (femulaItem) => femulaItem.femulaItemId === femulaItemId
       );
 
-      delete currentFormulaItem.guideword;
-      currentFormulaItem.guideword = scUtils.improveGuideword(
+      delete currentFemulaItem.guideword;
+      currentFemulaItem.guideword = scUtils.improveGuideword(
         newGuideword,
         structureChunk
       );
 
-      let currentChunkId = currentFormulaItem.structureChunk
-        ? currentFormulaItem.structureChunk.chunkId.traitValue
+      let currentChunkId = currentFemulaItem.structureChunk
+        ? currentFemulaItem.structureChunk.chunkId.traitValue
         : null;
-      currentFormulaItem._previousChunkId = currentChunkId;
+      currentFemulaItem._previousChunkId = currentChunkId;
 
       if (structureChunk) {
         // Clause 2: Update stCh.
 
-        delete currentFormulaItem.structureChunk;
-        currentFormulaItem.structureChunk = structureChunk;
-        updateFlowers(prevFormula, currentChunkId, structureChunk.chunkId);
+        delete currentFemulaItem.structureChunk;
+        currentFemulaItem.structureChunk = structureChunk;
+        updateFlowers(prevFemula, currentChunkId, structureChunk.chunkId);
       } else {
         // Clause 3: Keep fItem but delete its stCh (request new stCh from BE using new guideword).
 
-        delete currentFormulaItem.structureChunk;
-        delete currentFormulaItem.backedUpStructureChunk;
+        delete currentFemulaItem.structureChunk;
+        delete currentFemulaItem.backedUpStructureChunk;
       }
 
       console.log(
-        "Setting currentFormulaItem.structureChunk to",
+        "Setting currentFemulaItem.structureChunk to",
         newGuideword,
         structureChunk
       );
 
-      console.log("NEW formula is:", prevFormula);
-      return prevFormula;
+      console.log("NEW formula is:", prevFemula);
+      return prevFemula;
     });
     setMeaninglessCounter((prev) => prev + 1);
     setTimeout(() => {
@@ -129,29 +128,29 @@ const ChunkCardHolder = (props) => {
   useEffect(() => {
     if (
       !props.chunkOrders.length &&
-      props.formula.every((fItem) => fItem.structureChunk)
+      props.femula.every((fItem) => fItem.structureChunk)
     ) {
       props.setChunkOrders([
         {
           isPrimary: true,
-          order: props.formula
+          order: props.femula
             .filter((fItem) => !fItem.structureChunk.isGhostChunk)
             .map((fItem) => fItem.structureChunk.chunkId.traitValue),
         },
       ]);
     }
-  }, [props.formula, props.chunkOrders]);
+  }, [props.femula, props.chunkOrders]);
 
   useEffect(() => {
     if (
       props.chunkOrders.length &&
-      props.formula.every((fItem) => fItem.structureChunk)
+      props.femula.every((fItem) => fItem.structureChunk)
     ) {
       props.setChunkOrders((prev) =>
-        fiUtils.updateChunkOrders(prev, props.formula)
+        fiUtils.updateChunkOrders(prev, props.femula)
       );
     }
-  }, [props.formula]);
+  }, [props.femula]);
 
   useEffect(() => {
     if (!elementsToDrawLinesBetween.length) {
@@ -161,7 +160,7 @@ const ChunkCardHolder = (props) => {
 
   let idNotUnique =
     props.fetchedFormulaIds &&
-    idUtils.formulaIdNotUnique(props.fetchedFormulaIds, props.chosenFormulaID);
+    idUtils.formulaIdNotUnique(props.fetchedFormulaIds, props.chosenFormulaId);
 
   return (
     <div className={styles.cardHolderContainer}>
@@ -181,7 +180,7 @@ const ChunkCardHolder = (props) => {
           }}
           chunkOrders={props.chunkOrders}
           setChunkOrders={props.setChunkOrders}
-          formula={props.formula}
+          femula={props.femula}
         />
       )}
       <div className={styles.buttonHolder}>
@@ -192,7 +191,7 @@ const ChunkCardHolder = (props) => {
             <Tooltip text="Formula ID not unique. You will be overwriting this formula. Click Snowflake or Save Formula if you want to change." />
           )}
           Question sentence:{" "}
-          {props.chosenFormulaID + `${idNotUnique ? "⚠" : ""}`}
+          {props.chosenFormulaId + `${idNotUnique ? "⚠" : ""}`}
         </p>
         <div className={styles.buttonSubholder}>
           <button
@@ -200,7 +199,7 @@ const ChunkCardHolder = (props) => {
             className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
               e.target.blur();
-              if (uiUtils.checkForStChsWithNoLObjs(props.formula)) {
+              if (uiUtils.checkForStChsWithNoLObjs(props.femula)) {
                 return;
               }
               setShowChunkOrdersPopup(true);
@@ -216,15 +215,15 @@ const ChunkCardHolder = (props) => {
               e.target.blur();
               let fxnId = "fetchSentence1:Star";
 
-              let formulaToSend = putUtils.getFormulaToSend(props);
-              if (!formulaToSend) {
+              let formula = putUtils.getFormula(props);
+              if (!formula) {
                 console.log(fxnId + " Formula failed validation.");
                 return;
               }
 
               putUtils._fetchSentence(
                 lang1,
-                formulaToSend,
+                formula,
                 fxnId,
                 null,
                 setListPopupData
@@ -241,8 +240,8 @@ const ChunkCardHolder = (props) => {
               e.target.blur();
               let fxnId = "fetchSentence2:Save";
 
-              let formulaToSend = putUtils.getFormulaToSend(props);
-              if (!formulaToSend) {
+              let formula = putUtils.getFormula(props);
+              if (!formula) {
                 console.log(fxnId + " Formula failed validation.");
                 return;
               }
@@ -250,17 +249,17 @@ const ChunkCardHolder = (props) => {
               idUtils.checkFormulaIdUniqueAndModify(
                 lang1,
                 props.fetchedFormulaIds,
-                formulaToSend,
-                props.chosenFormulaID
+                formula,
+                props.chosenFormulaId
               );
 
-              const callbackSaveFormula = (payload, formulaToSend) => {
+              const callbackSaveFormula = (payload, formula) => {
                 if (payload.length) {
                   alert(
                     "Okay, I queried sentences for your formula, and we do get sentences created. So now let's save your formula. I'm console logging your formula now. Next we need to send this to BE and save it."
                   );
-                  console.log("Let's save this formula:", formulaToSend);
-                  props.setDevSavedFormulas((prev) => [...prev, formulaToSend]);
+                  console.log("Let's save this formula:", formula);
+                  props.setDevSavedFormulas((prev) => [...prev, formula]);
                 } else {
                   alert(
                     "Sorry, no sentences were created for your formula when I queried it just now, so I will not save your formula on BE."
@@ -270,7 +269,7 @@ const ChunkCardHolder = (props) => {
 
               putUtils._fetchSentence(
                 lang1,
-                formulaToSend,
+                formula,
                 fxnId,
                 callbackSaveFormula
               );
@@ -361,13 +360,10 @@ const ChunkCardHolder = (props) => {
                 "Extra options:\n\nType letter to activate.\n\na - Change current formula ID\n\nb - Log props.\n\nc - Send deliberately awry formula to check that BE doesn't spend too long on too-unspecified formulas."
               );
               if (response === "a") {
-                let newId = getNewSentenceFormulaId(
-                  props.fetchedFormulaIds,
-                  lang1
-                );
+                let newId = getNewFormulaId(props.fetchedFormulaIds, lang1);
 
-                if (newId !== props.chosenFormulaID) {
-                  props.setChosenFormulaID(newId);
+                if (newId !== props.chosenFormulaId) {
+                  props.setChosenFormulaId(newId);
                   alert("Now changing formula ID to be unique.");
                 } else {
                   alert("Formula ID already unique. Will not change it.");
@@ -377,13 +373,13 @@ const ChunkCardHolder = (props) => {
               } else if (response === "c") {
                 let fxnId = "fetchSentence3:Snowflake";
 
-                let formulaToSend = putUtils.getFormulaToSend(props);
-                if (!formulaToSend) {
+                let formula = putUtils.getFormula(props);
+                if (!formula) {
                   console.log(fxnId + " Formula failed validation.");
                   return;
                 }
 
-                formulaToSend.sentenceStructure.forEach((stCh) => {
+                formula.sentenceStructure.forEach((stCh) => {
                   if (stCh.andTags) {
                     stCh.andTags.traitValue = [];
                   }
@@ -394,7 +390,7 @@ const ChunkCardHolder = (props) => {
 
                 putUtils._fetchSentence(
                   lang1,
-                  formulaToSend,
+                  formula,
                   fxnId,
                   null,
                   setListPopupData
@@ -413,37 +409,37 @@ const ChunkCardHolder = (props) => {
           id="Unused LineHolder for flexbox spacing."
         />
 
-        {props.formula.map((formulaItem, index) => {
+        {props.femula.map((femulaItem, index) => {
           let {
             guideword,
             structureChunk,
             backedUpStructureChunk,
-            formulaItemId,
-          } = formulaItem;
+            femulaItemId,
+          } = femulaItem;
 
-          let finalIndex = props.formula.length - 1;
+          let finalIndex = props.femula.length - 1;
 
           return (
             <Fragment key={`chunkCardOuterFragment-${index}`}>
               <AddChunkButton
-                setFormula={props.setFormula}
-                formulaItemIndex={index}
+                setFemula={props.setFemula}
+                femulaItemIndex={index}
               />
               <ChunkCard
-                formulaItemId={formulaItemId}
-                key={`${formulaItemId}-${guideword}`}
+                femulaItemId={femulaItemId}
+                key={`${femulaItemId}-${guideword}`}
                 batch={props.batch}
-                chunkCardKey={`${formulaItemId}-${guideword}`}
+                chunkCardKey={`${femulaItemId}-${guideword}`}
                 guideword={guideword}
                 structureChunk={structureChunk}
                 backedUpStructureChunk={backedUpStructureChunk}
                 chunkCardIndex={index}
-                formula={props.formula}
-                setStructureChunkOnFormula={(newStCh) => {
-                  props.setFormula((prevFormula) => {
-                    let newFormula = prevFormula.map((formulaItem) => {
-                      if (formulaItem.formulaItemId === formulaItemId) {
-                        formulaItem.structureChunk = newStCh;
+                femula={props.femula}
+                setStructureChunkOnFemula={(newStCh) => {
+                  props.setFemula((prevFemula) => {
+                    let newFemula = prevFemula.map((femulaItem) => {
+                      if (femulaItem.femulaItemId === femulaItemId) {
+                        femulaItem.structureChunk = newStCh;
 
                         let bodgeTransfers = ["guideword"];
                         bodgeTransfers.forEach((bodgeTransferKey) => {
@@ -451,16 +447,16 @@ const ChunkCardHolder = (props) => {
                             newStCh[bodgeTransferKey] &&
                             newStCh[bodgeTransferKey].traitValue
                           ) {
-                            formulaItem[bodgeTransferKey] =
+                            femulaItem[bodgeTransferKey] =
                               newStCh[bodgeTransferKey].traitValue;
                             delete newStCh[bodgeTransferKey];
                           }
                         });
                       }
-                      return formulaItem;
+                      return femulaItem;
                     });
 
-                    let replacedChunkIds = newFormula
+                    let replacedChunkIds = newFemula
                       .filter((fItem) => fItem._previousChunkId)
                       .map((fItem) => {
                         return {
@@ -470,7 +466,7 @@ const ChunkCardHolder = (props) => {
                       });
 
                     replacedChunkIds.forEach((replacedChunkId) => {
-                      newFormula.forEach((fItem) => {
+                      newFemula.forEach((fItem) => {
                         agreementTraits.forEach((agreementTrait) => {
                           if (
                             fItem.structureChunk[agreementTrait] &&
@@ -484,17 +480,17 @@ const ChunkCardHolder = (props) => {
                       });
                     });
 
-                    return newFormula;
+                    return newFemula;
                   });
                 }}
                 backUpStCh={(newStCh) => {
-                  props.setFormula((prevFormula) => {
-                    return prevFormula.map((formulaItem) => {
-                      if (formulaItem.formulaItemId === formulaItemId) {
-                        formulaItem.backedUpStructureChunk =
+                  props.setFemula((prevFemula) => {
+                    return prevFemula.map((femulaItem) => {
+                      if (femulaItem.femulaItemId === femulaItemId) {
+                        femulaItem.backedUpStructureChunk =
                           uUtils.copyWithoutReference(newStCh);
                       }
-                      return formulaItem;
+                      return femulaItem;
                     });
                   });
                 }}
@@ -508,8 +504,8 @@ const ChunkCardHolder = (props) => {
                   setStemFoundForFlower,
                 ]}
                 editLemma={(newGuideword, chunkId, stCh) => {
-                  editLemmaOfThisFormulaItem(
-                    formulaItemId,
+                  editLemmaOfThisFemulaItem(
+                    femulaItemId,
                     index,
                     newGuideword,
                     chunkId,
@@ -519,14 +515,14 @@ const ChunkCardHolder = (props) => {
                 setPopup={setListPopupData}
                 highlightedCard={highlightedCard}
                 setHighlightedCard={setHighlightedCard}
-                formulaWasLoadedFromBE={props.formulaWasLoadedFromBE}
+                femulaWasLoadedFromBE={props.femulaWasLoadedFromBE}
                 meaninglessCounterTraitBox={meaninglessCounterTraitBox}
                 setMeaninglessCounterTraitBox={setMeaninglessCounterTraitBox}
               />
               {index === finalIndex ? (
                 <AddChunkButton
-                  setFormula={props.setFormula}
-                  formulaItemIndex={index + 1}
+                  setFemula={props.setFemula}
+                  femulaItemIndex={index + 1}
                 />
               ) : (
                 ""

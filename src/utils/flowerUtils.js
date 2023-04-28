@@ -179,7 +179,7 @@ const flUtils = {
       agreementTraitsToBlank.forEach((agreementTraitToBlank) => {
         newStCh[agreementTraitToBlank].traitValue = [];
       });
-      props.modifyStructureChunkOnThisFormulaItem(
+      props.modifyStructureChunkOnThisFemulaItem(
         "Prevent circular agreeWith",
         newStCh
       );

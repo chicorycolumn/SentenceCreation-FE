@@ -16,7 +16,7 @@ exports.logTraitBox = (state, props) => {
 exports.logChunkCard = (props, stCh) => {
   console.log("");
   console.log("");
-  console.log("props.formulaItemId:", props.formulaItemId);
+  console.log("props.femulaItemId:", props.femulaItemId);
   console.log("props.guideword:", props.guideword);
   console.log("structureChunk:", stCh);
   console.log("backedUpStructureChunk:", props.backedUpStructureChunk);

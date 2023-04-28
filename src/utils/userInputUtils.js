@@ -16,14 +16,14 @@ exports.isTaglessChunk = (stCh) => {
   );
 };
 
-exports.getTaglessChunks = (formula) => {
-  return formula
+exports.getTaglessChunks = (femula) => {
+  return femula
     .map((el) => el.structureChunk)
     .filter((stCh) => exports.isTaglessChunk(stCh));
 };
 
-exports.checkForStChsWithNoLObjs = (formula) => {
-  let sentenceStructure = formula.map((el) => el.structureChunk);
+exports.checkForStChsWithNoLObjs = (femula) => {
+  let sentenceStructure = femula.map((el) => el.structureChunk);
 
   let indexesOfStChsWithNoLobjs = sentenceStructure
     .map((el, index) => {
@@ -42,12 +42,12 @@ exports.checkForStChsWithNoLObjs = (formula) => {
   }
 };
 
-exports.validateFormulaToSend = (formula) => {
-  if (exports.checkForStChsWithNoLObjs(formula)) {
+exports.validateFemulaToSend = (femula) => {
+  if (exports.checkForStChsWithNoLObjs(femula)) {
     return true;
   }
 
-  let taglessChunks = exports.getTaglessChunks(formula);
+  let taglessChunks = exports.getTaglessChunks(femula);
   if (taglessChunks.length) {
     alert(
       `Cannot query whole sentence because no tags are specified on chunk "${taglessChunks
@@ -58,14 +58,14 @@ exports.validateFormulaToSend = (formula) => {
   }
 
   if (
-    formula.some((fItem) => {
+    femula.some((fItem) => {
       let stCh = fItem.structureChunk;
       return (
         idUtils.getWordtypeEnCh(stCh) === "npe" &&
         idUtils.agreementTraits.some((agreementTrait) => {
           if (stCh[agreementTrait] && stCh[agreementTrait].traitValue) {
             let stemChunkId = stCh[agreementTrait].traitValue;
-            let x = formula.find(
+            let x = femula.find(
               (fItem) => fItem.structureChunk.chunkId.traitValue === stemChunkId
             );
             if (x) {

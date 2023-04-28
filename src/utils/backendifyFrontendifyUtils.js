@@ -18,13 +18,13 @@ exports.backendifyOrders = (frontendifiedOrders) => {
   return backendifiedOrders;
 };
 
-exports.backendifyFormula = (formula) => {
+exports.backendifyFormula = (femula) => {
   // Backendify-1: Orders (if not already done)
-  if (Array.isArray(formula.orders)) {
-    formula.orders = exports.backendifyOrders(formula.orders);
+  if (Array.isArray(femula.orders)) {
+    femula.orders = exports.backendifyOrders(femula.orders);
   }
 
-  formula.sentenceStructure = formula.sentenceStructure.map((enCh) => {
+  femula.sentenceStructure = femula.sentenceStructure.map((enCh) => {
     let stCh = {};
 
     // Backendify-2b: Unpack booleans

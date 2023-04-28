@@ -53,7 +53,7 @@ exports.improveGuideword = (guideword, structureChunk) => {
 exports.addSpecificId = (
   stCh,
   traitsAffectedBySpecificId,
-  editFormulaCallback
+  editFemulaCallback
 ) => {
   if (getWordtypeEnCh(stCh) === "fix") {
     return;
@@ -69,8 +69,8 @@ exports.addSpecificId = (
     stCh[traitKey].traitValue = [];
   });
 
-  if (editFormulaCallback) {
-    editFormulaCallback(stCh);
+  if (editFemulaCallback) {
+    editFemulaCallback(stCh);
   }
 };
 

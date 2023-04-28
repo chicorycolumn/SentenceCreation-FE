@@ -296,7 +296,7 @@ class TraitBox extends Component {
           //   }, 100);
           // }
 
-          this.props.modifyStructureChunkOnThisFormulaItem(
+          this.props.modifyStructureChunkOnThisFemulaItem(
             "Set new trait value",
             newStructureChunk
           );

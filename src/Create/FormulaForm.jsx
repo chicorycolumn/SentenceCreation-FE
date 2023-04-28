@@ -7,7 +7,7 @@ import gstyles from "../css/Global.module.css";
 import Tooltip from "../Cogs/Tooltip.jsx";
 
 const FormulaForm = (props) => {
-  const [formulaInput, setFormulaInput] = useState(
+  const [femulaStringInput, setFemulaStringInput] = useState(
     // "on jest cebula on jest cebula"
     "kobieta jest *bardzo czerwona"
     // "on jest niebieskim chłopcem"
@@ -19,18 +19,18 @@ const FormulaForm = (props) => {
       return;
     }
 
-    let formula = formulaInput || input;
-    console.log("CARD IT!", lang, formula);
+    let femulaString = femulaStringInput || input;
+    console.log("CARD IT!", lang, femulaString);
 
-    if (formula) {
-      let formulaItemsArr = formula.split(" ").map((guideword) => {
+    if (femulaString) {
+      let femulaFromWrittenInput = femulaString.split(" ").map((guideword) => {
         return {
           guideword,
           structureChunk: null,
-          formulaItemId: getRandomNumberString(10),
+          femulaItemId: getRandomNumberString(10),
         };
       });
-      props.setFormula(formulaItemsArr);
+      props.setFemula(femulaFromWrittenInput);
     }
   };
 
@@ -50,10 +50,10 @@ const FormulaForm = (props) => {
           rows={2}
           className={styles.input}
           onChange={(e) => {
-            setFormulaInput(e.target.value);
+            setFemulaStringInput(e.target.value);
           }}
           placeholder="Enter example sentence"
-          value={formulaInput}
+          value={femulaStringInput}
         ></input>
         <button
           alt="Right arrow go arrow icon"
@@ -69,7 +69,7 @@ const FormulaForm = (props) => {
       </form>
 
       <div className={styles.button2Holder}>
-        <button className={styles.button2} onClick={props.onClickFetchFormulas}>
+        <button className={styles.button2} onClick={props.onClickFetchFemulas}>
           or select existing formula
         </button>
       </div>

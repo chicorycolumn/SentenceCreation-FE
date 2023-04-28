@@ -55,13 +55,13 @@ const ChunkCard = (props) => {
     }, 50);
   };
 
-  const modifyStructureChunkOnThisFormulaItem = (
+  const modifyStructureChunkOnThisFemulaItem = (
     label,
     newStCh,
     shouldBackUp
   ) => {
     console.log(
-      `START modifyStructureChunkOnThisFormulaItem from "${label}" with args:`,
+      `START modifyStructureChunkOnThisFemulaItem from "${label}" with args:`,
       { newStCh, shouldBackUp }
     );
 
@@ -72,22 +72,22 @@ const ChunkCard = (props) => {
       props.backUpStCh(newStCh);
     }
 
-    props.setStructureChunkOnFormula(newStCh);
+    props.setStructureChunkOnFemula(newStCh);
   };
 
-  const formatAndSetStructureChunk = (stCh, formula, guideword, label) => {
+  const formatAndSetStructureChunk = (stCh, femula, guideword, label) => {
     console.log(`START formatAndSetStructureChunk from "${label}" with args:`, {
       stCh,
-      formula,
+      femula,
       guideword,
     });
 
     guideword = scUtils.improveGuideword(guideword, stCh);
 
     if (!stCh.chunkId.traitValue) {
-      diUtils.addChunkId(stCh, props.chunkCardIndex, guideword, formula, label);
+      diUtils.addChunkId(stCh, props.chunkCardIndex, guideword, femula, label);
     }
-    modifyStructureChunkOnThisFormulaItem(
+    modifyStructureChunkOnThisFemulaItem(
       "formatAndSetStructureChunk",
       stCh,
       true
@@ -105,7 +105,7 @@ const ChunkCard = (props) => {
 
     props.structureChunk[regulationGroup].traitValue = regulatedTraitKeys;
 
-    modifyStructureChunkOnThisFormulaItem(
+    modifyStructureChunkOnThisFemulaItem(
       "regulateTraitKey",
       props.structureChunk
     );
@@ -121,7 +121,7 @@ const ChunkCard = (props) => {
       if (matches.length === 1) {
         formatAndSetStructureChunk(
           matches[0],
-          props.formula,
+          props.femula,
           props.guideword,
           "chosenId useEffect"
         );
@@ -155,10 +155,10 @@ const ChunkCard = (props) => {
       let stCh = idUtils.createFixedChunk(
         props.guideword,
         props.chunkCardIndex,
-        props.formula
+        props.femula
       );
 
-      modifyStructureChunkOnThisFormulaItem(
+      modifyStructureChunkOnThisFemulaItem(
         "createFixedChunk useEffect CC2",
         stCh,
         true
@@ -170,7 +170,7 @@ const ChunkCard = (props) => {
       let chosenEnCh = fetchedEnChsByLemma[0];
       formatAndSetStructureChunk(
         chosenEnCh,
-        props.formula,
+        props.femula,
         props.guideword,
         "fetchedEnChsByLemma.length===1 useEffect CC2"
       );
@@ -207,7 +207,7 @@ const ChunkCard = (props) => {
     fetchedEnChsByLemma,
     props.guideword,
     props.structureChunk,
-    props.formula,
+    props.femula,
     chosenId,
   ]);
 
@@ -248,7 +248,7 @@ const ChunkCard = (props) => {
       scUtils.getChunkCardInfo(structureChunk, setChunkCardInfo);
     } else if (props.backedUpStructureChunk) {
       // C. Restore stCh from backup.
-      modifyStructureChunkOnThisFormulaItem(
+      modifyStructureChunkOnThisFemulaItem(
         "useEffect CC4",
         uUtils.copyWithoutReference(props.backedUpStructureChunk)
       );
@@ -346,12 +346,12 @@ const ChunkCard = (props) => {
                 e.target.blur();
                 props.setHighlightedCard(chunkId);
 
-                let formulaToSend = {
+                let formula = {
                   sentenceStructure: [structureChunk],
                   orders: {},
                 };
 
-                putUtils.fetchSentence(lang1, formulaToSend).then(
+                putUtils.fetchSentence(lang1, formula).then(
                   (data) => {
                     let { payload, messages } = data;
 
@@ -401,7 +401,7 @@ const ChunkCard = (props) => {
                       `Reset all traits (excluding andTags/orTags) on this chunk (${chunkId})?`
                     )
                   ) {
-                    modifyStructureChunkOnThisFormulaItem("Reset button", null);
+                    modifyStructureChunkOnThisFemulaItem("Reset button", null);
                   }
                   props.setHighlightedCard();
                 }, 0);
@@ -423,7 +423,7 @@ const ChunkCard = (props) => {
               onClick={(e) => {
                 e.target.blur();
                 structureChunk.isGhostChunk = !structureChunk.isGhostChunk;
-                modifyStructureChunkOnThisFormulaItem(
+                modifyStructureChunkOnThisFemulaItem(
                   "Ghost button",
                   structureChunk
                 );
@@ -557,7 +557,7 @@ const ChunkCard = (props) => {
                 stCh.booleanTraits.traitValue.push("isPerson");
               }
 
-              modifyStructureChunkOnThisFormulaItem("Person button", stCh);
+              modifyStructureChunkOnThisFemulaItem("Person button", stCh);
               refreshTraitBoxInputs(2);
             }}
           >
@@ -617,7 +617,7 @@ const ChunkCard = (props) => {
                 scUtils.addSpecificId(newStCh, traitsAffectedBySpecificId);
               }
 
-              modifyStructureChunkOnThisFormulaItem(
+              modifyStructureChunkOnThisFemulaItem(
                 "SpecificID button",
                 newStCh
               );
@@ -665,7 +665,7 @@ const ChunkCard = (props) => {
       {structureChunk && (
         <div className={styles.traitBoxesHolder}>
           <ToggleShowButton
-            id={`ToggleShowButton-${props.batch}-Group1-${props.formulaItemId}`}
+            id={`ToggleShowButton-${props.batch}-Group1-${props.femulaItemId}`}
             setShowTraitKeysGroup={setShowTraitKeysGroupOne}
             showTraitKeysGroup={showTraitKeysGroupOne}
             traitKeysHoldSomeValues={traitKeysGroup1.some(
@@ -718,8 +718,8 @@ const ChunkCard = (props) => {
                     traitObject2={traitObject2}
                     lObjId={structureChunk.lObjId}
                     guideword={props.guideword}
-                    modifyStructureChunkOnThisFormulaItem={
-                      modifyStructureChunkOnThisFormulaItem
+                    modifyStructureChunkOnThisFemulaItem={
+                      modifyStructureChunkOnThisFemulaItem
                     }
                     regulateTraitKey={regulateTraitKey}
                     traitRegulatorValues={traitRegulatorValues}
@@ -748,7 +748,7 @@ const ChunkCard = (props) => {
             })}
           {!idUtils.isFixedChunk(structureChunk) && (
             <ToggleShowButton
-              id={`ToggleShowButton-${props.batch}-Group2-${props.formulaItemId}`}
+              id={`ToggleShowButton-${props.batch}-Group2-${props.femulaItemId}`}
               setShowTraitKeysGroup={setShowTraitKeysGroupTwo}
               showTraitKeysGroup={showTraitKeysGroupTwo}
               traitKeysHoldSomeValues={diUtils.doTraitKeysHoldSomeValues(
@@ -769,8 +769,8 @@ const ChunkCard = (props) => {
                     chunkCardKey={props.chunkCardKey}
                     traitObject={structureChunk[traitKey]}
                     guideword={props.guideword}
-                    modifyStructureChunkOnThisFormulaItem={
-                      modifyStructureChunkOnThisFormulaItem
+                    modifyStructureChunkOnThisFemulaItem={
+                      modifyStructureChunkOnThisFemulaItem
                     }
                     structureChunk={structureChunk}
                     backedUpStructureChunk={props.backedUpStructureChunk}

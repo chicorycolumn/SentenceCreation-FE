@@ -4,7 +4,7 @@ import FormulaForm from "./Create/FormulaForm.jsx";
 import ChunkCardHolder from "./Create/ChunkCardHolder.jsx";
 import ListPopup from "./Cogs/ListPopup.jsx";
 import { LanguageContextProvider } from "./context/LanguageContext.js";
-import { fetchFormula, fetchFormulaIds } from "./utils/putUtils.js";
+import { fetchFemula, fetchFormulaIds } from "./utils/putUtils.js";
 import $ from "jquery";
 import gstyles from "./css/Global.module.css";
 import styles from "./css/Create.module.css";
@@ -17,12 +17,12 @@ const Create = () => {
   const [beEnv, setBeEnv] = useState("ref");
   const [isLoading, setIsLoading] = useState();
   const [error, setError] = useState(null);
-  const [formulaWasLoadedFromBE, setFormulaWasLoadedFromBE] = useState(0);
-  const [formula, setFormula] = useState([]);
+  const [femulaWasLoadedFromBE, setFemulaWasLoadedFromBE] = useState(0);
+  const [femula, setFemula] = useState([]);
   const [chunkOrders, setChunkOrders] = useState([]);
-  const [showFormulasPopup, setShowFormulasPopup] = useState();
-  const [chosenFormulaID, setChosenFormulaID] = useState();
-  const [shouldFetchFormula, setShouldFetchFormula] = useState();
+  const [showFemulasPopup, setShowFemulasPopup] = useState();
+  const [chosenFormulaId, setChosenFormulaId] = useState();
+  const [shouldFetchFemula, setShouldFetchFemula] = useState();
   const [fetchedFormulaIds, setFetchedFormulaIds] = useState();
   const [devSavedFormulas, setDevSavedFormulas] = useState([]);
 
@@ -43,10 +43,10 @@ const Create = () => {
           return xItem.localeCompare(yItem);
         }),
         rowCallback: (row) => {
-          let formulaID = row[0];
-          setChosenFormulaID(formulaID);
-          setShouldFetchFormula(true);
-          setShowFormulasPopup();
+          let formulaId = row[0];
+          setChosenFormulaId(formulaId);
+          setShouldFetchFemula(true);
+          setShowFemulasPopup();
         },
       };
 
@@ -54,19 +54,19 @@ const Create = () => {
       if (callback) {
         callback(formattedData);
       } else {
-        setShowFormulasPopup(true);
+        setShowFemulasPopup(true);
       }
     });
   };
 
-  const onClickFetchFormulas = (e) => {
+  const onClickFetchFemulas = (e) => {
     e.preventDefault();
     fetchAndSetFormulaIds(lang1, lang2, beEnv);
   };
 
   useEffect(() => {
-    if (chosenFormulaID && shouldFetchFormula) {
-      fetchFormula(chosenFormulaID, lang2).then((data) => {
+    if (chosenFormulaId && shouldFetchFemula) {
+      fetchFemula(chosenFormulaId, lang2).then((data) => {
         data.questionSentenceFormula.sentenceStructure.forEach(
           (sentenceStructureItem) => {
             sentenceStructureItem.backedUpStructureChunk =
@@ -74,12 +74,12 @@ const Create = () => {
           }
         );
 
-        setFormula(data.questionSentenceFormula.sentenceStructure);
+        setFemula(data.questionSentenceFormula.sentenceStructure);
         setChunkOrders(data.questionSentenceFormula.orders);
-        setFormulaWasLoadedFromBE((prev) => prev + 1);
+        setFemulaWasLoadedFromBE((prev) => prev + 1);
       });
     }
-  }, [chosenFormulaID, shouldFetchFormula]);
+  }, [chosenFormulaId, shouldFetchFemula]);
 
   return (
     <LanguageContextProvider value={`${lang1}-${lang2}-${beEnv}`}>
@@ -87,18 +87,15 @@ const Create = () => {
         <h1 className={gstyles.heading1}>Create new sentences</h1>
         <div className={styles.horizontalHolder}>
           <FormulaForm
-            setFormula={(formulaItemsArr) => {
+            setFemula={(femulaFromWrittenInput) => {
               let callback = (existingIdsData) => {
-                let uniqueId = idUtils.getNewSentenceFormulaId(
-                  existingIdsData,
-                  lang1
-                );
+                let uniqueId = idUtils.getNewFormulaId(existingIdsData, lang1);
 
-                setFormula(formulaItemsArr);
-                setShouldFetchFormula();
+                setFemula(femulaFromWrittenInput);
+                setShouldFetchFemula();
                 setChunkOrders([]);
-                setChosenFormulaID(uniqueId);
-                setFormulaWasLoadedFromBE(0);
+                setChosenFormulaId(uniqueId);
+                setFemulaWasLoadedFromBE(0);
               };
 
               if (!fetchedFormulaIds) {
@@ -107,7 +104,7 @@ const Create = () => {
                 callback(fetchedFormulaIds);
               }
             }}
-            onClickFetchFormulas={onClickFetchFormulas}
+            onClickFetchFemulas={onClickFetchFemulas}
           />
           <LanguagesForm
             setLang1={(newValue) => {
@@ -131,10 +128,10 @@ const Create = () => {
           />
         </div>
 
-        {showFormulasPopup && (
+        {showFemulasPopup && (
           <ListPopup
             exit={() => {
-              setShowFormulasPopup();
+              setShowFemulasPopup();
             }}
             data={fetchedFormulaIds}
             setData={setFetchedFormulaIds}
@@ -143,14 +140,14 @@ const Create = () => {
         )}
 
         <ChunkCardHolder
-          formula={formula}
+          femula={femula}
           chunkOrders={chunkOrders}
           setChunkOrders={setChunkOrders}
-          setFormula={setFormula}
-          chosenFormulaID={chosenFormulaID}
-          setChosenFormulaID={setChosenFormulaID}
+          setFemula={setFemula}
+          chosenFormulaId={chosenFormulaId}
+          setChosenFormulaId={setChosenFormulaId}
           batch={"QuestionBatch"}
-          formulaWasLoadedFromBE={formulaWasLoadedFromBE}
+          femulaWasLoadedFromBE={femulaWasLoadedFromBE}
           fetchedFormulaIds={fetchedFormulaIds}
           setDevSavedFormulas={setDevSavedFormulas}
         />

@@ -11,11 +11,11 @@ const ChunkOrdersPopup = (props) => {
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const [highlightedButton, setHighlightedButton] = useState();
 
-  const getGuidewordFromFormula = (chunkId) => {
-    let formulaItem = props.formula.find(
+  const getGuidewordFromFemula = (chunkId) => {
+    let femulaItem = props.femula.find(
       (fItem) => fItem.structureChunk.chunkId.traitValue === chunkId
     );
-    return formulaItem.guideword;
+    return femulaItem.guideword;
   };
 
   const stringifyChunkOrder = (chunkOrder) => {
@@ -102,7 +102,7 @@ const ChunkOrdersPopup = (props) => {
         </div>
 
         <div className={styles.buttonHolder}>
-          {props.formula.map((fItem) => {
+          {props.femula.map((fItem) => {
             let chunkId = fItem.structureChunk.chunkId.traitValue;
             let chunkIsUnused =
               !fItem.structureChunk.isGhostChunk &&
@@ -185,7 +185,7 @@ const ChunkOrdersPopup = (props) => {
                     );
                   }}
                 >
-                  {getGuidewordFromFormula(chunkId)}
+                  {getGuidewordFromFemula(chunkId)}
                 </button>
               );
             })}
@@ -271,7 +271,7 @@ const ChunkOrdersPopup = (props) => {
                         !isPrimary && gstyles.translucent2
                       }`}
                     >
-                      {getGuidewordFromFormula(chunkId)}
+                      {getGuidewordFromFemula(chunkId)}
                     </span>
                   ))}
                 </li>

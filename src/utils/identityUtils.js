@@ -46,16 +46,15 @@ exports.isFixedChunk = (stCh) => {
   return stCh.chunkId.traitValue.split("-")[0] === "fix";
 };
 
-exports.createFixedChunk = (guideword, index, formula) => {
+exports.createFixedChunk = (guideword, index, femula) => {
   if (guideword[0] === "*") {
     guideword = guideword.slice(1);
   }
 
-  let existingNumbers = formula
-    .filter((formulaItem) => formulaItem.structureChunk)
+  let existingNumbers = femula
+    .filter((femulaItem) => femulaItem.structureChunk)
     .map(
-      (formulaItem) =>
-        formulaItem.structureChunk.chunkId.traitValue.split("-")[1]
+      (femulaItem) => femulaItem.structureChunk.chunkId.traitValue.split("-")[1]
     );
 
   let newNumber = index.toString() + Math.random().toString().slice(2, 6);
@@ -69,7 +68,7 @@ exports.createFixedChunk = (guideword, index, formula) => {
   return {
     chunkId: { traitValue: chunkId },
     chunkValue: { traitValue: guideword },
-    guideword: { traitValue: guideword }, // Will be transferred to formulaItem by bodge.
+    guideword: { traitValue: guideword }, // Will be transferred to femulaItem by bodge.
   };
 };
 
@@ -101,29 +100,25 @@ exports.getLangsAndEnv = (str) => {
   return { lang1, lang2, beEnv };
 };
 
-exports.formulaIdNotUnique = (fetchedFormulaIds, sentenceFormulaId) => {
-  return fetchedFormulaIds.rows.map((x) => x[0]).includes(sentenceFormulaId);
+exports.formulaIdNotUnique = (fetchedFormulaIds, formulaId) => {
+  return fetchedFormulaIds.rows.map((x) => x[0]).includes(formulaId);
 };
 
-exports.getNewSentenceFormulaId = (
-  existingIdsData,
-  lang1,
-  existingSentenceFormulaId
-) => {
+exports.getNewFormulaId = (existingIdsData, lang1, existingFormulaId) => {
   const existingIds = existingIdsData.rows.map((x) => x[0]);
   let n = 1;
 
-  if (existingSentenceFormulaId) {
+  if (existingFormulaId) {
     let letters = "_abcdefghijklmnopqrstuvwxyz";
-    if (/[a-z]/.test(existingSentenceFormulaId.slice(-1))) {
-      existingSentenceFormulaId = existingSentenceFormulaId.slice(
+    if (/[a-z]/.test(existingFormulaId.slice(-1))) {
+      existingFormulaId = existingFormulaId.slice(
         0,
-        existingSentenceFormulaId.length - 1
+        existingFormulaId.length - 1
       );
     }
 
     while (n < 1000) {
-      let putativeId = `${existingSentenceFormulaId}${letters[n]}`;
+      let putativeId = `${existingFormulaId}${letters[n]}`;
       if (!existingIds.includes(putativeId)) {
         return putativeId;
       } else {
@@ -146,24 +141,21 @@ exports.getNewSentenceFormulaId = (
 exports.checkFormulaIdUniqueAndModify = (
   lang1,
   fetchedFormulaIds,
-  formulaToSend,
-  chosenFormulaID
+  formula,
+  chosenFormulaId
 ) => {
   if (
     fetchedFormulaIds &&
-    idUtils.formulaIdNotUnique(
-      fetchedFormulaIds,
-      formulaToSend.sentenceFormulaId
-    ) &&
+    idUtils.formulaIdNotUnique(fetchedFormulaIds, formula.sentenceFormulaId) &&
     window.confirm(
       "Overwrite existing formula (CANCEL) or create sibling formula (OK)? Otherwise if you want this formula to have a new and unrelated ID, click Snowflake for extra options."
     )
   ) {
-    let uniqueId = idUtils.getNewSentenceFormulaId(
+    let uniqueId = idUtils.getNewFormulaId(
       fetchedFormulaIds,
       lang1,
-      chosenFormulaID
+      chosenFormulaId
     );
-    formulaToSend.sentenceFormulaId = uniqueId;
+    formula.sentenceFormulaId = uniqueId;
   }
 };

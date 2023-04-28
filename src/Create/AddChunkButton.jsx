@@ -6,7 +6,7 @@ const uiUtils = require("../utils/userInputUtils.js");
 const AddChunkButton = (props) => {
   return (
     <div
-      key={`plusButton-${props.formulaItemIndex}`}
+      key={`plusButton-${props.femulaItemIndex}`}
       alt="Plus icon"
       className={styles.plusButton}
       onClick={() => {
@@ -15,16 +15,16 @@ const AddChunkButton = (props) => {
           return;
         }
 
-        props.setFormula((prevFormula) => {
-          let newFormulaItem = {
+        props.setFemula((prevFemula) => {
+          let newFemulaItem = {
             guideword,
             structureChunk: null,
-            formulaItemId: getRandomNumberString(10),
+            femulaItemId: getRandomNumberString(10),
           };
           return [
-            ...prevFormula.slice(0, props.formulaItemIndex),
-            newFormulaItem,
-            ...prevFormula.slice(props.formulaItemIndex),
+            ...prevFemula.slice(0, props.femulaItemIndex),
+            newFemulaItem,
+            ...prevFemula.slice(props.femulaItemIndex),
           ];
         });
       }}
