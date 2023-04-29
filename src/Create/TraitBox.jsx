@@ -410,6 +410,7 @@ class TraitBox extends Component {
 
         {this.state.showTagInterface && (
           <TagInterface
+            lang={this.props.lang}
             traitValueInputString={this.state.traitValueInputString}
             traitValueInputString2={this.state.traitValueInputString2}
             setShowTagInterface={this.setShowTagInterface}

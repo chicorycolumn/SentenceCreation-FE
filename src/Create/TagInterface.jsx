@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
-import LanguageContext from "../context/LanguageContext.js";
+import React, { useEffect, useState } from "react";
 import LemmasTable from "./LemmasTable.jsx";
 import Tooltip from "../Cogs/Tooltip.jsx";
 import styles from "../css/TagInterface.module.css";
@@ -16,9 +15,7 @@ const TagInterface = (props) => {
   const [tags, setTags] = useState([]);
   const [fetchedWordsByWordtype, setFetchedWordsByWordtype] = useState({});
   const [focusedWordtype, setFocusedWordtype] = useState(props.wordtype);
-  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
-    useContext(LanguageContext)
-  );
+
   const exit = () => {
     $(document).off("keyup");
     props.revertTraitValueInputString(true);
@@ -49,7 +46,7 @@ const TagInterface = (props) => {
   useEffect(() => {
     getUtils
       .fetchWordsByTag(
-        lang1,
+        props.lang,
         diUtils.asArray(props.traitValueInputString),
         diUtils.asArray(props.traitValueInputString2)
       )
@@ -66,16 +63,16 @@ const TagInterface = (props) => {
   }, [
     props.traitValueInputString,
     props.traitValueInputString2,
-    lang1,
+    props.lang,
     props.lObjId,
     props.wordtype,
   ]);
 
   useEffect(() => {
-    getUtils.fetchTags(lang1).then((fetchedTags) => {
+    getUtils.fetchTags(props.lang).then((fetchedTags) => {
       setTags(fetchedTags.sort((x, y) => x.localeCompare(y)));
     });
-  }, [lang1]);
+  }, [props.lang]);
 
   useEffect(() => {
     if (clickCounter > 5) {

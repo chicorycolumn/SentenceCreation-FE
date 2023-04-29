@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import LanguageContext from "../context/LanguageContext.js";
 import TraitBox from "./TraitBox.jsx";
 import ToggleShowButton from "./ToggleShowButton.jsx";
 import Tooltip from "../Cogs/Tooltip.jsx";
@@ -32,10 +31,6 @@ const ChunkCard = (props) => {
   const [shouldRetryFetch, setShouldRetryFetch] = useState(0);
   const [promptData, setPromptData] = useState();
   const [chunkCardInfo, setChunkCardInfo] = useState([]);
-
-  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
-    useContext(LanguageContext)
-  );
 
   const refreshTraitBoxInputs = (traitKeysGroup) => {
     if (![1, 2].includes(traitKeysGroup)) {
@@ -212,9 +207,9 @@ const ChunkCard = (props) => {
   ]);
 
   useEffect(() => {
-    if (lang1 && !props.structureChunk) {
+    if (props.lang && !props.structureChunk) {
       getUtils
-        .fetchEnChsByLemma(lang1, props.guideword)
+        .fetchEnChsByLemma(props.lang, props.guideword)
         .then(
           (fetchedEnChs) => {
             console.log(
@@ -231,7 +226,7 @@ const ChunkCard = (props) => {
           console.log("ERROR 9171", e);
         });
     }
-  }, [lang1, props.guideword, shouldRetryFetch]);
+  }, [props.lang, props.guideword, shouldRetryFetch]);
 
   useEffect(() => {
     // Each of these logic blocks is unrelated.
@@ -351,7 +346,7 @@ const ChunkCard = (props) => {
                   orders: {},
                 };
 
-                putUtils.fetchSentence(lang1, protoFormula).then(
+                putUtils.fetchSentence(props.lang, protoFormula).then(
                   (data) => {
                     let { payload, messages } = data;
 
@@ -708,6 +703,7 @@ const ChunkCard = (props) => {
                 (traitKey === "chunkId" ||
                   !idUtils.isFixedChunk(structureChunk)) && (
                   <TraitBox
+                    lang={props.lang}
                     traitKeysGroup={1}
                     chunkId={chunkId}
                     femula={props.femula}
@@ -773,6 +769,7 @@ const ChunkCard = (props) => {
                 !diUtils.traitsNotToDisplayInOwnBox.includes(traitKey) &&
                 !idUtils.isFixedChunk(structureChunk) && (
                   <TraitBox
+                    lang={props.lang}
                     traitKeysGroup={2}
                     key={traitKey}
                     traitKey={traitKey}

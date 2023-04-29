@@ -13,10 +13,6 @@ const FormulaForm = (props) => {
     // "on jest niebieskim chłopcem"
   );
 
-  // const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
-  //   useContext(LanguageContext)
-  // );
-
   return (
     <div className={styles.formHolder}>
       <h4 className={styles.title}>New sentence</h4>
@@ -41,8 +37,8 @@ const FormulaForm = (props) => {
           onClick={(e) => {
             e.preventDefault();
             props.formatAndSetFemulaFromWrittenInput(
-              props.langA,
-              props.langB,
+              props.lang1,
+              props.lang2,
               femulaStringInput
             );
           }}

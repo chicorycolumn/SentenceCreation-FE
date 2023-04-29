@@ -108,7 +108,7 @@ exports.setNewTraitValue = (stCh, traitKey, newTraitValue) => {
 };
 
 //Unused.
-exports.addLObjIdToChunk = (newStCh, lang1, guideword, editLemmaCallback) => {
+exports.addLObjIdToChunk = (newStCh, lang, guideword, editLemmaCallback) => {
   if (getWordtypeEnCh(newStCh) === "fix") {
     return;
   }
@@ -117,7 +117,7 @@ exports.addLObjIdToChunk = (newStCh, lang1, guideword, editLemmaCallback) => {
   if (guideword) {
     console.log("CLAUSE1 addLObjIdToChunk", guideword);
     getUtils
-      .fetchEnChsByLemma(lang1, guideword)
+      .fetchEnChsByLemma(lang, guideword)
       .then(
         (fetchedEnChs) => {
           console.log(
@@ -145,7 +145,7 @@ exports.addLObjIdToChunk = (newStCh, lang1, guideword, editLemmaCallback) => {
   } else {
     console.log("CLAUSE2 addLObjIdToChunk");
     let protoFormula = { sentenceStructure: [newStCh] };
-    putUtils.fetchSentence(lang1, protoFormula).then(
+    putUtils.fetchSentence(lang, protoFormula).then(
       (data) => {
         let { payload, messages } = data;
 

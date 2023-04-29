@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useContext, Fragment } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import ChunkCard from "./ChunkCard";
-import LanguageContext from "../context/LanguageContext.js";
 import ListPopup from "../Cogs/ListPopup.jsx";
 import ChunkOrdersPopup from "./ChunkOrdersPopup.jsx";
 import AddChunkButton from "./AddChunkButton.jsx";
@@ -22,9 +21,6 @@ const scUtils = require("../utils/structureChunkUtils.js");
 const fiUtils = require("../utils/femulaItemUtils.js");
 
 const ChunkCardHolder = (props) => {
-  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
-    useContext(LanguageContext)
-  );
   const [elementsToDrawLinesBetween, setElementsToDrawLinesBetween] = useState(
     []
   );
@@ -226,7 +222,7 @@ const ChunkCardHolder = (props) => {
               }
 
               putUtils._fetchSentence(
-                lang1,
+                props.lang1,
                 protoFormula,
                 fxnId,
                 null,
@@ -251,7 +247,7 @@ const ChunkCardHolder = (props) => {
               }
 
               idUtils.checkFormulaIdUniqueAndModify(
-                lang1,
+                props.lang1,
                 props.fetchedFormulaIds,
                 protoFormula,
                 props.chosenFormulaId
@@ -272,7 +268,7 @@ const ChunkCardHolder = (props) => {
               };
 
               putUtils._fetchSentence(
-                lang1,
+                props.lang1,
                 protoFormula,
                 fxnId,
                 callbackSaveFormula
@@ -296,7 +292,7 @@ const ChunkCardHolder = (props) => {
               }
 
               idUtils.checkFormulaIdUniqueAndModify(
-                lang1,
+                props.lang1,
                 props.fetchedFormulaIds,
                 protoFormula,
                 props.chosenFormulaId
@@ -305,12 +301,12 @@ const ChunkCardHolder = (props) => {
               const callbackSetAnswerFemula = (payload, formula) => {
                 if (payload.length) {
                   let femulaStringInput = prompt(
-                    `Enter your formula guidewords for Answer ${lang2} sentence.`
+                    `Enter your formula guidewords for Answer ${props.lang2} sentence.`
                   );
 
                   props.formatAndSetFemulaFromWrittenInput(
-                    lang2,
-                    lang1,
+                    props.lang2,
+                    props.lang1,
                     femulaStringInput
                   );
                 } else {
@@ -321,7 +317,7 @@ const ChunkCardHolder = (props) => {
               };
 
               putUtils._fetchSentence(
-                lang1,
+                props.lang1,
                 protoFormula,
                 fxnId,
                 callbackSetAnswerFemula
@@ -413,7 +409,10 @@ const ChunkCardHolder = (props) => {
                 "Extra options:\n\nType letter to activate.\n\na - Change current formula ID\n\nb - Log props.\n\nc - Send deliberately awry formula to check that BE doesn't spend too long on too-unspecified formulas."
               );
               if (response === "a") {
-                let newId = getNewFormulaId(props.fetchedFormulaIds, lang1);
+                let newId = getNewFormulaId(
+                  props.fetchedFormulaIds,
+                  props.lang1
+                );
 
                 if (newId !== props.chosenFormulaId) {
                   props.setChosenFormulaId(newId);
@@ -442,7 +441,7 @@ const ChunkCardHolder = (props) => {
                 });
 
                 putUtils._fetchSentence(
-                  lang1,
+                  props.lang1,
                   protoFormula,
                   fxnId,
                   null,
@@ -479,6 +478,7 @@ const ChunkCardHolder = (props) => {
                 femulaItemIndex={index}
               />
               <ChunkCard
+                lang={props.lang1}
                 femulaItemId={femulaItemId}
                 key={`${femulaItemId}-${guideword}`}
                 batch={props.batch}
