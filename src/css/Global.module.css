@@ -7,6 +7,21 @@
   font-size: 20px;
 }
 
+.sideButtonSmall {
+  box-shadow: none;
+  border: black solid 0.5px;
+  padding: 0px;
+  width: 16px !important;
+  height: 30px !important;
+  font-size: 14px !important;
+  text-align: left;
+  padding-left: 1px;
+}
+
+.fontAdjustA {
+  font-size: 9px !important;
+}
+
 .fullHeight {
   height: 100% !important;
 }

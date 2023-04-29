@@ -102,7 +102,11 @@ const ChunkCardHolder = (props) => {
 
         delete currentFemulaItem.structureChunk;
         currentFemulaItem.structureChunk = structureChunk;
-        updateFlowers(prevFemula, currentChunkId, structureChunk.chunkId);
+        updateFlowers(
+          prevFemula,
+          currentChunkId,
+          structureChunk.chunkId.traitValue
+        );
       } else {
         // Clause 3: Keep fItem but delete its stCh (request new stCh from BE using new guideword).
 

@@ -710,6 +710,7 @@ const ChunkCard = (props) => {
                   <TraitBox
                     traitKeysGroup={1}
                     chunkId={chunkId}
+                    femula={props.femula}
                     chunkCardKey={props.chunkCardKey}
                     key={`${props.chunkCardKey}-${traitKey}`}
                     traitKey={traitKey}
@@ -742,6 +743,15 @@ const ChunkCard = (props) => {
                     }
                     disabled={idUtils.isTagTrait(traitKey) && hasSpecificId}
                     refreshTraitBoxInputs={refreshTraitBoxInputs}
+                    editChunkId={(newChunkId) => {
+                      let newStCh = uUtils.copyWithoutReference(structureChunk);
+                      newStCh.chunkId.traitValue = newChunkId;
+                      props.editLemma(
+                        props.guideword,
+                        structureChunk.chunkId.traitValue,
+                        newStCh
+                      );
+                    }}
                   />
                 )
               );

@@ -159,3 +159,9 @@ exports.checkFormulaIdUniqueAndModify = (
     formula.sentenceFormulaId = uniqueId;
   }
 };
+
+exports.checkChunkIdsMatchLangAndWordtype = (chunkId1, chunkId2) => {
+  let split1 = chunkId1.split("-");
+  let split2 = chunkId2.split("-");
+  return split1[0] === split2[0];
+};

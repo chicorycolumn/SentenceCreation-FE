@@ -788,23 +788,69 @@ class TraitBox extends Component {
                         }}
                       />
                       {traitKey === "chunkId" ? (
-                        <button
-                          alt="Clipboard icon"
-                          className={`${gstyles.blueButton} ${gstyles.sideButton} ${styles.copyButton}`}
-                          onClick={(e) => {
-                            console.log("%clipboard");
-                            e.stopPropagation();
-                            navigator.clipboard.writeText(
-                              this.state.traitValueInputString
-                            );
-                            this.setState({ justCopied: true });
-                            setTimeout(() => {
-                              this.setState({ justCopied: false });
-                            }, 500);
-                          }}
-                        >
-                          &#x1f4cb;
-                        </button>
+                        <div className={styles.sideButtonHolderSmall}>
+                          <button
+                            alt="Clipboard icon"
+                            className={`${gstyles.blueButton} ${styles.copyButton} ${gstyles.sideButtonSmall} ${styles.paddingAdjustA} ${gstyles.fontAdjustA}`}
+                            onClick={(e) => {
+                              console.log("%clipboard");
+                              e.stopPropagation();
+                              navigator.clipboard.writeText(
+                                this.state.traitValueInputString
+                              );
+                              this.setState({ justCopied: true });
+                              setTimeout(() => {
+                                this.setState({ justCopied: false });
+                              }, 500);
+                            }}
+                          >
+                            &#x1f4cb;
+                          </button>
+                          <button
+                            alt="Pencil icon"
+                            className={`${gstyles.blueButton} ${styles.copyButton} ${gstyles.sideButtonSmall} ${styles.paddingAdjustB}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+
+                              let currentChunkId = this.props.chunkId;
+
+                              let putativeNewChunkId = prompt(
+                                `Enter new chunkId. It must have same first two parts as "${currentChunkId}".`
+                              );
+
+                              if (putativeNewChunkId) {
+                                if (
+                                  !idUtils.checkChunkIdsMatchLangAndWordtype(
+                                    putativeNewChunkId,
+                                    currentChunkId
+                                  )
+                                ) {
+                                  alert(
+                                    `Your new chunkId "${putativeNewChunkId}" does not match first two parts of current chunkId "${currentChunkId}".`
+                                  );
+                                  return;
+                                }
+                                if (
+                                  this.props.femula.some(
+                                    (fItem) =>
+                                      fItem.structureChunk &&
+                                      fItem.structureChunk.chunkId
+                                        .traitValue === putativeNewChunkId
+                                  )
+                                ) {
+                                  alert(
+                                    `Another chunk in this formula already has chunkId "${putativeNewChunkId}".`
+                                  );
+                                  return;
+                                }
+
+                                this.props.editChunkId(putativeNewChunkId);
+                              }
+                            }}
+                          >
+                            &#9998;
+                          </button>
+                        </div>
                       ) : (
                         !this.state.isHovered && (
                           <div className={styles.sideButtonHolder}>
