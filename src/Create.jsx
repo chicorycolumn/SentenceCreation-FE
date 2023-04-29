@@ -18,9 +18,13 @@ const Create = () => {
   const [isLoading, setIsLoading] = useState();
   const [error, setError] = useState(null);
   const [femulaWasLoadedFromBE, setFemulaWasLoadedFromBE] = useState(0);
-  const [femula, setFemula] = useState([]);
-  const [chunkOrders, setChunkOrders] = useState([]);
-  const [showFemulasPopup, setShowFemulasPopup] = useState();
+
+  const [femulaQU, setFemulaQU] = useState([]);
+  const [femulaAN, setFemulaAN] = useState([]);
+  const [chunkOrdersQU, setChunkOrdersQU] = useState([]);
+  const [chunkOrdersAN, setChunkOrdersAN] = useState([]);
+
+  const [showFormulaIdsPopup, setShowFormulaIdsPopup] = useState();
   const [chosenFormulaId, setChosenFormulaId] = useState();
   const [shouldFetchFemula, setShouldFetchFemula] = useState();
   const [fetchedFormulaIds, setFetchedFormulaIds] = useState();
@@ -51,7 +55,7 @@ const Create = () => {
           let formulaId = row[0];
           setChosenFormulaId(formulaId);
           setShouldFetchFemula(true);
-          setShowFemulasPopup();
+          setShowFormulaIdsPopup();
         },
       };
 
@@ -59,7 +63,7 @@ const Create = () => {
       if (loadFemulaFromWrittenInput) {
         loadFemulaFromWrittenInput(formattedData);
       } else {
-        setShowFemulasPopup(true);
+        setShowFormulaIdsPopup(true);
       }
     });
   };
@@ -79,8 +83,8 @@ const Create = () => {
           }
         );
 
-        setFemula(data.questionSentenceFormula.sentenceStructure);
-        setChunkOrders(data.questionSentenceFormula.orders);
+        setFemulaQU(data.questionSentenceFormula.sentenceStructure);
+        setChunkOrdersQU(data.questionSentenceFormula.orders);
         setFemulaWasLoadedFromBE((prev) => prev + 1);
       });
     }
@@ -124,7 +128,7 @@ const Create = () => {
 
       setFemula(femulaFromWrittenInput);
       setShouldFetchFemula();
-      setChunkOrders([]);
+      setChunkOrdersQU([]);
       setChosenFormulaId(uniqueId);
       setFemulaWasLoadedFromBE(0);
     };
@@ -171,10 +175,10 @@ const Create = () => {
           />
         </div>
 
-        {showFemulasPopup && (
+        {showFormulaIdsPopup && (
           <ListPopup
             exit={() => {
-              setShowFemulasPopup();
+              setShowFormulaIdsPopup();
             }}
             data={fetchedFormulaIds}
             setData={setFetchedFormulaIds}
@@ -184,8 +188,8 @@ const Create = () => {
 
         <ChunkCardHolder
           femula={femula}
-          chunkOrders={chunkOrders}
-          setChunkOrders={setChunkOrders}
+          chunkOrders={chunkOrdersQU}
+          setChunkOrders={setChunkOrdersQU}
           setFemula={setFemula}
           chosenFormulaId={chosenFormulaId}
           setChosenFormulaId={setChosenFormulaId}
