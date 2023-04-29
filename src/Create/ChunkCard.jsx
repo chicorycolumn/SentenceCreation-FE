@@ -346,12 +346,12 @@ const ChunkCard = (props) => {
                 e.target.blur();
                 props.setHighlightedCard(chunkId);
 
-                let formula = {
+                let protoFormula = {
                   sentenceStructure: [structureChunk],
                   orders: {},
                 };
 
-                putUtils.fetchSentence(lang1, formula).then(
+                putUtils.fetchSentence(lang1, protoFormula).then(
                   (data) => {
                     let { payload, messages } = data;
 

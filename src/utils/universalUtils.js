@@ -396,6 +396,42 @@ exports.getRandomNumberString = (len) => {
     .slice(2, len + 2);
 };
 
+exports.getUniqueNumberStringForGivenArray = (len, arr) => {
+  const triesLimit = 100;
+  let tries = 0;
+  let s = exports.getRandomNumberString(len);
+  while (arr.includes(s) && tries < triesLimit) {
+    s = exports.getRandomNumberString(len);
+    tries++;
+  }
+  return s;
+};
+
+exports.getUniqueNumberStrings = (len, quantity) => {
+  const _addOneS = (res) => {
+    const triesLimit = 100;
+    let tries = 0;
+    let s = exports.getRandomNumberString(len);
+    while (res.includes(s) && tries < triesLimit) {
+      s = exports.getRandomNumberString(len);
+      tries++;
+    }
+    res.push(s);
+  };
+
+  if (!quantity || !len) {
+    return [];
+  }
+
+  let res = [];
+
+  for (let i = 0; i < quantity; i++) {
+    _addOneS(res);
+  }
+
+  return res;
+};
+
 exports.stringify = (item) => {
   return item ? item.toString() : "";
 };

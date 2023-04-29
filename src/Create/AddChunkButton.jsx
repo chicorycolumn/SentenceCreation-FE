@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "../css/ChunkCardHolder.module.css";
-import { getRandomNumberString } from "../utils/universalUtils.js";
+const uUtils = require("../utils/universalUtils.js");
 const uiUtils = require("../utils/userInputUtils.js");
 
 const AddChunkButton = (props) => {
@@ -16,10 +16,18 @@ const AddChunkButton = (props) => {
         }
 
         props.setFemula((prevFemula) => {
+          let existingFemulaItemIds = prevFemula.map(
+            (fItem) => fItem.femulaItemId
+          );
+          let femulaItemId = uUtils.getUniqueNumberStringForGivenArray(
+            10,
+            existingFemulaItemIds
+          );
+
           let newFemulaItem = {
             guideword,
             structureChunk: null,
-            femulaItemId: getRandomNumberString(10),
+            femulaItemId,
           };
           return [
             ...prevFemula.slice(0, props.femulaItemIndex),

@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
 import LanguageContext from "../context/LanguageContext.js";
 import idUtils from "../utils/identityUtils.js";
-import { getRandomNumberString } from "../utils/universalUtils.js";
 import styles from "../css/FormulaForm.module.css";
 import gstyles from "../css/Global.module.css";
 import Tooltip from "../Cogs/Tooltip.jsx";
+const uUtils = require("../utils/universalUtils.js");
 
 const FormulaForm = (props) => {
   const [femulaStringInput, setFemulaStringInput] = useState(
@@ -23,14 +23,21 @@ const FormulaForm = (props) => {
     console.log("CARD IT!", lang, femulaString);
 
     if (femulaString) {
-      let femulaFromWrittenInput = femulaString.split(" ").map((guideword) => {
+      let newFemula = femulaString.split(" ").map((guideword) => {
         return {
           guideword,
           structureChunk: null,
-          femulaItemId: getRandomNumberString(10),
+          femulaItemId: null,
         };
       });
-      props.setFemula(femulaFromWrittenInput);
+
+      // Add fItem IDs
+      let uniqueIdNumbers = uUtils.getUniqueNumberStrings(10, newFemula.length);
+      newFemula.forEach((fItem, index) => {
+        fItem.femulaItemId = uniqueIdNumbers[index];
+      });
+
+      props.setFemula(newFemula);
     }
   };
 

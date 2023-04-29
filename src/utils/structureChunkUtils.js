@@ -6,7 +6,7 @@ const {
 } = require("./identityUtils.js");
 const putUtils = require("./putUtils.js");
 const scUtils = require("./structureChunkUtils.js");
-const { getRandomNumberString } = require("./universalUtils.js");
+const uUtils = require("./universalUtils.js");
 
 exports.getChunkCardInfo = (stCh, setChunkCardInfo) => {
   setChunkCardInfo((prev) => {
@@ -45,7 +45,7 @@ exports.improveGuideword = (guideword, structureChunk) => {
     } else if (isFixedChunk(structureChunk)) {
       return structureChunk.chunkValue.traitValue;
     }
-    return "000" + getRandomNumberString(3);
+    return "000" + uUtils.getRandomNumberString(3);
   }
   return guideword;
 };
@@ -144,8 +144,8 @@ exports.addLObjIdToChunk = (newStCh, lang1, guideword, editLemmaCallback) => {
       });
   } else {
     console.log("CLAUSE2 addLObjIdToChunk");
-    let formula = { sentenceStructure: [newStCh] };
-    putUtils.fetchSentence(lang1, formula).then(
+    let protoFormula = { sentenceStructure: [newStCh] };
+    putUtils.fetchSentence(lang1, protoFormula).then(
       (data) => {
         let { payload, messages } = data;
 

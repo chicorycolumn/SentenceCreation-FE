@@ -215,15 +215,15 @@ const ChunkCardHolder = (props) => {
               e.target.blur();
               let fxnId = "fetchSentence1:Star";
 
-              let formula = putUtils.getFormula(props);
-              if (!formula) {
+              let protoFormula = putUtils.getProtoFormula(props);
+              if (!protoFormula) {
                 console.log(fxnId + " Formula failed validation.");
                 return;
               }
 
               putUtils._fetchSentence(
                 lang1,
-                formula,
+                protoFormula,
                 fxnId,
                 null,
                 setListPopupData
@@ -240,8 +240,8 @@ const ChunkCardHolder = (props) => {
               e.target.blur();
               let fxnId = "fetchSentence2:Save";
 
-              let formula = putUtils.getFormula(props);
-              if (!formula) {
+              let protoFormula = putUtils.getProtoFormula(props);
+              if (!protoFormula) {
                 console.log(fxnId + " Formula failed validation.");
                 return;
               }
@@ -249,7 +249,7 @@ const ChunkCardHolder = (props) => {
               idUtils.checkFormulaIdUniqueAndModify(
                 lang1,
                 props.fetchedFormulaIds,
-                formula,
+                protoFormula,
                 props.chosenFormulaId
               );
 
@@ -269,7 +269,7 @@ const ChunkCardHolder = (props) => {
 
               putUtils._fetchSentence(
                 lang1,
-                formula,
+                protoFormula,
                 fxnId,
                 callbackSaveFormula
               );
@@ -373,13 +373,13 @@ const ChunkCardHolder = (props) => {
               } else if (response === "c") {
                 let fxnId = "fetchSentence3:Snowflake";
 
-                let formula = putUtils.getFormula(props);
-                if (!formula) {
+                let protoFormula = putUtils.getProtoFormula(props);
+                if (!protoFormula) {
                   console.log(fxnId + " Formula failed validation.");
                   return;
                 }
 
-                formula.sentenceStructure.forEach((stCh) => {
+                protoFormula.sentenceStructure.forEach((stCh) => {
                   if (stCh.andTags) {
                     stCh.andTags.traitValue = [];
                   }
@@ -390,7 +390,7 @@ const ChunkCardHolder = (props) => {
 
                 putUtils._fetchSentence(
                   lang1,
-                  formula,
+                  protoFormula,
                   fxnId,
                   null,
                   setListPopupData

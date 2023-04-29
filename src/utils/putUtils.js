@@ -6,7 +6,7 @@ const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
-export const getFormula = (props) => {
+export const getProtoFormula = (props) => {
   if (uiUtils.validateFemulaToSend(props.femula)) {
     return;
   }
@@ -53,12 +53,12 @@ export const fetchFemula = (formulaId, answerLanguage) => {
 
 export const _fetchSentence = (
   lang1,
-  formula,
+  protoFormula,
   label,
   callback,
   setListPopupData
 ) => {
-  fetchSentence(lang1, formula).then(
+  fetchSentence(lang1, protoFormula).then(
     (data) => {
       let { payload, messages } = data;
 
@@ -72,7 +72,7 @@ export const _fetchSentence = (
         return;
       }
       if (callback) {
-        callback(payload, formula);
+        callback(payload, protoFormula);
       } else {
         setListPopupData({
           title: `${payload.length} sentence${
