@@ -94,17 +94,17 @@ exports.getWordtypeEnCh = (enCh) => {
 
 exports.getLangsAndEnv = (str) => {
   let split = str.split("-");
-  const lang1 = split[0];
-  const lang2 = split[1];
+  const langQ = split[0];
+  const langA = split[1];
   const beEnv = split[2];
-  return { lang1, lang2, beEnv };
+  return { langQ, langA, beEnv };
 };
 
 exports.formulaIdNotUnique = (fetchedFormulaIds, formulaId) => {
   return fetchedFormulaIds.rows.map((x) => x[0]).includes(formulaId);
 };
 
-exports.getNewFormulaId = (existingIdsData, lang1, existingFormulaId) => {
+exports.getNewFormulaId = (existingIdsData, lang, existingFormulaId) => {
   const existingIds = existingIdsData.rows.map((x) => x[0]);
   let n = 1;
 
@@ -128,7 +128,7 @@ exports.getNewFormulaId = (existingIdsData, lang1, existingFormulaId) => {
   } else {
     while (n < 1000) {
       let num = `000${n}`.slice(-3);
-      let putativeId = `${lang1}-${num}`;
+      let putativeId = `${lang}-${num}`;
       if (!existingIds.includes(putativeId)) {
         return putativeId;
       } else {
@@ -139,7 +139,7 @@ exports.getNewFormulaId = (existingIdsData, lang1, existingFormulaId) => {
 };
 
 exports.checkFormulaIdUniqueAndModify = (
-  lang1,
+  lang,
   fetchedFormulaIds,
   formula,
   chosenFormulaId
@@ -153,7 +153,7 @@ exports.checkFormulaIdUniqueAndModify = (
   ) {
     let uniqueId = idUtils.getNewFormulaId(
       fetchedFormulaIds,
-      lang1,
+      lang,
       chosenFormulaId
     );
     formula.sentenceFormulaId = uniqueId;

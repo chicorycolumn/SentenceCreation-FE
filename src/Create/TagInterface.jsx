@@ -16,7 +16,7 @@ const TagInterface = (props) => {
   const [tags, setTags] = useState([]);
   const [fetchedWordsByWordtype, setFetchedWordsByWordtype] = useState({});
   const [focusedWordtype, setFocusedWordtype] = useState(props.wordtype);
-  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
+  const { langQ, langA, beEnv } = idUtils.getLangsAndEnv(
     useContext(LanguageContext)
   );
   const exit = () => {
@@ -49,7 +49,7 @@ const TagInterface = (props) => {
   useEffect(() => {
     getUtils
       .fetchWordsByTag(
-        lang1,
+        langQ,
         diUtils.asArray(props.traitValueInputString),
         diUtils.asArray(props.traitValueInputString2)
       )
@@ -66,16 +66,16 @@ const TagInterface = (props) => {
   }, [
     props.traitValueInputString,
     props.traitValueInputString2,
-    lang1,
+    langQ,
     props.lObjId,
     props.wordtype,
   ]);
 
   useEffect(() => {
-    getUtils.fetchTags(lang1).then((fetchedTags) => {
+    getUtils.fetchTags(langQ).then((fetchedTags) => {
       setTags(fetchedTags.sort((x, y) => x.localeCompare(y)));
     });
-  }, [lang1]);
+  }, [langQ]);
 
   useEffect(() => {
     if (clickCounter > 5) {

@@ -33,7 +33,7 @@ const ChunkCard = (props) => {
   const [promptData, setPromptData] = useState();
   const [chunkCardInfo, setChunkCardInfo] = useState([]);
 
-  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
+  const { langQ, langA, beEnv } = idUtils.getLangsAndEnv(
     useContext(LanguageContext)
   );
 
@@ -212,9 +212,9 @@ const ChunkCard = (props) => {
   ]);
 
   useEffect(() => {
-    if (lang1 && !props.structureChunk) {
+    if (langQ && !props.structureChunk) {
       getUtils
-        .fetchEnChsByLemma(lang1, props.guideword)
+        .fetchEnChsByLemma(langQ, props.guideword)
         .then(
           (fetchedEnChs) => {
             console.log(
@@ -231,7 +231,7 @@ const ChunkCard = (props) => {
           console.log("ERROR 9171", e);
         });
     }
-  }, [lang1, props.guideword, shouldRetryFetch]);
+  }, [langQ, props.guideword, shouldRetryFetch]);
 
   useEffect(() => {
     // Each of these logic blocks is unrelated.
@@ -351,7 +351,7 @@ const ChunkCard = (props) => {
                   orders: {},
                 };
 
-                putUtils.fetchSentence(lang1, protoFormula).then(
+                putUtils.fetchSentence(langQ, protoFormula).then(
                   (data) => {
                     let { payload, messages } = data;
 

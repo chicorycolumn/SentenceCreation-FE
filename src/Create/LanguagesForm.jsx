@@ -7,16 +7,16 @@ import idUtils from "../utils/identityUtils.js";
 const putUtils = require("../utils/putUtils.js");
 
 const LanguagesForm = (props) => {
-  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
+  const { langQ, langA, beEnv } = idUtils.getLangsAndEnv(
     useContext(LanguageContext)
   );
 
   useEffect(() => {
-    document.getElementById(`lang1_${lang1}`).checked = true;
+    document.getElementById(`langQ_${langQ}`).checked = true;
   }, []);
 
   useEffect(() => {
-    document.getElementById(`lang2_${lang2}`).checked = true;
+    document.getElementById(`langA_${langA}`).checked = true;
   }, []);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const LanguagesForm = (props) => {
       <div className={gstyles.floatTop}>
         <button
           onClick={() => {
-            console.log({ lang1, lang2, beEnv }); //devlogging
+            console.log({ langQ, langA, beEnv }); //devlogging
           }}
         >
           ł1
@@ -49,9 +49,9 @@ const LanguagesForm = (props) => {
         </button>
       </div>
       <RadioForm
-        callbackSetValue={props.setLang1}
+        callbackSetValue={props.setLangQ}
         title={"Choose Question Language"}
-        idString={"lang1"}
+        idString={"langQ"}
         vals={[
           { short: "ENG", long: "English" },
           { short: "POL", long: "Polish" },
@@ -59,9 +59,9 @@ const LanguagesForm = (props) => {
         ]}
       />
       <RadioForm
-        callbackSetValue={props.setLang2}
+        callbackSetValue={props.setLangA}
         title={"Choose Answer Language"}
-        idString={"lang2"}
+        idString={"langA"}
         vals={[
           { short: "ENG", long: "English" },
           { short: "POL", long: "Polish" },

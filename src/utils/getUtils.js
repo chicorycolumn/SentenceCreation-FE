@@ -5,15 +5,15 @@ const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
-export const fetchEnChsByLemma = (lang1, lemma) => {
+export const fetchEnChsByLemma = (lang, lemma) => {
   console.log(""); //devlogging
   console.log("");
   console.log("**fetchEnChsByLemm'a**");
-  console.log({ lang1, lemma });
+  console.log({ lang, lemma });
 
   return axios
     .get(
-      `${baseUrl}/educator/chunks?&lang=${lang1}&lemma=${lemma}`
+      `${baseUrl}/educator/chunks?&lang=${lang}&lemma=${lemma}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
@@ -26,14 +26,14 @@ export const fetchEnChsByLemma = (lang1, lemma) => {
       return result;
     })
     .catch((e) => {
-      console.log("ERROR 2171", lang1, `"${lemma}"`, e);
+      console.log("ERROR 2171", lang, `"${lemma}"`, e);
     });
 };
 
-export const fetchTags = (lang1) => {
+export const fetchTags = (lang) => {
   return axios
     .get(
-      `${baseUrl}/educator/tags?lang=${lang1}`
+      `${baseUrl}/educator/tags?lang=${lang}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
@@ -44,8 +44,8 @@ export const fetchTags = (lang1) => {
     });
 };
 
-export const fetchWordsByTag = (lang1, andTags, orTags) => {
-  const langString = `lang=${lang1}`;
+export const fetchWordsByTag = (lang, andTags, orTags) => {
+  const langString = `lang=${lang}`;
   const andTagsString = !uUtils.isEmpty(andTags)
     ? `&andTags=${andTags.join("+")}`
     : "";

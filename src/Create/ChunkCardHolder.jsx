@@ -22,7 +22,7 @@ const scUtils = require("../utils/structureChunkUtils.js");
 const fiUtils = require("../utils/femulaItemUtils.js");
 
 const ChunkCardHolder = (props) => {
-  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
+  const { langQ, langA, beEnv } = idUtils.getLangsAndEnv(
     useContext(LanguageContext)
   );
   const [elementsToDrawLinesBetween, setElementsToDrawLinesBetween] = useState(
@@ -226,7 +226,7 @@ const ChunkCardHolder = (props) => {
               }
 
               putUtils._fetchSentence(
-                lang1,
+                langQ,
                 protoFormula,
                 fxnId,
                 null,
@@ -251,7 +251,7 @@ const ChunkCardHolder = (props) => {
               }
 
               idUtils.checkFormulaIdUniqueAndModify(
-                lang1,
+                langQ,
                 props.fetchedFormulaIds,
                 protoFormula,
                 props.chosenFormulaId
@@ -272,7 +272,7 @@ const ChunkCardHolder = (props) => {
               };
 
               putUtils._fetchSentence(
-                lang1,
+                langQ,
                 protoFormula,
                 fxnId,
                 callbackSaveFormula
@@ -296,7 +296,7 @@ const ChunkCardHolder = (props) => {
               }
 
               idUtils.checkFormulaIdUniqueAndModify(
-                lang1,
+                langQ,
                 props.fetchedFormulaIds,
                 protoFormula,
                 props.chosenFormulaId
@@ -305,12 +305,12 @@ const ChunkCardHolder = (props) => {
               const callbackSetAnswerFemula = (payload, formula) => {
                 if (payload.length) {
                   let femulaStringInput = prompt(
-                    `Enter your formula guidewords for Answer ${lang2} sentence.`
+                    `Enter your formula guidewords for Answer ${langA} sentence.`
                   );
 
                   props.formatAndSetFemulaFromWrittenInput(
-                    lang2,
-                    lang1,
+                    langQ,
+                    langA,
                     femulaStringInput
                   );
                 } else {
@@ -321,7 +321,7 @@ const ChunkCardHolder = (props) => {
               };
 
               putUtils._fetchSentence(
-                lang1,
+                langQ,
                 protoFormula,
                 fxnId,
                 callbackSetAnswerFemula
@@ -413,7 +413,7 @@ const ChunkCardHolder = (props) => {
                 "Extra options:\n\nType letter to activate.\n\na - Change current formula ID\n\nb - Log props.\n\nc - Send deliberately awry formula to check that BE doesn't spend too long on too-unspecified formulas."
               );
               if (response === "a") {
-                let newId = getNewFormulaId(props.fetchedFormulaIds, lang1);
+                let newId = getNewFormulaId(props.fetchedFormulaIds, langQ);
 
                 if (newId !== props.chosenFormulaId) {
                   props.setChosenFormulaId(newId);
@@ -442,7 +442,7 @@ const ChunkCardHolder = (props) => {
                 });
 
                 putUtils._fetchSentence(
-                  lang1,
+                  langQ,
                   protoFormula,
                   fxnId,
                   null,

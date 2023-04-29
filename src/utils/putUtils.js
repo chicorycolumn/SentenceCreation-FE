@@ -18,10 +18,10 @@ export const getProtoFormula = (props) => {
   };
 };
 
-export const fetchFormulaIds = (lang1, lang2, env) => {
+export const fetchFormulaIds = (langQ, langA, env) => {
   return axios
     .get(
-      `${baseUrl}/educator/formulaids?lang1=${lang1}&lang2=${lang2}&env=${env}`
+      `${baseUrl}/educator/formulaids?lang1=${langQ}&lang2=${langA}&env=${env}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
@@ -52,13 +52,13 @@ export const fetchFemula = (formulaId, answerLanguage) => {
 };
 
 export const _fetchSentence = (
-  lang1,
+  lang,
   protoFormula,
   label,
   callback,
   setListPopupData
 ) => {
-  fetchSentence(lang1, protoFormula).then(
+  fetchSentence(lang, protoFormula).then(
     (data) => {
       let { payload, messages } = data;
 
@@ -89,7 +89,7 @@ export const _fetchSentence = (
   );
 };
 
-export const fetchSentence = (lang1, formula) => {
+export const fetchSentence = (lang, formula) => {
   backendifyFormula(formula);
 
   if (!formula.sentenceStructure.length) {
@@ -103,7 +103,7 @@ export const fetchSentence = (lang1, formula) => {
       (!formula.orders.additional || !formula.orders.additional.length));
 
   let body = {
-    questionLanguage: lang1,
+    questionLanguage: lang,
     sentenceFormula: formula,
     requestingSingleWordOnly,
   };
@@ -115,7 +115,7 @@ export const fetchSentence = (lang1, formula) => {
 
   return axios
     .put(
-      `${baseUrl}/educator/sentences?lang=${lang1}`,
+      `${baseUrl}/educator/sentences?lang=${lang}`,
       body
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
