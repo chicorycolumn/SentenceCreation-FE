@@ -13,37 +13,9 @@ const FormulaForm = (props) => {
     // "on jest niebieskim chłopcem"
   );
 
-  const cardIt = (lang, input) => {
-    if (!lang) {
-      alert("No language specified.");
-      return;
-    }
-
-    let femulaString = femulaStringInput || input;
-    console.log("CARD IT!", lang, femulaString);
-
-    if (femulaString) {
-      let newFemula = femulaString.split(" ").map((guideword) => {
-        return {
-          guideword,
-          structureChunk: null,
-          femulaItemId: null,
-        };
-      });
-
-      // Add fItem IDs
-      let uniqueIdNumbers = uUtils.getUniqueNumberStrings(10, newFemula.length);
-      newFemula.forEach((fItem, index) => {
-        fItem.femulaItemId = uniqueIdNumbers[index];
-      });
-
-      props.setFemula(newFemula);
-    }
-  };
-
-  const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
-    useContext(LanguageContext)
-  );
+  // const { lang1, lang2, beEnv } = idUtils.getLangsAndEnv(
+  //   useContext(LanguageContext)
+  // );
 
   return (
     <div className={styles.formHolder}>
@@ -68,7 +40,11 @@ const FormulaForm = (props) => {
           type="submit"
           onClick={(e) => {
             e.preventDefault();
-            cardIt(lang1);
+            props.formatAndSetFemulaFromWrittenInput(
+              props.langA,
+              props.langB,
+              femulaStringInput
+            );
           }}
         >
           &#10157;

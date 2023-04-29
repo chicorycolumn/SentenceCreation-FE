@@ -26,7 +26,12 @@ const Create = () => {
   const [fetchedFormulaIds, setFetchedFormulaIds] = useState();
   const [devSavedFormulas, setDevSavedFormulas] = useState([]);
 
-  const fetchAndSetFormulaIds = (lang1, lang2, beEnv, callback) => {
+  const fetchAndSetFormulaIds = (
+    lang1,
+    lang2,
+    beEnv,
+    loadFemulaFromWrittenInput
+  ) => {
     fetchFormulaIds(lang1, lang2, beEnv).then((data) => {
       console.log(
         "\nHey look I got this data back from fetchFormulaIds",
@@ -51,8 +56,8 @@ const Create = () => {
       };
 
       setFetchedFormulaIds(formattedData);
-      if (callback) {
-        callback(formattedData);
+      if (loadFemulaFromWrittenInput) {
+        loadFemulaFromWrittenInput(formattedData);
       } else {
         setShowFemulasPopup(true);
       }
@@ -81,29 +86,67 @@ const Create = () => {
     }
   }, [chosenFormulaId, shouldFetchFemula]);
 
+  const formatAndSetFemulaFromWrittenInput = (
+    langA,
+    langB,
+    femulaStringInput
+  ) => {
+    if (!langA) {
+      alert("No language specified.");
+      return;
+    }
+    if (!femulaStringInput) {
+      return;
+    }
+
+    console.log("CARD IT!", langA, femulaStringInput);
+
+    let femulaFromWrittenInput = femulaStringInput
+      .split(" ")
+      .map((guideword) => {
+        return {
+          guideword,
+          structureChunk: null,
+          femulaItemId: null,
+        };
+      });
+
+    let uniqueIdNumbers = uUtils.getUniqueNumberStrings(
+      10,
+      femulaFromWrittenInput.length
+    );
+    femulaFromWrittenInput.forEach((fItem, index) => {
+      fItem.femulaItemId = uniqueIdNumbers[index];
+    });
+
+    const _loadFemulaFromWrittenInput = (existingIdsData) => {
+      let uniqueId = idUtils.getNewFormulaId(existingIdsData, langA);
+
+      setFemula(femulaFromWrittenInput);
+      setShouldFetchFemula();
+      setChunkOrders([]);
+      setChosenFormulaId(uniqueId);
+      setFemulaWasLoadedFromBE(0);
+    };
+
+    if (!fetchedFormulaIds) {
+      fetchAndSetFormulaIds(langA, langB, beEnv, _loadFemulaFromWrittenInput);
+    } else {
+      _loadFemulaFromWrittenInput(fetchedFormulaIds);
+    }
+  };
+
   return (
     <LanguageContextProvider value={`${lang1}-${lang2}-${beEnv}`}>
       <div className={styles.mainDivCreate}>
         <h1 className={gstyles.heading1}>Create new sentences</h1>
         <div className={styles.horizontalHolder}>
           <FormulaForm
-            setFemula={(femulaFromWrittenInput) => {
-              let callback = (existingIdsData) => {
-                let uniqueId = idUtils.getNewFormulaId(existingIdsData, lang1);
-
-                setFemula(femulaFromWrittenInput);
-                setShouldFetchFemula();
-                setChunkOrders([]);
-                setChosenFormulaId(uniqueId);
-                setFemulaWasLoadedFromBE(0);
-              };
-
-              if (!fetchedFormulaIds) {
-                fetchAndSetFormulaIds(lang1, lang2, beEnv, callback);
-              } else {
-                callback(fetchedFormulaIds);
-              }
-            }}
+            langA={lang1}
+            langB={lang2}
+            formatAndSetFemulaFromWrittenInput={
+              formatAndSetFemulaFromWrittenInput
+            }
             onClickFetchFemulas={onClickFetchFemulas}
           />
           <LanguagesForm
@@ -150,6 +193,9 @@ const Create = () => {
           femulaWasLoadedFromBE={femulaWasLoadedFromBE}
           fetchedFormulaIds={fetchedFormulaIds}
           setDevSavedFormulas={setDevSavedFormulas}
+          formatAndSetFemulaFromWrittenInput={
+            formatAndSetFemulaFromWrittenInput
+          }
         />
       </div>
     </LanguageContextProvider>

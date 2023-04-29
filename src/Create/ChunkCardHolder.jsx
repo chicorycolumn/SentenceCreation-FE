@@ -283,6 +283,55 @@ const ChunkCardHolder = (props) => {
             <Tooltip text="Save formula" />
           </button>
           <button
+            alt="Letter A in circle icon"
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            onClick={(e) => {
+              e.target.blur();
+              let fxnId = "fetchSentence2:MakeAnswer";
+
+              let protoFormula = putUtils.getProtoFormula(props);
+              if (!protoFormula) {
+                console.log(fxnId + " Formula failed validation.");
+                return;
+              }
+
+              idUtils.checkFormulaIdUniqueAndModify(
+                lang1,
+                props.fetchedFormulaIds,
+                protoFormula,
+                props.chosenFormulaId
+              );
+
+              const callbackSetAnswerFemula = (payload, formula) => {
+                if (payload.length) {
+                  let femulaStringInput = prompt(
+                    `Enter your formula guidewords for Answer ${lang2} sentence.`
+                  );
+
+                  props.formatAndSetFemulaFromWrittenInput(
+                    lang2,
+                    lang1,
+                    femulaStringInput
+                  );
+                } else {
+                  alert(
+                    "Sorry, no sentences were created for your formula when I queried it just now, so you must fix that before creating Answer sentence formula."
+                  );
+                }
+              };
+
+              putUtils._fetchSentence(
+                lang1,
+                protoFormula,
+                fxnId,
+                callbackSetAnswerFemula
+              );
+            }}
+          >
+            &#9398;
+            <Tooltip text="Make answer sentence formula" />
+          </button>
+          <button
             alt="Connection icon"
             className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.cardButton_inactive} ${gstyles.tooltipHolderDelayed}`}
             onMouseEnter={(e) => {
