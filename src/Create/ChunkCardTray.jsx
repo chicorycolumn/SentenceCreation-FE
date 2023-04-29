@@ -4,7 +4,7 @@ import ListPopup from "../Cogs/ListPopup.jsx";
 import ChunkOrdersPopup from "./ChunkOrdersPopup.jsx";
 import AddChunkButton from "./AddChunkButton.jsx";
 import Tooltip from "../Cogs/Tooltip.jsx";
-import styles from "../css/ChunkCardHolder.module.css";
+import styles from "../css/ChunkCardTray.module.css";
 import gstyles from "../css/Global.module.css";
 import LineHolder from "../Cogs/LineHolder";
 import uUtils from "../utils/universalUtils.js";
@@ -20,7 +20,7 @@ const putUtils = require("../utils/putUtils.js");
 const scUtils = require("../utils/structureChunkUtils.js");
 const fiUtils = require("../utils/femulaItemUtils.js");
 
-const ChunkCardHolder = (props) => {
+const ChunkCardTray = (props) => {
   const [elementsToDrawLinesBetween, setElementsToDrawLinesBetween] = useState(
     []
   );
@@ -163,7 +163,7 @@ const ChunkCardHolder = (props) => {
     idUtils.formulaIdNotUnique(props.fetchedFormulaIds, props.chosenFormulaId);
 
   return (
-    <div className={styles.cardHolderContainer}>
+    <div className={styles.cardTrayContainer}>
       {listPopupData && (
         <ListPopup
           exit={() => {
@@ -455,7 +455,7 @@ const ChunkCardHolder = (props) => {
           </button>
         </div>
       </div>
-      <div className={styles.cardHolder} key={meaninglessCounter}>
+      <div className={styles.cardTray} key={meaninglessCounter}>
         <LineHolder
           elementsToDrawLineBetween={[]}
           id="Unused LineHolder for flexbox spacing."
@@ -592,4 +592,4 @@ const ChunkCardHolder = (props) => {
   );
 };
 
-export default ChunkCardHolder;
+export default ChunkCardTray;

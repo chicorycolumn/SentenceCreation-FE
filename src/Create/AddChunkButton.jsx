@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../css/ChunkCardHolder.module.css";
+import styles from "../css/ChunkCardTray.module.css";
 const uUtils = require("../utils/universalUtils.js");
 const uiUtils = require("../utils/userInputUtils.js");
 

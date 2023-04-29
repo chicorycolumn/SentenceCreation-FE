@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import FormulaForm from "./FormulaForm.jsx";
-import ChunkCardHolder from "./ChunkCardHolder.jsx";
+import ChunkCardTray from "./ChunkCardTray.jsx";
 import ListPopup from "../Cogs/ListPopup.jsx";
 import LanguageContext from "../context/LanguageContext.js";
 import { fetchFemula, fetchFormulaIds } from ".././utils/putUtils.js";
@@ -154,7 +154,7 @@ const ChunkCardTrayHolder = (props) => {
         />
       )}
 
-      <ChunkCardHolder
+      <ChunkCardTray
         lang1={props.lang1}
         lang2={props.lang2}
         femula={femula}

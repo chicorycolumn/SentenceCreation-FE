@@ -1,4 +1,4 @@
-.cardHolder {
+.cardTray {
   border: turquoise dotted 5pt;
   display: flex;
   flex-direction: row;
@@ -6,7 +6,7 @@
   padding: 0px;
 }
 
-.cardHolderContainer {
+.cardTrayContainer {
   margin-top: 15px;
 }
 
