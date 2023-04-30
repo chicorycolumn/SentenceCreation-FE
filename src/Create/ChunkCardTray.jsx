@@ -9,6 +9,7 @@ import gstyles from "../css/Global.module.css";
 import LineHolder from "../Cogs/LineHolder";
 import uUtils from "../utils/universalUtils.js";
 import flUtils from "../utils/flowerUtils.js";
+import jqUtils from "../utils/jQueryUtils.js";
 import uiUtils from "../utils/userInputUtils.js";
 import idUtils, {
   agreementTraits,
@@ -125,36 +126,17 @@ const ChunkCardTray = (props) => {
     }, 100);
   };
 
-  function expandTrayHeightToFitTraitBoxes() {
-    setTimeout(() => {
-      console.log("<Checking chunkCardTrayHolder height>");
-      let heights = [];
-      $.each($(`div[id^='traitBoxesHolder-${props.batch}-']`), function () {
-        heights.push($(this).height());
-      });
-      if (heights.length) {
-        let tallest = Math.max(...heights);
-        if (tallest) {
-          tallest += 300;
-        }
-        $(`#chunkCardTrayHolder-${props.batch}`).height(tallest);
-      }
-    }, 5);
-  }
-
   useEffect(() => {
     setTimeout(() => {
-      expandTrayHeightToFitTraitBoxes();
+      jqUtils.expandTrayHeightToFitTraitBoxes(props.batch);
       setTimeout(() => {
-        expandTrayHeightToFitTraitBoxes();
+        jqUtils.expandTrayHeightToFitTraitBoxes(props.batch);
       }, 500);
     }, 500);
 
-    $(`#cardTray-${props.batch}`).on(
-      "click",
-      "*",
-      expandTrayHeightToFitTraitBoxes
-    );
+    $(`#cardTray-${props.batch}`).on("click", "*", function () {
+      jqUtils.expandTrayHeightToFitTraitBoxes(props.batch);
+    });
   }, []);
 
   useEffect(() => {
@@ -405,43 +387,14 @@ const ChunkCardTray = (props) => {
               e.target.blur();
               setShowAllTraitBoxes((prev) => !prev);
 
-              function collapseIfNotCollapsed1() {
-                let button = $(this)[0];
-                let buttonIsShowing = [
-                  icons.downBlackTriangle,
-                  icons.downWhiteTriangle,
-                ].includes(button.innerText);
-
-                if (
-                  (!showAllTraitBoxes && buttonIsShowing) |
-                  (showAllTraitBoxes &&
-                    !buttonIsShowing &&
-                    (!!button.id.match("Group1") ||
-                      button.innerText === icons.upBlackTriangle))
-                ) {
-                  button.click();
-                }
-              }
-              function collapseIfNotCollapsed2() {
-                let showAllButtonOfOtherBatch = $(this)[0];
-                let showAllButtonOfCurrentWillCollapse = showAllTraitBoxes;
-
-                let showAllButtonOfOtherBatchIsUncollapsed = [
-                  icons.downBlackTriangle,
-                  icons.downWhiteTriangle,
-                ].includes(showAllButtonOfOtherBatch.innerText);
-
-                if (
-                  showAllButtonOfCurrentWillCollapse &&
-                  showAllButtonOfOtherBatchIsUncollapsed
-                ) {
-                  showAllButtonOfOtherBatch.click();
-                }
-              }
-
               $.each(
                 $(`button[id^='ToggleShowButton-${props.batch}-']`),
-                collapseIfNotCollapsed1
+                function () {
+                  jqUtils.collapseIfNotCollapsed1(
+                    $(this)[0],
+                    showAllTraitBoxes
+                  );
+                }
               );
 
               $.each(
@@ -450,7 +403,12 @@ const ChunkCardTray = (props) => {
                     props.batch
                   )}']`
                 ),
-                collapseIfNotCollapsed2
+                function () {
+                  jqUtils.collapseIfNotCollapsed2(
+                    $(this)[0],
+                    showAllTraitBoxes
+                  );
+                }
               );
             }}
           >
