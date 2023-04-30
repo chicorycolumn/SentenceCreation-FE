@@ -125,6 +125,38 @@ const ChunkCardTray = (props) => {
     }, 100);
   };
 
+  function expandTrayHeightToFitTraitBoxes() {
+    setTimeout(() => {
+      console.log("<Checking chunkCardTrayHolder height>");
+      let heights = [];
+      $.each($(`div[id^='traitBoxesHolder-${props.batch}-']`), function () {
+        heights.push($(this).height());
+      });
+      if (heights.length) {
+        let tallest = Math.max(...heights);
+        if (tallest) {
+          tallest += 300;
+        }
+        $(`#chunkCardTrayHolder-${props.batch}`).height(tallest);
+      }
+    }, 5);
+  }
+
+  useEffect(() => {
+    setTimeout(() => {
+      expandTrayHeightToFitTraitBoxes();
+      setTimeout(() => {
+        expandTrayHeightToFitTraitBoxes();
+      }, 500);
+    }, 500);
+
+    $(`#cardTray-${props.batch}`).on(
+      "click",
+      "*",
+      expandTrayHeightToFitTraitBoxes
+    );
+  }, []);
+
   useEffect(() => {
     if (
       !props.chunkOrders.length &&
@@ -190,7 +222,7 @@ const ChunkCardTray = (props) => {
           {idNotUnique && (
             <Tooltip text="Formula ID not unique. You will be overwriting this formula. Click Snowflake or Save Formula if you want to change." />
           )}
-          Question sentence:{" "}
+          {props.batch} sentence:{" "}
           {props.chosenFormulaId + `${idNotUnique ? "⚠" : ""}`}
         </p>
         <div className={styles.buttonSubholder}>
@@ -364,6 +396,7 @@ const ChunkCardTray = (props) => {
           </button>
           <button
             alt="Triangle icon"
+            id={`ToggleShowButtonAll-${props.batch}`}
             className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onMouseEnter={() => {
               console.log("showAllTraitBoxes", showAllTraitBoxes);
@@ -372,25 +405,52 @@ const ChunkCardTray = (props) => {
               e.target.blur();
               setShowAllTraitBoxes((prev) => !prev);
 
+              function collapseIfNotCollapsed1() {
+                let button = $(this)[0];
+                let buttonIsShowing = [
+                  icons.downBlackTriangle,
+                  icons.downWhiteTriangle,
+                ].includes(button.innerText);
+
+                if (
+                  (!showAllTraitBoxes && buttonIsShowing) |
+                  (showAllTraitBoxes &&
+                    !buttonIsShowing &&
+                    (!!button.id.match("Group1") ||
+                      button.innerText === icons.upBlackTriangle))
+                ) {
+                  button.click();
+                }
+              }
+              function collapseIfNotCollapsed2() {
+                let showAllButtonOfOtherBatch = $(this)[0];
+                let showAllButtonOfCurrentWillCollapse = showAllTraitBoxes;
+
+                let showAllButtonOfOtherBatchIsUncollapsed = [
+                  icons.downBlackTriangle,
+                  icons.downWhiteTriangle,
+                ].includes(showAllButtonOfOtherBatch.innerText);
+
+                if (
+                  showAllButtonOfCurrentWillCollapse &&
+                  showAllButtonOfOtherBatchIsUncollapsed
+                ) {
+                  showAllButtonOfOtherBatch.click();
+                }
+              }
+
               $.each(
                 $(`button[id^='ToggleShowButton-${props.batch}-']`),
-                function () {
-                  let button = $(this)[0];
-                  let buttonIsShowing = [
-                    icons.downBlackTriangle,
-                    icons.downWhiteTriangle,
-                  ].includes(button.innerText);
+                collapseIfNotCollapsed1
+              );
 
-                  if (
-                    (!showAllTraitBoxes && buttonIsShowing) |
-                    (showAllTraitBoxes &&
-                      !buttonIsShowing &&
-                      (!!button.id.match("Group1") ||
-                        button.innerText === icons.upBlackTriangle))
-                  ) {
-                    button.click();
-                  }
-                }
+              $.each(
+                $(
+                  `button[id^='ToggleShowButtonAll-${idUtils.invertBatch(
+                    props.batch
+                  )}']`
+                ),
+                collapseIfNotCollapsed2
               );
             }}
           >
@@ -455,7 +515,11 @@ const ChunkCardTray = (props) => {
           </button>
         </div>
       </div>
-      <div className={styles.cardTray} key={meaninglessCounter}>
+      <div
+        className={styles.cardTray}
+        id={`cardTray-${props.batch}`}
+        key={meaninglessCounter}
+      >
         <LineHolder
           elementsToDrawLineBetween={[]}
           id="Unused LineHolder for flexbox spacing."

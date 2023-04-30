@@ -165,3 +165,11 @@ exports.checkChunkIdsMatchLangAndWordtype = (chunkId1, chunkId2) => {
   let split2 = chunkId2.split("-");
   return split1[0] === split2[0];
 };
+
+exports.invertBatch = (s) => {
+  let ref = {
+    Question: "Answer",
+    Answer: "Question",
+  };
+  return ref[s];
+};

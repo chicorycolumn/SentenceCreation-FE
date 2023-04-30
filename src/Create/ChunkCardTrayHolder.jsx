@@ -131,10 +131,13 @@ const ChunkCardTrayHolder = (props) => {
   };
 
   return (
-    <div className={styles.mainDivCreate}>
-      <h1 className={gstyles.heading1}>Create new sentences</h1>
-      <div className={styles.horizontalHolder}>
+    <div
+      className={styles.chunkCardTrayHolder}
+      id={`chunkCardTrayHolder-${props.batch}`}
+    >
+      <div className={`{styles.horizontalHolder} ${styles.marginAdjustA}`}>
         <FormulaForm
+          batch={props.batch}
           lang1={props.lang1}
           lang2={props.lang2}
           formatAndSetFemulaFromWrittenInput={
@@ -154,21 +157,27 @@ const ChunkCardTrayHolder = (props) => {
         />
       )}
 
-      <ChunkCardTray
-        lang1={props.lang1}
-        lang2={props.lang2}
-        femula={femula}
-        chunkOrders={chunkOrders}
-        setChunkOrders={setChunkOrders}
-        setFemula={setFemula}
-        chosenFormulaId={chosenFormulaId}
-        setChosenFormulaId={setChosenFormulaId}
-        batch={"QuestionBatch"}
-        femulaWasLoadedFromBE={femulaWasLoadedFromBE}
-        fetchedFormulaIds={fetchedFormulaIds}
-        setDevSavedFormulas={props.setDevSavedFormulas}
-        formatAndSetFemulaFromWrittenInput={formatAndSetFemulaFromWrittenInput}
-      />
+      {femula.length ? (
+        <ChunkCardTray
+          lang1={props.lang1}
+          lang2={props.lang2}
+          femula={femula}
+          chunkOrders={chunkOrders}
+          setChunkOrders={setChunkOrders}
+          setFemula={setFemula}
+          chosenFormulaId={chosenFormulaId}
+          setChosenFormulaId={setChosenFormulaId}
+          batch={props.batch}
+          femulaWasLoadedFromBE={femulaWasLoadedFromBE}
+          fetchedFormulaIds={fetchedFormulaIds}
+          setDevSavedFormulas={props.setDevSavedFormulas}
+          formatAndSetFemulaFromWrittenInput={
+            formatAndSetFemulaFromWrittenInput
+          }
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 };

@@ -19,6 +19,7 @@ const Create = () => {
 
   return (
     <LanguageContextProvider value={`${langQ}-${langA}-${beEnv}`}>
+      <h1 className={gstyles.heading1}>Create new sentences</h1>
       <div className={styles.horizontalHolder}>
         <LanguagesForm
           setLangQ={(newValue) => {
@@ -42,9 +43,16 @@ const Create = () => {
         />
       </div>
       <ChunkCardTrayHolder
-        setDevSavedFormulas={setDevSavedFormulas}
+        batch={"Question"}
         lang1={langQ}
         lang2={langA}
+        setDevSavedFormulas={setDevSavedFormulas}
+      />
+      <ChunkCardTrayHolder
+        batch={"Answer"}
+        lang1={langA}
+        lang2={langQ}
+        setDevSavedFormulas={setDevSavedFormulas}
       />
     </LanguageContextProvider>
   );

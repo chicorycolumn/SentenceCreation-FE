@@ -658,7 +658,10 @@ const ChunkCard = (props) => {
         )}
       </div>
       {structureChunk && (
-        <div className={styles.traitBoxesHolder}>
+        <div
+          className={styles.traitBoxesHolder}
+          id={`traitBoxesHolder-${props.batch}-${props.chunkCardKey}`}
+        >
           <ToggleShowButton
             id={`ToggleShowButton-${props.batch}-Group1-${props.femulaItemId}`}
             setShowTraitKeysGroup={setShowTraitKeysGroupOne}

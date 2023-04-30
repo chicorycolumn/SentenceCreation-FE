@@ -15,7 +15,9 @@ const FormulaForm = (props) => {
 
   return (
     <div className={styles.formHolder}>
-      <h4 className={styles.title}>New sentence</h4>
+      <h4
+        className={styles.title}
+      >{`New ${props.batch} sentence (${props.lang1})`}</h4>
       <form className={`${styles.form} ${gstyles.tooltipHolderDelayed}`}>
         <Tooltip
           text="Prefix with an asterisk to make a fixed chunk, eg 'my name is *Jen'"
@@ -36,6 +38,12 @@ const FormulaForm = (props) => {
           type="submit"
           onClick={(e) => {
             e.preventDefault();
+
+            if (props.batch === "Answer") {
+              alert(
+                "Let's match up the chunkIds from Question sentence first."
+              );
+            }
             props.formatAndSetFemulaFromWrittenInput(
               props.lang1,
               props.lang2,

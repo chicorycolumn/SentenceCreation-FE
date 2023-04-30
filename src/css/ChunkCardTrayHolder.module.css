@@ -4,6 +4,11 @@
   justify-content: flex-start;
 }
 
-.mainDivCreate {
-  border: rgba(0, 0, 0, 0.1) dotted 2px;
+.chunkCardTrayHolder {
+  border: rgba(0, 0, 0, 0) dotted 4px;
+}
+
+.marginAdjustA {
+  margin-bottom: -30px;
+  margin-top: 30px;
 }
