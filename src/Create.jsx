@@ -16,9 +16,33 @@ const Create = () => {
   const [langA, setLangA] = useState("ENG");
   const [beEnv, setBeEnv] = useState("ref");
   const [devSavedFormulas, setDevSavedFormulas] = useState([]);
+  const [questionSavedFormula, setQuestionSavedFormula] = useState();
 
   return (
     <LanguageContextProvider value={`${langQ}-${langA}-${beEnv}`}>
+      <div className={gstyles.floatTop}>
+        <button
+          onClick={() => {
+            console.log({ langQ, langA, beEnv }); //devlogging
+          }}
+        >
+          ł1
+        </button>
+        <button
+          onClick={() => {
+            console.log("devSavedFormulas:", devSavedFormulas); //devlogging
+          }}
+        >
+          ł2
+        </button>
+        <button
+          onClick={() => {
+            console.log("questionSavedFormula:", questionSavedFormula); //devlogging
+          }}
+        >
+          ł3
+        </button>
+      </div>
       <h1 className={gstyles.heading1}>Create new sentences</h1>
       <div className={styles.horizontalHolder}>
         <LanguagesForm
@@ -39,7 +63,6 @@ const Create = () => {
             });
           }}
           setBeEnv={setBeEnv}
-          devSavedFormulas={devSavedFormulas}
         />
       </div>
       <ChunkCardTrayHolder
@@ -47,12 +70,14 @@ const Create = () => {
         lang1={langQ}
         lang2={langA}
         setDevSavedFormulas={setDevSavedFormulas}
+        setQuestionSavedFormula={setQuestionSavedFormula}
       />
       <ChunkCardTrayHolder
         batch={"Answer"}
         lang1={langA}
         lang2={langQ}
         setDevSavedFormulas={setDevSavedFormulas}
+        questionSavedFormula={questionSavedFormula}
       />
     </LanguageContextProvider>
   );

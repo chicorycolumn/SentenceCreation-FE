@@ -25,29 +25,6 @@ const LanguagesForm = (props) => {
 
   return (
     <div className={styles.formHolder}>
-      <div className={gstyles.floatTop}>
-        <button
-          onClick={() => {
-            console.log({ langQ, langA, beEnv }); //devlogging
-          }}
-        >
-          ł1
-        </button>
-        <button
-          onClick={() => {
-            console.log(props.devSavedFormulas); //devlogging
-          }}
-        >
-          ł2
-        </button>
-        <button
-          onClick={() => {
-            console.log("3"); //devlogging
-          }}
-        >
-          ł3
-        </button>
-      </div>
       <RadioForm
         callbackSetValue={props.setLangQ}
         title={"Choose Question Language"}

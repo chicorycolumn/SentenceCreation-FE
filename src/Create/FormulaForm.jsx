@@ -14,53 +14,71 @@ const FormulaForm = (props) => {
   );
 
   return (
-    <div className={styles.formHolder}>
-      <h4
-        className={styles.title}
-      >{`New ${props.batch} sentence (${props.lang1})`}</h4>
-      <form className={`${styles.form} ${gstyles.tooltipHolderDelayed}`}>
-        <Tooltip
-          text="Prefix with an asterisk to make a fixed chunk, eg 'my name is *Jen'"
-          number={4}
-        />
-        <input
-          rows={2}
-          className={styles.input}
-          onChange={(e) => {
-            setFemulaStringInput(e.target.value);
-          }}
-          placeholder="Enter example sentence"
-          value={femulaStringInput}
-        ></input>
-        <button
-          alt="Right arrow go arrow icon"
-          className={styles.button1}
-          type="submit"
-          onClick={(e) => {
-            e.preventDefault();
+    <>
+      {props.batch === "Question" || props.questionSavedFormula ? (
+        <div className={styles.formHolder}>
+          <h4
+            className={styles.title}
+          >{`New ${props.batch} sentence (${props.lang1})`}</h4>
+          <form className={`${styles.form} ${gstyles.tooltipHolderDelayed}`}>
+            <Tooltip
+              text="Prefix with an asterisk to make a fixed chunk, eg 'my name is *Jen'"
+              number={4}
+            />
+            <input
+              rows={2}
+              className={styles.input}
+              onChange={(e) => {
+                setFemulaStringInput(e.target.value);
+              }}
+              placeholder="Enter example sentence"
+              value={femulaStringInput}
+            ></input>
+            <button
+              alt="Right arrow go arrow icon"
+              className={styles.button1}
+              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
 
-            if (props.batch === "Answer") {
-              alert(
-                "Let's match up the chunkIds from Question sentence first."
-              );
-            }
-            props.formatAndSetFemulaFromWrittenInput(
-              props.lang1,
-              props.lang2,
-              femulaStringInput
-            );
-          }}
-        >
-          &#10157;
-        </button>
-      </form>
+                if (props.batch === "Answer") {
+                  alert(
+                    "Let's match up the chunkIds from Question sentence first. " +
+                      "Your answer sentence chunks will be " +
+                      femulaStringInput +
+                      " and the question sentence chunkIds to match them with are " +
+                      props.questionSavedFormula.sentenceStructure
+                        .map((stCh) => stCh.chunkId)
+                        .join(", ")
+                  );
+                }
+                props.formatAndSetFemulaFromWrittenInput(
+                  props.lang1,
+                  props.lang2,
+                  femulaStringInput
+                );
+              }}
+            >
+              &#10157;
+            </button>
+          </form>
 
-      <div className={styles.button2Holder}>
-        <button className={styles.button2} onClick={props.onClickFetchFemulas}>
-          or select existing formula
-        </button>
-      </div>
-    </div>
+          <div className={styles.button2Holder}>
+            <button
+              className={styles.button2}
+              onClick={props.onClickFetchFemulas}
+            >
+              or select existing formula
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className={styles.formHolder}>
+          To unlock this box and create Answer sentence, first create Question
+          sentence then mark ready by clicking ✔ button.
+        </div>
+      )}
+    </>
   );
 };
 

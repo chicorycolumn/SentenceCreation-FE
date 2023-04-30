@@ -292,55 +292,52 @@ const ChunkCardTray = (props) => {
             &#9112;
             <Tooltip text="Save formula" />
           </button>
-          <button
-            alt="Letter A in circle icon"
-            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
-            onClick={(e) => {
-              e.target.blur();
-              let fxnId = "fetchSentence2:MakeAnswer";
+          {props.batch === "Question" && (
+            <button
+              alt="Checkmark tick icon"
+              className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+              onClick={(e) => {
+                e.target.blur();
+                let fxnId = "fetchSentence2:Mark Question formula ready";
 
-              let protoFormula = putUtils.getProtoFormula(props);
-              if (!protoFormula) {
-                console.log(fxnId + " Formula failed validation.");
-                return;
-              }
-
-              idUtils.checkFormulaIdUniqueAndModify(
-                props.lang1,
-                props.fetchedFormulaIds,
-                protoFormula,
-                props.chosenFormulaId
-              );
-
-              const callbackSetAnswerFemula = (payload, formula) => {
-                if (payload.length) {
-                  let femulaStringInput = prompt(
-                    `Enter your formula guidewords for Answer ${props.lang2} sentence.`
-                  );
-
-                  props.formatAndSetFemulaFromWrittenInput(
-                    props.lang2,
-                    props.lang1,
-                    femulaStringInput
-                  );
-                } else {
-                  alert(
-                    "Sorry, no sentences were created for your formula when I queried it just now, so you must fix that before creating Answer sentence formula."
-                  );
+                let protoFormula = putUtils.getProtoFormula(props);
+                if (!protoFormula) {
+                  console.log(fxnId + " Formula failed validation.");
+                  return;
                 }
-              };
 
-              putUtils._fetchSentence(
-                props.lang1,
-                protoFormula,
-                fxnId,
-                callbackSetAnswerFemula
-              );
-            }}
-          >
-            &#9398;
-            <Tooltip text="Make answer sentence formula" />
-          </button>
+                idUtils.checkFormulaIdUniqueAndModify(
+                  props.lang1,
+                  props.fetchedFormulaIds,
+                  protoFormula,
+                  props.chosenFormulaId
+                );
+
+                const callbackSaveFormula = (payload, formula) => {
+                  if (payload.length) {
+                    alert(
+                      "Okay, I queried sentences for your formula, and we do get sentences created. So now you can start creating Answer formula."
+                    );
+                    props.setQuestionSavedFormula(formula);
+                  } else {
+                    alert(
+                      "Sorry, no sentences were created for your formula when I queried it just now, so I will not save your formula on BE."
+                    );
+                  }
+                };
+
+                putUtils._fetchSentence(
+                  props.lang1,
+                  protoFormula,
+                  fxnId,
+                  callbackSaveFormula
+                );
+              }}
+            >
+              &#10004;
+              <Tooltip text="Mark Question formula ready" />
+            </button>
+          )}
           <button
             alt="Connection icon"
             className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.cardButton_inactive} ${gstyles.tooltipHolderDelayed}`}

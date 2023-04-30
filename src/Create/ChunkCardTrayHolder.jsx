@@ -144,6 +144,7 @@ const ChunkCardTrayHolder = (props) => {
             formatAndSetFemulaFromWrittenInput
           }
           onClickFetchFemulas={onClickFetchFemulas}
+          questionSavedFormula={props.questionSavedFormula}
         />
       </div>
       {showFemulasPopup && (
@@ -171,6 +172,7 @@ const ChunkCardTrayHolder = (props) => {
           femulaWasLoadedFromBE={femulaWasLoadedFromBE}
           fetchedFormulaIds={fetchedFormulaIds}
           setDevSavedFormulas={props.setDevSavedFormulas}
+          setQuestionSavedFormula={props.setQuestionSavedFormula}
           formatAndSetFemulaFromWrittenInput={
             formatAndSetFemulaFromWrittenInput
           }
