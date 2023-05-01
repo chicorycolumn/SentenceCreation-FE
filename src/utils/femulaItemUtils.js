@@ -1,3 +1,4 @@
+const idUtils = require("./identityUtils.js");
 const uUtils = require("./universalUtils.js");
 
 exports.updateChunkOrders = (chunkOrders, femula) => {
@@ -15,8 +16,9 @@ exports.updateChunkOrders = (chunkOrders, femula) => {
             return prevFItemForChunkId.structureChunk.chunkId.traitValue;
           }
 
-          let fItemForChunkId = femula.find(
-            (fItem) => fItem.structureChunk.chunkId.traitValue === chunkId
+          let fItemForChunkId = idUtils.getFemulaItemForChunkId(
+            femula,
+            chunkId
           );
 
           // 2. Reject if chunk no longer extant.

@@ -173,3 +173,10 @@ exports.invertBatch = (s) => {
   };
   return ref[s];
 };
+
+exports.getFemulaItemForChunkId = (femula, chunkId) => {
+  console.log(4035, { femula, chunkId });
+  return femula.find(
+    (fItem) => fItem.structureChunk.chunkId.traitValue === chunkId
+  );
+};

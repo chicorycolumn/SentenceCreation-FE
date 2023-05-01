@@ -83,8 +83,16 @@ const ChunkCardTrayHolder = (props) => {
   const formatAndSetFemulaFromWrittenInput = (
     lang1,
     lang2,
-    femulaStringInput
+    femulaStringInput,
+    pleaseUseTheseChunkIds
   ) => {
+    if (pleaseUseTheseChunkIds && pleaseUseTheseChunkIds.length) {
+      console.log(
+        "I've been asked to use the chunkIds please, see console log, they are Q to A chunkId transfer.",
+        pleaseUseTheseChunkIds
+      );
+    }
+
     if (!lang1) {
       alert("No language specified.");
       return;
@@ -97,12 +105,25 @@ const ChunkCardTrayHolder = (props) => {
 
     let femulaFromWrittenInput = femulaStringInput
       .split(" ")
-      .map((guideword) => {
-        return {
+      .map((guideword, index) => {
+        let fItem = {
           guideword,
           structureChunk: null,
           femulaItemId: null,
         };
+
+        let foundConnectionQtoA =
+          pleaseUseTheseChunkIds &&
+          pleaseUseTheseChunkIds.find(
+            (connectionQtoA) =>
+              connectionQtoA.order[1] === `${index}-${guideword}`
+          );
+        if (foundConnectionQtoA) {
+          let chunkIdFromQ = foundConnectionQtoA.order[0];
+          fItem.chunkIdFromQ = chunkIdFromQ;
+        }
+
+        return fItem;
       });
 
     let uniqueIdNumbers = uUtils.getUniqueNumberStrings(

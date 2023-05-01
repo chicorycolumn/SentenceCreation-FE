@@ -5,16 +5,22 @@ import pstyles from "../css/Popup.module.css";
 import gstyles from "../css/Global.module.css";
 import uUtils from "../utils/universalUtils.js";
 import $ from "jquery";
+import ChunkOrdersButton from "./ChunkOrdersButton";
 
 const ChunkOrdersPopup = (props) => {
   const [orderBuilt, setOrderBuilt] = useState([]);
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const [highlightedButton, setHighlightedButton] = useState();
 
-  const getGuidewordFromFemula = (chunkId) => {
-    let femulaItem = props.femula.find(
+  const getGuidewordFromFemula = (chunkId, femula, femula2) => {
+    let femulaItem = femula.find(
       (fItem) => fItem.structureChunk.chunkId.traitValue === chunkId
     );
+    if (!femulaItem) {
+      femulaItem = femula2.find(
+        (fItem) => fItem.structureChunk.chunkId.traitValue === chunkId
+      );
+    }
     return femulaItem.guideword;
   };
 
@@ -102,68 +108,38 @@ const ChunkOrdersPopup = (props) => {
         </div>
 
         <div className={styles.buttonHolder}>
-          {props.femula.map((fItem) => {
-            let chunkId = fItem.structureChunk.chunkId.traitValue;
-            let chunkIsUnused =
-              !fItem.structureChunk.isGhostChunk &&
-              !props.chunkOrders.some((orderObj) =>
-                orderObj.order.includes(fItem.structureChunk.chunkId.traitValue)
-              );
-            return (
-              <button
-                key={chunkId}
-                disabled={fItem.structureChunk.isGhostChunk}
-                className={`${styles.chunkButton} ${
-                  chunkIsUnused && styles.chunkButtonBad
-                } ${highlightedButton === chunkId && styles.highlightedButton}`}
-                onClick={() => {
-                  setOrderBuilt((prev) => [...prev, chunkId]);
-                }}
-                onKeyUp={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                onKeyDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log(
-                    "via ChunkOrdersPopup document listened keyup:",
-                    e.key
-                  );
-                  if (["Enter"].includes(e.key)) {
-                    $("#ChunkOrdersPopup-tickbutton").addClass(
-                      gstyles.tickButtonActive
-                    );
-                    setTimeout(() => {
-                      addOrder(orderBuilt);
-                      $("#ChunkOrdersPopup-tickbutton").removeClass(
-                        gstyles.tickButtonActive
-                      );
-                    }, 50);
-                    return;
-                  } else if (["Backspace"].includes(e.key)) {
-                    $("#ChunkOrdersPopup-clearbutton").addClass(
-                      gstyles.redButtonActive
-                    );
-                    setTimeout(() => {
-                      clearOrder();
-                      $("#ChunkOrdersPopup-clearbutton").removeClass(
-                        gstyles.redButtonActive
-                      );
-                    }, 50);
-                    return;
-                  }
-                }}
-              >
-                {chunkIsUnused && (
-                  <p className={`${gstyles.floatJustAbove}`}>unused</p>
-                )}
-                <p className={styles.buttonTopHalf}>{fItem.guideword}</p>
-                <p className={styles.buttonBottomHalf}>{chunkId}</p>
-              </button>
-            );
-          })}
+          {props.femula.map((fItem, fiIndex) => (
+            <ChunkOrdersButton
+              key={`${fiIndex}-${fItem}`}
+              fItem={fItem}
+              chunkOrders={props.chunkOrders}
+              setOrderBuilt={setOrderBuilt}
+              addOrder={addOrder}
+              orderBuilt={orderBuilt}
+              clearOrder={clearOrder}
+              highlightedButton={highlightedButton}
+            />
+          ))}
         </div>
+
+        {props.femula2 ? (
+          <div className={styles.buttonHolder}>
+            {props.femula2.map((fItem, fiIndex) => (
+              <ChunkOrdersButton
+                key={`${fiIndex}-${fItem}`}
+                fItem={fItem}
+                chunkOrders={props.chunkOrders}
+                setOrderBuilt={setOrderBuilt}
+                addOrder={addOrder}
+                orderBuilt={orderBuilt}
+                clearOrder={clearOrder}
+                highlightedButton={highlightedButton}
+              />
+            ))}
+          </div>
+        ) : (
+          ""
+        )}
 
         <div className={styles.orderBuilderHolder}>
           <div className={styles.orderBuilder}>
@@ -185,7 +161,7 @@ const ChunkOrdersPopup = (props) => {
                     );
                   }}
                 >
-                  {getGuidewordFromFemula(chunkId)}
+                  {getGuidewordFromFemula(chunkId, props.femula, props.femula2)}
                 </button>
               );
             })}
@@ -271,7 +247,11 @@ const ChunkOrdersPopup = (props) => {
                         !isPrimary && gstyles.translucent2
                       }`}
                     >
-                      {getGuidewordFromFemula(chunkId)}
+                      {getGuidewordFromFemula(
+                        chunkId,
+                        props.femula,
+                        props.femula2
+                      )}
                     </span>
                   ))}
                 </li>

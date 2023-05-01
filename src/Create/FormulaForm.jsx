@@ -1,22 +1,66 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import LanguageContext from "../context/LanguageContext.js";
 import idUtils from "../utils/identityUtils.js";
 import styles from "../css/FormulaForm.module.css";
 import gstyles from "../css/Global.module.css";
 import Tooltip from "../Cogs/Tooltip.jsx";
+import ChunkOrdersPopup from "./ChunkOrdersPopup.jsx";
 const uUtils = require("../utils/universalUtils.js");
 
 const FormulaForm = (props) => {
   const [femulaStringInput, setFemulaStringInput] = useState(
     // "on jest cebula on jest cebula"
-    "kobieta jest *bardzo czerwona"
+    props.batch === "Question"
+      ? "kobieta jest *bardzo czerwona"
+      : "he is *very blue"
     // "on jest niebieskim chłopcem"
   );
+  const [showConnectionsQtoA, setShowConnectionsQtoA] = useState();
+  const [doneConnectionsQtoA, setDoneConnectionsQtoA] = useState();
+  const [connectionsQtoA, setConnectionsQtoA] = useState([]);
+
+  useEffect(() => {
+    if (doneConnectionsQtoA) {
+      props.formatAndSetFemulaFromWrittenInput(
+        props.lang1,
+        props.lang2,
+        femulaStringInput,
+        connectionsQtoA
+      );
+    }
+  }, [doneConnectionsQtoA]);
 
   return (
     <>
       {props.batch === "Question" || props.questionSavedFormula ? (
         <div className={styles.formHolder}>
+          {props.batch === "Answer" && showConnectionsQtoA ? (
+            <ChunkOrdersPopup
+              mode={"QConnectA"}
+              exit={() => {
+                setShowConnectionsQtoA(false);
+                setDoneConnectionsQtoA(true);
+              }}
+              chunkOrders={connectionsQtoA}
+              setChunkOrders={setConnectionsQtoA}
+              femula2={femulaStringInput.split(" ").map((s, sIndex) => {
+                return {
+                  guideword: s,
+                  structureChunk: { chunkId: { traitValue: `${sIndex}-${s}` } },
+                };
+              })}
+              femula={props.questionSavedFormula.sentenceStructure.map(
+                (stCh) => {
+                  return {
+                    guideword: stCh.chunkId.split("-").slice(-1),
+                    structureChunk: { chunkId: { traitValue: stCh.chunkId } },
+                  };
+                }
+              )}
+            />
+          ) : (
+            ""
+          )}
           <h4
             className={styles.title}
           >{`New ${props.batch} sentence (${props.lang1})`}</h4>
@@ -51,6 +95,8 @@ const FormulaForm = (props) => {
                         .map((stCh) => stCh.chunkId)
                         .join(", ")
                   );
+                  setShowConnectionsQtoA(true);
+                  return;
                 }
                 props.formatAndSetFemulaFromWrittenInput(
                   props.lang1,

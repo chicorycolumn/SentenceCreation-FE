@@ -319,6 +319,17 @@ const ChunkCardTray = (props) => {
                       "Okay, I queried sentences for your formula, and we do get sentences created. So now you can start creating Answer formula."
                     );
                     props.setQuestionSavedFormula(formula);
+
+                    $.each(
+                      $(`button[id^='ToggleShowButton-Question']`),
+                      function () {
+                        jqUtils.collapseIfNotCollapsed(
+                          $(this)[0],
+                          showAllTraitBoxes,
+                          true
+                        );
+                      }
+                    );
                   } else {
                     alert(
                       "Sorry, no sentences were created for your formula when I queried it just now, so I will not save your formula on BE."
@@ -387,9 +398,10 @@ const ChunkCardTray = (props) => {
               $.each(
                 $(`button[id^='ToggleShowButton-${props.batch}-']`),
                 function () {
-                  jqUtils.collapseIfNotCollapsed1(
+                  jqUtils.collapseIfNotCollapsed(
                     $(this)[0],
-                    showAllTraitBoxes
+                    showAllTraitBoxes,
+                    true
                   );
                 }
               );
@@ -401,10 +413,7 @@ const ChunkCardTray = (props) => {
                   )}']`
                 ),
                 function () {
-                  jqUtils.collapseIfNotCollapsed2(
-                    $(this)[0],
-                    showAllTraitBoxes
-                  );
+                  jqUtils.collapseIfNotCollapsed($(this)[0], showAllTraitBoxes);
                 }
               );
             }}
@@ -486,6 +495,7 @@ const ChunkCardTray = (props) => {
             structureChunk,
             backedUpStructureChunk,
             femulaItemId,
+            chunkIdFromQ,
           } = femulaItem;
 
           let finalIndex = props.femula.length - 1;
@@ -499,6 +509,7 @@ const ChunkCardTray = (props) => {
               <ChunkCard
                 lang={props.lang1}
                 femulaItemId={femulaItemId}
+                chunkIdFromQ={chunkIdFromQ}
                 key={`${femulaItemId}-${guideword}`}
                 batch={props.batch}
                 chunkCardKey={`${femulaItemId}-${guideword}`}
