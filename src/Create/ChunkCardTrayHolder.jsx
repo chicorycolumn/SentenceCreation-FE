@@ -83,7 +83,8 @@ const ChunkCardTrayHolder = (props) => {
   const formatAndSetFemulaFromWrittenInput = (
     lang1,
     lang2,
-    femulaStringInput
+    femulaStringInput,
+    connectionsQtoA
   ) => {
     if (!lang1) {
       alert("No language specified.");
@@ -97,12 +98,25 @@ const ChunkCardTrayHolder = (props) => {
 
     let femulaFromWrittenInput = femulaStringInput
       .split(" ")
-      .map((guideword) => {
-        return {
+      .map((guideword, index) => {
+        let fItem = {
           guideword,
           structureChunk: null,
           femulaItemId: null,
         };
+
+        let foundConnectionQtoA =
+          connectionsQtoA &&
+          connectionsQtoA.find(
+            (connectionQtoA) =>
+              connectionQtoA.order[1] === `${index}-${guideword}`
+          );
+        if (foundConnectionQtoA) {
+          let chunkIdFromQ = foundConnectionQtoA.order[0];
+          fItem.chunkIdFromQ = chunkIdFromQ;
+        }
+
+        return fItem;
       });
 
     let uniqueIdNumbers = uUtils.getUniqueNumberStrings(
@@ -145,6 +159,9 @@ const ChunkCardTrayHolder = (props) => {
           }
           onClickFetchFemulas={onClickFetchFemulas}
           questionSavedFormula={props.questionSavedFormula}
+          wipeFemula={() => {
+            setFemula([]);
+          }}
         />
       </div>
       {showFemulasPopup && (

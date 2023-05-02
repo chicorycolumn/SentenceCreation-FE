@@ -1,5 +1,6 @@
 .mainboxWide {
-  width: 647px;
+  width: 647px !important;
+  height: 450px !important;
 }
 
 .buttonHolder {
@@ -14,7 +15,7 @@
 }
 
 .bottomHolder {
-  height: 175px !important;
+  height: 152px !important;
 }
 
 .orderBuilder {
@@ -33,8 +34,16 @@
   padding: 0px;
 }
 
+.chunkButtonDisabled {
+  background-color: antiquewhite;
+  opacity: 0.5;
+  height: 75px;
+  min-width: 100px;
+  padding: 0px;
+}
+
 .chunkButtonBad {
-  border: crimson solid 2px;
+  border: crimson solid 3px;
 }
 
 .chunkButton:hover {
@@ -56,6 +65,13 @@
 
 .buttonBottomHalf {
   font-size: 10px;
+}
+
+.warningSmall {
+  color: red;
+  font-size: 10px;
+  margin: 0px;
+  margin-top: -13px !important;
 }
 
 .chunkButtonMini {
