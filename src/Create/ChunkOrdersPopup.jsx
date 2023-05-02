@@ -5,16 +5,24 @@ import pstyles from "../css/Popup.module.css";
 import gstyles from "../css/Global.module.css";
 import uUtils from "../utils/universalUtils.js";
 import $ from "jquery";
+import ChunkOrdersButton from "./ChunkOrdersButton";
 
 const ChunkOrdersPopup = (props) => {
   const [orderBuilt, setOrderBuilt] = useState([]);
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const [highlightedButton, setHighlightedButton] = useState();
 
-  const getGuidewordFromFemula = (chunkId) => {
-    let femulaItem = props.femula.find(
+  const { mode } = props;
+
+  const getGuidewordFromFemula = (chunkId, femula, femula2) => {
+    let femulaItem = femula.find(
       (fItem) => fItem.structureChunk.chunkId.traitValue === chunkId
     );
+    if (mode === "222" && !femulaItem) {
+      femulaItem = femula2.find(
+        (fItem) => fItem.structureChunk.chunkId.traitValue === chunkId
+      );
+    }
     return femulaItem.guideword;
   };
 
@@ -90,80 +98,58 @@ const ChunkOrdersPopup = (props) => {
       <div className={`${pstyles.mainbox} ${styles.mainboxWide}`}>
         <div className={pstyles.topHolder}>
           <div className={`${gstyles.sideButton} ${gstyles.invisible}`}></div>
-          <h1 className={pstyles.title}>Select orders for sentence.</h1>
+          <h1 className={pstyles.title}>
+            {mode === "222"
+              ? "Select Q to A connections. Pick a card from top row (Q) then a card from bottom row (A) then click the green tick."
+              : "Select orders for sentence."}
+          </h1>
           <button
             id="ChunkOrdersPopup-exitbutton"
-            alt="Exit icon"
+            alt="Checkmark tick icon"
             className={`${gstyles.sideButton} ${gstyles.greyButton}`}
             onClick={exit}
           >
-            &#8679;
+            &#10004;
           </button>
         </div>
 
         <div className={styles.buttonHolder}>
-          {props.femula.map((fItem) => {
-            let chunkId = fItem.structureChunk.chunkId.traitValue;
-            let chunkIsUnused =
-              !fItem.structureChunk.isGhostChunk &&
-              !props.chunkOrders.some((orderObj) =>
-                orderObj.order.includes(fItem.structureChunk.chunkId.traitValue)
-              );
-            return (
-              <button
-                key={chunkId}
-                disabled={fItem.structureChunk.isGhostChunk}
-                className={`${styles.chunkButton} ${
-                  chunkIsUnused && styles.chunkButtonBad
-                } ${highlightedButton === chunkId && styles.highlightedButton}`}
-                onClick={() => {
-                  setOrderBuilt((prev) => [...prev, chunkId]);
-                }}
-                onKeyUp={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                onKeyDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log(
-                    "via ChunkOrdersPopup document listened keyup:",
-                    e.key
-                  );
-                  if (["Enter"].includes(e.key)) {
-                    $("#ChunkOrdersPopup-tickbutton").addClass(
-                      gstyles.tickButtonActive
-                    );
-                    setTimeout(() => {
-                      addOrder(orderBuilt);
-                      $("#ChunkOrdersPopup-tickbutton").removeClass(
-                        gstyles.tickButtonActive
-                      );
-                    }, 50);
-                    return;
-                  } else if (["Backspace"].includes(e.key)) {
-                    $("#ChunkOrdersPopup-clearbutton").addClass(
-                      gstyles.redButtonActive
-                    );
-                    setTimeout(() => {
-                      clearOrder();
-                      $("#ChunkOrdersPopup-clearbutton").removeClass(
-                        gstyles.redButtonActive
-                      );
-                    }, 50);
-                    return;
-                  }
-                }}
-              >
-                {chunkIsUnused && (
-                  <p className={`${gstyles.floatJustAbove}`}>unused</p>
-                )}
-                <p className={styles.buttonTopHalf}>{fItem.guideword}</p>
-                <p className={styles.buttonBottomHalf}>{chunkId}</p>
-              </button>
-            );
-          })}
+          {props.femula.map((fItem, fiIndex) => (
+            <ChunkOrdersButton
+              key={`${fiIndex}-${fItem}`}
+              fItem={fItem}
+              chunkOrders={props.chunkOrders}
+              setOrderBuilt={setOrderBuilt}
+              addOrder={addOrder}
+              orderBuilt={orderBuilt}
+              clearOrder={clearOrder}
+              highlightedButton={highlightedButton}
+              disable={mode === "222" && orderBuilt.length !== 0}
+              rowNumber={0}
+            />
+          ))}
         </div>
+
+        {props.femula2 ? (
+          <div className={styles.buttonHolder}>
+            {props.femula2.map((fItem, fiIndex) => (
+              <ChunkOrdersButton
+                key={`${fiIndex}-${fItem}`}
+                fItem={fItem}
+                chunkOrders={props.chunkOrders}
+                setOrderBuilt={setOrderBuilt}
+                addOrder={addOrder}
+                orderBuilt={orderBuilt}
+                clearOrder={clearOrder}
+                highlightedButton={highlightedButton}
+                disable={mode === "222" && orderBuilt.length !== 1}
+                rowNumber={1}
+              />
+            ))}
+          </div>
+        ) : (
+          ""
+        )}
 
         <div className={styles.orderBuilderHolder}>
           <div className={styles.orderBuilder}>
@@ -185,7 +171,7 @@ const ChunkOrdersPopup = (props) => {
                     );
                   }}
                 >
-                  {getGuidewordFromFemula(chunkId)}
+                  {getGuidewordFromFemula(chunkId, props.femula, props.femula2)}
                 </button>
               );
             })}
@@ -217,38 +203,40 @@ const ChunkOrdersPopup = (props) => {
               return (
                 <li className={styles.listitem} key={`chunkOrder-${index}`}>
                   <span className={styles.indexSpan}>{index + 1}</span>
-                  <button
-                    id={`isPrimaryButton-${index}`}
-                    alt="Black circle icon / White circle icon"
-                    className={`${gstyles.blueButton} ${styles.microButton} ${gstyles.tooltipHolder}`}
-                    onClick={() => {
-                      setMeaninglessCounter((prev) => prev + 1);
-                      setTimeout(() => {
-                        props.setChunkOrders((prev) => {
-                          let newArr = prev.map((orderObj, i) => {
-                            if (i === index) {
-                              orderObj.isPrimary = !prev[index].isPrimary;
-                            }
-                            return orderObj;
+                  {mode !== "222" && (
+                    <button
+                      id={`isPrimaryButton-${index}`}
+                      alt="Black circle icon / White circle icon"
+                      className={`${gstyles.blueButton} ${styles.microButton} ${gstyles.tooltipHolder}`}
+                      onClick={() => {
+                        setMeaninglessCounter((prev) => prev + 1);
+                        setTimeout(() => {
+                          props.setChunkOrders((prev) => {
+                            let newArr = prev.map((orderObj, i) => {
+                              if (i === index) {
+                                orderObj.isPrimary = !prev[index].isPrimary;
+                              }
+                              return orderObj;
+                            });
+                            return newArr;
                           });
-                          return newArr;
-                        });
-                      }, 0);
-                    }}
-                  >
-                    {isPrimary ? "●" : "○"}
-                    <Tooltip
-                      text={
-                        "Toggle whether this is a regular or merely additional order"
-                      }
-                      number={5}
-                    />
-                  </button>
+                        }, 0);
+                      }}
+                    >
+                      {isPrimary ? "●" : "○"}
+                      <Tooltip
+                        text={
+                          "Toggle whether this is a regular or merely additional order"
+                        }
+                        number={5}
+                      />
+                    </button>
+                  )}
                   <button
                     alt="Cross icon"
                     className={`${gstyles.redButton} ${styles.microButton}`}
                     onClick={() => {
-                      if (props.chunkOrders.length === 1) {
+                      if (mode !== "222" && props.chunkOrders.length === 1) {
                         alert(
                           "There must be at least one order. Add another before you remove this one."
                         );
@@ -271,7 +259,11 @@ const ChunkOrdersPopup = (props) => {
                         !isPrimary && gstyles.translucent2
                       }`}
                     >
-                      {getGuidewordFromFemula(chunkId)}
+                      {getGuidewordFromFemula(
+                        chunkId,
+                        props.femula,
+                        props.femula2
+                      )}
                     </span>
                   ))}
                 </li>

@@ -1,5 +1,5 @@
 .mainboxWide {
-  width: 647px;
+  width: 647px !important;
 }
 
 .buttonHolder {
@@ -28,6 +28,14 @@
 
 .chunkButton {
   background-color: antiquewhite;
+  height: 75px;
+  min-width: 100px;
+  padding: 0px;
+}
+
+.chunkButtonDisabled {
+  background-color: antiquewhite;
+  opacity: 0.5;
   height: 75px;
   min-width: 100px;
   padding: 0px;

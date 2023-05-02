@@ -100,7 +100,19 @@ exports.doTraitKeysHoldSomeValues = (traitKeysGroup, structureChunk) => {
   );
 };
 
-exports.addChunkId = (stCh, chunkCardIndex, guideword, femula, label) => {
+exports.addChunkId = (
+  chunkIdFromQ,
+  stCh,
+  chunkCardIndex,
+  guideword,
+  femula,
+  label
+) => {
+  if (chunkIdFromQ) {
+    stCh.chunkId.traitValue = chunkIdFromQ;
+    return;
+  }
+
   let existingChunkIds = [];
   if (femula) {
     existingChunkIds = femula
