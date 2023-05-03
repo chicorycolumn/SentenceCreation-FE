@@ -80,7 +80,17 @@ const ChunkCard = (props) => {
     guideword = scUtils.improveGuideword(guideword, stCh);
 
     if (!stCh.chunkId.traitValue) {
-      diUtils.addChunkId(stCh, props.chunkCardIndex, guideword, femula, label);
+      if (props.chunkIdFromQ) {
+        stCh.chunkId.traitValue = props.chunkIdFromQ;
+      } else {
+        diUtils.addChunkId(
+          stCh,
+          props.chunkCardIndex,
+          guideword,
+          femula,
+          label
+        );
+      }
     }
     modifyStructureChunkOnThisFemulaItem(
       "formatAndSetStructureChunk",
@@ -493,8 +503,9 @@ const ChunkCard = (props) => {
             !chunkCardInfo.length && gstyles.invisible
           }`}
         >
-          {chunkCardInfo.map((chunkCardInfoObj) => (
+          {chunkCardInfo.map((chunkCardInfoObj, ccioIndex) => (
             <p
+              key={`${ccioIndex}-${chunkCardInfoObj.title}`}
               className={`${styles.chunkCardInfoObj} ${
                 chunkCardInfoObj.inactive && gstyles.strikethrough
               }`}

@@ -22,35 +22,31 @@ const jqUtils = {
       }
     }, 5);
   },
-  collapseIfNotCollapsed1: (button, showAllTraitBoxes) => {
-    let buttonIsShowing = [
+  collapseIfNotCollapsed: (
+    showAllButton,
+    showAllTraitBoxes,
+    buttonIsOppositeBatch
+  ) => {
+    let showAllButtonIsUncollapsed = [
       icons.downBlackTriangle,
       icons.downWhiteTriangle,
-    ].includes(button.innerText);
+    ].includes(showAllButton.innerText);
 
-    if (
-      (!showAllTraitBoxes && buttonIsShowing) |
-      (showAllTraitBoxes &&
-        !buttonIsShowing &&
-        (!!button.id.match("Group1") ||
-          button.innerText === icons.upBlackTriangle))
-    ) {
-      button.click();
+    if (!buttonIsOppositeBatch) {
+      if (showAllTraitBoxes && showAllButtonIsUncollapsed) {
+        showAllButton.click();
+      }
+      return;
     }
-  },
-  collapseIfNotCollapsed2: (showAllButtonOfOtherBatch, showAllTraitBoxes) => {
-    let showAllButtonOfCurrentWillCollapse = showAllTraitBoxes;
-
-    let showAllButtonOfOtherBatchIsUncollapsed = [
-      icons.downBlackTriangle,
-      icons.downWhiteTriangle,
-    ].includes(showAllButtonOfOtherBatch.innerText);
 
     if (
-      showAllButtonOfCurrentWillCollapse &&
-      showAllButtonOfOtherBatchIsUncollapsed
+      (!showAllTraitBoxes && showAllButtonIsUncollapsed) ||
+      (showAllTraitBoxes &&
+        !showAllButtonIsUncollapsed &&
+        (!!showAllButton.id.match("Group1") ||
+          showAllButton.innerText === icons.upBlackTriangle))
     ) {
-      showAllButtonOfOtherBatch.click();
+      showAllButton.click();
     }
   },
 };
