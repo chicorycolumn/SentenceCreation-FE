@@ -467,8 +467,8 @@ class TraitBox extends Component {
                 }) === "npe"
               ) {
                 if (
-                  window.confirm(
-                    'Please click CANCEL.\n\nYou should do it the other way around.\n\nYou selected a nounPerson chunk to agree with a pronoun chunk.\n\neg "She is a woman." you should make "she" agree with "woman", not "woman" agree with "she".\n\nIf you want to ignore my advice, click OK, but you should click CANCEL.'
+                  !window.confirm(
+                    'You selected a nounPerson chunk to agree with a pronoun chunk, but it should be the other way around.\n\neg "She is a woman." you should make "she" agree with "woman", not "woman" agree with "she".\n\nTo accept my advice, click OK. To proceed with this unrecommended action, click CANCEL.'
                   )
                 ) {
                   flUtils.setStem(this.props, this.setState);

@@ -65,9 +65,7 @@ exports.validateFemulaToSend = (femula) => {
         idUtils.agreementTraits.some((agreementTrait) => {
           if (stCh[agreementTrait] && stCh[agreementTrait].traitValue) {
             let stemChunkId = stCh[agreementTrait].traitValue;
-            let x = femula.find(
-              (fItem) => fItem.structureChunk.chunkId.traitValue === stemChunkId
-            );
+            let x = idUtils.getFemulaItemForChunkId(femula, stemChunkId);
             if (x) {
               let foundStCh = x.structureChunk;
               if (idUtils.getWordtypeEnCh(foundStCh) === "pro") {
@@ -80,8 +78,8 @@ exports.validateFemulaToSend = (femula) => {
     })
   ) {
     if (
-      !window.confirm(
-        "Please click CANCEL.\n\nThere a nounPerson chunk which agrees with a pronoun chunk.\n\nI advise you flip that the other way around."
+      window.confirm(
+        "There a nounPerson chunk which agrees with a pronoun chunk.\n\nI advise you flip that the other way around."
       )
     ) {
       return true;

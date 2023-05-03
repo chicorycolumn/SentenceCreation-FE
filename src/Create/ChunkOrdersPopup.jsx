@@ -4,6 +4,7 @@ import Tooltip from "../Cogs/Tooltip.jsx";
 import pstyles from "../css/Popup.module.css";
 import gstyles from "../css/Global.module.css";
 import uUtils from "../utils/universalUtils.js";
+import idUtils from "../utils/identityUtils.js";
 import $ from "jquery";
 import ChunkOrdersButton from "./ChunkOrdersButton";
 
@@ -15,13 +16,10 @@ const ChunkOrdersPopup = (props) => {
   const { mode } = props;
 
   const getGuidewordFromFemula = (chunkId, femula, femula2) => {
-    let femulaItem = femula.find(
-      (fItem) => fItem.structureChunk.chunkId.traitValue === chunkId
-    );
+    let femulaItem = idUtils.getFemulaItemForChunkId(femula, chunkId);
+
     if (mode === "Q2A" && !femulaItem) {
-      femulaItem = femula2.find(
-        (fItem) => fItem.structureChunk.chunkId.traitValue === chunkId
-      );
+      femulaItem = idUtils.getFemulaItemForChunkId(femula2, chunkId);
     }
     if (!femulaItem) {
       console.log(
