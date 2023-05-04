@@ -188,8 +188,9 @@ const ChunkCardTrayHolder = (props) => {
           batch={props.batch}
           femulaWasLoadedFromBE={femulaWasLoadedFromBE}
           fetchedFormulaIds={fetchedFormulaIds}
-          setDevSavedFormulas={props.setDevSavedFormulas}
-          setQuestionSavedFormula={props.setQuestionSavedFormula}
+          saveProgressFormula={props.saveProgressFormula}
+          saveFinishedFormula={props.saveFinishedFormula}
+          formulaIsSaved={props.formulaIsSaved}
           formatAndSetFemulaFromWrittenInput={
             formatAndSetFemulaFromWrittenInput
           }
