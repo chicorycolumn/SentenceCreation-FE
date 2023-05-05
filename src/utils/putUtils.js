@@ -89,6 +89,52 @@ export const _fetchSentence = (
   );
 };
 
+export const _fetchDualSentence = (
+  label,
+  langQ,
+  langA,
+  questionFormula,
+  answerFormula,
+  setListPopupData,
+  callback
+) => {
+  fetchDualSentence(langQ, langA, questionFormula, answerFormula).then(
+    (data) => {
+      let { payload, messages } = data;
+
+      if (messages) {
+        alert(
+          Object.keys(messages).map((key) => {
+            let val = messages[key];
+            return `${key}:       ${val}`;
+          })
+        );
+        return;
+      }
+      if (callback) {
+        callback(payload, questionFormula, answerFormula);
+      } else {
+        let firstRow = [
+          payload.questionSentenceArr,
+          payload.answerSentenceArr[0],
+        ];
+        let rows = [firstRow];
+        payload.answerSentenceArr.slice(1).forEach((answerSentence) => {
+          rows.push(["", answerSentence]);
+        });
+        setListPopupData({
+          title: `${payload.answerSentenceArr.length} Answer sentences for this Question sentence.`,
+          headers: ["Question", "Answers"],
+          rows,
+        });
+      }
+    },
+    (e) => {
+      console.log(`ERROR ${label}:`, e);
+    }
+  );
+};
+
 export const fetchSentence = (lang, formula) => {
   backendifyFormula(formula);
 
@@ -108,7 +154,7 @@ export const fetchSentence = (lang, formula) => {
     requestingSingleWordOnly,
   };
 
-  console.log(""); //devlogging
+  console.log("");
   console.log("");
   console.log("**fetchSentence**");
   console.log(body);
@@ -120,7 +166,7 @@ export const fetchSentence = (lang, formula) => {
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
-      console.log("fetchSentence got:", res.data); //devlogging
+      console.log("fetchSentence got:", res.data);
       console.log("/fetchSentence");
       console.log("");
       console.log("");
@@ -128,4 +174,55 @@ export const fetchSentence = (lang, formula) => {
       return res.data;
     })
     .catch((e) => console.log("ERROR 7461", e));
+};
+
+export const fetchDualSentence = (
+  questionLanguage,
+  answerLanguage,
+  questionFormula,
+  answerFormula
+) => {
+  if (!questionFormula.sentenceStructure.length) {
+    return;
+  }
+  if (!answerFormula.sentenceStructure.length) {
+    return;
+  }
+
+  let requestingSingleWordOnly =
+    !questionFormula.orders ||
+    !Object.keys(questionFormula.orders).length ||
+    ((!questionFormula.orders.primary ||
+      !questionFormula.orders.primary.length) &&
+      (!questionFormula.orders.additional ||
+        !questionFormula.orders.additional.length));
+
+  let body = {
+    questionLanguage,
+    answerLanguage,
+    questionFormula,
+    answerFormula,
+    requestingSingleWordOnly,
+  };
+
+  console.log("");
+  console.log("");
+  console.log("**fetchDualSentence**");
+  console.log(body);
+
+  return axios
+    .put(
+      `${baseUrl}/educator/sentences?lang=${questionLanguage}&lang2=${answerLanguage}`,
+      body
+      // ,{headers: { Authorization: `BEARER ${token}` }}
+    )
+    .then((res) => {
+      console.log("fetchDualSentence got:", res.data);
+      console.log("/fetchDualSentence");
+      console.log("");
+      console.log("");
+
+      return res.data;
+    })
+    .catch((e) => console.log("ERROR 7181", e));
 };

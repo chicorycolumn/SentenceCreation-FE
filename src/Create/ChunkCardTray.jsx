@@ -153,6 +153,9 @@ const ChunkCardTray = (props) => {
         },
       ]);
     }
+
+    //Chunk was modified ie formula changed. Un-checking "Mark formula ready".
+    props.saveFinishedFormula();
   }, [props.femula, props.chunkOrders]);
 
   useEffect(() => {
@@ -273,7 +276,7 @@ const ChunkCardTray = (props) => {
                     "Okay, I queried sentences for your formula, and we do get sentences created. So now let's save your formula. I'm console logging your formula now. Next we need to send this to BE and save it."
                   );
                   console.log("Let's save this formula:", formula);
-                  props.setDevSavedFormulas((prev) => [...prev, formula]);
+                  props.saveProgressFormula((prev) => [...prev, formula]);
                 } else {
                   alert(
                     "Sorry, no sentences were created for your formula when I queried it just now, so I will not save your formula on BE."
@@ -290,62 +293,71 @@ const ChunkCardTray = (props) => {
             }}
           >
             &#9112;
-            <Tooltip text="Save formula" />
+            <Tooltip text="Save in-progress formula" />
           </button>
-          {props.batch === "Question" && (
-            <button
-              alt="Checkmark tick icon"
-              className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
-              onClick={(e) => {
-                e.target.blur();
-                let fxnId = "fetchSentence2:Mark Question formula ready";
+          <button
+            alt="Checkmark tick icon"
+            className={`${gstyles.cardButton1} ${
+              gstyles.cardButtonWidthMedium
+            } ${gstyles.tooltipHolderDelayed} ${
+              props.formulaIsSaved
+                ? gstyles.tickableButtonActive
+                : gstyles.tickableButton
+            }`}
+            onClick={(e) => {
+              e.target.blur();
 
-                let protoFormula = putUtils.getProtoFormula(props);
-                if (!protoFormula) {
-                  console.log(fxnId + " Formula failed validation.");
-                  return;
+              if (props.formulaIsSaved) {
+                return;
+              }
+
+              let fxnId = `fetchSentence2:Mark ${props.batch} formula ready`;
+
+              let protoFormula = putUtils.getProtoFormula(props);
+              if (!protoFormula) {
+                console.log(fxnId + " Formula failed validation.");
+                return;
+              }
+
+              idUtils.checkFormulaIdUniqueAndModify(
+                props.lang1,
+                props.fetchedFormulaIds,
+                protoFormula,
+                props.chosenFormulaId
+              );
+
+              const callbackSaveFormula = (payload, formula) => {
+                if (payload.length) {
+                  props.saveFinishedFormula(formula);
+
+                  $.each(
+                    $(`button[id^='ToggleShowButton-${props.batch}']`),
+                    function () {
+                      jqUtils.collapseIfNotCollapsed(
+                        $(this)[0],
+                        showAllTraitBoxes,
+                        true
+                      );
+                    }
+                  );
+                } else {
+                  alert(
+                    `Sorry, no sentences were created for your ${props.batch} formula when I queried it just now, so I will not save it.`
+                  );
                 }
+              };
 
-                idUtils.checkFormulaIdUniqueAndModify(
-                  props.lang1,
-                  props.fetchedFormulaIds,
-                  protoFormula,
-                  props.chosenFormulaId
-                );
-
-                const callbackSaveFormula = (payload, formula) => {
-                  if (payload.length) {
-                    props.setQuestionSavedFormula(formula);
-
-                    $.each(
-                      $(`button[id^='ToggleShowButton-Question']`),
-                      function () {
-                        jqUtils.collapseIfNotCollapsed(
-                          $(this)[0],
-                          showAllTraitBoxes,
-                          true
-                        );
-                      }
-                    );
-                  } else {
-                    alert(
-                      "Sorry, no sentences were created for your formula when I queried it just now, so I will not save your formula on BE."
-                    );
-                  }
-                };
-
-                putUtils._fetchSentence(
-                  props.lang1,
-                  protoFormula,
-                  fxnId,
-                  callbackSaveFormula
-                );
-              }}
-            >
-              &#10004;
-              <Tooltip text="Mark Question formula ready" />
-            </button>
-          )}
+              putUtils._fetchSentence(
+                props.lang1,
+                protoFormula,
+                fxnId,
+                callbackSaveFormula
+              );
+            }}
+          >
+            &#10004;
+            <Tooltip text="Mark formula ready" />
+          </button>
           <button
             alt="Connection icon"
             className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.cardButton_inactive} ${gstyles.tooltipHolderDelayed}`}

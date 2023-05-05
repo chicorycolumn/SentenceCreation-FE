@@ -437,23 +437,6 @@ const ChunkCard = (props) => {
               &#9676;
               <Tooltip text="Make this a ghost chunk" />
             </button>
-            <button
-              alt="Squares icon"
-              className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
-              onClick={(e) => {
-                e.target.blur();
-                props.setHighlightedCard(chunkId);
-                setTimeout(() => {
-                  alert(
-                    "Let's connect chunk cards from Question sentence to their counterparts in Answer sentence."
-                  );
-                  props.setHighlightedCard();
-                }, 0);
-              }}
-            >
-              &#10697;
-              <Tooltip text="Connect to Answer sentence" />
-            </button>
           </>
         )}
 
