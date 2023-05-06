@@ -124,7 +124,7 @@ export const _fetchDualSentence = (
         });
         setListPopupData({
           title: `${payload.answerSentenceArr.length} Answer sentences for this Question sentence.`,
-          headers: ["Question", "Answers"],
+          headers: [`Question (${langQ})`, `Answers (${langA})`],
           rows,
         });
       }

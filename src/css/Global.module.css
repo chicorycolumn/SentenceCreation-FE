@@ -547,3 +547,13 @@
   margin-bottom: 10px;
   font-size: 20px;
 }
+
+.invisibleTextarea {
+  z-index: -1;
+  width: 0px;
+  height: 0px;
+  align-self: center;
+  justify-self: center;
+  position: fixed;
+  top: 0px;
+}

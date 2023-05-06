@@ -21,6 +21,7 @@ const Create = () => {
   const [questionSavedFormula, setQuestionSavedFormula] = useState();
   const [answerSavedFormula, setAnswerSavedFormula] = useState();
   const [listPopupData, setListPopupData] = useState();
+  const [invisibleTextarea, setInvisibleTextarea] = useState("");
 
   const rodButtonDisabled = !questionSavedFormula || !answerSavedFormula;
 
@@ -51,6 +52,12 @@ const Create = () => {
       </div>
       <h1 className={gstyles.heading1}>Create new sentences</h1>
       <div className={styles.horizontalHolder}>
+        <textarea
+          readOnly
+          value={invisibleTextarea}
+          className={gstyles.invisibleTextarea}
+          id="invisibleTextarea_Create"
+        ></textarea>
         <LanguagesForm
           setLangQ={(newValue) => {
             setLangQ((prev) => {
@@ -98,6 +105,26 @@ const Create = () => {
             }`}
             disabled={rodButtonDisabled}
             onClick={() => {
+              let fxnId = "fetchDualSentence:Query*";
+
+              putUtils._fetchDualSentence(
+                fxnId,
+                langA,
+                langQ,
+                answerSavedFormula,
+                questionSavedFormula,
+                setListPopupData
+              );
+            }}
+          >
+            ★ Query dual formula switch lang
+          </button>
+          <button
+            className={`${
+              rodButtonDisabled ? styles.rodButtonDisabled : styles.rodButton
+            }`}
+            disabled={rodButtonDisabled}
+            onClick={() => {
               let fxnId = "fetchDualSentence:Save";
               const callbackSaveDualFormula = (payload, qFormula, aFormula) => {
                 if (
@@ -137,6 +164,12 @@ const Create = () => {
 
                   console.log("Saved this dual formula:", dualFormula);
                   setSavedDualFormulas((prev) => [...prev, dualFormula]);
+
+                  uUtils.copyToClipboard(
+                    setInvisibleTextarea,
+                    JSON.stringify(dualFormula),
+                    "invisibleTextarea_Create"
+                  );
                 } else {
                   alert(
                     "Sorry, no sentences were created for your dual formula when I queried it just now, so I will not save it."
@@ -158,25 +191,71 @@ const Create = () => {
             ⎘ Save dual formula
           </button>
           {[
-            { name: "dual", data: savedDualFormulas },
-            { name: "in-progress", data: savedProgressFormulas },
+            {
+              name: "dual",
+              data: savedDualFormulas,
+              setState: setSavedDualFormulas,
+            },
+            {
+              name: "in-progress",
+              data: savedProgressFormulas,
+              setState: setSavedProgressFormulas,
+            },
           ].map((savedFormulasData) => (
-            <button
-              className={`${
-                !savedFormulasData.data.length
-                  ? styles.rodButtonDisabled
-                  : styles.rodButton
-              }`}
-              disabled={!savedFormulasData.data.length}
-              onClick={() => {
-                console.log(
-                  `View ${savedFormulasData.data.length} saved ${savedFormulasData.name} formulas`,
-                  savedFormulasData.data
-                );
-              }}
-            >
-              {`View ${savedFormulasData.data.length} saved ${savedFormulasData.name} formulas`}
-            </button>
+            <>
+              <button
+                key={`Save_${savedFormulasData.name}`}
+                className={`${
+                  !savedFormulasData.data.length
+                    ? styles.rodButtonDisabled
+                    : styles.rodButton
+                }`}
+                disabled={!savedFormulasData.data.length}
+                onClick={() => {
+                  console.log(
+                    `View ${savedFormulasData.data.length} saved ${savedFormulasData.name} formulas`,
+                    savedFormulasData.data
+                  );
+
+                  let stringifiedSavedFormulas = JSON.stringify(
+                    savedFormulasData.data
+                  );
+
+                  uUtils.copyToClipboard(
+                    setInvisibleTextarea,
+                    stringifiedSavedFormulas,
+                    "invisibleTextarea_Create"
+                  );
+
+                  uUtils.downloadText(
+                    savedFormulasData.name + "-formulas",
+                    stringifiedSavedFormulas
+                  );
+                }}
+              >
+                {`View ${savedFormulasData.data.length} saved ${savedFormulasData.name} formulas`}
+              </button>
+              <button
+                key={`Delete_${savedFormulasData.name}`}
+                className={`${
+                  !savedFormulasData.data.length
+                    ? styles.rodButtonDisabled
+                    : styles.rodButton
+                }`}
+                disabled={!savedFormulasData.data.length}
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      `Are you sure you want to delete all saved ${savedFormulasData.name} formulas?`
+                    )
+                  ) {
+                    savedFormulasData.setState([]);
+                  }
+                }}
+              >
+                {`Delete ${savedFormulasData.data.length} saved ${savedFormulasData.name} formulas`}
+              </button>
+            </>
           ))}
         </div>
 

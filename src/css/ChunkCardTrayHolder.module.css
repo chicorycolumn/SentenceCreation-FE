@@ -14,6 +14,7 @@
 }
 
 .rodButton {
+  font-size: 13px;
   margin: 0px;
   height: 21.5px;
   background-color: #e0ffff;
@@ -29,6 +30,7 @@
 }
 
 .rodButtonDisabled {
+  font-size: 13px;
   margin: 0px;
   height: 21.5px;
   background-color: rgb(245, 245, 245);

@@ -456,3 +456,34 @@ exports.removePunctuationExceptApostrophe = (s) => {
 exports.purifyString = (s) => {
   return exports.removePunctuationExceptApostrophe(s.trim().toLowerCase());
 };
+
+exports.copyToClipboard = (
+  setStateInvisibleTextarea,
+  data,
+  id = "invisibleTextarea"
+) => {
+  setStateInvisibleTextarea(data);
+
+  setTimeout(() => {
+    let el = document.getElementById(id);
+    el.select();
+    el.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+
+    setTimeout(() => {
+      setStateInvisibleTextarea("");
+    }, 500);
+  }, 500);
+};
+
+exports.downloadText = (name = "Downloaded data", data) => {
+  let myblob = new Blob([data], {
+    type: "text/plain",
+  });
+
+  const url = URL.createObjectURL(myblob);
+  const link = document.createElement("a");
+  link.download = `${name}-${Date.now()}.txt`;
+  link.href = url;
+  link.click();
+};
