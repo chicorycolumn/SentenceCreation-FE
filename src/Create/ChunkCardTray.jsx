@@ -18,6 +18,7 @@ import idUtils, {
 import icons from "../utils/icons.js";
 import $ from "jquery";
 const putUtils = require("../utils/putUtils.js");
+const stUtils = require("../utils/storageUtils.js");
 const scUtils = require("../utils/structureChunkUtils.js");
 const fiUtils = require("../utils/femulaItemUtils.js");
 
@@ -232,7 +233,7 @@ const ChunkCardTray = (props) => {
               e.target.blur();
               let fxnId = "fetchSentence1:Star";
 
-              let protoFormula = putUtils.getProtoFormula(props);
+              let protoFormula = stUtils.getProtoFormula(props);
               if (!protoFormula) {
                 console.log(fxnId + " Formula failed validation.");
                 return;
@@ -255,45 +256,13 @@ const ChunkCardTray = (props) => {
             className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
               e.target.blur();
-              let fxnId = "fetchSentence2:Save";
-
-              let protoFormula = putUtils.getProtoFormula(props);
-              if (!protoFormula) {
-                console.log(fxnId + " Formula failed validation.");
-                return;
-              }
-
-              idUtils.checkFormulaIdUniqueAndModify(
-                props.lang1,
-                props.fetchedFormulaIds,
-                protoFormula,
-                props.chosenFormulaId
-              );
-
-              const callbackSaveFormula = (payload, formula) => {
-                if (payload.length) {
-                  alert(
-                    "Okay, I queried sentences for your formula, and we do get sentences created. So now let's save your formula. I'm console logging your formula now. Next we need to send this to BE and save it."
-                  );
-                  console.log("Let's save this formula:", formula);
-                  props.saveProgressFormula((prev) => [...prev, formula]);
-                } else {
-                  alert(
-                    "Sorry, no sentences were created for your formula when I queried it just now, so I will not save your formula on BE."
-                  );
-                }
-              };
-
-              putUtils._fetchSentence(
-                props.lang1,
-                protoFormula,
-                fxnId,
-                callbackSaveFormula
+              props.saveProgressFormula(
+                stUtils.getSaveableProgressFormula(props)
               );
             }}
           >
             &#9112;
-            <Tooltip text="Save in-progress formula" />
+            <Tooltip text="Save progress formula" />
           </button>
           <button
             alt="Checkmark tick icon"
@@ -313,7 +282,7 @@ const ChunkCardTray = (props) => {
 
               let fxnId = `fetchSentence2:Mark ${props.batch} formula ready`;
 
-              let protoFormula = putUtils.getProtoFormula(props);
+              let protoFormula = stUtils.getProtoFormula(props);
               if (!protoFormula) {
                 console.log(fxnId + " Formula failed validation.");
                 return;
@@ -458,7 +427,7 @@ const ChunkCardTray = (props) => {
               } else if (response === "c") {
                 let fxnId = "fetchSentence3:Snowflake";
 
-                let protoFormula = putUtils.getProtoFormula(props);
+                let protoFormula = stUtils.getProtoFormula(props);
                 if (!protoFormula) {
                   console.log(fxnId + " Formula failed validation.");
                   return;

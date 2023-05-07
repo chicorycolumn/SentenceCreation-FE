@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "../css/ChunkCardTray.module.css";
+import jqUtils from "../utils/jQueryUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 const uiUtils = require("../utils/userInputUtils.js");
 
@@ -35,6 +36,10 @@ const AddChunkButton = (props) => {
             ...prevFemula.slice(props.femulaItemIndex),
           ];
         });
+
+        setTimeout(() => {
+          jqUtils.expandTrayHeightToFitTraitBoxes(props.batch);
+        }, 500);
       }}
     >
       &#8853;

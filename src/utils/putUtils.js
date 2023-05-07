@@ -6,18 +6,6 @@ const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
-export const getProtoFormula = (props) => {
-  if (uiUtils.validateFemulaToSend(props.femula)) {
-    return;
-  }
-
-  return {
-    sentenceFormulaId: props.chosenFormulaId,
-    sentenceStructure: props.femula.map((el) => el.structureChunk),
-    orders: bfUtils.backendifyOrders(props.chunkOrders), // Backendify-1: Orders
-  };
-};
-
 export const fetchFormulaIds = (langQ, langA, env) => {
   return axios
     .get(

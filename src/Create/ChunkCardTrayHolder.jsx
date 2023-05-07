@@ -7,6 +7,7 @@ import { fetchFemula, fetchFormulaIds } from ".././utils/putUtils.js";
 import gstyles from ".././css/Global.module.css";
 import styles from ".././css/ChunkCardTrayHolder.module.css";
 import idUtils from ".././utils/identityUtils.js";
+import jqUtils from ".././utils/jQueryUtils.js";
 const uUtils = require(".././utils/universalUtils.js");
 
 const ChunkCardTrayHolder = (props) => {
@@ -62,6 +63,22 @@ const ChunkCardTrayHolder = (props) => {
     e.preventDefault();
     fetchAndSetFormulaIds(props.lang1, props.lang2, beEnv);
   };
+
+  useEffect(() => {
+    if (
+      props.progressFemulaToLoad &&
+      props.progressFemulaToLoad.chosenFormulaId &&
+      props.progressFemulaToLoad.chosenFormulaId.split("-")[0] === props.lang1
+    ) {
+      setFemula(props.progressFemulaToLoad.femula);
+      setChunkOrders(props.progressFemulaToLoad.chunkOrders);
+      setChosenFormulaId(props.progressFemulaToLoad.chosenFormulaId);
+
+      setTimeout(() => {
+        jqUtils.expandTrayHeightToFitTraitBoxes(props.batch);
+      }, 500);
+    }
+  }, [props.progressFemulaToLoad]);
 
   useEffect(() => {
     if (chosenFormulaId && shouldFetchFemula) {

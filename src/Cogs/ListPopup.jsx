@@ -109,7 +109,7 @@ const ListPopup = (props) => {
               </thead>
 
               <tbody>
-                {props.data.rows.map((el, rIndex) => (
+                {props.data.rows.map((r, rIndex) => (
                   <tr
                     className={`${styles.tablerow} ${
                       props.data.rowCallback && styles.hoverableRow
@@ -118,12 +118,12 @@ const ListPopup = (props) => {
                     onClick={(e) => {
                       e.preventDefault();
                       if (props.data.rowCallback) {
-                        props.data.rowCallback(el);
+                        props.data.rowCallback(r, rIndex);
                       }
                     }}
                   >
                     <td>{rIndex + 1}</td>
-                    {el.map((item, dIndex) => (
+                    {r.map((item, dIndex) => (
                       <td key={`${props.data.title}-td-${dIndex}`}>
                         {uUtils.stringify(item)}
                       </td>

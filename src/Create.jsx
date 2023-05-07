@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import LanguagesForm from "./Create/LanguagesForm.jsx";
 import FormulaForm from "./Create/FormulaForm.jsx";
 import ChunkCardTrayHolder from "./Create/ChunkCardTrayHolder.jsx";
@@ -11,6 +11,7 @@ import styles from "./css/ChunkCardTrayHolder.module.css";
 import rfStyles from "./css/RadioForm.module.css";
 const uUtils = require("./utils/universalUtils.js");
 const putUtils = require("./utils/putUtils.js");
+const stUtils = require("./utils/storageUtils.js");
 const getUtils = require("./utils/getUtils.js");
 
 const Create = () => {
@@ -19,17 +20,31 @@ const Create = () => {
   const [beEnv, setBeEnv] = useState("ref");
   const [savedProgressFormulas, setSavedProgressFormulas] = useState([]);
   const [savedDualFormulas, setSavedDualFormulas] = useState([]);
-  const [questionSavedFormula, setQuestionSavedFormula] = useState();
-  const [answerSavedFormula, setAnswerSavedFormula] = useState();
+  const [questionSavedFormula, setQuestionSavedFormula] = useState(); //rename to "ready" not "saved"
+  const [answerSavedFormula, setAnswerSavedFormula] = useState(); //rename to "ready" not "saved"
   const [listPopupData, setListPopupData] = useState();
   const [invisibleTextarea, setInvisibleTextarea] = useState("");
   const [formulaTopics, setFormulaTopics] = useState([]);
   const [allTopics, setAllTopics] = useState([]);
   const [formulaDifficulty, setFormulaDifficulty] = useState([]);
+  const [showLoadProgressFormulaPopup, setShowLoadProgressFormulaPopup] =
+    useState();
+  const [progressFemulaToLoad, setProgressFemulaToLoad] = useState();
 
   const rodButtonDisabled = !questionSavedFormula || !answerSavedFormula;
 
+  const setAndStoreSavedProgressFormulas = stUtils.getSetAndStoreSavedFormulas(
+    "savedProgressFormulas",
+    setSavedProgressFormulas
+  );
+
+  const setAndStoreSavedDualFormulas = stUtils.getSetAndStoreSavedFormulas(
+    "savedDualFormulas",
+    setSavedDualFormulas
+  );
+
   const getResetAndRequeryCallback = (queryButtonId) => {
+    // This fxn has to be declared in this file.
     return (cb) => {
       setListPopupData((prev) => {
         prev.rows = [];
@@ -46,6 +61,16 @@ const Create = () => {
     getUtils.fetchFormulaTopics().then((fetchedFormulaTopics) => {
       setAllTopics(fetchedFormulaTopics);
     });
+
+    let storedProgressFormulas = localStorage.getItem("savedProgressFormulas");
+    if (storedProgressFormulas) {
+      setSavedProgressFormulas(JSON.parse(storedProgressFormulas));
+    }
+
+    let storedDualFormulas = localStorage.getItem("savedDualFormulas");
+    if (storedDualFormulas) {
+      setSavedDualFormulas(JSON.parse(storedDualFormulas));
+    }
   }, []);
 
   return (
@@ -194,7 +219,7 @@ const Create = () => {
                   ];
 
                   console.log("Saved this dual formula:", dualFormula);
-                  setSavedDualFormulas((prev) => [...prev, dualFormula]);
+                  setAndStoreSavedDualFormulas(dualFormula);
 
                   uUtils.copyToClipboard(
                     setInvisibleTextarea,
@@ -225,15 +250,15 @@ const Create = () => {
             {
               name: "dual",
               data: savedDualFormulas,
-              setState: setSavedDualFormulas,
+              setState: setAndStoreSavedDualFormulas,
             },
             {
-              name: "in-progress",
+              name: "progress",
               data: savedProgressFormulas,
-              setState: setSavedProgressFormulas,
+              setState: setAndStoreSavedProgressFormulas,
             },
           ].map((savedFormulasData) => (
-            <>
+            <Fragment key={`buttons_${savedFormulasData.name}`}>
               <button
                 key={`Save_${savedFormulasData.name}`}
                 className={`${
@@ -286,8 +311,22 @@ const Create = () => {
               >
                 {`Delete ${savedFormulasData.data.length} saved ${savedFormulasData.name} formulas`}
               </button>
-            </>
+            </Fragment>
           ))}
+          <button
+            key={`Load-progress-formula`}
+            className={`${
+              !savedProgressFormulas.length
+                ? styles.rodButtonDisabled
+                : styles.rodButton
+            }`}
+            disabled={!savedProgressFormulas.length}
+            onClick={() => {
+              setShowLoadProgressFormulaPopup(true);
+            }}
+          >
+            Load saved progress formula
+          </button>
         </div>
         <div className={rfStyles.form}>
           <h4 className={rfStyles.titleSmall}>Formula topics</h4>
@@ -311,8 +350,8 @@ const Create = () => {
                 });
               }}
             >
-              {allTopics.map((topicOption) => (
-                <option value={topicOption} key={topicOption}>
+              {allTopics.map((topicOption, tpoIndex) => (
+                <option value={topicOption} key={`${tpoIndex}-${topicOption}`}>
                   {topicOption}
                 </option>
               ))}
@@ -341,8 +380,11 @@ const Create = () => {
                 setFormulaDifficulty(e.target.value);
               }}
             >
-              {[1, 2, 3, 4, 5].map((difficultyOption) => (
-                <option value={difficultyOption} key={difficultyOption}>
+              {[1, 2, 3, 4, 5].map((difficultyOption, dioIndex) => (
+                <option
+                  value={difficultyOption}
+                  key={`${dioIndex}-${difficultyOption}`}
+                >
                   {difficultyOption}
                 </option>
               ))}
@@ -358,23 +400,42 @@ const Create = () => {
             evenColumns={true}
           />
         )}
+        {showLoadProgressFormulaPopup && (
+          <ListPopup
+            exit={setShowLoadProgressFormulaPopup}
+            data={{
+              title: "Load a progress formula",
+              headers: ["ID", "Guidewords"],
+              rows: savedProgressFormulas.map((saved) => [
+                saved.chosenFormulaId,
+                saved.femula.map((chunk) => chunk.guideword).join(" "),
+              ]),
+              rowCallback: (r, rIndex) => {
+                setProgressFemulaToLoad(savedProgressFormulas[rIndex]);
+                setShowLoadProgressFormulaPopup();
+              },
+            }}
+          />
+        )}
       </div>
       <ChunkCardTrayHolder
         batch={"Question"}
         lang1={langQ}
         lang2={langA}
-        saveProgressFormula={setSavedProgressFormulas}
+        saveProgressFormula={setAndStoreSavedProgressFormulas}
         saveFinishedFormula={setQuestionSavedFormula}
         formulaIsSaved={!!questionSavedFormula}
+        progressFemulaToLoad={progressFemulaToLoad}
       />
       <ChunkCardTrayHolder
         batch={"Answer"}
         lang1={langA}
         lang2={langQ}
-        saveProgressFormula={setSavedProgressFormulas}
+        saveProgressFormula={setAndStoreSavedProgressFormulas}
         questionSavedFormula={questionSavedFormula}
         saveFinishedFormula={setAnswerSavedFormula}
         formulaIsSaved={!!answerSavedFormula}
+        progressFemulaToLoad={progressFemulaToLoad}
       />
     </LanguageContextProvider>
   );

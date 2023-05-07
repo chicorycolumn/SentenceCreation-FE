@@ -6,6 +6,7 @@ import Prompt from "../Cogs/Prompt.jsx";
 import styles from "../css/ChunkCard.module.css";
 import gstyles from "../css/Global.module.css";
 import diUtils from "../utils/displayUtils.js";
+import jqUtils from "../utils/jQueryUtils.js";
 import idUtils, {
   getWordtypeEnCh,
   isFixedChunk,
@@ -473,6 +474,9 @@ const ChunkCard = (props) => {
                 props.editLemma(null, chunkId);
               }
               props.setHighlightedCard();
+              setTimeout(() => {
+                jqUtils.expandTrayHeightToFitTraitBoxes(props.batch);
+              }, 500);
             }, 0);
           }}
         >

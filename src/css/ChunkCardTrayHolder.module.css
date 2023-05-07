@@ -40,12 +40,11 @@
 
 .topics {
   height: 150px !important;
-  width: 45%;
-  font-size: 11px;
+  width: 65%;
 }
 
 .topicsSelector {
-  width: 45%;
+  width: 25%;
 }
 
 .topicsButton {
