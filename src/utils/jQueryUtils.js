@@ -22,31 +22,31 @@ const jqUtils = {
       }
     }, 5);
   },
-  collapseIfNotCollapsed: (
-    showAllButton,
-    showAllTraitBoxes,
-    buttonIsOppositeBatch
-  ) => {
-    let showAllButtonIsUncollapsed = [
+  collapseIfNotCollapsed: (button, willHideContent, buttonIsOppositeBatch) => {
+    let buttonIsShowingContent = [
       icons.downBlackTriangle,
       icons.downWhiteTriangle,
-    ].includes(showAllButton.innerText);
+    ].includes(button.innerText);
 
-    if (!buttonIsOppositeBatch) {
-      if (showAllTraitBoxes && showAllButtonIsUncollapsed) {
-        showAllButton.click();
+    if (buttonIsOppositeBatch) {
+      if (!willHideContent && buttonIsShowingContent) {
+        // ie I am about to show all traitBoxes but button of opposite batch is currently showing all traitboxes.
+        button.click();
       }
       return;
     }
 
+    if (willHideContent && buttonIsShowingContent) {
+      button.click();
+    }
+
     if (
-      (!showAllTraitBoxes && showAllButtonIsUncollapsed) ||
-      (showAllTraitBoxes &&
-        !showAllButtonIsUncollapsed &&
-        (!!showAllButton.id.match("Group1") ||
-          showAllButton.innerText === icons.upBlackTriangle))
+      !willHideContent &&
+      !buttonIsShowingContent &&
+      button.id.match("Group") && // ie not the All button
+      button.innerText !== icons.upWhiteTriangle
     ) {
-      showAllButton.click();
+      button.click();
     }
   },
 };

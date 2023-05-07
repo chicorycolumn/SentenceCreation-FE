@@ -32,7 +32,7 @@ const ChunkCardTray = (props) => {
   const [stemFoundForFlower, setStemFoundForFlower] = useState();
   const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const [listPopupData, setListPopupData] = useState();
-  const [showAllTraitBoxes, setShowAllTraitBoxes] = useState(false);
+  const [showAllTraitBoxes, setShowAllTraitBoxes] = useState(true);
   const [showChunkOrdersPopup, setShowChunkOrdersPopup] = useState();
   const [highlightedCard, setHighlightedCard] = useState();
   const [meaninglessCounterTraitBox, setMeaninglessCounterTraitBox] =
@@ -300,12 +300,11 @@ const ChunkCardTray = (props) => {
                   props.markFormulaReady(formula);
 
                   $.each(
-                    $(`button[id^='ToggleShowButton-${props.batch}']`),
+                    $(`button[id^='ToggleShowButtonAll-${props.batch}']`),
                     function () {
                       jqUtils.collapseIfNotCollapsed(
                         $(this)[0],
-                        showAllTraitBoxes,
-                        true
+                        showAllTraitBoxes
                       );
                     }
                   );
@@ -376,11 +375,7 @@ const ChunkCardTray = (props) => {
               $.each(
                 $(`button[id^='ToggleShowButton-${props.batch}-']`),
                 function () {
-                  jqUtils.collapseIfNotCollapsed(
-                    $(this)[0],
-                    showAllTraitBoxes,
-                    true
-                  );
+                  jqUtils.collapseIfNotCollapsed($(this)[0], showAllTraitBoxes);
                 }
               );
 
@@ -391,14 +386,18 @@ const ChunkCardTray = (props) => {
                   )}']`
                 ),
                 function () {
-                  jqUtils.collapseIfNotCollapsed($(this)[0], showAllTraitBoxes);
+                  jqUtils.collapseIfNotCollapsed(
+                    $(this)[0],
+                    showAllTraitBoxes,
+                    true
+                  );
                 }
               );
             }}
           >
             {showAllTraitBoxes
-              ? icons.upBlackTriangle
-              : icons.downBlackTriangle}
+              ? icons.downBlackTriangle
+              : icons.upBlackTriangle}
             <Tooltip text="Show or hide trait boxes" />
           </button>
           <button
