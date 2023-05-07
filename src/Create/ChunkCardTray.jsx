@@ -455,6 +455,17 @@ const ChunkCardTray = (props) => {
             &#10053;
             <Tooltip text="Extra options" />
           </button>
+          <button
+            alt="Dashed up arrow icon"
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            onClick={(e) => {
+              e.target.blur();
+              jqUtils.expandTrayHeightToFitTraitBoxes();
+            }}
+          >
+            &#8673;
+            <Tooltip text="Reduce space between Question formula display and Answer formula display" />
+          </button>
         </div>
       </div>
       <div

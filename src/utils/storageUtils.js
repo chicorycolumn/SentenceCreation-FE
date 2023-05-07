@@ -12,7 +12,10 @@ export const getSetAndStoreSavedFormulas = (key, setState) => {
       localStorage.removeItem(key);
     } else {
       setState((prev) => {
-        let newState = [unfinishedFemulaToSave, ...prev];
+        let newState = [
+          uUtils.copyWithoutReference(unfinishedFemulaToSave),
+          ...prev,
+        ];
         localStorage.setItem(key, JSON.stringify(newState));
         return newState;
       });
