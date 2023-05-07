@@ -278,9 +278,7 @@ const Create = () => {
 
         {listPopupData && (
           <ListPopup
-            exit={() => {
-              setListPopupData();
-            }}
+            exit={setListPopupData}
             data={listPopupData}
             wide={true}
             evenColumns={true}

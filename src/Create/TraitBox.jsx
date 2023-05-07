@@ -400,12 +400,7 @@ class TraitBox extends Component {
     return (
       <>
         {this.state.isSelected && (
-          <div
-            className={gstyles.obscurus}
-            onClick={() => {
-              exitTraitBox(false);
-            }}
-          ></div>
+          <div className={gstyles.obscurus} onClick={exitTraitBox}></div>
         )}
 
         {this.state.showTagInterface && (
@@ -805,7 +800,7 @@ class TraitBox extends Component {
                               }, 500);
                             }}
                           >
-                            &#x1f4cb;
+                            &#128203;
                           </button>
                           <button
                             alt="Pencil icon"
