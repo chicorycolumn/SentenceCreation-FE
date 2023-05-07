@@ -24,14 +24,16 @@ const ChunkOrdersButton = (props) => {
   return (
     <button
       key={chunkId}
-      disabled={disabled}
+      // disabled={disabled} // This would block the onKeyDown Enter being detected.
       className={`${
         disabled ? styles.chunkButtonDisabled : styles.chunkButton
       } ${chunkIsUnused && styles.chunkButtonBad} ${
         props.highlightedButton === chunkId && styles.highlightedButton
       }`}
       onClick={() => {
-        props.setOrderBuilt((prev) => [...prev, chunkId]);
+        if (!disabled) {
+          props.setOrderBuilt((prev) => [...prev, chunkId]);
+        }
       }}
       onKeyUp={(e) => {
         e.preventDefault();
@@ -40,7 +42,7 @@ const ChunkOrdersButton = (props) => {
       onKeyDown={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log("via ChunkOrdersPopup document listened keyup:", e.key);
+        console.log("via ChunkOrdersButton document listened keyup:", e.key);
         if (["Enter"].includes(e.key)) {
           $("#ChunkOrdersPopup-tickbutton").addClass(gstyles.tickButtonActive);
           setTimeout(() => {
