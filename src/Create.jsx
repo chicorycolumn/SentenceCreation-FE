@@ -25,6 +25,7 @@ const Create = () => {
   const [invisibleTextarea, setInvisibleTextarea] = useState("");
   const [formulaTopics, setFormulaTopics] = useState([]);
   const [allTopics, setAllTopics] = useState([]);
+  const [formulaDifficulty, setFormulaDifficulty] = useState([]);
 
   const rodButtonDisabled = !questionSavedFormula || !answerSavedFormula;
 
@@ -151,7 +152,14 @@ const Create = () => {
             }`}
             disabled={rodButtonDisabled}
             onClick={() => {
-              let fxnId = "fetchDualSentence:Save";
+              if (
+                !window.confirm(
+                  "Are you happy with the formula topics and difficulty you have chosen?"
+                )
+              ) {
+                return;
+              }
+
               const callbackSaveDualFormula = (payload, qFormula, aFormula) => {
                 if (
                   payload.questionSentenceArr &&
@@ -161,9 +169,6 @@ const Create = () => {
                 ) {
                   alert(
                     "Okay, I queried sentences for your dual formula, and we do get sentences created. So now let's save your formula. I'm console logging your formula now. Next we need to send this to BE and save it."
-                  );
-                  alert(
-                    "Want to set Topics and Difficulty on the nexus object?"
                   );
 
                   let dualFormula = {};
@@ -178,8 +183,8 @@ const Create = () => {
                       POL: [],
                       SPA: [],
                     },
-                    topics: [],
-                    difficulty: 0,
+                    topics: formulaTopics,
+                    difficulty: formulaDifficulty,
                   };
                   dualFormula.NEXUS.equivalents[langQ] = [
                     qFormula.sentenceFormulaId,
@@ -204,7 +209,7 @@ const Create = () => {
               };
 
               putUtils._fetchDualSentence(
-                fxnId,
+                "fetchDualSentence:Save",
                 langQ,
                 langA,
                 questionSavedFormula,
@@ -312,6 +317,17 @@ const Create = () => {
                 </option>
               ))}
             </select>
+            <button
+              alt="Cross icon"
+              className={`${styles.topicsButton} ${gstyles.redButton}`}
+              onClick={() => {
+                if (window.confirm("Wipe all formula topics?")) {
+                  setFormulaTopics([]);
+                }
+              }}
+            >
+              &times;
+            </button>
           </div>
           <div className={styles.horizontalHolderMini}>
             <h4 className={`${rfStyles.titleSmall} ${styles.difficultyHeader}`}>
@@ -322,7 +338,7 @@ const Create = () => {
               name="difficulty"
               onClick={(e) => {
                 e.preventDefault();
-                console.log(e.target.value);
+                setFormulaDifficulty(e.target.value);
               }}
             >
               {[1, 2, 3, 4, 5].map((difficultyOption) => (
