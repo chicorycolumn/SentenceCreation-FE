@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import styles from "../css/Popup.module.css";
 import gstyles from "../css/Global.module.css";
 import uUtils from "../utils/universalUtils.js";
+import Tooltip from "../Cogs/Tooltip.jsx";
 import $ from "jquery";
 
 const ListPopup = (props) => {
   const [headersWhichAreSortedDescending, setHeadersWhichAreSortedDescending] =
     useState([]);
+  const [meaninglessCounter, setMeaninglessCounter] = useState(0);
 
   const exit = () => {
     $(document).off("keyup");
@@ -25,18 +27,37 @@ const ListPopup = (props) => {
   return (
     <>
       <div className={gstyles.obscurus} onClick={exit}></div>
-      <div className={`${styles.mainbox} ${props.wide && styles.mainboxWide}`}>
+      <div
+        key={meaninglessCounter}
+        className={`${styles.mainbox} ${props.wide && styles.mainboxWide}`}
+      >
         <div className={styles.topHolder}>
           <div className={`${gstyles.sideButton} ${gstyles.invisible}`}></div>
           <h1 className={styles.title}>{props.data.title}</h1>
-          <button
-            id="ListPopup-exitbutton"
-            alt="Exit icon"
-            className={`${gstyles.sideButton} ${gstyles.greyButton} ${gstyles.squareButton}`}
-            onClick={exit}
-          >
-            &#8679;
-          </button>
+          <div className={styles.topRightButtonHolder}>
+            {props.data.repeatCallback && (
+              <button
+                alt="Repeat icon"
+                className={`${gstyles.sideButton} ${gstyles.greyButton} ${gstyles.squareButton} ${gstyles.tooltipHolderDelayed}`}
+                onClick={() => {
+                  props.data.repeatCallback(() => {
+                    setMeaninglessCounter((prev) => prev + 1);
+                  });
+                }}
+              >
+                &#10561;
+                <Tooltip text="Repeat query" />
+              </button>
+            )}
+            <button
+              id="ListPopup-exitbutton"
+              alt="Exit icon"
+              className={`${gstyles.sideButton} ${gstyles.greyButton} ${gstyles.squareButton}`}
+              onClick={exit}
+            >
+              &#8679;
+            </button>
+          </div>
         </div>
 
         <div className={styles.bottomHolder}>
@@ -46,13 +67,15 @@ const ListPopup = (props) => {
             <table>
               <thead>
                 <tr>
-                  <th>#</th>
+                  <th className={styles.indexHeader}>#</th>
                   {props.data.headers.map((header, hIndex) => (
                     <th
                       key={`${props.data.title.slice(0, 10)}-th-${hIndex}`}
                       className={`${styles.listHeader} ${
                         props.setData && styles.listHeaderHoverable
-                      } ${gstyles.noSelect}`}
+                      } ${gstyles.noSelect} ${
+                        props.evenColumns && styles.listHeaderEvenColumns
+                      }`}
                       onClick={(e) => {
                         e.preventDefault();
 

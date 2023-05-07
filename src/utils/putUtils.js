@@ -96,7 +96,8 @@ export const _fetchDualSentence = (
   questionFormula,
   answerFormula,
   setListPopupData,
-  callback
+  callback,
+  repeatCallback
 ) => {
   fetchDualSentence(langQ, langA, questionFormula, answerFormula).then(
     (data) => {
@@ -126,6 +127,7 @@ export const _fetchDualSentence = (
           title: `${payload.answerSentenceArr.length} Answer sentences for this Question sentence.`,
           headers: [`Question (${langQ})`, `Answers (${langA})`],
           rows,
+          repeatCallback,
         });
       }
     },

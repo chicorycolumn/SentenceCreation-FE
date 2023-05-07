@@ -25,6 +25,19 @@ const Create = () => {
 
   const rodButtonDisabled = !questionSavedFormula || !answerSavedFormula;
 
+  const getResetAndRequeryCallback = (queryButtonId) => {
+    return (cb) => {
+      setListPopupData((prev) => {
+        prev.rows = [];
+        return prev;
+      });
+      if (cb) {
+        cb();
+      }
+      $(`#${queryButtonId}`).click();
+    };
+  };
+
   return (
     <LanguageContextProvider value={`${langQ}-${langA}-${beEnv}`}>
       <div className={gstyles.floatTop}>
@@ -80,40 +93,44 @@ const Create = () => {
         <div id={"rodButtonsHolder"} className={rfStyles.form}>
           <h4 className={rfStyles.titleSmall}>Complete</h4>
           <button
+            id="Button_QueryDualFormula"
             className={`${
               rodButtonDisabled ? styles.rodButtonDisabled : styles.rodButton
             }`}
             disabled={rodButtonDisabled}
             onClick={() => {
-              let fxnId = "fetchDualSentence:Query";
-
+              let id = "Button_QueryDualFormula";
               putUtils._fetchDualSentence(
-                fxnId,
+                id,
                 langQ,
                 langA,
                 questionSavedFormula,
                 answerSavedFormula,
-                setListPopupData
+                setListPopupData,
+                null,
+                getResetAndRequeryCallback(id)
               );
             }}
           >
             ★ Query dual formula
           </button>
           <button
+            id="Button_QueryDualFormulaReverse"
             className={`${
               rodButtonDisabled ? styles.rodButtonDisabled : styles.rodButton
             }`}
             disabled={rodButtonDisabled}
             onClick={() => {
-              let fxnId = "fetchDualSentence:Query*";
-
+              let id = "Button_QueryDualFormulaReverse";
               putUtils._fetchDualSentence(
-                fxnId,
+                id,
                 langA,
                 langQ,
                 answerSavedFormula,
                 questionSavedFormula,
-                setListPopupData
+                setListPopupData,
+                null,
+                getResetAndRequeryCallback(id)
               );
             }}
           >
@@ -266,6 +283,7 @@ const Create = () => {
             }}
             data={listPopupData}
             wide={true}
+            evenColumns={true}
           />
         )}
       </div>
