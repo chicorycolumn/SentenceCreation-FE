@@ -11,6 +11,7 @@ import styles from "./css/ChunkCardTrayHolder.module.css";
 import rfStyles from "./css/RadioForm.module.css";
 const uUtils = require("./utils/universalUtils.js");
 const putUtils = require("./utils/putUtils.js");
+const getUtils = require("./utils/getUtils.js");
 
 const Create = () => {
   const [langQ, setLangQ] = useState("POL");
@@ -22,6 +23,8 @@ const Create = () => {
   const [answerSavedFormula, setAnswerSavedFormula] = useState();
   const [listPopupData, setListPopupData] = useState();
   const [invisibleTextarea, setInvisibleTextarea] = useState("");
+  const [formulaTopics, setFormulaTopics] = useState([]);
+  const [allTopics, setAllTopics] = useState([]);
 
   const rodButtonDisabled = !questionSavedFormula || !answerSavedFormula;
 
@@ -37,6 +40,12 @@ const Create = () => {
       $(`#${queryButtonId}`).click();
     };
   };
+
+  useEffect(() => {
+    getUtils.fetchFormulaTopics().then((fetchedFormulaTopics) => {
+      setAllTopics(fetchedFormulaTopics);
+    });
+  }, []);
 
   return (
     <LanguageContextProvider value={`${langQ}-${langA}-${beEnv}`}>
@@ -274,6 +283,55 @@ const Create = () => {
               </button>
             </>
           ))}
+        </div>
+        <div className={rfStyles.form}>
+          <h4 className={rfStyles.titleSmall}>Formula topics</h4>
+          <div className={styles.horizontalHolderMini}>
+            <textarea
+              className={styles.topics}
+              readOnly
+              value={formulaTopics.join(", ")}
+            ></textarea>
+            <select
+              className={styles.topicsSelector}
+              name="topics"
+              onClick={(e) => {
+                e.preventDefault();
+                setFormulaTopics((prev) => {
+                  let selectedTopic = e.target.value;
+                  if (prev.includes(selectedTopic)) {
+                    return prev.filter((x) => x !== selectedTopic);
+                  }
+                  return [...prev, selectedTopic];
+                });
+              }}
+            >
+              {allTopics.map((topicOption) => (
+                <option value={topicOption} key={topicOption}>
+                  {topicOption}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className={styles.horizontalHolderMini}>
+            <h4 className={`${rfStyles.titleSmall} ${styles.difficultyHeader}`}>
+              Formula difficulty
+            </h4>
+            <select
+              className={styles.difficultySelector}
+              name="difficulty"
+              onClick={(e) => {
+                e.preventDefault();
+                console.log(e.target.value);
+              }}
+            >
+              {[1, 2, 3, 4, 5].map((difficultyOption) => (
+                <option value={difficultyOption} key={difficultyOption}>
+                  {difficultyOption}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {listPopupData && (

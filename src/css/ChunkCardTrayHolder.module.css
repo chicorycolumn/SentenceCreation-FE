@@ -37,3 +37,42 @@
   color: rgb(168, 168, 168);
   border: black solid 0.5px;
 }
+
+.topics {
+  height: 150px !important;
+  width: 50%;
+}
+
+.topicsSelector {
+  width: 50%;
+}
+
+.difficultySelector {
+  width: 35px;
+  height: 25px;
+  margin-left: 5px;
+  margin-top: 1px;
+}
+
+.horizontalHolderMini {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  max-height: 50px;
+}
+
+.horizontalHolderMini {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  max-height: 40px;
+  margin-top: 5px;
+}
+
+.horizontalHolderMini > * {
+  max-height: 40px;
+}
+
+.difficultyHeader {
+  margin-left: 30px;
+}

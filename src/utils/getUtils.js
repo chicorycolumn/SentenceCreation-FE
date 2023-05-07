@@ -30,6 +30,20 @@ export const fetchEnChsByLemma = (lang, lemma) => {
     });
 };
 
+export const fetchFormulaTopics = () => {
+  return axios
+    .get(
+      `${baseUrl}/educator/formulatopics`
+      // ,{headers: { Authorization: `BEARER ${token}` }}
+    )
+    .then((res) => {
+      return res.data;
+    })
+    .then((data) => {
+      return data["topics"];
+    });
+};
+
 export const fetchTags = (lang) => {
   return axios
     .get(
