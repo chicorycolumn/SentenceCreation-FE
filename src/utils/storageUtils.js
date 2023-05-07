@@ -3,16 +3,16 @@ const uiUtils = require("./userInputUtils.js");
 const uUtils = require("../utils/universalUtils.js");
 
 export const getSetAndStoreSavedFormulas = (key, setState) => {
-  return (progressFormulaToSave) => {
+  return (unfinishedFemulaToSave) => {
     if (
-      !progressFormulaToSave ||
-      (Array.isArray(progressFormulaToSave) && !progressFormulaToSave.length)
+      !unfinishedFemulaToSave ||
+      (Array.isArray(unfinishedFemulaToSave) && !unfinishedFemulaToSave.length)
     ) {
       setState([]);
       localStorage.removeItem(key);
     } else {
       setState((prev) => {
-        let newState = [progressFormulaToSave, ...prev];
+        let newState = [unfinishedFemulaToSave, ...prev];
         localStorage.setItem(key, JSON.stringify(newState));
         return newState;
       });
@@ -20,7 +20,7 @@ export const getSetAndStoreSavedFormulas = (key, setState) => {
   };
 };
 
-export const getSaveableProgressFormula = (props) => {
+export const getSaveableUnfinishedFemula = (props) => {
   return {
     chosenFormulaId: props.chosenFormulaId,
     femula: props.femula,

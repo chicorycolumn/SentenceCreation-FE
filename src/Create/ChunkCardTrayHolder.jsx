@@ -66,19 +66,19 @@ const ChunkCardTrayHolder = (props) => {
 
   useEffect(() => {
     if (
-      props.progressFemulaToLoad &&
-      props.progressFemulaToLoad.chosenFormulaId &&
-      props.progressFemulaToLoad.chosenFormulaId.split("-")[0] === props.lang1
+      props.unfinishedFemulaToLoad &&
+      props.unfinishedFemulaToLoad.chosenFormulaId &&
+      props.unfinishedFemulaToLoad.chosenFormulaId.split("-")[0] === props.lang1
     ) {
-      setFemula(props.progressFemulaToLoad.femula);
-      setChunkOrders(props.progressFemulaToLoad.chunkOrders);
-      setChosenFormulaId(props.progressFemulaToLoad.chosenFormulaId);
+      setFemula(props.unfinishedFemulaToLoad.femula);
+      setChunkOrders(props.unfinishedFemulaToLoad.chunkOrders);
+      setChosenFormulaId(props.unfinishedFemulaToLoad.chosenFormulaId);
 
       setTimeout(() => {
         jqUtils.expandTrayHeightToFitTraitBoxes(props.batch);
       }, 500);
     }
-  }, [props.progressFemulaToLoad]);
+  }, [props.unfinishedFemulaToLoad]);
 
   useEffect(() => {
     if (chosenFormulaId && shouldFetchFemula) {
@@ -175,7 +175,7 @@ const ChunkCardTrayHolder = (props) => {
             formatAndSetFemulaFromWrittenInput
           }
           onClickFetchFemulas={onClickFetchFemulas}
-          questionSavedFormula={props.questionSavedFormula}
+          questionReadyFormula={props.questionReadyFormula}
           wipeFemula={() => {
             setFemula([]);
           }}
@@ -205,8 +205,8 @@ const ChunkCardTrayHolder = (props) => {
           batch={props.batch}
           femulaWasLoadedFromBE={femulaWasLoadedFromBE}
           fetchedFormulaIds={fetchedFormulaIds}
-          saveProgressFormula={props.saveProgressFormula}
-          saveFinishedFormula={props.saveFinishedFormula}
+          saveUnfinishedFemula={props.saveUnfinishedFemula}
+          markFormulaReady={props.markFormulaReady}
           formulaIsSaved={props.formulaIsSaved}
           formatAndSetFemulaFromWrittenInput={
             formatAndSetFemulaFromWrittenInput

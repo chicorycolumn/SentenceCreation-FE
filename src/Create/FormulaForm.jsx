@@ -37,7 +37,7 @@ const FormulaForm = (props) => {
 
   return (
     <>
-      {props.batch === "Question" || props.questionSavedFormula ? (
+      {props.batch === "Question" || props.questionReadyFormula ? (
         <div className={styles.formHolder}>
           {props.batch === "Answer" && showConnectionsQtoA ? (
             <ChunkOrdersPopup
@@ -54,7 +54,7 @@ const FormulaForm = (props) => {
                   structureChunk: { chunkId: { traitValue: `${sIndex}-${s}` } },
                 };
               })}
-              femula={props.questionSavedFormula.sentenceStructure.map(
+              femula={props.questionReadyFormula.sentenceStructure.map(
                 (stCh) => {
                   return {
                     guideword: stCh.chunkId.split("-").slice(-1),

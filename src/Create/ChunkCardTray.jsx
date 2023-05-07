@@ -156,7 +156,7 @@ const ChunkCardTray = (props) => {
     }
 
     //Chunk was modified ie formula changed. Un-checking "Mark formula ready".
-    props.saveFinishedFormula();
+    props.markFormulaReady();
   }, [props.femula, props.chunkOrders]);
 
   useEffect(() => {
@@ -256,13 +256,13 @@ const ChunkCardTray = (props) => {
             className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
               e.target.blur();
-              props.saveProgressFormula(
-                stUtils.getSaveableProgressFormula(props)
+              props.saveUnfinishedFemula(
+                stUtils.getSaveableUnfinishedFemula(props)
               );
             }}
           >
             &#9112;
-            <Tooltip text="Save progress formula" />
+            <Tooltip text="Save unfinished femula" />
           </button>
           <button
             alt="Checkmark tick icon"
@@ -297,7 +297,7 @@ const ChunkCardTray = (props) => {
 
               const callbackSaveFormula = (payload, formula) => {
                 if (payload.length) {
-                  props.saveFinishedFormula(formula);
+                  props.markFormulaReady(formula);
 
                   $.each(
                     $(`button[id^='ToggleShowButton-${props.batch}']`),

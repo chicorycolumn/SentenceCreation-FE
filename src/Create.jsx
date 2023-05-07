@@ -18,24 +18,24 @@ const Create = () => {
   const [langQ, setLangQ] = useState("POL");
   const [langA, setLangA] = useState("ENG");
   const [beEnv, setBeEnv] = useState("ref");
-  const [savedProgressFormulas, setSavedProgressFormulas] = useState([]);
+  const [savedUnfinishedFemulas, setSavedUnfinishedFemulas] = useState([]);
   const [savedDualFormulas, setSavedDualFormulas] = useState([]);
-  const [questionSavedFormula, setQuestionSavedFormula] = useState(); //rename to "ready" not "saved"
-  const [answerSavedFormula, setAnswerSavedFormula] = useState(); //rename to "ready" not "saved"
+  const [questionReadyFormula, setQuestionReadyFormula] = useState(); //rename to "ready" not "saved"
+  const [answerReadyFormula, setAnswerReadyFormula] = useState(); //rename to "ready" not "saved"
   const [listPopupData, setListPopupData] = useState();
   const [invisibleTextarea, setInvisibleTextarea] = useState("");
   const [formulaTopics, setFormulaTopics] = useState([]);
   const [allTopics, setAllTopics] = useState([]);
   const [formulaDifficulty, setFormulaDifficulty] = useState([]);
-  const [showLoadProgressFormulaPopup, setShowLoadProgressFormulaPopup] =
+  const [showLoadUnfinishedFemulaPopup, setShowLoadUnfinishedFemulaPopup] =
     useState();
-  const [progressFemulaToLoad, setProgressFemulaToLoad] = useState();
+  const [unfinishedFemulaToLoad, setUnfinishedFemulaToLoad] = useState();
 
-  const rodButtonDisabled = !questionSavedFormula || !answerSavedFormula;
+  const rodButtonDisabled = !questionReadyFormula || !answerReadyFormula;
 
-  const setAndStoreSavedProgressFormulas = stUtils.getSetAndStoreSavedFormulas(
-    "savedProgressFormulas",
-    setSavedProgressFormulas
+  const setAndStoreSavedUnfinishedFemulas = stUtils.getSetAndStoreSavedFormulas(
+    "savedUnfinishedFemulas",
+    setSavedUnfinishedFemulas
   );
 
   const setAndStoreSavedDualFormulas = stUtils.getSetAndStoreSavedFormulas(
@@ -62,9 +62,11 @@ const Create = () => {
       setAllTopics(fetchedFormulaTopics);
     });
 
-    let storedProgressFormulas = localStorage.getItem("savedProgressFormulas");
-    if (storedProgressFormulas) {
-      setSavedProgressFormulas(JSON.parse(storedProgressFormulas));
+    let storedUnfinishedFemulas = localStorage.getItem(
+      "savedUnfinishedFemulas"
+    );
+    if (storedUnfinishedFemulas) {
+      setSavedUnfinishedFemulas(JSON.parse(storedUnfinishedFemulas));
     }
 
     let storedDualFormulas = localStorage.getItem("savedDualFormulas");
@@ -139,8 +141,8 @@ const Create = () => {
                 id,
                 langQ,
                 langA,
-                questionSavedFormula,
-                answerSavedFormula,
+                questionReadyFormula,
+                answerReadyFormula,
                 setListPopupData,
                 null,
                 getResetAndRequeryCallback(id)
@@ -161,8 +163,8 @@ const Create = () => {
                 id,
                 langA,
                 langQ,
-                answerSavedFormula,
-                questionSavedFormula,
+                answerReadyFormula,
+                questionReadyFormula,
                 setListPopupData,
                 null,
                 getResetAndRequeryCallback(id)
@@ -237,8 +239,8 @@ const Create = () => {
                 "fetchDualSentence:Save",
                 langQ,
                 langA,
-                questionSavedFormula,
-                answerSavedFormula,
+                questionReadyFormula,
+                answerReadyFormula,
                 null,
                 callbackSaveDualFormula
               );
@@ -248,14 +250,14 @@ const Create = () => {
           </button>
           {[
             {
-              name: "dual",
+              name: "dual formulas",
               data: savedDualFormulas,
               setState: setAndStoreSavedDualFormulas,
             },
             {
-              name: "progress",
-              data: savedProgressFormulas,
-              setState: setAndStoreSavedProgressFormulas,
+              name: "unfinished femulas",
+              data: savedUnfinishedFemulas,
+              setState: setAndStoreSavedUnfinishedFemulas,
             },
           ].map((savedFormulasData) => (
             <Fragment key={`buttons_${savedFormulasData.name}`}>
@@ -269,7 +271,7 @@ const Create = () => {
                 disabled={!savedFormulasData.data.length}
                 onClick={() => {
                   console.log(
-                    `View ${savedFormulasData.data.length} saved ${savedFormulasData.name} formulas`,
+                    `View ${savedFormulasData.data.length} saved ${savedFormulasData.name}`,
                     savedFormulasData.data
                   );
 
@@ -284,12 +286,12 @@ const Create = () => {
                   );
 
                   uUtils.downloadText(
-                    savedFormulasData.name + "-formulas",
+                    savedFormulasData.name,
                     stringifiedSavedFormulas
                   );
                 }}
               >
-                {`View ${savedFormulasData.data.length} saved ${savedFormulasData.name} formulas`}
+                {`View ${savedFormulasData.data.length} saved ${savedFormulasData.name}`}
               </button>
               <button
                 key={`Delete_${savedFormulasData.name}`}
@@ -302,30 +304,30 @@ const Create = () => {
                 onClick={() => {
                   if (
                     window.confirm(
-                      `Are you sure you want to delete all saved ${savedFormulasData.name} formulas?`
+                      `Are you sure you want to delete all saved ${savedFormulasData.name}?`
                     )
                   ) {
                     savedFormulasData.setState([]);
                   }
                 }}
               >
-                {`Delete ${savedFormulasData.data.length} saved ${savedFormulasData.name} formulas`}
+                {`Delete ${savedFormulasData.data.length} saved ${savedFormulasData.name}`}
               </button>
             </Fragment>
           ))}
           <button
-            key={`Load-progress-formula`}
+            key={`Load-unfinished-formula`}
             className={`${
-              !savedProgressFormulas.length
+              !savedUnfinishedFemulas.length
                 ? styles.rodButtonDisabled
                 : styles.rodButton
             }`}
-            disabled={!savedProgressFormulas.length}
+            disabled={!savedUnfinishedFemulas.length}
             onClick={() => {
-              setShowLoadProgressFormulaPopup(true);
+              setShowLoadUnfinishedFemulaPopup(true);
             }}
           >
-            Load saved progress formula
+            Load a saved unfinished femula
           </button>
         </div>
         <div className={rfStyles.form}>
@@ -400,19 +402,19 @@ const Create = () => {
             evenColumns={true}
           />
         )}
-        {showLoadProgressFormulaPopup && (
+        {showLoadUnfinishedFemulaPopup && (
           <ListPopup
-            exit={setShowLoadProgressFormulaPopup}
+            exit={setShowLoadUnfinishedFemulaPopup}
             data={{
-              title: "Load a progress formula",
+              title: "Load a saved unfinished femula",
               headers: ["ID", "Guidewords"],
-              rows: savedProgressFormulas.map((saved) => [
+              rows: savedUnfinishedFemulas.map((saved) => [
                 saved.chosenFormulaId,
                 saved.femula.map((chunk) => chunk.guideword).join(" "),
               ]),
               rowCallback: (r, rIndex) => {
-                setProgressFemulaToLoad(savedProgressFormulas[rIndex]);
-                setShowLoadProgressFormulaPopup();
+                setUnfinishedFemulaToLoad(savedUnfinishedFemulas[rIndex]);
+                setShowLoadUnfinishedFemulaPopup();
               },
             }}
           />
@@ -422,20 +424,20 @@ const Create = () => {
         batch={"Question"}
         lang1={langQ}
         lang2={langA}
-        saveProgressFormula={setAndStoreSavedProgressFormulas}
-        saveFinishedFormula={setQuestionSavedFormula}
-        formulaIsSaved={!!questionSavedFormula}
-        progressFemulaToLoad={progressFemulaToLoad}
+        saveUnfinishedFemula={setAndStoreSavedUnfinishedFemulas}
+        markFormulaReady={setQuestionReadyFormula}
+        formulaIsSaved={!!questionReadyFormula}
+        unfinishedFemulaToLoad={unfinishedFemulaToLoad}
       />
       <ChunkCardTrayHolder
         batch={"Answer"}
         lang1={langA}
         lang2={langQ}
-        saveProgressFormula={setAndStoreSavedProgressFormulas}
-        questionSavedFormula={questionSavedFormula}
-        saveFinishedFormula={setAnswerSavedFormula}
-        formulaIsSaved={!!answerSavedFormula}
-        progressFemulaToLoad={progressFemulaToLoad}
+        saveUnfinishedFemula={setAndStoreSavedUnfinishedFemulas}
+        questionReadyFormula={questionReadyFormula}
+        markFormulaReady={setAnswerReadyFormula}
+        formulaIsSaved={!!answerReadyFormula}
+        unfinishedFemulaToLoad={unfinishedFemulaToLoad}
       />
     </LanguageContextProvider>
   );
