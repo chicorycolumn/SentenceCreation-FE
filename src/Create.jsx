@@ -77,6 +77,12 @@ const Create = () => {
 
   return (
     <LanguageContextProvider value={`${langQ}-${langA}-${beEnv}`}>
+      <div
+        className={`${gstyles.obscurus} ${gstyles.spinnerHolder}`}
+        id="spinnerHolder"
+      >
+        <div className={gstyles.spinner} id="spinner"></div>
+      </div>
       <div className={gstyles.floatTop}>
         <button
           onClick={() => {

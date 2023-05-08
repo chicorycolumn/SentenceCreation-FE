@@ -2,11 +2,14 @@ import axios from "axios";
 import { backendifyFormula } from "./backendifyFrontendifyUtils.js";
 import bfUtils from "./backendifyFrontendifyUtils.js";
 const uiUtils = require("./userInputUtils.js");
+const diUtils = require("./displayUtils.js");
 const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
 export const fetchFormulaIds = (langQ, langA, env) => {
+  diUtils.startSpinner("green");
+
   return axios
     .get(
       `${baseUrl}/educator/formulaids?lang1=${langQ}&lang2=${langA}&env=${env}`
@@ -16,12 +19,18 @@ export const fetchFormulaIds = (langQ, langA, env) => {
       console.log("fetchFormulaIds got:", res.data); //devlogging
       console.log("/fetchFormulaIds");
 
+      diUtils.stopSpinner();
       return res.data;
     })
-    .catch((e) => console.log("ERROR 7070", e));
+    .catch((e) => {
+      console.log("ERROR 7070", e);
+      diUtils.stopSpinner();
+    });
 };
 
 export const fetchFemula = (formulaId, answerLanguage) => {
+  diUtils.startSpinner("fuchsia");
+
   console.log("START fetchFemula", { formulaId, answerLanguage });
 
   return axios
@@ -34,9 +43,13 @@ export const fetchFemula = (formulaId, answerLanguage) => {
       console.log("");
       console.log("");
 
+      diUtils.stopSpinner();
       return res.data;
     })
-    .catch((e) => console.log("ERROR 9820", e));
+    .catch((e) => {
+      console.log("ERROR 9820", e);
+      diUtils.stopSpinner();
+    });
 };
 
 export const _fetchSentence = (
@@ -49,6 +62,8 @@ export const _fetchSentence = (
   fetchSentence(lang, protoFormula).then(
     (data) => {
       let { payload, messages } = data;
+
+      diUtils.stopSpinner();
 
       if (messages) {
         alert(
@@ -73,6 +88,7 @@ export const _fetchSentence = (
     },
     (e) => {
       console.log(`ERROR ${label}:`, e);
+      diUtils.stopSpinner();
     }
   );
 };
@@ -90,6 +106,8 @@ export const _fetchDualSentence = (
   fetchDualSentence(langQ, langA, questionFormula, answerFormula).then(
     (data) => {
       let { payload, messages } = data;
+
+      diUtils.stopSpinner();
 
       if (messages) {
         alert(
@@ -121,6 +139,7 @@ export const _fetchDualSentence = (
     },
     (e) => {
       console.log(`ERROR ${label}:`, e);
+      diUtils.stopSpinner();
     }
   );
 };
@@ -131,6 +150,8 @@ export const fetchSentence = (lang, formula) => {
   if (!formula.sentenceStructure.length) {
     return;
   }
+
+  diUtils.startSpinner("lightskyblue");
 
   let requestingSingleWordOnly =
     !formula.orders ||
@@ -161,9 +182,13 @@ export const fetchSentence = (lang, formula) => {
       console.log("");
       console.log("");
 
+      diUtils.stopSpinner();
       return res.data;
     })
-    .catch((e) => console.log("ERROR 7461", e));
+    .catch((e) => {
+      console.log("ERROR 7461", e);
+      diUtils.stopSpinner();
+    });
 };
 
 export const fetchDualSentence = (
@@ -178,6 +203,8 @@ export const fetchDualSentence = (
   if (!answerFormula.sentenceStructure.length) {
     return;
   }
+
+  diUtils.startSpinner("blue");
 
   let requestingSingleWordOnly =
     !questionFormula.orders ||
@@ -212,7 +239,11 @@ export const fetchDualSentence = (
       console.log("");
       console.log("");
 
+      diUtils.stopSpinner();
       return res.data;
     })
-    .catch((e) => console.log("ERROR 7181", e));
+    .catch((e) => {
+      console.log("ERROR 7181", e);
+      diUtils.stopSpinner();
+    });
 };

@@ -158,3 +158,12 @@ exports.addChunkId = (stCh, chunkCardIndex, guideword, femula, label) => {
 };
 
 exports.traitsNotToDisplayInOwnBox = ["orTags", "id", "guideword", "lObjId"];
+
+exports.startSpinner = (color) => {
+  document.getElementById("spinner").style["border-top-color"] = color;
+  document.getElementById("spinnerHolder").style.display = "block";
+};
+
+exports.stopSpinner = () => {
+  document.getElementById("spinnerHolder").style.display = "none";
+};
