@@ -23,22 +23,22 @@ export const getSetAndStoreSavedFormulas = (key, setState) => {
   };
 };
 
-export const getSaveableUnfinishedFemula = (props) => {
+export const getSaveableUnfinishedFemula = (_props) => {
   return {
-    chosenFormulaId: props.chosenFormulaId,
-    femula: props.femula,
-    chunkOrders: props.chunkOrders,
+    chosenFormulaId: _props.chosenFormulaId,
+    femula: _props.femula,
+    chunkOrders: _props.chunkOrders,
   };
 };
 
-export const getProtoFormula = (props) => {
-  if (uiUtils.validateFemulaToSend(props.femula)) {
+export const getProtoFormula = (_props) => {
+  if (uiUtils.validateFemulaToSend(_props.femula)) {
     return;
   }
 
   return {
-    sentenceFormulaId: props.chosenFormulaId,
-    sentenceStructure: props.femula.map((el) => el.structureChunk),
-    orders: bfUtils.backendifyOrders(props.chunkOrders), // Backendify-1: Orders
+    sentenceFormulaId: _props.chosenFormulaId,
+    sentenceStructure: _props.femula.map((el) => el.structureChunk),
+    orders: bfUtils.backendifyOrders(_props.chunkOrders), // Backendify-1: Orders
   };
 };

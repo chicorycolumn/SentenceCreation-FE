@@ -357,12 +357,13 @@ class TraitBox extends Component {
       }
     }
 
-    const isClickableFlowerstem = (propsObject) => {
+    const isClickableFlowerstem = (_props) => {
       return (
-        propsObject.traitKey === "chunkId" &&
-        propsObject.flowerSearchingForStemBrace[0] &&
-        propsObject.flowerSearchingForStemBrace[0] !==
-          propsObject.traitObject.traitValue
+        _props.traitKey === "chunkId" &&
+        _props.flowerSearchingForStemBrace[0] &&
+        _props.flowerSearchingForStemBrace[0] !==
+          _props.traitObject.traitValue &&
+        !(_props.chunkId && _props.chunkId.split("-")[0] === "fix")
       );
     };
 

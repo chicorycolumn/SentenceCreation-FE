@@ -88,7 +88,7 @@ const TagInterface = (props) => {
           <div className={styles.buttonHolder}>
             <button
               id="TagInterface-tickbutton"
-              alt="Tick icon / Check icon"
+              alt="Checkmark tick icon"
               className={`${gstyles.tickButton} 
               ${tickDisabled && gstyles.disabled}
               ${gstyles.tooltipHolderDelayed}

@@ -1,25 +1,25 @@
-exports.logTraitBox = (state, props) => {
+exports.logTraitBox = (state, _props) => {
   console.log("");
   console.log("state.traitValueInputString HAS VALUE:");
   console.log("-->", state.traitValueInputString);
-  console.log("props.traitObject.traitValue HAS VALUE:");
-  console.log("-->", props.traitObject.traitValue);
+  console.log("_props.traitObject.traitValue HAS VALUE:");
+  console.log("-->", _props.traitObject.traitValue);
   if (state.traitValueInputString2) {
     console.log("");
     console.log("state.traitValueInputString2 HAS VALUE:");
     console.log("-->", state.traitValueInputString2);
-    console.log("props.traitObject.traitValue2 HAS VALUE:");
-    console.log("-->", props.traitObject2.traitValue);
+    console.log("_props.traitObject.traitValue2 HAS VALUE:");
+    console.log("-->", _props.traitObject2.traitValue);
   }
 };
 
-exports.logChunkCard = (props, stCh) => {
+exports.logChunkCard = (_props, stCh) => {
   console.log("");
   console.log("");
-  console.log("props.femulaItemId:", props.femulaItemId);
-  console.log("props.guideword:", props.guideword);
+  console.log("_props.femulaItemId:", _props.femulaItemId);
+  console.log("_props.guideword:", _props.guideword);
   console.log("structureChunk:", stCh);
-  console.log("backedUpStructureChunk:", props.backedUpStructureChunk);
+  console.log("backedUpStructureChunk:", _props.backedUpStructureChunk);
   console.log("");
   console.log("");
 };

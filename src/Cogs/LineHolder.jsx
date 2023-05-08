@@ -2,11 +2,11 @@ import React from "react";
 import styles from "../css/LineHolder.module.css";
 import flUtils from "../utils/flowerUtils";
 
-const LineHolder = (props) => {
+const LineHolder = (_props) => {
   return (
     <div id="lineHolder" className={styles.lineHolder}>
       {flUtils
-        .multiplyOutStemAndFlowers(props.elementsToDrawLineBetween)
+        .multiplyOutStemAndFlowers(_props.elementsToDrawLineBetween)
         .map((elementIDs) => {
           let el1ID = elementIDs[0];
           let el2ID = elementIDs[1];
@@ -21,7 +21,7 @@ const LineHolder = (props) => {
               id={lineID}
               key={lineID}
               className={`${styles.line} ${
-                props.drawnLinesAsBold && styles.boldLine
+                _props.drawnLinesAsBold && styles.boldLine
               }`}
             ></div>
           );

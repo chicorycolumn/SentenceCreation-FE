@@ -160,38 +160,38 @@ const flUtils = {
     line.style.height = H + "px";
   },
 
-  setStem: (props, setState) => {
+  setStem: (_props, setState) => {
     // Prevent A agree with B and B agree with A.
     let agreementTraitsToBlank = [];
     idUtils.agreementTraits.forEach((agreementTrait) => {
       if (
-        props.structureChunk[agreementTrait] &&
-        props.structureChunk[agreementTrait].traitValue &&
-        props.structureChunk[agreementTrait].traitValue.includes(
-          props.flowerSearchingForStemBrace[0]
+        _props.structureChunk[agreementTrait] &&
+        _props.structureChunk[agreementTrait].traitValue &&
+        _props.structureChunk[agreementTrait].traitValue.includes(
+          _props.flowerSearchingForStemBrace[0]
         )
       ) {
         agreementTraitsToBlank.push(agreementTrait);
       }
     });
     if (agreementTraitsToBlank.length) {
-      let newStCh = uUtils.copyWithoutReference(props.structureChunk);
+      let newStCh = uUtils.copyWithoutReference(_props.structureChunk);
       agreementTraitsToBlank.forEach((agreementTraitToBlank) => {
         newStCh[agreementTraitToBlank].traitValue = [];
       });
-      props.modifyStructureChunkOnThisFemulaItem(
+      _props.modifyStructureChunkOnThisFemulaItem(
         "Prevent circular agreeWith",
         newStCh
       );
-      props.refreshTraitBoxInputs(1);
+      _props.refreshTraitBoxInputs(1);
     }
 
-    props.stemFoundForFlowerBrace[1](props.chunkId);
+    _props.stemFoundForFlowerBrace[1](_props.chunkId);
     setState({ isExtraHighlighted: false });
   },
 
-  cancelStem: (props, setState) => {
-    props.flowerSearchingForStemBrace[1]();
+  cancelStem: (_props, setState) => {
+    _props.flowerSearchingForStemBrace[1]();
     setState({ isExtraHighlighted: false });
   },
 };

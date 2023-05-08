@@ -182,7 +182,7 @@ const ChunkOrdersPopup = (props) => {
           </div>
           <button
             id="ChunkOrdersPopup-tickbutton"
-            alt="Tick icon / Check icon"
+            alt="Checkmark tick icon"
             className={gstyles.tickButton}
             onClick={() => {
               addOrder(orderBuilt);
