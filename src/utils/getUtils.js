@@ -1,6 +1,7 @@
 import axios from "axios";
 import idUtils from "./identityUtils.js";
 import bfUtils from "./backendifyFrontendifyUtils.js";
+import diUtils from "./displayUtils.js";
 const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
@@ -23,9 +24,11 @@ export const fetchEnChsByLemma = (lang, lemma) => {
       console.log("");
       console.log("");
 
+      diUtils.stopSpinner();
       return result;
     })
     .catch((e) => {
+      diUtils.stopSpinner();
       console.log("ERROR 2171", lang, `"${lemma}"`, e);
     });
 };

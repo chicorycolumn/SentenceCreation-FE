@@ -219,6 +219,8 @@ const ChunkCard = (props) => {
 
   useEffect(() => {
     if (props.lang && !props.structureChunk) {
+      diUtils.startSpinner("crimson");
+
       getUtils
         .fetchEnChsByLemma(props.lang, props.guideword)
         .then(
@@ -236,6 +238,7 @@ const ChunkCard = (props) => {
         .catch((e) => {
           console.log("ERROR 9171", e);
         });
+      setShouldRetryFetch(0);
     }
   }, [props.lang, props.guideword, shouldRetryFetch]);
 
@@ -328,11 +331,6 @@ const ChunkCard = (props) => {
               className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
               onClick={(e) => {
                 e.target.blur();
-                alert(
-                  `Will retry find lobjs for "${
-                    chunkId || consol.log1(props)
-                  }".`
-                );
                 setShouldRetryFetch((prev) => prev + 1);
               }}
             >
