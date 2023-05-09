@@ -566,10 +566,12 @@ const ChunkCard = (props) => {
             />
           </button>
         )}
-        <p className={`${styles.lObjId} ${gstyles.tooltipHolderDelayed}`}>
-          {structureChunk && structureChunk.lObjId}
-          <Tooltip text="lobj ID (of an example lobj)" />
-        </p>
+        <div className={styles.lObjIdHolder}>
+          <p className={`${styles.lObjId} ${gstyles.tooltipHolderDelayed}`}>
+            {structureChunk && structureChunk.lObjId}
+            <Tooltip text="lobj ID (of an example lobj)" />
+          </p>
+        </div>
         {structureChunk && !idUtils.isFixedChunk(structureChunk) && (
           <button
             alt="Target bullseye icon"

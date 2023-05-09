@@ -282,18 +282,20 @@ const ChunkCardTray = (props) => {
 
               let fxnId = `fetchSentence2:Mark ${props.batch} formula ready`;
 
-              let protoFormula = stUtils.getProtoFormula(props);
+              let uniqueId = idUtils.getUniqueFormulaIdIfPrompted(
+                props.lang1,
+                props.fetchedFormulaIds,
+                props.chosenFormulaId
+              );
+              if (uniqueId) {
+                props.setChosenFormulaId(uniqueId);
+              }
+
+              let protoFormula = stUtils.getProtoFormula(props, uniqueId);
               if (!protoFormula) {
                 console.log(fxnId + " Formula failed validation.");
                 return;
               }
-
-              idUtils.checkFormulaIdUniqueAndModify(
-                props.lang1,
-                props.fetchedFormulaIds,
-                protoFormula,
-                props.chosenFormulaId
-              );
 
               const callbackSaveFormula = (payload, formula) => {
                 if (payload.length) {

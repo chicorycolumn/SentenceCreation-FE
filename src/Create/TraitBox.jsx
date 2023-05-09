@@ -337,7 +337,7 @@ class TraitBox extends Component {
       }, 50);
     };
 
-    const traitBoxID = `${this.props.chunkCardKey}-${traitKey}_maindiv`;
+    const traitBoxID = `${this.props.chunkCardKey}-${this.props.batch}-${traitKey}_maindiv`;
     const wipeButtonId = `${this.props.chunkCardKey}-${traitKey}_wipeButton`;
 
     if (this.state.isFlowerSearchingForStem) {

@@ -31,13 +31,17 @@ export const getSaveableUnfinishedFemula = (_props) => {
   };
 };
 
-export const getProtoFormula = (_props) => {
+export const getProtoFormula = (_props, formulaId) => {
+  if (!formulaId) {
+    formulaId = _props.chosenFormulaId;
+  }
+
   if (uiUtils.validateFemulaToSend(_props.femula)) {
     return;
   }
 
   return {
-    sentenceFormulaId: _props.chosenFormulaId,
+    sentenceFormulaId: formulaId,
     sentenceStructure: _props.femula.map((el) => el.structureChunk),
     orders: bfUtils.backendifyOrders(_props.chunkOrders), // Backendify-1: Orders
   };

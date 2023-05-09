@@ -125,13 +125,20 @@
   align-items: flex-end;
 }
 
+.lObjIdHolder {
+  width: 115px;
+  height: 17.5px;
+  margin: 0px;
+  padding: 0px;
+  padding-top: 2px;
+  word-break: break-all;
+  overflow: hidden;
+}
 .lObjId {
   font-size: 12px;
   margin: 0px;
+  padding: 0px;
   color: rgba(0, 0, 0, 0.5);
-  margin-bottom: 1px;
-  max-width: 115px;
-  max-height: 17.5px;
 }
 
 .smallButton {

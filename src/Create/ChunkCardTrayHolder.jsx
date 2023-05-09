@@ -93,6 +93,7 @@ const ChunkCardTrayHolder = (props) => {
         setFemula(data.questionSentenceFormula.sentenceStructure);
         setChunkOrders(data.questionSentenceFormula.orders);
         setFemulaWasLoadedFromBE((prev) => prev + 1);
+        setShouldFetchFemula();
       });
     }
   }, [chosenFormulaId, shouldFetchFemula]);

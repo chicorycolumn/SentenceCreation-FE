@@ -138,15 +138,14 @@ exports.getNewFormulaId = (existingIdsData, lang, existingFormulaId) => {
   }
 };
 
-exports.checkFormulaIdUniqueAndModify = (
+exports.getUniqueFormulaIdIfPrompted = (
   lang,
   fetchedFormulaIds,
-  formula,
   chosenFormulaId
 ) => {
   if (
     fetchedFormulaIds &&
-    idUtils.formulaIdNotUnique(fetchedFormulaIds, formula.sentenceFormulaId) &&
+    idUtils.formulaIdNotUnique(fetchedFormulaIds, chosenFormulaId) &&
     !window.confirm(
       "Overwrite existing formula (OK) or create sibling formula (CANCEL)? Otherwise if you want this formula to have a new and unrelated ID, click Snowflake for extra options."
     )
@@ -156,7 +155,7 @@ exports.checkFormulaIdUniqueAndModify = (
       lang,
       chosenFormulaId
     );
-    formula.sentenceFormulaId = uniqueId;
+    return uniqueId;
   }
 };
 
