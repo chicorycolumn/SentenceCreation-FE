@@ -87,13 +87,15 @@ const ChunkOrdersPopup = (props) => {
   };
 
   useEffect(() => {
-    uUtils.addListener($, document, "keyup", (e) => {
-      console.log("via ChunkOrdersPopup document listened keyup:", e.key);
-      if (["Enter", "Escape", "Backspace"].includes(e.key)) {
-        $("#ChunkOrdersPopup-exitbutton").addClass(gstyles.greyButtonActive);
-        setTimeout(exit, 150);
-      }
-    });
+    setTimeout(() => {
+      uUtils.addListener($, document, "keyup", (e) => {
+        console.log("via ChunkOrdersPopup document listened keyup:", e.key);
+        if (["Enter", "Escape", "Backspace"].includes(e.key)) {
+          $("#ChunkOrdersPopup-exitbutton").addClass(gstyles.greyButtonActive);
+          setTimeout(exit, 150);
+        }
+      });
+    }, 2000);
   }, []);
 
   return (

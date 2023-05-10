@@ -265,6 +265,60 @@ const ChunkCardTray = (props) => {
             <Tooltip text="Save unfinished femula" />
           </button>
           <button
+            alt="Snowflake icon"
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            onClick={(e) => {
+              e.target.blur();
+
+              let response = window.prompt(
+                "Extra options:\n\nType letter to activate.\n\na - Change current formula ID\n\nb - Log props.\n\nc - Send deliberately awry formula to check that BE doesn't spend too long on too-unspecified formulas."
+              );
+              if (response === "a") {
+                let newId = getNewFormulaId(
+                  props.fetchedFormulaIds,
+                  props.lang1
+                );
+
+                if (newId !== props.chosenFormulaId) {
+                  props.setChosenFormulaId(newId);
+                  alert("Now changing formula ID to be unique.");
+                } else {
+                  alert("Formula ID already unique. Will not change it.");
+                }
+              } else if (response === "b") {
+                console.log(props);
+              } else if (response === "c") {
+                let fxnId = "fetchSentence3:Snowflake";
+
+                let protoFormula = stUtils.getProtoFormula(props);
+                if (!protoFormula) {
+                  console.log(fxnId + " Formula failed validation.");
+                  return;
+                }
+
+                protoFormula.sentenceStructure.forEach((stCh) => {
+                  if (stCh.andTags) {
+                    stCh.andTags.traitValue = [];
+                  }
+                  if (stCh.specificIds) {
+                    stCh.specificIds.traitValue = [];
+                  }
+                });
+
+                putUtils._fetchSentence(
+                  props.lang1,
+                  protoFormula,
+                  fxnId,
+                  null,
+                  setListPopupData
+                );
+              }
+            }}
+          >
+            &#10053;
+            <Tooltip text="Extra options" />
+          </button>
+          <button
             alt="Checkmark tick icon"
             className={`${gstyles.cardButton1} ${
               gstyles.cardButtonWidthMedium
@@ -403,60 +457,6 @@ const ChunkCardTray = (props) => {
             <Tooltip text="Show or hide trait boxes" />
           </button>
           <button
-            alt="Snowflake icon"
-            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
-            onClick={(e) => {
-              e.target.blur();
-
-              let response = window.prompt(
-                "Extra options:\n\nType letter to activate.\n\na - Change current formula ID\n\nb - Log props.\n\nc - Send deliberately awry formula to check that BE doesn't spend too long on too-unspecified formulas."
-              );
-              if (response === "a") {
-                let newId = getNewFormulaId(
-                  props.fetchedFormulaIds,
-                  props.lang1
-                );
-
-                if (newId !== props.chosenFormulaId) {
-                  props.setChosenFormulaId(newId);
-                  alert("Now changing formula ID to be unique.");
-                } else {
-                  alert("Formula ID already unique. Will not change it.");
-                }
-              } else if (response === "b") {
-                console.log(props);
-              } else if (response === "c") {
-                let fxnId = "fetchSentence3:Snowflake";
-
-                let protoFormula = stUtils.getProtoFormula(props);
-                if (!protoFormula) {
-                  console.log(fxnId + " Formula failed validation.");
-                  return;
-                }
-
-                protoFormula.sentenceStructure.forEach((stCh) => {
-                  if (stCh.andTags) {
-                    stCh.andTags.traitValue = [];
-                  }
-                  if (stCh.specificIds) {
-                    stCh.specificIds.traitValue = [];
-                  }
-                });
-
-                putUtils._fetchSentence(
-                  props.lang1,
-                  protoFormula,
-                  fxnId,
-                  null,
-                  setListPopupData
-                );
-              }
-            }}
-          >
-            &#10053;
-            <Tooltip text="Extra options" />
-          </button>
-          <button
             alt="Dashed up arrow icon"
             className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
@@ -466,6 +466,21 @@ const ChunkCardTray = (props) => {
           >
             &#8673;
             <Tooltip text="Reduce space between Question formula display and Answer formula display" />
+          </button>
+          <button
+            alt="Cross icon"
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            onClick={(e) => {
+              e.target.blur();
+              if (
+                window.confirm("Are you sure you want to wipe this formula?")
+              ) {
+                props.setFemula([]);
+              }
+            }}
+          >
+            &times;
+            <Tooltip text="Delete formula" />
           </button>
         </div>
       </div>
