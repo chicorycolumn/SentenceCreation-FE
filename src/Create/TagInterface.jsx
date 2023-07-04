@@ -44,21 +44,25 @@ const TagInterface = (props) => {
   }, []);
 
   useEffect(() => {
-    getUtils
-      .fetchWordsByTag(
-        props.lang,
-        diUtils.asArray(props.traitValueInputString),
-        diUtils.asArray(props.traitValueInputString2)
-      )
-      .then((fetchedWords) => {
-        setFetchedWordsByWordtype(fetchedWords);
+    let andTagsArr = diUtils.asArray(props.traitValueInputString);
+    let orTagsArr = diUtils.asArray(props.traitValueInputString2);
 
-        setTickDisabled(
-          !fetchedWords[props.wordtype] ||
-            !fetchedWords[props.wordtype].some(
-              (lObj) => lObj.id === props.lObjId
-            )
-        );
+    if (!andTagsArr.length && !orTagsArr.length) {
+      return;
+    }
+
+    getUtils
+      .fetchWordsByTag(props.lang, andTagsArr, orTagsArr)
+      .then((fetchedWords) => {
+        if (fetchedWords) {
+          setFetchedWordsByWordtype(fetchedWords);
+          setTickDisabled(
+            !fetchedWords[props.wordtype] ||
+              !fetchedWords[props.wordtype].some(
+                (lObj) => lObj.id === props.lObjId
+              )
+          );
+        }
       });
   }, [
     props.traitValueInputString,

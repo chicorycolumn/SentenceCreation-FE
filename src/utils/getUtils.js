@@ -62,6 +62,8 @@ export const fetchTags = (lang) => {
 };
 
 export const fetchWordsByTag = (lang, andTags, orTags) => {
+  console.log("fetchWordsByTag", { lang, andTags, orTags });
+
   const langString = `lang=${lang}`;
   const andTagsString = !uUtils.isEmpty(andTags)
     ? `&andTags=${andTags.join("+")}`
