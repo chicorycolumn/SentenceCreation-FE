@@ -231,7 +231,7 @@ const Create = () => {
 
                   uUtils.copyToClipboard(
                     setInvisibleTextarea,
-                    JSON.stringify(dualFormula),
+                    JSON.stringify(dualFormula, null, 2),
                     "invisibleTextarea_Create"
                   );
                 } else {
@@ -282,7 +282,9 @@ const Create = () => {
                   );
 
                   let stringifiedSavedFormulas = JSON.stringify(
-                    savedFormulasData.data
+                    savedFormulasData.data,
+                    null,
+                    2
                   );
 
                   uUtils.copyToClipboard(

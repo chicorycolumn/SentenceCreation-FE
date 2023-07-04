@@ -227,44 +227,6 @@ const ChunkCardTray = (props) => {
             <Tooltip text="Set orders" />
           </button>
           <button
-            alt="Star icon"
-            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
-            onClick={(e) => {
-              e.target.blur();
-              let fxnId = "fetchSentence1:Star";
-
-              let protoFormula = stUtils.getProtoFormula(props);
-              if (!protoFormula) {
-                console.log(fxnId + " Formula failed validation.");
-                return;
-              }
-
-              putUtils._fetchSentence(
-                props.lang1,
-                protoFormula,
-                fxnId,
-                null,
-                setListPopupData
-              );
-            }}
-          >
-            &#9733;
-            <Tooltip text="Query sentence" />
-          </button>
-          <button
-            alt="Save icon"
-            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
-            onClick={(e) => {
-              e.target.blur();
-              props.saveUnfinishedFemula(
-                stUtils.getSaveableUnfinishedFemula(props)
-              );
-            }}
-          >
-            &#9112;
-            <Tooltip text="Save unfinished femula" />
-          </button>
-          <button
             alt="Snowflake icon"
             className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
             onClick={(e) => {
@@ -317,6 +279,44 @@ const ChunkCardTray = (props) => {
           >
             &#10053;
             <Tooltip text="Extra options" />
+          </button>
+          <button
+            alt="Save icon"
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            onClick={(e) => {
+              e.target.blur();
+              props.saveUnfinishedFemula(
+                stUtils.getSaveableUnfinishedFemula(props)
+              );
+            }}
+          >
+            &#9112;
+            <Tooltip text="Save unfinished femula" />
+          </button>
+          <button
+            alt="Star icon"
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            onClick={(e) => {
+              e.target.blur();
+              let fxnId = "fetchSentence1:Star";
+
+              let protoFormula = stUtils.getProtoFormula(props);
+              if (!protoFormula) {
+                console.log(fxnId + " Formula failed validation.");
+                return;
+              }
+
+              putUtils._fetchSentence(
+                props.lang1,
+                protoFormula,
+                fxnId,
+                null,
+                setListPopupData
+              );
+            }}
+          >
+            &#9733;
+            <Tooltip text="Query sentence" />
           </button>
           <button
             alt="Checkmark tick icon"
