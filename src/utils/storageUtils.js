@@ -41,7 +41,7 @@ export const getProtoFormula = (_props, formulaId) => {
   }
 
   return {
-    sentenceFormulaId: formulaId,
+    id: formulaId,
     sentenceStructure: _props.femula.map((el) => el.structureChunk),
     orders: bfUtils.backendifyOrders(_props.chunkOrders), // Backendify-1: Orders
   };

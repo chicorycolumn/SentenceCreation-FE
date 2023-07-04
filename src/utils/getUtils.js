@@ -47,6 +47,26 @@ export const fetchFormulaTopics = () => {
     });
 };
 
+export const fetchAvailableNexusId = (callback, args) => {
+  return axios
+    .get(
+      `${baseUrl}/educator/nexusid`
+      // ,{headers: { Authorization: `BEARER ${token}` }}
+    )
+    .then((res) => {
+      return res.data;
+    })
+    .then((data) => {
+      let nexusId = data["info"];
+
+      if (callback) {
+        callback(nexusId, ...args);
+      }
+
+      return nexusId;
+    });
+};
+
 export const fetchTags = (lang) => {
   return axios
     .get(

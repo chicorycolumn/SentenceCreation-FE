@@ -109,31 +109,30 @@ exports.getNewFormulaId = (existingIdsData, lang, existingFormulaId) => {
   let n = 1;
 
   if (existingFormulaId) {
-    let letters = "_abcdefghijklmnopqrstuvwxyz";
-    if (/[a-z]/.test(existingFormulaId.slice(-1))) {
-      existingFormulaId = existingFormulaId.slice(
-        0,
-        existingFormulaId.length - 1
-      );
-    }
+    let split = existingFormulaId.split("-");
+    existingFormulaId = [split[0], split[1]].join("-");
 
-    while (n < 1000) {
-      let putativeId = `${existingFormulaId}${letters[n]}`;
+    while (n <= 99) {
+      let z = "00" + String(n);
+      let num = z.slice(-2);
+
+      let putativeId = `${existingFormulaId}-${num}`;
       if (!existingIds.includes(putativeId)) {
         return putativeId;
-      } else {
-        n += 1;
       }
+
+      n++;
     }
   } else {
-    while (n < 1000) {
-      let num = `000${n}`.slice(-3);
+    while (n <= 99999) {
+      let z = "00000" + String(n);
+      let num = z.slice(-5);
       let putativeId = `${lang}-${num}`;
       if (!existingIds.includes(putativeId)) {
         return putativeId;
-      } else {
-        n += 1;
       }
+
+      n++;
     }
   }
 };

@@ -476,14 +476,32 @@ exports.copyToClipboard = (
   }, 500);
 };
 
-exports.downloadText = (name = "Downloaded data", data) => {
+exports.downloadText = (
+  name = "Downloaded data",
+  data,
+  addDateString = true
+) => {
   let myblob = new Blob([data], {
     type: "text/plain",
   });
 
+  name = addDateString ? `${name}-${Date.now()}.txt` : `${name}.txt`;
+
   const url = URL.createObjectURL(myblob);
   const link = document.createElement("a");
-  link.download = `${name}-${Date.now()}.txt`;
+  link.download = name;
+  link.href = url;
+  link.click();
+};
+
+exports.downloadJson = (name = "Downloaded data", data) => {
+  let myblob = new Blob([JSON.stringify(data, null, 2)], {
+    type: "application/json",
+  });
+
+  const url = URL.createObjectURL(myblob);
+  const link = document.createElement("a");
+  link.download = `${name}.json`;
   link.href = url;
   link.click();
 };

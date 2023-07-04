@@ -194,51 +194,58 @@ const Create = () => {
               }
 
               const callbackSaveDualFormula = (payload, qFormula, aFormula) => {
-                if (
-                  payload.questionSentenceArr &&
-                  payload.questionSentenceArr.length &&
-                  payload.answerSentenceArr &&
-                  payload.answerSentenceArr.length
-                ) {
-                  alert(
-                    "Okay, I queried sentences for your dual formula, and we do get sentences created. So now let's save your formula. I'm console logging your formula now. Next we need to send this to BE and save it."
-                  );
+                const _callbackSaveDualFormula = (
+                  nexusId,
+                  payload,
+                  qFormula,
+                  aFormula
+                ) => {
+                  if (
+                    payload.questionSentenceArr &&
+                    payload.questionSentenceArr.length &&
+                    payload.answerSentenceArr &&
+                    payload.answerSentenceArr.length
+                  ) {
+                    let dualFormula = {};
 
-                  let dualFormula = {};
+                    dualFormula[langQ] = qFormula;
+                    dualFormula[langA] = aFormula;
 
-                  dualFormula[langQ] = qFormula;
-                  dualFormula[langA] = aFormula;
+                    dualFormula.NEXUS = {
+                      key: nexusId,
+                      equivalents: {
+                        ENG: [],
+                        POL: [],
+                        SPA: [],
+                      },
+                      topics: formulaTopics,
+                      difficulty: formulaDifficulty,
+                    };
+                    dualFormula.NEXUS.equivalents[langQ] = [qFormula.id];
+                    dualFormula.NEXUS.equivalents[langA] = [aFormula.id];
 
-                  dualFormula.NEXUS = {
-                    key: "SF-XXXX",
-                    equivalents: {
-                      ENG: [],
-                      POL: [],
-                      SPA: [],
-                    },
-                    topics: formulaTopics,
-                    difficulty: formulaDifficulty,
-                  };
-                  dualFormula.NEXUS.equivalents[langQ] = [
-                    qFormula.sentenceFormulaId,
-                  ];
-                  dualFormula.NEXUS.equivalents[langA] = [
-                    aFormula.sentenceFormulaId,
-                  ];
+                    console.log("Saved this dual formula:", dualFormula);
+                    setAndStoreSavedDualFormulas(dualFormula);
 
-                  console.log("Saved this dual formula:", dualFormula);
-                  setAndStoreSavedDualFormulas(dualFormula);
+                    uUtils.downloadText(
+                      `${qFormula.id} NEXUS entry`,
+                      JSON.stringify(dualFormula.NEXUS, null, 2),
+                      false
+                    );
+                    uUtils.downloadJson(qFormula.id, qFormula);
+                    uUtils.downloadJson(aFormula.id, aFormula);
+                  } else {
+                    alert(
+                      "Sorry, no sentences were created for your dual formula when I queried it just now, so I will not save it."
+                    );
+                  }
+                };
 
-                  uUtils.copyToClipboard(
-                    setInvisibleTextarea,
-                    JSON.stringify(dualFormula, null, 2),
-                    "invisibleTextarea_Create"
-                  );
-                } else {
-                  alert(
-                    "Sorry, no sentences were created for your dual formula when I queried it just now, so I will not save it."
-                  );
-                }
+                getUtils.fetchAvailableNexusId(_callbackSaveDualFormula, [
+                  payload,
+                  qFormula,
+                  aFormula,
+                ]);
               };
 
               putUtils._fetchDualSentence(
