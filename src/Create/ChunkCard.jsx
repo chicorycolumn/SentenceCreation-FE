@@ -222,7 +222,7 @@ const ChunkCard = (props) => {
       diUtils.startSpinner("crimson");
 
       getUtils
-        .fetchEnChsByLemma(props.lang, props.guideword)
+        .fetchEnChsByLemma(props.lang, props.guideword, props.beEnv)
         .then(
           (fetchedEnChs) => {
             console.log(
@@ -355,36 +355,38 @@ const ChunkCard = (props) => {
                   orders: {},
                 };
 
-                putUtils.fetchSentence(props.lang, protoFormula).then(
-                  (data) => {
-                    let { payload, messages } = data;
+                putUtils
+                  .fetchSentence(props.lang, protoFormula, props.beEnv)
+                  .then(
+                    (data) => {
+                      let { payload, messages } = data;
 
-                    if (messages) {
-                      alert(
-                        Object.keys(messages).map((key) => {
-                          let val = messages[key];
-                          return `${key}:       ${val}`;
-                        })
-                      );
-                      props.setHighlightedCard();
-                      return;
+                      if (messages) {
+                        alert(
+                          Object.keys(messages).map((key) => {
+                            let val = messages[key];
+                            return `${key}:       ${val}`;
+                          })
+                        );
+                        props.setHighlightedCard();
+                        return;
+                      }
+
+                      props.setPopup({
+                        title: `${payload.length} Lemma${
+                          payload.length > 1 ? "s" : ""
+                        } for "${chunkId}" with traits you specified`,
+                        headers: ["Lemma", "ID"],
+                        rows: payload.map((obj) => [
+                          obj.selectedWord,
+                          obj.lObjId,
+                        ]),
+                      });
+                    },
+                    (e) => {
+                      console.log("ERROR 0302:", e);
                     }
-
-                    props.setPopup({
-                      title: `${payload.length} Lemma${
-                        payload.length > 1 ? "s" : ""
-                      } for "${chunkId}" with traits you specified`,
-                      headers: ["Lemma", "ID"],
-                      rows: payload.map((obj) => [
-                        obj.selectedWord,
-                        obj.lObjId,
-                      ]),
-                    });
-                  },
-                  (e) => {
-                    console.log("ERROR 0302:", e);
-                  }
-                );
+                  );
               }}
             >
               &#9733;

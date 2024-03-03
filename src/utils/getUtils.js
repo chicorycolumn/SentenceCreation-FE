@@ -6,7 +6,7 @@ const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
-export const fetchEnChsByLemma = (lang, lemma) => {
+export const fetchEnChsByLemma = (lang, lemma, beEnv) => {
   console.log(""); //devlogging
   console.log("");
   console.log("**fetchEnChsByLemm'a**");
@@ -14,7 +14,7 @@ export const fetchEnChsByLemma = (lang, lemma) => {
 
   return axios
     .get(
-      `${baseUrl}/educator/chunks?&lang=${lang}&lemma=${lemma}`
+      `${baseUrl}/educator/chunks?&lang=${lang}&lemma=${lemma}&env=${beEnv}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
@@ -47,10 +47,10 @@ export const fetchFormulaTopics = () => {
     });
 };
 
-export const fetchAvailableNexusId = (callback, args) => {
+export const fetchAvailableNexusId = (beEnv, callback, args) => {
   return axios
     .get(
-      `${baseUrl}/educator/nexusid`
+      `${baseUrl}/educator/nexusid?env=${beEnv}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
@@ -67,10 +67,10 @@ export const fetchAvailableNexusId = (callback, args) => {
     });
 };
 
-export const fetchTags = (lang) => {
+export const fetchTags = (lang, beEnv) => {
   return axios
     .get(
-      `${baseUrl}/educator/tags?lang=${lang}`
+      `${baseUrl}/educator/tags?lang=${lang}&env=${beEnv}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
@@ -81,21 +81,21 @@ export const fetchTags = (lang) => {
     });
 };
 
-export const fetchWordsByTag = (lang, andTags, orTags) => {
+export const fetchWordsByTag = (beEnv, lang, andTags, orTags) => {
   console.log("fetchWordsByTag", { lang, andTags, orTags });
 
   const langString = `lang=${lang}`;
+  const envString = `&env=${beEnv}`;
   const andTagsString = !uUtils.isEmpty(andTags)
     ? `&andTags=${andTags.join("+")}`
     : "";
   const orTagsString = !uUtils.isEmpty(orTags)
     ? `&orTags=${orTags.join("+")}`
     : "";
-  const requestString = `${baseUrl}/educator/words?${langString}${andTagsString}${orTagsString}`;
 
   return axios
     .get(
-      requestString
+      `${baseUrl}/educator/words?${langString}${envString}${andTagsString}${orTagsString}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {

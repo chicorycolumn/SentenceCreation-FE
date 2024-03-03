@@ -268,6 +268,7 @@ const ChunkCardTray = (props) => {
                 });
 
                 putUtils._fetchSentence(
+                  props.beEnv,
                   props.lang1,
                   protoFormula,
                   fxnId,
@@ -307,6 +308,7 @@ const ChunkCardTray = (props) => {
               }
 
               putUtils._fetchSentence(
+                props.beEnv,
                 props.lang1,
                 protoFormula,
                 fxnId,
@@ -372,6 +374,7 @@ const ChunkCardTray = (props) => {
               };
 
               putUtils._fetchSentence(
+                props.beEnv,
                 props.lang1,
                 protoFormula,
                 fxnId,
@@ -513,6 +516,7 @@ const ChunkCardTray = (props) => {
               />
               <ChunkCard
                 lang={props.lang1}
+                beEnv={props.beEnv}
                 femulaItemId={femulaItemId}
                 chunkIdFromQ={chunkIdFromQ}
                 key={`${femulaItemId}-${guideword}`}

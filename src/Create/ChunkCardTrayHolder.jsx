@@ -82,7 +82,7 @@ const ChunkCardTrayHolder = (props) => {
 
   useEffect(() => {
     if (chosenFormulaId && shouldFetchFemula) {
-      fetchFemula(chosenFormulaId, props.lang2).then((data) => {
+      fetchFemula(chosenFormulaId, props.lang2, beEnv).then((data) => {
         data.questionSentenceFormula.sentenceStructure.forEach(
           (sentenceStructureItem) => {
             sentenceStructureItem.backedUpStructureChunk =
@@ -197,6 +197,7 @@ const ChunkCardTrayHolder = (props) => {
         <ChunkCardTray
           lang1={props.lang1}
           lang2={props.lang2}
+          beEnv={beEnv}
           femula={femula}
           chunkOrders={chunkOrders}
           setChunkOrders={setChunkOrders}

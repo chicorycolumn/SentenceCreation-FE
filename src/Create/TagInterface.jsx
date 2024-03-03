@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import LemmasTable from "./LemmasTable.jsx";
 import Tooltip from "../Cogs/Tooltip.jsx";
+import LanguageContext from "../context/LanguageContext.js";
 import styles from "../css/TagInterface.module.css";
 import gstyles from "../css/Global.module.css";
 import diUtils from "../utils/displayUtils.js";
@@ -15,6 +16,8 @@ const TagInterface = (props) => {
   const [tags, setTags] = useState([]);
   const [fetchedWordsByWordtype, setFetchedWordsByWordtype] = useState({});
   const [focusedWordtype, setFocusedWordtype] = useState(props.wordtype);
+
+  const { beEnv } = idUtils.getLangsAndEnv(useContext(LanguageContext));
 
   const exit = () => {
     $(document).off("keyup");
@@ -52,7 +55,7 @@ const TagInterface = (props) => {
     }
 
     getUtils
-      .fetchWordsByTag(props.lang, andTagsArr, orTagsArr)
+      .fetchWordsByTag(beEnv, props.lang, andTagsArr, orTagsArr)
       .then((fetchedWords) => {
         if (fetchedWords) {
           setFetchedWordsByWordtype(fetchedWords);
@@ -73,7 +76,7 @@ const TagInterface = (props) => {
   ]);
 
   useEffect(() => {
-    getUtils.fetchTags(props.lang).then((fetchedTags) => {
+    getUtils.fetchTags(props.lang, beEnv).then((fetchedTags) => {
       setTags(fetchedTags.sort((x, y) => x.localeCompare(y)));
     });
   }, [props.lang]);

@@ -49,7 +49,7 @@ const LanguagesForm = (props) => {
         callbackSetValue={props.setBeEnv}
         title={"Choose BE environment"}
         idString={"beEnv"}
-        vals={[{ short: "ref" }, { short: "dev" }]}
+        vals={[{ short: "ref" }, { short: "dev" }, { short: "prod" }]}
       />
     </div>
   );

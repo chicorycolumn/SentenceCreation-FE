@@ -28,14 +28,14 @@ export const fetchFormulaIds = (langQ, langA, env) => {
     });
 };
 
-export const fetchFemula = (formulaId, answerLanguage) => {
+export const fetchFemula = (formulaId, answerLanguage, beEnv) => {
   diUtils.startSpinner("fuchsia");
 
   console.log("START fetchFemula", { formulaId, answerLanguage });
 
   return axios
     .get(
-      `${baseUrl}/educator/formulas?id=${formulaId}&lang=${answerLanguage}`
+      `${baseUrl}/educator/formulas?id=${formulaId}&lang=${answerLanguage}&env=${beEnv}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
@@ -53,13 +53,14 @@ export const fetchFemula = (formulaId, answerLanguage) => {
 };
 
 export const _fetchSentence = (
+  beEnv,
   lang,
   protoFormula,
   label,
   callback,
   setListPopupData
 ) => {
-  fetchSentence(lang, protoFormula).then(
+  fetchSentence(lang, protoFormula, beEnv).then(
     (data) => {
       let { payload, messages } = data;
 
@@ -94,6 +95,7 @@ export const _fetchSentence = (
 };
 
 export const _fetchDualSentence = (
+  beEnv,
   label,
   langQ,
   langA,
@@ -103,7 +105,7 @@ export const _fetchDualSentence = (
   callback,
   repeatCallback
 ) => {
-  fetchDualSentence(langQ, langA, questionFormula, answerFormula).then(
+  fetchDualSentence(beEnv, langQ, langA, questionFormula, answerFormula).then(
     (data) => {
       let { payload, messages } = data;
 
@@ -144,7 +146,7 @@ export const _fetchDualSentence = (
   );
 };
 
-export const fetchSentence = (lang, formula) => {
+export const fetchSentence = (lang, formula, beEnv) => {
   backendifyFormula(formula);
 
   if (!formula.sentenceStructure.length) {
@@ -172,7 +174,7 @@ export const fetchSentence = (lang, formula) => {
 
   return axios
     .put(
-      `${baseUrl}/educator/sentences?lang=${lang}`,
+      `${baseUrl}/educator/sentences?lang=${lang}&env=${beEnv}`,
       body
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
@@ -192,6 +194,7 @@ export const fetchSentence = (lang, formula) => {
 };
 
 export const fetchDualSentence = (
+  beEnv,
   questionLanguage,
   answerLanguage,
   questionFormula,
@@ -229,7 +232,7 @@ export const fetchDualSentence = (
 
   return axios
     .put(
-      `${baseUrl}/educator/sentences?lang=${questionLanguage}&lang2=${answerLanguage}`,
+      `${baseUrl}/educator/sentences?lang=${questionLanguage}&lang2=${answerLanguage}&env=${beEnv}`,
       body
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )

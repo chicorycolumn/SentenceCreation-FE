@@ -144,6 +144,7 @@ const Create = () => {
             onClick={() => {
               let id = "Button_QueryDualFormula";
               putUtils._fetchDualSentence(
+                beEnv,
                 id,
                 langQ,
                 langA,
@@ -166,6 +167,7 @@ const Create = () => {
             onClick={() => {
               let id = "Button_QueryDualFormulaReverse";
               putUtils._fetchDualSentence(
+                beEnv,
                 id,
                 langA,
                 langQ,
@@ -241,14 +243,15 @@ const Create = () => {
                   }
                 };
 
-                getUtils.fetchAvailableNexusId(_callbackSaveDualFormula, [
-                  payload,
-                  qFormula,
-                  aFormula,
-                ]);
+                getUtils.fetchAvailableNexusId(
+                  beEnv,
+                  _callbackSaveDualFormula,
+                  [payload, qFormula, aFormula]
+                );
               };
 
               putUtils._fetchDualSentence(
+                beEnv,
                 "fetchDualSentence:Save",
                 langQ,
                 langA,
