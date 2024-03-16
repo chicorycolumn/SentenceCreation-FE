@@ -527,6 +527,7 @@ const ChunkCardTray = (props) => {
                 backedUpStructureChunk={backedUpStructureChunk}
                 chunkCardIndex={index}
                 femula={props.femula}
+                showAllTraitBoxes={showAllTraitBoxes}
                 setStructureChunkOnFemula={(newStCh) => {
                   props.setFemula((prevFemula) => {
                     let newFemula = prevFemula.map((femulaItem) => {

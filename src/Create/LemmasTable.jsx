@@ -24,11 +24,19 @@ const LemmasTable = (props) => {
             .sort((x, y) => x.id.localeCompare(y.id))
             .map((lObj) => (
               <tr key={`${lObj.id}`}>
-                <td className={`${gstyles.tooltipHolder}`}>
-                  <Tooltip text={diUtils.asString(lObj.tags)} number="2" />
+                <td
+                  className={`${
+                    lObj.tags && lObj.tags.length && gstyles.tooltipHolder
+                  } ${styles.leftCellText}`}
+                >
+                  {lObj.tags && lObj.tags.length ? (
+                    <Tooltip text={diUtils.asString(lObj.tags)} number="2" />
+                  ) : (
+                    ""
+                  )}
                   {lObj.lemma}
                 </td>
-                <td>{lObj.id}</td>
+                <td className={`${styles.idButton}`}>{lObj.id}</td>
               </tr>
             ))}
       </tbody>

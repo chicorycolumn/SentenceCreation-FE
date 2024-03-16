@@ -1,3 +1,4 @@
+import $ from "jquery";
 import React, { useState, useEffect, useContext } from "react";
 import TraitBox from "./TraitBox.jsx";
 import ToggleShowButton from "./ToggleShowButton.jsx";
@@ -636,6 +637,19 @@ const ChunkCard = (props) => {
               } else {
                 setShowTraitKeysGroupTwo(!hasSpecificId);
               }
+
+              $.each(
+                // Forces specificIds traitbox to update correctly
+                $(
+                  `button[id^='ToggleShowButton-${props.batch}-Group2-${props.femulaItemId}']`
+                ),
+                function () {
+                  jqUtils.collapseIfNotCollapsed(
+                    $(this)[0],
+                    props.showAllTraitBoxes
+                  );
+                }
+              );
             }}
           >
             {hasSpecificId ? (
