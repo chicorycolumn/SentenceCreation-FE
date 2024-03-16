@@ -20,6 +20,7 @@ class TraitBox extends Component {
       this.props.traitObject2 &&
       diUtils.asString(this.props.traitObject2.traitValue),
     hasJustBlurred: false,
+    hasJustChanged: false,
     isInputActive: false,
     isHovered: false,
     isSelected: false,
@@ -147,7 +148,7 @@ class TraitBox extends Component {
       structureChunk,
     } = this.props;
 
-    const exitTraitBox = (changeToValue = true) => {
+    const exitTraitBox = (changeToValue) => {
       console.log("£exitTraitBox");
       $(document).off("keyup");
       this.setState({
@@ -155,29 +156,23 @@ class TraitBox extends Component {
         isHovered: false,
         isSelected: false,
         forceShowInput: false,
-        hasJustBlurred: changeToValue,
-        hasJustBlurredRegardlessOfChange: true,
+        hasJustChanged: changeToValue,
+        hasJustBlurred: true,
       });
       this.setShowTagInterface();
 
       setTimeout(() => {
-        this.setState({ hasJustBlurredRegardlessOfChange: false });
-      }, 50);
-
-      setTimeout(
-        () => {
-          this.setState({
-            hasJustBlurred: false,
-            traitValueInputString: diUtils.asString(
-              this.props.traitObject.traitValue
-            ),
-            traitValueInputString2:
-              this.props.traitObject2 &&
-              diUtils.asString(this.props.traitObject2.traitValue),
-          });
-        },
-        changeToValue ? 500 : 0
-      );
+        this.setState({
+          hasJustBlurred: false,
+          hasJustChanged: false,
+          traitValueInputString: diUtils.asString(
+            this.props.traitObject.traitValue
+          ),
+          traitValueInputString2:
+            this.props.traitObject2 &&
+            diUtils.asString(this.props.traitObject2.traitValue),
+        });
+      }, 500);
     };
 
     const checkAndSetTraitValue = (secondaryAsWellAsPrimary = false) => {
@@ -265,7 +260,6 @@ class TraitBox extends Component {
                 `(${consol.log1(structureChunk)})`,
                 "@1 No change to value."
               );
-              exitTraitBox(); //alpha why both exitTraitBox?
               exitTraitBox(false);
             }
           } else if (expectedType === "boolean") {
@@ -301,14 +295,14 @@ class TraitBox extends Component {
             newStructureChunk
           );
           console.log(`(${consol.log1(structureChunk)})`, "@2 Changing value.");
+          exitTraitBox(true);
         } else {
           console.log(
             `(${consol.log1(structureChunk)})`,
             "@3 No change to value."
           );
+          exitTraitBox(false);
         }
-        exitTraitBox();
-        exitTraitBox(false);
       };
 
       console.log(`(${consol.log1(structureChunk)})`, "###");
@@ -429,7 +423,12 @@ class TraitBox extends Component {
     return (
       <>
         {this.state.isSelected && (
-          <div className={gstyles.obscurus} onClick={exitTraitBox}></div>
+          <div
+            className={gstyles.obscurus}
+            onClick={() => {
+              exitTraitBox(false);
+            }}
+          ></div>
         )}
 
         {this.state.showTagInterface && (
@@ -458,8 +457,14 @@ class TraitBox extends Component {
             idUtils.agreementTraits.includes(traitKey) && styles.traitBoxCircle1
           } ${idUtils.isChunkId(traitKey) && styles.traitBoxCircle2} ${
             !traitObject.traitValue && styles.traitBoxEmpty
-          } ${this.state.hasJustBlurred && styles.shimmer} ${
-            this.state.hasJustBlurredRegardlessOfChange && styles.briefBlur
+          } ${
+            this.state.hasJustBlurred &&
+            this.state.hasJustChanged &&
+            styles.yesChangeBlur
+          } ${
+            this.state.hasJustBlurred &&
+            !this.state.hasJustChanged &&
+            styles.noChangeBlur
           } ${
             (this.state.isHovered || this.state.isSelected) &&
             styles.traitBoxHover

@@ -106,7 +106,12 @@
   padding-left: 27.5px;
 }
 
-.shimmer {
+.noChangeBlur textarea {
+  /* color: rgba(0, 0, 0, 0) !important;
+  background-color: blue !important; */
+}
+
+.yesChangeBlur {
   display: inline-block;
   mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
   background-repeat: no-repeat;
@@ -116,6 +121,7 @@
 @keyframes shimmer {
   50% {
     background-color: purple;
+    /* background-color: rgb(255, 215, 13); */
     /* background-color: rgb(209, 238, 209); */
   }
   100% {
@@ -257,10 +263,6 @@
 
 .badBox {
   background-color: crimson !important;
-}
-
-.briefBlur textarea {
-  color: rgba(0, 0, 0, 0) !important;
 }
 
 .sideButtonHolder {
