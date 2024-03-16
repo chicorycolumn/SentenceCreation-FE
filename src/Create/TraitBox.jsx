@@ -398,6 +398,31 @@ class TraitBox extends Component {
       );
     };
 
+    const setFlowerstemIfAppropriate = () => {
+      if (isClickableFlowerstem(this.props)) {
+        if (
+          idUtils.getWordtypeEnCh(this.props.structureChunk) === "pro" &&
+          idUtils.getWordtypeEnCh({
+            chunkId: {
+              traitValue: this.props.flowerSearchingForStemBrace[0],
+            },
+          }) === "npe"
+        ) {
+          if (
+            !window.confirm(
+              'You selected a nounPerson chunk to agree with a pronoun chunk, but it should be the other way around.\n\neg "She is a woman." you should make "she" agree with "woman", not "woman" agree with "she".\n\nTo accept my advice, click OK. To proceed with this unrecommended action, click CANCEL.'
+            )
+          ) {
+            flUtils.setStem(this.props, this.setState);
+          } else {
+            flUtils.cancelStem(this.props, this.setState);
+          }
+        } else {
+          flUtils.setStem(this.props, this.setState);
+        }
+      }
+    };
+
     let isBadBox =
       idUtils.isTagTrait(traitKey) && uiUtils.isTaglessChunk(structureChunk);
 
@@ -452,30 +477,7 @@ class TraitBox extends Component {
           ${isBadBox && gstyles.tooltipHolderDelayed} 
           ${this.props.traitKeysGroup === 2 && gstyles.oddEdges}
           `}
-          onClick={() => {
-            if (isClickableFlowerstem(this.props)) {
-              if (
-                idUtils.getWordtypeEnCh(this.props.structureChunk) === "pro" &&
-                idUtils.getWordtypeEnCh({
-                  chunkId: {
-                    traitValue: this.props.flowerSearchingForStemBrace[0],
-                  },
-                }) === "npe"
-              ) {
-                if (
-                  !window.confirm(
-                    'You selected a nounPerson chunk to agree with a pronoun chunk, but it should be the other way around.\n\neg "She is a woman." you should make "she" agree with "woman", not "woman" agree with "she".\n\nTo accept my advice, click OK. To proceed with this unrecommended action, click CANCEL.'
-                  )
-                ) {
-                  flUtils.setStem(this.props, this.setState);
-                } else {
-                  flUtils.cancelStem(this.props, this.setState);
-                }
-              } else {
-                flUtils.setStem(this.props, this.setState);
-              }
-            }
-          }}
+          onClick={setFlowerstemIfAppropriate}
           onMouseEnter={() => {
             console.log("traitObject-->", traitObject);
 
@@ -701,20 +703,24 @@ class TraitBox extends Component {
                         styles.reducedHeight
                       } 
                       ${
-                        traitKey === "chunkId" && gstyles.tooltipHolderDelayed
+                        traitKey === "chunkId" &&
+                        !isClickableFlowerstem(this.props) &&
+                        gstyles.tooltipHolderDelayed
                       }`}
                     >
-                      {traitKey === "chunkId" && (
-                        <Tooltip text="chunk ID" number={3} />
-                      )}
+                      {traitKey === "chunkId" &&
+                        !isClickableFlowerstem(this.props) && (
+                          <Tooltip text="chunk ID" number={3} />
+                        )}
                       <textarea
                         key={`${this.props.chunkCardKey}-${traitKey}_textarea`}
                         id={`${this.props.chunkCardKey}-${traitKey}_textarea`}
                         disabled={
-                          idUtils.isTagTrait(traitKey) ||
-                          idUtils.isChunkId(traitKey) ||
-                          idUtils.agreementTraits.includes(traitKey) ||
-                          traitObject.possibleTraitValues
+                          !isClickableFlowerstem(this.props) &&
+                          (idUtils.isTagTrait(traitKey) ||
+                            idUtils.isChunkId(traitKey) ||
+                            idUtils.agreementTraits.includes(traitKey) ||
+                            traitObject.possibleTraitValues)
                         }
                         className={`
                         ${
@@ -741,6 +747,7 @@ class TraitBox extends Component {
                         onClick={(e) => {
                           console.log("%textarea");
                           e.stopPropagation();
+                          setFlowerstemIfAppropriate();
                           if (
                             idUtils.agreementTraits.includes(traitKey) ||
                             idUtils.isChunkId(traitKey)
