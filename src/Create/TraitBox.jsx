@@ -398,6 +398,9 @@ class TraitBox extends Component {
       );
     };
 
+    let isBadBox =
+      idUtils.isTagTrait(traitKey) && uiUtils.isTaglessChunk(structureChunk);
+
     return (
       <>
         {this.state.isSelected && (
@@ -445,11 +448,8 @@ class TraitBox extends Component {
               this.state.isFlowerSearchingForStem) &&
             gstyles.highlighted2
           } 
-          ${
-            idUtils.isTagTrait(traitKey) &&
-            uiUtils.isTaglessChunk(structureChunk) &&
-            styles.badBox
-          } 
+          ${isBadBox && styles.badBox} 
+          ${isBadBox && gstyles.tooltipHolderDelayed} 
           ${this.props.traitKeysGroup === 2 && gstyles.oddEdges}
           `}
           onClick={() => {
@@ -518,6 +518,12 @@ class TraitBox extends Component {
             this.setState({ isHighlighted: false, isSoftHighlighted: false });
           }}
         >
+          {isBadBox && (
+            <Tooltip
+              text="You must add tags or Specific ID &#9678;"
+              number={3}
+            />
+          )}
           {this.state.justCopied && (
             <div className={styles.floatingAlert}>Copied</div>
           )}

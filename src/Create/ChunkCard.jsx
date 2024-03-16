@@ -347,6 +347,17 @@ const ChunkCard = (props) => {
                 gstyles.tooltipHolderDelayed
               } ${isFixedChunkOrNoChunk && gstyles.disabled}`}
               onClick={(e) => {
+                if (
+                  uiUtils.isTaglessChunk(structureChunk) &&
+                  (!structureChunk.specificIds ||
+                    !structureChunk.specificIds.length)
+                ) {
+                  alert(
+                    `You must set either tags or Specific ID on this chunk.`
+                  );
+                  return;
+                }
+
                 e.target.blur();
                 props.setHighlightedCard(chunkId);
 
@@ -651,7 +662,7 @@ const ChunkCard = (props) => {
                       }`
                     : "Upgrade"
                   : "Set"
-              } as specific lobj for this chunk`}
+              } as Specific ID for this chunk`}
               number={5}
             />
           </button>
