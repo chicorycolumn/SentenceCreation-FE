@@ -74,6 +74,8 @@ exports.createFixedChunk = (guideword, index, femula) => {
 
 exports.wordtypesWhichMustHavePopulatedTags = ["npe", "nco", "ver", "adj"];
 
+exports.wordtypes = ["adj", "nco", "npe", "ver", "art", "pre", "pro"];
+
 exports.isTagTrait = (traitKey) => {
   return ["andTags", "orTags"].includes(traitKey);
 };

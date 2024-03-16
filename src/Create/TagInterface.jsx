@@ -14,7 +14,7 @@ const TagInterface = (props) => {
   const [clickCounter, setClickCounter] = useState(0);
   const [tickDisabled, setTickDisabled] = useState();
   const [tags, setTags] = useState([]);
-  const [fetchedWordsByWordtype, setFetchedWordsByWordtype] = useState({});
+  const [fetchedWordsByWordtype, setFetchedWordsByWordtype] = useState([]);
   const [focusedWordtype, setFocusedWordtype] = useState(props.wordtype);
 
   const { beEnv } = idUtils.getLangsAndEnv(useContext(LanguageContext));
@@ -55,15 +55,18 @@ const TagInterface = (props) => {
     }
 
     getUtils
-      .fetchWordsByTag(beEnv, props.lang, andTagsArr, orTagsArr)
+      .fetchWordsByTag(
+        beEnv,
+        props.lang,
+        andTagsArr,
+        orTagsArr,
+        focusedWordtype
+      )
       .then((fetchedWords) => {
         if (fetchedWords) {
           setFetchedWordsByWordtype(fetchedWords);
           setTickDisabled(
-            !fetchedWords[props.wordtype] ||
-              !fetchedWords[props.wordtype].some(
-                (lObj) => lObj.id === props.lObjId
-              )
+            !fetchedWords.some((lObj) => lObj.id === props.lObjId)
           );
         }
       });
@@ -72,7 +75,7 @@ const TagInterface = (props) => {
     props.traitValueInputString2,
     props.lang,
     props.lObjId,
-    props.wordtype,
+    focusedWordtype,
   ]);
 
   useEffect(() => {
@@ -170,6 +173,7 @@ const TagInterface = (props) => {
                         );
                       }}
                     >
+                      {/* <option value="" disabled selected>...</option> */}
                       {tags
                         .filter(
                           (tag) =>
@@ -210,11 +214,9 @@ const TagInterface = (props) => {
         <div className={styles.rightDiv}>
           <div className={styles.div3}>
             <div className={styles.wordtypeButtonsHolder}>
-              {Object.keys(fetchedWordsByWordtype).map((wordtype) => {
-                let count = fetchedWordsByWordtype[wordtype].length;
+              {idUtils.wordtypes.map((wordtype) => {
                 return (
                   <button
-                    disabled={!count}
                     key={wordtype}
                     className={`${gstyles[wordtype]} ${styles.wordtypeButton} ${
                       focusedWordtype === wordtype &&

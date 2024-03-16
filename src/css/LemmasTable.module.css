@@ -39,3 +39,7 @@ table tr:nth-child(even) {
 tbody {
   font-size: 13px;
 }
+
+.translucent {
+  opacity: 0.25 !important;
+}

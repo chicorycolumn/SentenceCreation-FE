@@ -81,27 +81,25 @@ export const fetchTags = (lang, beEnv) => {
     });
 };
 
-export const fetchWordsByTag = (beEnv, lang, andTags, orTags) => {
-  console.log("fetchWordsByTag", { lang, andTags, orTags });
+export const fetchWordsByTag = (beEnv, lang, andTags, orTags, wordtype) => {
+  console.log("fetchWordsByTag", { lang, andTags, orTags, wordtype });
 
   const langString = `lang=${lang}`;
   const envirString = `&envir=${beEnv}`;
+  const wordtypeString = `&wordtype=${wordtype}`;
   const andTagsString = !uUtils.isEmpty(andTags)
-    ? `&andTags=${andTags.join("+")}`
+    ? `&andTags=${andTags.join(",")}`
     : "";
   const orTagsString = !uUtils.isEmpty(orTags)
-    ? `&orTags=${orTags.join("+")}`
+    ? `&orTags=${orTags.join(",")}`
     : "";
 
   return axios
     .get(
-      `${baseUrl}/educator/words?${langString}${envirString}${andTagsString}${orTagsString}`
+      `${baseUrl}/educator/words?${langString}${envirString}${andTagsString}${orTagsString}${wordtypeString}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
-      return res.data;
-    })
-    .then((data) => {
-      return data["words"];
+      return res.data["words"];
     });
 };

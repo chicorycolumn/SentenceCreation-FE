@@ -6,7 +6,11 @@ import diUtils from "../utils/displayUtils.js";
 
 const LemmasTable = (props) => {
   return (
-    <table>
+    <table
+      className={`${
+        !props.fetchedWordsByWordtype.length && styles.translucent
+      }`}
+    >
       <thead>
         <tr>
           <th>Lemma</th>
@@ -16,10 +20,7 @@ const LemmasTable = (props) => {
 
       <tbody>
         {props.focusedWordtype &&
-          Object.keys(props.fetchedWordsByWordtype).includes(
-            props.focusedWordtype
-          ) &&
-          props.fetchedWordsByWordtype[props.focusedWordtype]
+          props.fetchedWordsByWordtype
             .sort((x, y) => x.id.localeCompare(y.id))
             .map((lObj) => (
               <tr key={`${lObj.id}`}>
