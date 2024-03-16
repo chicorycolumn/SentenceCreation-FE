@@ -14,7 +14,7 @@ export const fetchEnChsByLemma = (lang, lemma, beEnv) => {
 
   return axios
     .get(
-      `${baseUrl}/educator/chunks?&lang=${lang}&lemma=${lemma}&env=${beEnv}`
+      `${baseUrl}/educator/chunks?&lang=${lang}&lemma=${lemma}&envir=${beEnv}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
@@ -50,7 +50,7 @@ export const fetchFormulaTopics = () => {
 export const fetchAvailableNexusId = (beEnv, callback, args) => {
   return axios
     .get(
-      `${baseUrl}/educator/nexusid?env=${beEnv}`
+      `${baseUrl}/educator/nexusid?envir=${beEnv}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
@@ -70,7 +70,7 @@ export const fetchAvailableNexusId = (beEnv, callback, args) => {
 export const fetchTags = (lang, beEnv) => {
   return axios
     .get(
-      `${baseUrl}/educator/tags?lang=${lang}&env=${beEnv}`
+      `${baseUrl}/educator/tags?lang=${lang}&envir=${beEnv}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
@@ -85,7 +85,7 @@ export const fetchWordsByTag = (beEnv, lang, andTags, orTags) => {
   console.log("fetchWordsByTag", { lang, andTags, orTags });
 
   const langString = `lang=${lang}`;
-  const envString = `&env=${beEnv}`;
+  const envirString = `&envir=${beEnv}`;
   const andTagsString = !uUtils.isEmpty(andTags)
     ? `&andTags=${andTags.join("+")}`
     : "";
@@ -95,7 +95,7 @@ export const fetchWordsByTag = (beEnv, lang, andTags, orTags) => {
 
   return axios
     .get(
-      `${baseUrl}/educator/words?${langString}${envString}${andTagsString}${orTagsString}`
+      `${baseUrl}/educator/words?${langString}${envirString}${andTagsString}${orTagsString}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {

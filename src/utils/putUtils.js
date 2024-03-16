@@ -7,12 +7,12 @@ const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
-export const fetchFormulaIds = (langQ, langA, env) => {
+export const fetchFormulaIds = (langQ, langA, beEnv) => {
   diUtils.startSpinner("green");
 
   return axios
     .get(
-      `${baseUrl}/educator/formulaids?lang1=${langQ}&lang2=${langA}&env=${env}`
+      `${baseUrl}/educator/formulaids?lang1=${langQ}&lang2=${langA}&envir=${beEnv}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
@@ -35,7 +35,7 @@ export const fetchFemula = (formulaId, answerLanguage, beEnv) => {
 
   return axios
     .get(
-      `${baseUrl}/educator/formulas?id=${formulaId}&lang=${answerLanguage}&env=${beEnv}`
+      `${baseUrl}/educator/formulas?id=${formulaId}&lang=${answerLanguage}&envir=${beEnv}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
@@ -174,7 +174,7 @@ export const fetchSentence = (lang, formula, beEnv) => {
 
   return axios
     .put(
-      `${baseUrl}/educator/sentences?lang=${lang}&env=${beEnv}`,
+      `${baseUrl}/educator/sentences?lang=${lang}&envir=${beEnv}`,
       body
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
@@ -232,7 +232,7 @@ export const fetchDualSentence = (
 
   return axios
     .put(
-      `${baseUrl}/educator/sentences?lang=${questionLanguage}&lang2=${answerLanguage}&env=${beEnv}`,
+      `${baseUrl}/educator/sentences?lang=${questionLanguage}&lang2=${answerLanguage}&envir=${beEnv}`,
       body
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )

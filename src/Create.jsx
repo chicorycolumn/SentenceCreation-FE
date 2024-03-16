@@ -17,7 +17,7 @@ const getUtils = require("./utils/getUtils.js");
 const Create = () => {
   const [langQ, setLangQ] = useState("POL");
   const [langA, setLangA] = useState("ENG");
-  const [beEnv, setBeEnv] = useState("ref");
+  const [beEnv, setBeEnv] = useState("prod");
   const [savedUnfinishedFemulas, setSavedUnfinishedFemulas] = useState([]);
   const [savedDualFormulas, setSavedDualFormulas] = useState([]);
   const [questionReadyFormula, setQuestionReadyFormula] = useState(); //rename to "ready" not "saved"
