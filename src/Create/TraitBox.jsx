@@ -30,8 +30,10 @@ class TraitBox extends Component {
     isFlowerSearchingForStem: false,
     forceShowInput: false,
     showTagInterface: false,
+    showSpecificIdsInterface: false,
     justCopied: false,
     activeTextarea: null,
+    tagsForHelpingSelectSpecificId: [],
   };
 
   componentDidUpdate(prevProps) {
@@ -52,6 +54,13 @@ class TraitBox extends Component {
       this.props.setHighlightedCard();
     }
     this.setState({ showTagInterface: val });
+  };
+
+  setShowSpecificIdsInterface = (val) => {
+    if (!val) {
+      this.props.setHighlightedCard();
+    }
+    this.setState({ showSpecificIdsInterface: val });
   };
 
   revertTraitValueInputString = (isSecondary = false) => {
@@ -160,6 +169,7 @@ class TraitBox extends Component {
         hasJustBlurred: true,
       });
       this.setShowTagInterface();
+      this.setShowSpecificIdsInterface();
 
       setTimeout(() => {
         this.setState({
@@ -448,6 +458,25 @@ class TraitBox extends Component {
           />
         )}
 
+        {this.state.showSpecificIdsInterface && (
+          <TagInterface
+            lang={this.props.lang}
+            noSecondaryGroup={true}
+            isSpecificIdsInterface={true}
+            traitValueInputString={this.state.tagsForHelpingSelectSpecificId}
+            traitValueInputString2={this.state.traitValueInputString}
+            setShowTagInterface={this.setShowSpecificIdsInterface}
+            pushpopTraitValueInputString={this.pushpopTraitValueInputString}
+            revertTraitValueInputString={this.revertTraitValueInputString}
+            checkAndSetTraitValue={checkAndSetTraitValue}
+            exitTraitBox={exitTraitBox}
+            wordtype={idUtils.getWordtypeEnCh(structureChunk)}
+            guideword={guideword}
+            lObjId={lObjId}
+            backedUpTags={this.props.backedUpStructureChunk.andTags.traitValue}
+          />
+        )}
+
         <div
           id={traitBoxID}
           key={traitBoxID}
@@ -569,6 +598,13 @@ class TraitBox extends Component {
               }
               if (idUtils.isTagTrait(traitKey)) {
                 this.setShowTagInterface(true);
+                this.props.setHighlightedCard(
+                  structureChunk.chunkId.traitValue
+                );
+                return;
+              }
+              if (traitKey === "specificIds") {
+                this.setShowSpecificIdsInterface(true);
                 this.props.setHighlightedCard(
                   structureChunk.chunkId.traitValue
                 );

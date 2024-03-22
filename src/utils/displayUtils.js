@@ -70,9 +70,15 @@ exports.orderTraitKeys = (stCh) => {
       ].includes(traitKey) && traitKey[0] !== "_"
   );
 
+  let orderedTraitKeysGroup2 = ["specificIds"];
+  orderedTraitKeys
+    .slice(length)
+    .filter((tk) => tk !== "specificIds")
+    .forEach((tk) => orderedTraitKeysGroup2.push(tk));
+
   return {
     orderedTraitKeysGroup1: orderedTraitKeys.slice(0, length),
-    orderedTraitKeysGroup2: orderedTraitKeys.slice(length),
+    orderedTraitKeysGroup2,
   };
 };
 

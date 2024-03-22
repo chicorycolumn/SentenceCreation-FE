@@ -638,18 +638,20 @@ const ChunkCard = (props) => {
                 setShowTraitKeysGroupTwo(!hasSpecificId);
               }
 
-              $.each(
-                // Forces specificIds traitbox to update correctly
-                $(
-                  `button[id^='ToggleShowButton-${props.batch}-Group2-${props.femulaItemId}']`
-                ),
-                function () {
-                  jqUtils.collapseIfNotCollapsed(
-                    $(this)[0],
-                    props.showAllTraitBoxes
-                  );
-                }
-              );
+              setTimeout(() => {
+                $.each(
+                  // Forces specificIds traitbox to update correctly
+                  $(
+                    `button[id^='ToggleShowButton-${props.batch}-Group2-${props.femulaItemId}']`
+                  ),
+                  function () {
+                    jqUtils.collapseIfNotCollapsed(
+                      $(this)[0],
+                      props.showAllTraitBoxes
+                    );
+                  }
+                );
+              }, 100);
             }}
           >
             {hasSpecificId ? (

@@ -12,6 +12,7 @@ const getUtils = require("../utils/getUtils.js");
 
 const TagInterface = (props) => {
   const [clickCounter, setClickCounter] = useState(0);
+  const [meaninglessCounter, setMeaninglessCounter] = useState(0);
   const [tickDisabled, setTickDisabled] = useState();
   const [tags, setTags] = useState([]);
   const [fetchedWordsByWordtype, setFetchedWordsByWordtype] = useState([]);
@@ -21,7 +22,9 @@ const TagInterface = (props) => {
 
   const exit = () => {
     $(document).off("keyup");
-    props.revertTraitValueInputString(true);
+    if (!props.noSecondaryGroup) {
+      props.revertTraitValueInputString(!props.isSpecificIdsInterface);
+    }
     props.exitTraitBox(false);
   };
   const saveAndExit = () => {
@@ -31,6 +34,9 @@ const TagInterface = (props) => {
       $(document).off("keyup");
       props.checkAndSetTraitValue(true);
     }
+  };
+  const useClickedId = (id) => {
+    props.pushpopTraitValueInputString(id, true);
   };
 
   useEffect(() => {
@@ -48,9 +54,15 @@ const TagInterface = (props) => {
 
   useEffect(() => {
     let andTagsArr = diUtils.asArray(props.traitValueInputString);
-    let orTagsArr = diUtils.asArray(props.traitValueInputString2);
+    let orTagsArr = props.isSpecificIdsInterface
+      ? []
+      : diUtils.asArray(props.traitValueInputString2);
 
     if (!andTagsArr.length && !orTagsArr.length) {
+      if (props.isSpecificIdsInterface) {
+        setFetchedWordsByWordtype([]);
+      }
+
       return;
     }
 
@@ -65,9 +77,12 @@ const TagInterface = (props) => {
       .then((fetchedWords) => {
         if (fetchedWords) {
           setFetchedWordsByWordtype(fetchedWords);
-          setTickDisabled(
-            !fetchedWords.some((lObj) => lObj.id === props.lObjId)
-          );
+
+          if (!props.isSpecificIdsInterface) {
+            setTickDisabled(
+              !fetchedWords.some((lObj) => lObj.id === props.lObjId)
+            );
+          }
         }
       });
   }, [
@@ -76,6 +91,7 @@ const TagInterface = (props) => {
     props.lang,
     props.lObjId,
     focusedWordtype,
+    meaninglessCounter,
   ]);
 
   useEffect(() => {
@@ -127,35 +143,69 @@ const TagInterface = (props) => {
               className={`${gstyles.sideButton} ${gstyles.blueButton} ${gstyles.tooltipHolderDelayed}`}
               onClick={() => {
                 props.revertTraitValueInputString();
-                props.revertTraitValueInputString(true);
+                if (!props.noSecondaryGroup) {
+                  props.revertTraitValueInputString(true);
+                }
               }}
             >
               &#8634;
               <Tooltip text={"Undo changes"} />
             </button>
 
-            <button
-              alt="Reset icon"
-              className={`${gstyles.sideButton} ${gstyles.blueButton} ${gstyles.tooltipHolderDelayed}`}
-              onClick={() => {
-                props.pushpopTraitValueInputString(
-                  props.backedUpTags,
-                  true,
-                  false,
-                  true
-                );
-                props.pushpopTraitValueInputString(null, true, true, true);
-              }}
-            >
-              &#8647;
-              <Tooltip text={"Revert to this word's original tags"} />
-            </button>
+            {!props.isSpecificIdsInterface && (
+              <button
+                alt="Reset icon"
+                className={`${gstyles.sideButton} ${gstyles.blueButton} ${gstyles.tooltipHolderDelayed}`}
+                onClick={() => {
+                  props.pushpopTraitValueInputString(
+                    props.backedUpTags,
+                    true,
+                    false,
+                    true
+                  );
+                  if (!props.isSpecificIdsInterface) {
+                    props.pushpopTraitValueInputString(null, true, true, true);
+                  }
+                }}
+              >
+                &#8647;
+                <Tooltip text={"Revert to this word's original tags"} />
+              </button>
+            )}
           </div>
 
           {[props.traitValueInputString, props.traitValueInputString2].map(
             (traitValueInputString, index) => {
               const heading = ["Select And-Tags", "Select Or-Tags"][index];
               const isSecondary = index === 1;
+
+              if (props.isSpecificIdsInterface && isSecondary) {
+                return (
+                  <div key={"Specific IDs"} className={styles.heading}>
+                    <div className={styles.div1}>
+                      <h1>{"Specific IDs"}</h1>
+                    </div>
+                    <div className={styles.etiquetteHolder}>
+                      {diUtils.asArray(traitValueInputString).map((tag) => (
+                        <div
+                          onClick={() => {
+                            props.pushpopTraitValueInputString(
+                              tag,
+                              false,
+                              false
+                            );
+                          }}
+                          className={`${styles.etiquette} ${styles.etiquetteClickable}`}
+                          key={tag}
+                        >
+                          {tag}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+
               return (
                 <div key={heading} className={styles.heading}>
                   <div className={styles.div1}>
@@ -166,6 +216,12 @@ const TagInterface = (props) => {
                       name="tag"
                       onClick={(e) => {
                         e.preventDefault();
+                        if (props.isSpecificIdsInterface) {
+                          props.traitValueInputString.push(e.target.value);
+                          setMeaninglessCounter((prev) => prev + 1);
+                          return;
+                        }
+
                         props.pushpopTraitValueInputString(
                           e.target.value,
                           true,
@@ -192,6 +248,21 @@ const TagInterface = (props) => {
                     {diUtils.asArray(traitValueInputString).map((tag) => (
                       <div
                         onClick={() => {
+                          if (props.isSpecificIdsInterface) {
+                            if (props.traitValueInputString.includes(tag)) {
+                              let indexToSplice =
+                                props.traitValueInputString.indexOf(tag);
+                              props.traitValueInputString.splice(
+                                indexToSplice,
+                                1
+                              );
+                            } else {
+                              props.traitValueInputString.push(tag);
+                            }
+                            setMeaninglessCounter((prev) => prev + 1);
+                            return;
+                          }
+
                           props.pushpopTraitValueInputString(
                             tag,
                             false,
@@ -236,6 +307,9 @@ const TagInterface = (props) => {
                 setFocusedWordtype={setFocusedWordtype}
                 focusedWordtype={focusedWordtype}
                 fetchedWordsByWordtype={fetchedWordsByWordtype}
+                useClickedId={
+                  props.isSpecificIdsInterface ? useClickedId : null
+                }
               />
             </div>
           </div>
