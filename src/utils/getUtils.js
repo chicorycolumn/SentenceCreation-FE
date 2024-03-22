@@ -74,10 +74,7 @@ export const fetchTags = (lang, beEnv) => {
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
-      return res.data;
-    })
-    .then((data) => {
-      return data["tags"];
+      return res.data["tags"];
     });
 };
 

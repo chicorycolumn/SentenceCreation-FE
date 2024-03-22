@@ -36,7 +36,16 @@ const LemmasTable = (props) => {
                   )}
                   {lObj.lemma}
                 </td>
-                <td className={`${styles.idButton}`}>{lObj.id}</td>
+                <td
+                  className={`${styles.idButton}`}
+                  onClick={(e) => {
+                    if (props.useClickedId) {
+                      props.useClickedId(lObj.id);
+                    }
+                  }}
+                >
+                  {lObj.id.split("-").slice(0, 3).join("-")}
+                </td>
               </tr>
             ))}
       </tbody>
