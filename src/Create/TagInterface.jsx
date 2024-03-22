@@ -109,8 +109,17 @@ const TagInterface = (props) => {
   return (
     <>
       <div className={gstyles.obscurus} onClick={exit}></div>
-      <div id={"TagInterface-mainBox"} className={styles.mainBox}>
-        <div className={styles.leftDiv}>
+      <div
+        id={"TagInterface-mainBox"}
+        className={`${
+          props.isSpecificIdsInterface ? styles.mainBoxWide : styles.mainBox
+        }`}
+      >
+        <div
+          className={`${
+            props.isSpecificIdsInterface ? styles.leftDivWide : styles.leftDiv
+          }`}
+        >
           <div className={styles.buttonHolder}>
             <button
               id="TagInterface-tickbutton"
@@ -182,10 +191,10 @@ const TagInterface = (props) => {
               if (props.isSpecificIdsInterface && isSecondary) {
                 return (
                   <div key={"Specific IDs"} className={styles.heading}>
-                    <div className={styles.div1}>
+                    <div className={`${styles.div1Short}`}>
                       <h1>{"Specific IDs"}</h1>
                     </div>
-                    <div className={styles.etiquetteHolder}>
+                    <div className={`${styles.etiquetteHolderLong}`}>
                       {diUtils.asArray(traitValueInputString).map((tag) => (
                         <div
                           onClick={() => {
@@ -195,7 +204,7 @@ const TagInterface = (props) => {
                               false
                             );
                           }}
-                          className={`${styles.etiquette} ${styles.etiquetteClickable}`}
+                          className={`${styles.etiquetteSmall} ${styles.etiquetteClickable}`}
                           key={tag}
                         >
                           {tag}
@@ -282,7 +291,13 @@ const TagInterface = (props) => {
           )}
         </div>
 
-        <div className={styles.rightDiv}>
+        <div
+          className={`${
+            props.isSpecificIdsInterface
+              ? styles.rightDivNarrow
+              : styles.rightDiv
+          }`}
+        >
           <div className={styles.div3}>
             <div className={styles.wordtypeButtonsHolder}>
               {idUtils.wordtypes.map((wordtype) => {
