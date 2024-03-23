@@ -76,7 +76,9 @@ const TagInterface = (props) => {
       )
       .then((fetchedWords) => {
         if (fetchedWords) {
-          setFetchedWordsByWordtype(fetchedWords);
+          setFetchedWordsByWordtype(
+            fetchedWords.sort((x, y) => x.id.localeCompare(y.id))
+          );
 
           if (!props.isSpecificIdsInterface) {
             setTickDisabled(
@@ -322,6 +324,7 @@ const TagInterface = (props) => {
                 setFocusedWordtype={setFocusedWordtype}
                 focusedWordtype={focusedWordtype}
                 fetchedWordsByWordtype={fetchedWordsByWordtype}
+                setFetchedWordsByWordtype={setFetchedWordsByWordtype}
                 useClickedId={
                   props.isSpecificIdsInterface ? useClickedId : null
                 }
