@@ -12,13 +12,19 @@ const LemmasTable = (props) => {
   const sortFetched = (key, ascending) => {
     if (props.fetchedWordsByWordtype && props.fetchedWordsByWordtype.length) {
       let resortedArr = props.fetchedWordsByWordtype.sort((x, y) =>
-        ascending ? x[key].localeCompare(y[key]) : y[key].localeCompare(x[key])
+        ascending
+          ? x[key].toString().localeCompare(y[key].toString())
+          : y[key].toString().localeCompare(x[key].toString())
       );
 
       props.setFetchedWordsByWordtype(resortedArr);
-      props.setMeaninglessCounterForLemmasTable((prev) => prev + 1);
     }
   };
+
+  const isFrequencyPresent =
+    props.fetchedWordsByWordtype &&
+    props.fetchedWordsByWordtype.length &&
+    props.fetchedWordsByWordtype[0].frequency != null;
 
   return (
     <table
@@ -36,6 +42,18 @@ const LemmasTable = (props) => {
           >
             Lemma
           </th>
+          {isFrequencyPresent ? (
+            <th
+              onClick={() => {
+                sortFetched("frequency", middleColAscending);
+                setMiddleColAscending((prev) => !prev);
+              }}
+            >
+              Freq
+            </th>
+          ) : (
+            ""
+          )}
           <th
             onClick={() => {
               sortFetched("id", rightColAscending);
@@ -63,6 +81,7 @@ const LemmasTable = (props) => {
                 )}
                 {lObj.lemma}
               </td>
+              {isFrequencyPresent ? <td>{lObj.frequency}</td> : ""}
               <td
                 className={`${styles.idButton}`}
                 onClick={(e) => {

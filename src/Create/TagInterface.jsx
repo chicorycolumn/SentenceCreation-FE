@@ -52,7 +52,7 @@ const TagInterface = (props) => {
     });
   }, []);
 
-  useEffect(() => {
+  const fetchWordsByTags = (shouldFetchFrequency = false) => {
     let andTagsArr = diUtils.asArray(props.traitValueInputString);
     let orTagsArr = props.isSpecificIdsInterface
       ? []
@@ -72,7 +72,8 @@ const TagInterface = (props) => {
         props.lang,
         andTagsArr,
         orTagsArr,
-        focusedWordtype
+        focusedWordtype,
+        shouldFetchFrequency
       )
       .then((fetchedWords) => {
         if (fetchedWords) {
@@ -87,6 +88,10 @@ const TagInterface = (props) => {
           }
         }
       });
+  };
+
+  useEffect(() => {
+    fetchWordsByTags();
   }, [
     props.traitValueInputString,
     props.traitValueInputString2,
@@ -183,6 +188,17 @@ const TagInterface = (props) => {
                 <Tooltip text={"Revert to this word's original tags"} />
               </button>
             )}
+
+            <button
+              alt="Plus icon"
+              className={`${gstyles.sideButton} ${gstyles.purpleButton} ${gstyles.tooltipHolderDelayed}`}
+              onClick={() => {
+                fetchWordsByTags(true);
+              }}
+            >
+              &#43;
+              <Tooltip text={"Get frequency for these words"} />
+            </button>
           </div>
 
           {[props.traitValueInputString, props.traitValueInputString2].map(

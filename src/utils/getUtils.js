@@ -78,12 +78,20 @@ export const fetchTags = (lang, beEnv) => {
     });
 };
 
-export const fetchWordsByTag = (beEnv, lang, andTags, orTags, wordtype) => {
+export const fetchWordsByTag = (
+  beEnv,
+  lang,
+  andTags,
+  orTags,
+  wordtype,
+  shouldFetchFrequency
+) => {
   console.log("fetchWordsByTag", { lang, andTags, orTags, wordtype });
 
   const langString = `lang=${lang}`;
   const envirString = `&envir=${beEnv}`;
   const wordtypeString = `&wordtype=${wordtype}`;
+  const extraString = shouldFetchFrequency ? `&include_frequency=true` : "";
   const andTagsString = !uUtils.isEmpty(andTags)
     ? `&andTags=${andTags.join(",")}`
     : "";
@@ -93,7 +101,7 @@ export const fetchWordsByTag = (beEnv, lang, andTags, orTags, wordtype) => {
 
   return axios
     .get(
-      `${baseUrl}/educator/words?${langString}${envirString}${andTagsString}${orTagsString}${wordtypeString}`
+      `${baseUrl}/educator/words?${langString}${envirString}${extraString}${andTagsString}${orTagsString}${wordtypeString}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
