@@ -80,6 +80,10 @@ exports.isTagTrait = (traitKey) => {
   return ["andTags", "orTags"].includes(traitKey);
 };
 
+exports.isSpecificIdsInterface = (traitKey) => {
+  return ["specificIds"].includes(traitKey);
+};
+
 exports.isChunkId = (traitKey) => {
   return traitKey === "chunkId";
 };

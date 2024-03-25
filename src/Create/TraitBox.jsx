@@ -147,6 +147,13 @@ class TraitBox extends Component {
     }
   };
 
+  unfocusMouseLeave = () => {
+    this.setState({
+      isHovered: false,
+      isInputActive: false,
+    });
+  };
+
   render() {
     let {
       traitKey,
@@ -495,8 +502,12 @@ class TraitBox extends Component {
             !this.state.hasJustChanged &&
             styles.noChangeBlur
           } ${
-            (this.state.isHovered || this.state.isSelected) &&
-            styles.traitBoxHover
+            !(this.state.isHovered || this.state.isSelected)
+              ? ""
+              : idUtils.isSpecificIdsInterface(traitKey) &&
+                !uUtils.isEmpty(traitObject.traitValue)
+              ? styles.traitBoxHover2
+              : styles.traitBoxHover
           } ${this.state.isSoftHighlighted && gstyles.highlighted0} ${
             this.state.isSelected && styles.traitBoxSelected
           } ${
@@ -570,7 +581,8 @@ class TraitBox extends Component {
             ""
           )}
 
-          {idUtils.isTagTrait(traitKey) &&
+          {(idUtils.isTagTrait(traitKey) ||
+            idUtils.isSpecificIdsInterface(traitKey)) &&
             !this.state.isHovered &&
             !this.state.hasJustBlurred && (
               <button
@@ -692,6 +704,7 @@ class TraitBox extends Component {
           {(!uUtils.isEmpty(traitObject.traitValue) ||
             this.state.forceShowInput ||
             idUtils.isTagTrait(traitKey) ||
+            idUtils.isSpecificIdsInterface(traitKey) ||
             traitObject.isLexical) && (
             <div
               key={`${this.state.traitValueInputString}-${
@@ -699,12 +712,7 @@ class TraitBox extends Component {
                   ? this.state.traitValueInputString2
                   : ""
               }`}
-              onMouseLeave={() => {
-                this.setState({
-                  isHovered: false,
-                  isInputActive: false,
-                });
-              }}
+              onMouseLeave={this.unfocusMouseLeave}
             >
               {[traitKey, traitKey2]
                 .filter((el) => el)
@@ -771,7 +779,11 @@ class TraitBox extends Component {
                         } 
                         ${
                           idUtils.isTagTrait(traitKey) &&
-                          styles.traitValuesInputLarge
+                          styles.traitValuesInputLarge1
+                        } 
+                        ${
+                          idUtils.isSpecificIdsInterface(traitKey) &&
+                          styles.traitValuesInputLarge2
                         } 
                         ${gstyles.noSelect} 
                         ${
@@ -783,6 +795,11 @@ class TraitBox extends Component {
                         value={
                           `textarea-${traitKey}` === this.state.activeTextarea
                             ? null
+                            : idUtils.isSpecificIdsInterface(traitKey)
+                            ? this.state[traitValueInputStringKey].replace(
+                                ",",
+                                "\n"
+                              )
                             : this.state[traitValueInputStringKey]
                         }
                         onClick={(e) => {

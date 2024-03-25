@@ -58,6 +58,22 @@
   padding: 0px;
 }
 
+.traitBoxHover2 {
+  width: 243px;
+  height: 350px;
+  z-index: 2;
+  box-shadow: black 1px 1px 15px;
+  margin-top: 2.5px;
+  margin-bottom: 8px;
+}
+
+.traitBoxHover2 textarea {
+  padding: 0px;
+  height: 300px;
+  position: relative;
+  top: -150px;
+}
+
 .traitBoxSelected {
   height: fit-content !important;
   margin-bottom: 4px;
@@ -101,7 +117,12 @@
   color: black;
 }
 
-.traitValuesInputLarge {
+.traitValuesInputLarge1 {
+  height: 50px;
+  padding-left: 27.5px;
+}
+
+.traitValuesInputLarge2 {
   height: 50px;
   padding-left: 27.5px;
 }

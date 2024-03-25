@@ -431,6 +431,10 @@
   opacity: 0.75;
 }
 
+.cardButtonWidthMedium {
+  width: 45px;
+}
+
 .cardButton1 {
   flex-grow: 1;
   color: rgb(53, 184, 228);
@@ -442,12 +446,9 @@
   font-size: 18px;
 }
 
-.cardButtonWidthMedium {
-  width: 45px;
-}
-
 .cardButton1:hover {
   color: darkblue;
+  background-color: rgb(240, 255, 255);
 }
 
 .cardButton1:active {
