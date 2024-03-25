@@ -310,7 +310,7 @@ const ChunkCard = (props) => {
           <>
             <button
               alt="Letter F in circle icon"
-              className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+              className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed1s}`}
               onClick={(e) => {
                 e.target.blur();
                 if (
@@ -329,7 +329,7 @@ const ChunkCard = (props) => {
             </button>
             <button
               alt="Download icon"
-              className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+              className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed1s}`}
               onClick={(e) => {
                 e.target.blur();
                 setShouldRetryFetch((prev) => prev + 1);
@@ -345,7 +345,7 @@ const ChunkCard = (props) => {
               alt="Star icon"
               disabled={isFixedChunkOrNoChunk}
               className={`${gstyles.cardButton1} ${
-                gstyles.tooltipHolderDelayed
+                gstyles.tooltipHolderDelayed1s
               } ${isFixedChunkOrNoChunk && gstyles.disabled}`}
               onClick={(e) => {
                 if (
@@ -408,7 +408,7 @@ const ChunkCard = (props) => {
               alt="Reset icon"
               disabled={isFixedChunkOrNoChunk}
               className={`${gstyles.cardButton1} ${
-                gstyles.tooltipHolderDelayed
+                gstyles.tooltipHolderDelayed1s
               } ${isFixedChunkOrNoChunk && gstyles.disabled}`}
               onClick={(e) => {
                 e.target.blur();
@@ -432,7 +432,7 @@ const ChunkCard = (props) => {
               alt="Dotted circle icon"
               disabled={isFixedChunkOrNoChunk}
               className={`${gstyles.cardButton1} ${
-                gstyles.tooltipHolderDelayed
+                gstyles.tooltipHolderDelayed1s
               } ${isFixedChunkOrNoChunk && gstyles.disabled} ${
                 structureChunk &&
                 structureChunk.isGhostChunk &&
@@ -455,7 +455,7 @@ const ChunkCard = (props) => {
 
         <button
           alt="Pencil icon"
-          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed1s}`}
           onClick={(e) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
@@ -473,7 +473,7 @@ const ChunkCard = (props) => {
         </button>
         <button
           alt="Cross icon"
-          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed}`}
+          className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed1s}`}
           onClick={(e) => {
             e.target.blur();
             props.setHighlightedCard(chunkId);
@@ -539,7 +539,7 @@ const ChunkCard = (props) => {
           <button
             alt="Person face icon"
             className={`${gstyles.cardButton1} ${
-              gstyles.tooltipHolderDelayed
+              gstyles.tooltipHolderDelayed1s
             } ${styles.smallButton} ${
               (!structureChunk ||
                 !structureChunk.booleanTraits ||
@@ -579,7 +579,7 @@ const ChunkCard = (props) => {
           </button>
         )}
         <div className={styles.lObjIdHolder}>
-          <p className={`${styles.lObjId} ${gstyles.tooltipHolderDelayed}`}>
+          <p className={`${styles.lObjId} ${gstyles.tooltipHolderDelayed1s}`}>
             {structureChunk && structureChunk.lObjId}
             <Tooltip text="lobj ID (of an example lobj)" />
           </p>
@@ -587,7 +587,7 @@ const ChunkCard = (props) => {
         {structureChunk && !idUtils.isFixedChunk(structureChunk) && (
           <button
             alt="Target bullseye icon"
-            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed} ${styles.smallButton}`}
+            className={`${gstyles.cardButton1} ${gstyles.tooltipHolderDelayed1s} ${styles.smallButton}`}
             onClick={(e) => {
               e.preventDefault();
 

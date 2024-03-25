@@ -69,7 +69,7 @@ const FormulaForm = (props) => {
           <h4
             className={styles.title}
           >{`New ${props.batch} sentence (${props.lang1})`}</h4>
-          <form className={`${styles.form} ${gstyles.tooltipHolderDelayed}`}>
+          <form className={`${styles.form} ${gstyles.tooltipHolderDelayed1s}`}>
             <Tooltip
               text="Prefix with an asterisk to make a fixed chunk, eg 'my name is *Jen'"
               number={4}

@@ -8,6 +8,7 @@ const LemmasTable = (props) => {
   const [leftColAscending, setLeftColAscending] = useState(false);
   const [rightColAscending, setRightColAscending] = useState(false);
   const [middleColAscending, setMiddleColAscending] = useState(false);
+  const [showCopyNotification, setShowCopyNotification] = useState(null);
 
   const sortFetched = (key, ascending) => {
     if (props.fetchedWordsByWordtype && props.fetchedWordsByWordtype.length) {
@@ -71,7 +72,9 @@ const LemmasTable = (props) => {
             <tr key={`${lObj.id}`}>
               <td
                 className={`${
-                  lObj.tags && lObj.tags.length && gstyles.tooltipHolder
+                  lObj.tags &&
+                  lObj.tags.length &&
+                  gstyles.tooltipHolderDelayed2s
                 } ${styles.leftCellText}`}
               >
                 {lObj.tags && lObj.tags.length ? (
@@ -87,10 +90,19 @@ const LemmasTable = (props) => {
                 onClick={(e) => {
                   if (props.useClickedId) {
                     props.useClickedId(lObj.id);
+                  } else {
+                    let copyText = lObj.id;
+                    navigator.clipboard.writeText(copyText);
+                    setShowCopyNotification(lObj.id);
+                    setTimeout(() => {
+                      setShowCopyNotification(null);
+                    }, 500);
                   }
                 }}
               >
-                {lObj.id.split("-").slice(0, 3).join("-")}
+                {showCopyNotification === lObj.id
+                  ? "COPIED"
+                  : lObj.id.split("-").slice(0, 3).join("-")}
               </td>
             </tr>
           ))}

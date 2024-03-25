@@ -174,9 +174,14 @@
   visibility: visible;
 }
 
-.tooltipHolderDelayed:hover .tooltip {
+.tooltipHolderDelayed1s:hover .tooltip {
   visibility: visible;
   transition-delay: 1s !important;
+}
+
+.tooltipHolderDelayed2s:hover .tooltip {
+  visibility: visible;
+  transition-delay: 2s !important;
 }
 
 .tooltip:hover {

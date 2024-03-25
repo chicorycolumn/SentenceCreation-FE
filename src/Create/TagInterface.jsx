@@ -133,7 +133,7 @@ const TagInterface = (props) => {
               alt="Checkmark tick icon"
               className={`${gstyles.tickButton} 
               ${tickDisabled && gstyles.disabled}
-              ${gstyles.tooltipHolderDelayed}
+              ${gstyles.tooltipHolderDelayed1s}
               `}
               onClick={(e) => {
                 e.preventDefault();
@@ -147,7 +147,7 @@ const TagInterface = (props) => {
             <button
               id="TagInterface-crossbutton"
               alt="Cross icon"
-              className={`${gstyles.sideButton} ${gstyles.redButton} ${gstyles.tooltipHolderDelayed}`}
+              className={`${gstyles.sideButton} ${gstyles.redButton} ${gstyles.tooltipHolderDelayed1s}`}
               onClick={exit}
             >
               &times;
@@ -156,7 +156,7 @@ const TagInterface = (props) => {
 
             <button
               alt="Undo icon"
-              className={`${gstyles.sideButton} ${gstyles.blueButton} ${gstyles.tooltipHolderDelayed}`}
+              className={`${gstyles.sideButton} ${gstyles.blueButton} ${gstyles.tooltipHolderDelayed1s}`}
               onClick={() => {
                 props.revertTraitValueInputString();
                 if (!props.noSecondaryGroup) {
@@ -171,7 +171,7 @@ const TagInterface = (props) => {
             {!props.isSpecificIdsInterface && (
               <button
                 alt="Reset icon"
-                className={`${gstyles.sideButton} ${gstyles.blueButton} ${gstyles.tooltipHolderDelayed}`}
+                className={`${gstyles.sideButton} ${gstyles.blueButton} ${gstyles.tooltipHolderDelayed1s}`}
                 onClick={() => {
                   props.pushpopTraitValueInputString(
                     props.backedUpTags,
@@ -191,7 +191,7 @@ const TagInterface = (props) => {
 
             <button
               alt="Plus icon"
-              className={`${gstyles.sideButton} ${gstyles.purpleButton} ${gstyles.tooltipHolderDelayed}`}
+              className={`${gstyles.sideButton} ${gstyles.purpleButton} ${gstyles.tooltipHolderDelayed1s}`}
               onClick={() => {
                 fetchWordsByTags(true);
               }}

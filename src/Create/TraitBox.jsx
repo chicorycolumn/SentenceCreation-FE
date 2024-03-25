@@ -508,7 +508,7 @@ class TraitBox extends Component {
             gstyles.highlighted2
           } 
           ${isBadBox && styles.badBox} 
-          ${isBadBox && gstyles.tooltipHolderDelayed} 
+          ${isBadBox && gstyles.tooltipHolderDelayed1s} 
           ${this.props.traitKeysGroup === 2 && gstyles.oddEdges}
           `}
           onClick={setFlowerstemIfAppropriate}
@@ -664,7 +664,7 @@ class TraitBox extends Component {
               !["booleanTraits"].includes(traitKey) &&
               traitObject.possibleTraitValues && (
                 <button
-                  className={`${styles.floatRightButton} ${gstyles.tooltipHolderDelayed}`}
+                  className={`${styles.floatRightButton} ${gstyles.tooltipHolderDelayed1s}`}
                   alt="Six dots icon"
                   onClick={(e) => {
                     e.preventDefault();
@@ -746,7 +746,7 @@ class TraitBox extends Component {
                       ${
                         traitKey === "chunkId" &&
                         !isClickableFlowerstem(this.props) &&
-                        gstyles.tooltipHolderDelayed
+                        gstyles.tooltipHolderDelayed1s
                       }`}
                     >
                       {traitKey === "chunkId" &&
@@ -938,7 +938,7 @@ class TraitBox extends Component {
                                       alt={traitKeyRegulator.altText}
                                       className={`${gstyles.blueButton} ${
                                         styles.miniButton
-                                      } ${gstyles.tooltipHolderDelayed} ${
+                                      } ${gstyles.tooltipHolderDelayed1s} ${
                                         traitKeyRegulatorIsActive(
                                           traitKeyRegulator,
                                           traitKey

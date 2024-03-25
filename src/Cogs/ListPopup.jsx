@@ -38,7 +38,7 @@ const ListPopup = (props) => {
             {props.data.repeatCallback && (
               <button
                 alt="Repeat icon"
-                className={`${gstyles.sideButton} ${gstyles.greyButton} ${gstyles.squareButton} ${gstyles.tooltipHolderDelayed}`}
+                className={`${gstyles.sideButton} ${gstyles.greyButton} ${gstyles.squareButton} ${gstyles.tooltipHolderDelayed1s}`}
                 onClick={() => {
                   props.data.repeatCallback(() => {
                     setMeaninglessCounter((prev) => prev + 1);

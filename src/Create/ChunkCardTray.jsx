@@ -203,7 +203,7 @@ const ChunkCardTray = (props) => {
       )}
       <div className={styles.buttonHolder}>
         <p
-          className={`${gstyles.tooltipHolderDelayed} ${styles.buttonHolderTitle} `}
+          className={`${gstyles.tooltipHolderDelayed1s} ${styles.buttonHolderTitle} `}
         >
           {idNotUnique && (
             <Tooltip text="Formula ID not unique. You will be overwriting this formula. Click Snowflake or Save Formula if you want to change." />
@@ -214,7 +214,7 @@ const ChunkCardTray = (props) => {
         <div className={styles.buttonSubholder}>
           <button
             alt="Alternate arrows icon"
-            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed1s}`}
             onClick={(e) => {
               e.target.blur();
               if (uiUtils.checkForStChsWithNoLObjs(props.femula)) {
@@ -228,7 +228,7 @@ const ChunkCardTray = (props) => {
           </button>
           <button
             alt="Snowflake icon"
-            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed1s}`}
             onClick={(e) => {
               e.target.blur();
 
@@ -283,7 +283,7 @@ const ChunkCardTray = (props) => {
           </button>
           <button
             alt="Save icon"
-            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed1s}`}
             onClick={(e) => {
               e.target.blur();
               props.saveUnfinishedFemula(
@@ -296,7 +296,7 @@ const ChunkCardTray = (props) => {
           </button>
           <button
             alt="Star icon"
-            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed1s}`}
             onClick={(e) => {
               e.target.blur();
               let fxnId = "fetchSentence1:Star";
@@ -324,7 +324,7 @@ const ChunkCardTray = (props) => {
             alt="Checkmark tick icon"
             className={`${gstyles.cardButton1} ${
               gstyles.cardButtonWidthMedium
-            } ${gstyles.tooltipHolderDelayed} ${
+            } ${gstyles.tooltipHolderDelayed1s} ${
               props.formulaIsSaved
                 ? gstyles.tickableButtonActive
                 : gstyles.tickableButton
@@ -387,7 +387,7 @@ const ChunkCardTray = (props) => {
           </button>
           <button
             alt="Connection icon"
-            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.cardButton_inactive} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.cardButton_inactive} ${gstyles.tooltipHolderDelayed1s}`}
             onMouseEnter={(e) => {
               e.target.blur();
               if (linesAreDrawn) {
@@ -423,7 +423,7 @@ const ChunkCardTray = (props) => {
           <button
             alt="Triangle icon"
             id={`ToggleShowButtonAll-${props.batch}`}
-            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed1s}`}
             onMouseEnter={() => {
               console.log("showAllTraitBoxes", showAllTraitBoxes);
             }}
@@ -461,7 +461,7 @@ const ChunkCardTray = (props) => {
           </button>
           <button
             alt="Dashed up arrow icon"
-            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed1s}`}
             onClick={(e) => {
               e.target.blur();
               jqUtils.expandTrayHeightToFitTraitBoxes();
@@ -472,7 +472,7 @@ const ChunkCardTray = (props) => {
           </button>
           <button
             alt="Cross icon"
-            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed}`}
+            className={`${gstyles.cardButton1} ${gstyles.cardButtonWidthMedium} ${gstyles.tooltipHolderDelayed1s}`}
             onClick={(e) => {
               e.target.blur();
               if (
