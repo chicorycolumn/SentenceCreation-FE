@@ -129,6 +129,21 @@
   background-color: rgb(232, 255, 233);
 }
 
+.tickableButtonHalfwayActive {
+  background-color: white !important;
+  color: forestgreen !important;
+}
+
+.tickableButtonHalfwayActive:active {
+  background-color: limegreen !important;
+  color: white;
+}
+
+.tickableButtonHalfwayActive:hover {
+  background-color: rgb(208, 252, 210) !important;
+  color: black !important;
+}
+
 .tickableButton {
   background-color: white !important;
   color: black !important;
@@ -139,13 +154,13 @@
   color: white;
 }
 
+.tickableButton:hover {
+  background-color: rgb(232, 255, 233) !important;
+}
+
 .tickableButtonActive {
   background-color: limegreen !important;
   color: black !important;
-}
-
-.tickableButton:hover {
-  background-color: rgb(232, 255, 233);
 }
 
 .tooltip {

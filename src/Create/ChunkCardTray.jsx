@@ -37,6 +37,8 @@ const ChunkCardTray = (props) => {
   const [highlightedCard, setHighlightedCard] = useState();
   const [meaninglessCounterTraitBox, setMeaninglessCounterTraitBox] =
     useState(0);
+  const [sentenceWasQueriedSuccessfully, setSentenceWasQueriedSuccessfully] =
+    useState();
 
   const editLemmaOfThisFemulaItem = (
     femulaItemId,
@@ -156,7 +158,10 @@ const ChunkCardTray = (props) => {
     }
 
     //Chunk was modified ie formula changed. Un-checking "Mark formula ready".
+    console.log("Δδ");
+
     props.markFormulaReady();
+    setSentenceWasQueriedSuccessfully();
   }, [props.femula, props.chunkOrders]);
 
   useEffect(() => {
@@ -313,7 +318,12 @@ const ChunkCardTray = (props) => {
                 protoFormula,
                 fxnId,
                 null,
-                setListPopupData
+                (payload, protoFormula) => {
+                  setListPopupData(payload, protoFormula);
+                  if (payload.rows && payload.rows.length) {
+                    setSentenceWasQueriedSuccessfully(true);
+                  }
+                }
               );
             }}
           >
@@ -327,6 +337,8 @@ const ChunkCardTray = (props) => {
             } ${gstyles.tooltipHolderDelayed1s} ${
               props.formulaIsSaved
                 ? gstyles.tickableButtonActive
+                : sentenceWasQueriedSuccessfully
+                ? gstyles.tickableButtonHalfwayActive
                 : gstyles.tickableButton
             }`}
             onClick={(e) => {
