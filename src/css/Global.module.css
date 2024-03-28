@@ -96,6 +96,63 @@
   background-color: rgb(215, 212, 251);
 }
 
+.greenButton {
+  color: forestgreen;
+  background-color: white;
+}
+
+.greenButton:active {
+  background-color: forestgreen !important;
+  color: white;
+}
+
+.greenButtonActive {
+  background-color: forestgreen !important;
+  color: white;
+}
+
+.greenButton:hover {
+  background-color: rgb(197, 211, 197);
+}
+
+.yellowButton {
+  color: rgb(158, 158, 0);
+  background-color: white;
+}
+
+.yellowButton:active {
+  background-color: rgb(158, 158, 0) !important;
+  color: white;
+}
+
+.yellowButtonActive {
+  background-color: rgb(158, 158, 0) !important;
+  color: white;
+}
+
+.yellowButton:hover {
+  background-color: rgb(255, 255, 198);
+}
+
+.purpleButton {
+  color: rgb(141, 56, 225);
+  background-color: white;
+}
+
+.purpleButton:active {
+  background-color: rgb(141, 56, 225) !important;
+  color: white;
+}
+
+.purpleButtonActive {
+  background-color: rgb(141, 56, 225) !important;
+  color: white;
+}
+
+.purpleButton:hover {
+  background-color: rgb(210, 197, 221);
+}
+
 .rectangleButton {
   padding: 0px;
   width: 30px;
