@@ -26,7 +26,7 @@ const Create = () => {
   const [invisibleTextarea, setInvisibleTextarea] = useState("");
   const [formulaTopics, setFormulaTopics] = useState([]);
   const [allTopics, setAllTopics] = useState([]);
-  const [formulaDifficulty, setFormulaDifficulty] = useState([]);
+  const [formulaDifficulty, setFormulaDifficulty] = useState(1);
   const [showLoadUnfinishedFemulaPopup, setShowLoadUnfinishedFemulaPopup] =
     useState();
   const [unfinishedFemulaToLoad, setUnfinishedFemulaToLoad] = useState();
@@ -221,7 +221,7 @@ const Create = () => {
                         SPA: [],
                       },
                       topics: formulaTopics,
-                      difficulty: formulaDifficulty,
+                      difficulty: Number(formulaDifficulty),
                     };
                     dualFormula.NEXUS.equivalents[langQ] = [qFormula.id];
                     dualFormula.NEXUS.equivalents[langA] = [aFormula.id];
