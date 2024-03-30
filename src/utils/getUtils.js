@@ -6,6 +6,35 @@ const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
 
+export const fetchPalette = (
+  beEnv,
+  langQ,
+  langA,
+  formulaTopics,
+  formulaDifficulty
+) => {
+  let baseString = `${baseUrl}/palette?`;
+  let envString = `envir=${beEnv}`;
+  let langString = `&questionLanguage=${langQ}&answerLanguage=${langA}`;
+  let topicsString = formulaTopics.length
+    ? `&topics=${formulaTopics.join(",")}`
+    : "";
+  let difficultyString = `&difficulty=${formulaDifficulty}`;
+
+  return axios
+    .get(
+      baseString + envString + langString + topicsString + difficultyString
+      // ,{headers: { Authorization: `BEARER ${token}` }}
+    )
+    .then((res) => {
+      return res.data;
+    })
+    .then((data) => {
+      console.log(">>>", data);
+      return data["palette"];
+    });
+};
+
 export const fetchEnChsByLemma = (lang, lemma, beEnv) => {
   console.log(""); //devlogging
   console.log("");
