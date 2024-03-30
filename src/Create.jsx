@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import LanguagesForm from "./Create/LanguagesForm.jsx";
 import FormulaForm from "./Create/FormulaForm.jsx";
 import ChunkCardTrayHolder from "./Create/ChunkCardTrayHolder.jsx";
+import DifficultyAndTopicsSelector from "./Create/DifficultyAndTopicsSelector.jsx";
 import ListPopup from "./Cogs/ListPopup.jsx";
 import { LanguageContextProvider } from "./context/LanguageContext.js";
 import idUtils from "./utils/identityUtils.js";
@@ -58,9 +59,11 @@ const Create = () => {
   };
 
   useEffect(() => {
-    getUtils.fetchFormulaTopics(beEnv, langQ).then((fetchedFormulaTopics) => {
-      setAllTopics(fetchedFormulaTopics);
-    });
+    if (!allTopics.length) {
+      getUtils.fetchFormulaTopics(beEnv, langQ).then((fetchedFormulaTopics) => {
+        setAllTopics(fetchedFormulaTopics);
+      });
+    }
 
     let storedUnfinishedFemulas = localStorage.getItem(
       "savedUnfinishedFemulas"
@@ -348,69 +351,14 @@ const Create = () => {
             Load a saved unfinished femula
           </button>
         </div>
-        <div className={rfStyles.form}>
-          <h4 className={rfStyles.titleSmall}>Formula topics</h4>
-          <div className={styles.horizontalHolderMini}>
-            <textarea
-              className={styles.topics}
-              readOnly
-              value={formulaTopics.join(", ")}
-            ></textarea>
-            <select
-              className={styles.topicsSelector}
-              name="topics"
-              onClick={(e) => {
-                e.preventDefault();
-                setFormulaTopics((prev) => {
-                  let selectedTopic = e.target.value;
-                  if (prev.includes(selectedTopic)) {
-                    return prev.filter((x) => x !== selectedTopic);
-                  }
-                  return [...prev, selectedTopic];
-                });
-              }}
-            >
-              {allTopics.map((topicOption, tpoIndex) => (
-                <option value={topicOption} key={`${tpoIndex}-${topicOption}`}>
-                  {topicOption}
-                </option>
-              ))}
-            </select>
-            <button
-              alt="Cross icon"
-              className={`${styles.topicsButton} ${gstyles.redButton}`}
-              onClick={() => {
-                if (window.confirm("Wipe all formula topics?")) {
-                  setFormulaTopics([]);
-                }
-              }}
-            >
-              &times;
-            </button>
-          </div>
-          <div className={styles.horizontalHolderMini}>
-            <h4 className={`${rfStyles.titleSmall} ${styles.difficultyHeader}`}>
-              Formula difficulty
-            </h4>
-            <select
-              className={styles.difficultySelector}
-              name="difficulty"
-              onClick={(e) => {
-                e.preventDefault();
-                setFormulaDifficulty(e.target.value);
-              }}
-            >
-              {[1, 2, 3, 4, 5].map((difficultyOption, dioIndex) => (
-                <option
-                  value={difficultyOption}
-                  key={`${dioIndex}-${difficultyOption}`}
-                >
-                  {difficultyOption}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+
+        <DifficultyAndTopicsSelector
+          allTopics={allTopics}
+          formulaTopics={formulaTopics}
+          setFormulaTopics={setFormulaTopics}
+          formulaDifficulty={formulaDifficulty}
+          setFormulaDifficulty={setFormulaDifficulty}
+        />
 
         {listPopupData && (
           <ListPopup
