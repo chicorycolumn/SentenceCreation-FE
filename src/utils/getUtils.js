@@ -33,10 +33,10 @@ export const fetchEnChsByLemma = (lang, lemma, beEnv) => {
     });
 };
 
-export const fetchFormulaTopics = () => {
+export const fetchFormulaTopics = (beEnv, currentLang) => {
   return axios
     .get(
-      `${baseUrl}/educator/formulatopics`
+      `${baseUrl}/educator/formulatopics?envir=${beEnv}&lang=${currentLang}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {

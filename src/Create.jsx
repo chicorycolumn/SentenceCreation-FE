@@ -58,7 +58,7 @@ const Create = () => {
   };
 
   useEffect(() => {
-    getUtils.fetchFormulaTopics().then((fetchedFormulaTopics) => {
+    getUtils.fetchFormulaTopics(beEnv, langQ).then((fetchedFormulaTopics) => {
       setAllTopics(fetchedFormulaTopics);
     });
 
