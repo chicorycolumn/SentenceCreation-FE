@@ -267,6 +267,32 @@ const Create = () => {
           >
             ⎘ Save dual formula
           </button>
+          <button
+            id="Button_GetQuestionAnswerSheets"
+            className={`${
+              rodButtonDisabled ? styles.rodButtonDisabled : styles.rodButton
+            }`}
+            disabled={rodButtonDisabled}
+            onClick={() => {
+              let id = "Button_GetQuestionAnswerSheets";
+              putUtils._fetchDualSentence(
+                beEnv,
+                id,
+                langA,
+                langQ,
+                answerReadyFormula,
+                questionReadyFormula,
+                setListPopupData,
+                null,
+                (x) => {
+                  console.log("swde1", x);
+                },
+                2
+              );
+            }}
+          >
+            📄 Get Question-Answer sheets
+          </button>
           {[
             {
               name: "dual formulas",

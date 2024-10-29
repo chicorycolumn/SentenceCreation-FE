@@ -663,3 +663,9 @@
     transform: rotate(360deg);
   }
 }
+
+.flexHorizontal {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

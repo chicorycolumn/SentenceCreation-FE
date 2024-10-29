@@ -103,9 +103,17 @@ export const _fetchDualSentence = (
   answerFormula,
   setListPopupData,
   callback,
-  repeatCallback
+  repeatCallback,
+  timesToRepeat = 0
 ) => {
-  fetchDualSentence(beEnv, langQ, langA, questionFormula, answerFormula).then(
+  fetchDualSentence(
+    beEnv,
+    langQ,
+    langA,
+    questionFormula,
+    answerFormula,
+    timesToRepeat
+  ).then(
     (data) => {
       let { payload, messages } = data;
 
@@ -198,7 +206,8 @@ export const fetchDualSentence = (
   questionLanguage,
   answerLanguage,
   questionFormula,
-  answerFormula
+  answerFormula,
+  timesToRepeat = 0
 ) => {
   if (!questionFormula.sentenceStructure.length) {
     return;
@@ -207,7 +216,7 @@ export const fetchDualSentence = (
     return;
   }
 
-  diUtils.startSpinner("blue");
+  diUtils.startSpinner(timesToRepeat ? "blueviolet" : "blue");
 
   let requestingSingleWordOnly =
     !questionFormula.orders ||
@@ -224,6 +233,10 @@ export const fetchDualSentence = (
     answerFormula,
     requestingSingleWordOnly,
   };
+
+  if (timesToRepeat) {
+    body.timesToRepeat = timesToRepeat;
+  }
 
   console.log("");
   console.log("");
