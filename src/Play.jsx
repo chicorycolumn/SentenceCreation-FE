@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from "react";
 import LanguagesForm from "./Create/LanguagesForm.jsx";
 import DifficultyAndTopicsSelector from "./Create/DifficultyAndTopicsSelector.jsx";
-import ListPopup from "./Cogs/ListPopup.jsx";
 import { LanguageContextProvider } from "./context/LanguageContext.js";
-import idUtils from "./utils/identityUtils.js";
 import $ from "jquery";
 import gstyles from "./css/Global.module.css";
 import styles from "./css/Play.module.css";
-import rfStyles from "./css/RadioForm.module.css";
-const uUtils = require("./utils/universalUtils.js");
-const putUtils = require("./utils/putUtils.js");
-const stUtils = require("./utils/storageUtils.js");
 const getUtils = require("./utils/getUtils.js");
 
 const Play = () => {

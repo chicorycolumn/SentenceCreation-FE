@@ -11,7 +11,8 @@ export const fetchPalette = (
   langQ,
   langA,
   formulaTopics,
-  formulaDifficulty
+  formulaDifficulty,
+  iterations = 2
 ) => {
   let baseString = `${baseUrl}/palette?`;
   let envString = `envir=${beEnv}`;
@@ -20,18 +21,23 @@ export const fetchPalette = (
     ? `&topics=${formulaTopics.join(",")}`
     : "";
   let difficultyString = `&difficulty=${formulaDifficulty}`;
+  let iterationsString = `&iterations=${iterations}`;
 
   return axios
     .get(
-      baseString + envString + langString + topicsString + difficultyString
+      baseString +
+        envString +
+        langString +
+        topicsString +
+        difficultyString +
+        iterationsString
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {
-      return res.data;
-    })
-    .then((data) => {
-      console.log(">>>", data);
-      return data["palette"];
+      let responseObjArr = res.data;
+      console.log(">>>", responseObjArr.length);
+      responseObjArr.forEach((responseObj) => console.log(responseObj));
+      return responseObjArr;
     });
 };
 
