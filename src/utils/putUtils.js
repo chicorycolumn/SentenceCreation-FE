@@ -146,6 +146,22 @@ export const _fetchDualSentence = (
   );
 };
 
+const _removeAnyUnusedChunksFromFormula = (formula) => {
+  let usedChunkIds = [];
+  Object.keys(formula.orders).forEach((orderCategory) => {
+    formula.orders[orderCategory].forEach((orderArr) => {
+      orderArr.forEach((chunkId) => {
+        if (!usedChunkIds.includes(chunkId)) {
+          usedChunkIds.push(chunkId);
+        }
+      });
+    });
+  });
+  formula.sentenceStructure = formula.sentenceStructure.filter((chunk) =>
+    usedChunkIds.includes(chunk.chunkId)
+  );
+};
+
 export const fetchSentence = (lang, formula, beEnv) => {
   backendifyFormula(formula);
 
@@ -160,6 +176,8 @@ export const fetchSentence = (lang, formula, beEnv) => {
     !Object.keys(formula.orders).length ||
     ((!formula.orders.primary || !formula.orders.primary.length) &&
       (!formula.orders.additional || !formula.orders.additional.length));
+
+  _removeAnyUnusedChunksFromFormula(formula);
 
   let body = {
     questionLanguage: lang,
