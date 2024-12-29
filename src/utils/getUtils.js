@@ -10,16 +10,14 @@ export const fetchPalette = (
   beEnv,
   langQ,
   langA,
-  formulaTopics,
+  fTopics,
   formulaDifficulty,
   iterations = 2
 ) => {
   let baseString = `${baseUrl}/palette?`;
   let envString = `envir=${beEnv}`;
   let langString = `&questionLanguage=${langQ}&answerLanguage=${langA}`;
-  let topicsString = formulaTopics.length
-    ? `&topics=${formulaTopics.join(",")}`
-    : "";
+  let topicsString = fTopics.length ? `&topics=${fTopics.join(",")}` : "";
   let difficultyString = `&difficulty=${formulaDifficulty}`;
   let iterationsString = `&iterations=${iterations}`;
 
@@ -68,10 +66,10 @@ export const fetchEnChsByLemma = (lang, lemma, beEnv) => {
     });
 };
 
-export const fetchFormulaTopics = (beEnv, currentLang) => {
+export const fetchTopics = (beEnv, currentLang) => {
   return axios
     .get(
-      `${baseUrl}/educator/formulatopics?envir=${beEnv}&lang=${currentLang}`
+      `${baseUrl}/educator/topics?envir=${beEnv}&lang=${currentLang}`
       // ,{headers: { Authorization: `BEARER ${token}` }}
     )
     .then((res) => {

@@ -25,7 +25,7 @@ const Create = () => {
   const [answerReadyFormula, setAnswerReadyFormula] = useState(); //rename to "ready" not "saved"
   const [listPopupData, setListPopupData] = useState();
   const [invisibleTextarea, setInvisibleTextarea] = useState("");
-  const [formulaTopics, setFormulaTopics] = useState([]);
+  const [fTopics, setFTopics] = useState([]);
   const [allTopics, setAllTopics] = useState([]);
   const [formulaDifficulty, setFormulaDifficulty] = useState(1);
   const [showLoadUnfinishedFemulaPopup, setShowLoadUnfinishedFemulaPopup] =
@@ -60,8 +60,8 @@ const Create = () => {
 
   useEffect(() => {
     if (!allTopics.length) {
-      getUtils.fetchFormulaTopics(beEnv, langQ).then((fetchedFormulaTopics) => {
-        setAllTopics(fetchedFormulaTopics);
+      getUtils.fetchTopics(beEnv, langQ).then((fetchedFTopics) => {
+        setAllTopics(fetchedFTopics);
       });
     }
 
@@ -223,7 +223,7 @@ const Create = () => {
                         POL: [],
                         SPA: [],
                       },
-                      topics: formulaTopics,
+                      topics: fTopics,
                       difficulty: Number(formulaDifficulty),
                     };
                     dualFormula.NEXUS.equivalents[langQ] = [qFormula.id];
@@ -354,8 +354,8 @@ const Create = () => {
 
         <DifficultyAndTopicsSelector
           allTopics={allTopics}
-          formulaTopics={formulaTopics}
-          setFormulaTopics={setFormulaTopics}
+          fTopics={fTopics}
+          setFTopics={setFTopics}
           formulaDifficulty={formulaDifficulty}
           setFormulaDifficulty={setFormulaDifficulty}
         />

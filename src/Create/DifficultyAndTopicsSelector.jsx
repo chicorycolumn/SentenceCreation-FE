@@ -15,14 +15,14 @@ const DifficultyAndTopicsSelector = (props) => {
         <textarea
           className={styles.topics}
           readOnly
-          value={props.formulaTopics.join(", ")}
+          value={props.fTopics.join(", ")}
         ></textarea>
         <select
           className={styles.topicsSelector}
           name="topics"
           onClick={(e) => {
             e.preventDefault();
-            props.setFormulaTopics((prev) => {
+            props.setFTopics((prev) => {
               let selectedTopic = e.target.value;
               if (prev.includes(selectedTopic)) {
                 return prev.filter((x) => x !== selectedTopic);
@@ -42,7 +42,7 @@ const DifficultyAndTopicsSelector = (props) => {
           className={`${styles.topicsButton} ${gstyles.redButton}`}
           onClick={() => {
             if (window.confirm("Wipe all formula topics?")) {
-              props.setFormulaTopics([]);
+              props.setFTopics([]);
             }
           }}
         >

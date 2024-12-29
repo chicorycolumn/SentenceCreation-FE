@@ -13,25 +13,19 @@ const Play = () => {
   const [beEnv, setBeEnv] = useState("prod");
 
   const [allTopics, setAllTopics] = useState([]);
-  const [formulaTopics, setFormulaTopics] = useState([]);
+  const [fTopics, setFTopics] = useState([]);
   const [formulaDifficulty, setFormulaDifficulty] = useState(1);
 
   useEffect(() => {
     if (!allTopics.length) {
-      getUtils.fetchFormulaTopics(beEnv, langQ).then((fetchedFormulaTopics) => {
-        setAllTopics(fetchedFormulaTopics);
+      getUtils.fetchTopics(beEnv, langQ).then((fetchedFTopics) => {
+        setAllTopics(fetchedFTopics);
       });
     }
   }, []);
 
   const getAndSetPalette = () => {
-    getUtils.fetchPalette(
-      beEnv,
-      langQ,
-      langA,
-      formulaTopics,
-      formulaDifficulty
-    );
+    getUtils.fetchPalette(beEnv, langQ, langA, fTopics, formulaDifficulty);
   };
 
   return (
@@ -88,8 +82,8 @@ const Play = () => {
       <div className={`${gstyles.flexHorizontal}`}>
         <DifficultyAndTopicsSelector
           allTopics={allTopics}
-          formulaTopics={formulaTopics}
-          setFormulaTopics={setFormulaTopics}
+          fTopics={fTopics}
+          setFTopics={setFTopics}
           formulaDifficulty={formulaDifficulty}
           setFormulaDifficulty={setFormulaDifficulty}
         />
