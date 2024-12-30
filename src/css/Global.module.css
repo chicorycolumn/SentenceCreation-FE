@@ -187,7 +187,7 @@
 }
 
 .tickableButtonHalfwayActive {
-  background-color: white !important;
+  background-color: rgb(232, 249, 234) !important;
   color: forestgreen !important;
 }
 
@@ -197,7 +197,7 @@
 }
 
 .tickableButtonHalfwayActive:hover {
-  background-color: rgb(208, 252, 210) !important;
+  background-color: rgb(198, 247, 200) !important;
   color: black !important;
 }
 

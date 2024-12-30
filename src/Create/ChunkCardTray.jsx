@@ -341,6 +341,9 @@ const ChunkCardTray = (props) => {
                 ? gstyles.tickableButtonHalfwayActive
                 : gstyles.tickableButton
             }`}
+            onMouseOver={() => {
+              console.log({ sentenceWasQueriedSuccessfully });
+            }}
             onClick={(e) => {
               e.target.blur();
 
@@ -365,8 +368,8 @@ const ChunkCardTray = (props) => {
                 return;
               }
 
-              const callbackSaveFormula = (payload, formula) => {
-                if (payload.length) {
+              const callbackSaveFormula = (queriedSuccessfully, formula) => {
+                if (queriedSuccessfully) {
                   props.markFormulaReady(formula);
 
                   $.each(
@@ -385,13 +388,18 @@ const ChunkCardTray = (props) => {
                 }
               };
 
-              putUtils._fetchSentence(
-                props.beEnv,
-                props.lang1,
-                protoFormula,
-                fxnId,
-                callbackSaveFormula
-              );
+              if (sentenceWasQueriedSuccessfully) {
+                putUtils.prepareFormula(props.lang1, protoFormula);
+                callbackSaveFormula(true, protoFormula);
+              } else {
+                putUtils._fetchSentence(
+                  props.beEnv,
+                  props.lang1,
+                  protoFormula,
+                  fxnId,
+                  callbackSaveFormula
+                );
+              }
             }}
           >
             &#10004;

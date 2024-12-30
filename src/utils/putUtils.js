@@ -3,6 +3,7 @@ import { backendifyFormula } from "./backendifyFrontendifyUtils.js";
 import bfUtils from "./backendifyFrontendifyUtils.js";
 const uiUtils = require("./userInputUtils.js");
 const diUtils = require("./displayUtils.js");
+const putUtils = require("./putUtils.js");
 const uUtils = require("../utils/universalUtils.js");
 const baseUrl = "http://localhost:9090/api";
 // const token = localStorage.getItem("currentUserToken");
@@ -55,12 +56,12 @@ export const fetchFemula = (formulaId, answerLanguage, beEnv) => {
 export const _fetchSentence = (
   beEnv,
   lang,
-  protoFormula,
+  formula,
   label,
   callback,
   setListPopupData
 ) => {
-  fetchSentence(lang, protoFormula, beEnv).then(
+  fetchSentence(lang, formula, beEnv).then(
     (data) => {
       let { payload, messages } = data;
 
@@ -76,7 +77,7 @@ export const _fetchSentence = (
         return;
       }
       if (callback) {
-        callback(payload, protoFormula);
+        callback(payload.length, formula);
       } else {
         setListPopupData({
           title: `${payload.length} sentence${
@@ -162,14 +163,12 @@ const _removeAnyUnusedChunksFromFormula = (formula) => {
   );
 };
 
-export const fetchSentence = (lang, formula, beEnv) => {
+export const prepareFormula = (lang, formula) => {
   backendifyFormula(formula);
 
   if (!formula.sentenceStructure.length) {
     return;
   }
-
-  diUtils.startSpinner("lightskyblue");
 
   let requestingSingleWordOnly =
     !formula.orders ||
@@ -184,6 +183,14 @@ export const fetchSentence = (lang, formula, beEnv) => {
     sentenceFormula: formula,
     requestingSingleWordOnly,
   };
+
+  return body;
+};
+
+export const fetchSentence = (lang, formula, beEnv) => {
+  diUtils.startSpinner("lightskyblue");
+
+  const body = putUtils.prepareFormula(lang, formula);
 
   console.log("");
   console.log("");
